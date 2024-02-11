@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentLoginBinding
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
@@ -16,6 +18,10 @@ import com.you4me.you4me.utils.validatePassword
 
 class LoginFragment :
     BaseFragment<AuthenticationViewModel, FragmentLoginBinding, AuthenticationRepository>() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,7 +39,6 @@ class LoginFragment :
         AuthenticationRepository(dataSource.buildApi(ApiCollector::class.java))
 
     private fun setupViews() {
-        showLoader(false)
         viewModel.loginResponse.observe(viewLifecycleOwner, {
             showLoader(false)
             when (it) {
@@ -59,14 +64,17 @@ class LoginFragment :
                 viewModel.login(email.toString(), password.toString())
             }
         }
+        binding.signUp.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
+        }
     }
 
     private fun showLoader(show : Boolean) {
         binding.progressCircular.visibility = if (show) View.VISIBLE else View.GONE
         binding.loginBtn.visibility = if (show) View.GONE else View.VISIBLE
+        binding.email.isEnabled = !show
+        binding.password.isEnabled = !show
     }
-
-
 
     private fun validate(email: CharSequence?, password: CharSequence?): Boolean {
         if (email.validateEmail()) {
