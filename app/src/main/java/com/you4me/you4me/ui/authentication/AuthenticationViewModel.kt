@@ -10,16 +10,18 @@ import com.you4me.you4me.models.LoginResponse
 import com.you4me.you4me.models.RegisterResponse
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.AuthenticationRepository
+import com.you4me.you4me.ui.base.SingleLiveEvent
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 class AuthenticationViewModel(private val repository: AuthenticationRepository) : ViewModel() {
 
-    private val _loginResponse: MutableLiveData<Resource<LoginResponse>> = MutableLiveData()
+    private val _loginResponse: MutableLiveData<Resource<LoginResponse>> =
+        SingleLiveEvent<Resource<LoginResponse>>()
     val loginResponse: LiveData<Resource<LoginResponse>>
         get() = _loginResponse
 
-    private val _registerResponse: MutableLiveData<Resource<RegisterResponse>> = MutableLiveData()
+    private val _registerResponse: MutableLiveData<Resource<RegisterResponse>> =SingleLiveEvent()
     val registerResponse: LiveData<Resource<RegisterResponse>>
         get() = _registerResponse
 
