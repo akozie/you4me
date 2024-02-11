@@ -33,27 +33,40 @@ class LoginFragment :
         AuthenticationRepository(dataSource.buildApi(ApiCollector::class.java))
 
     private fun setupViews() {
-        viewModel.loginResponse.observe(viewLifecycleOwner, Observer {
+        showLoader(false)
+        viewModel.loginResponse.observe(viewLifecycleOwner, {
+            showLoader(false)
             when (it) {
                 is Resource.Success -> {
-
+                    //Store data and navigate
+                    showDialog("Success", true)
                 }
 
                 is Resource.Failure -> {
-
+                    val message = if (it.isNetworkError) "Please check your internet" else it.errorBody?.string()
+                    showDialog(message ?: "Please try again", true)
                 }
             }
         })
         binding.loginBtn.setOnClickListener {
             val email = binding.email.text
-            val password = binding.email.text
+            val password = binding.password.text
 
             if (validate(email, password)) {
-                binding.progressCircular.show()
-                viewModel.login("a", "b")
+                binding.emailLyt.error = null
+                binding.passwordLyt.error = null
+                showLoader(true)
+                viewModel.login(email.toString(), password.toString())
             }
         }
     }
+
+    private fun showLoader(show : Boolean) {
+        binding.progressCircular.visibility = if (show) View.VISIBLE else View.GONE
+        binding.loginBtn.visibility = if (show) View.GONE else View.VISIBLE
+    }
+
+
 
     private fun validate(email: CharSequence?, password: CharSequence?): Boolean {
         if (email.validateEmail()) {

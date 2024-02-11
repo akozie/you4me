@@ -1,5 +1,6 @@
 package com.you4me.you4me.ui.authentication
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,6 +18,7 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository) 
         get() = _loginResponse
 
     fun login(email: String, password: String) {
+        println("Loginnn")
         val obj = JSONObject()
         obj.put("email", email)
         obj.put("password", password)

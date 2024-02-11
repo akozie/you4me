@@ -7,6 +7,6 @@ import retrofit2.http.POST
 
 interface ApiCollector {
 
-    @POST("")
+    @POST("login")
     suspend fun login(@Body obj : JSONObject) : LoginResponse
 }
