@@ -38,7 +38,7 @@ class RegistrationFragment :
 
     private fun setupViews() {
         binding.login.setOnClickListener { findNavController().popBackStack() }
-        viewModel.registerResponse.observe(viewLifecycleOwner, {
+        viewModel.registerResponse.observe(viewLifecycleOwner) {
             showLoader(false)
             when (it) {
                 is Resource.Success -> {
@@ -55,7 +55,7 @@ class RegistrationFragment :
                     showDialog(message ?: "Please try again", true)
                 }
             }
-        })
+        }
         binding.signUpBtn.setOnClickListener {
             val email = binding.email.text
             val password = binding.password.text

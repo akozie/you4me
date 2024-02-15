@@ -3,9 +3,16 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="email_address">Email Address</string>
     <string name="existing_user">Existing user? <font fgcolor="#ff0052">Sign in here</font></string>
+    <string name="find_date">Find Date</string>
+    <string name="go_on_date">Go on date</string>
+    <string name="home">Home</string>
+    <string name="likes">Likes</string>
     <string name="login">Login</string>
     <string name="new_user">New user? <font fgcolor="#ff0052">Sign up here</font></string>
     <string name="password">Password</string>
+    <string name="profile">Profile</string>
     <string name="register">Register</string>
     <string name="registration_success_login">Registration Successful. Please login</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
