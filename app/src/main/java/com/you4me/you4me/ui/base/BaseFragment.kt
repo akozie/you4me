@@ -13,8 +13,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
+import com.you4me.you4me.AppDatabase
 import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.repository.BaseRepository
+import com.you4me.you4me.repository.DbRepository
 
 abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository> : Fragment() {
 
@@ -27,7 +29,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
         savedInstanceState: Bundle?
     ): View? {
         binding = getFragmentBinding(inflater, container)
-        val factory = ViewModelFactory(getRepository())
+        val factory = ViewModelFactory(getRepository(), getDbRepository())
         viewModel = ViewModelProvider(this, factory)[getViewModel()]
 
         requireActivity().onBackPressedDispatcher
@@ -43,10 +45,10 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
     abstract fun getViewModel(): Class<VM>
     abstract fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?): B
     abstract fun getRepository(): R
+    private fun getDbRepository() = DbRepository(AppDatabase(requireContext()))
 
 
-
-    fun showDialog( message : String, cancelable: Boolean = true) : Dialog {
+    fun showDialog(message: String, cancelable: Boolean = true): Dialog {
         val builder = AlertDialog.Builder(this.requireActivity()).create()
         builder.setCancelable(cancelable)
         builder.setMessage(message)

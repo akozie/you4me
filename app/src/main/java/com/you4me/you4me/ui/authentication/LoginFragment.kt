@@ -7,21 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.you4me.you4me.AppDatabase
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentLoginBinding
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.AuthenticationRepository
+import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.validateEmail
 import com.you4me.you4me.utils.validatePassword
 
 class LoginFragment :
     BaseFragment<AuthenticationViewModel, FragmentLoginBinding, AuthenticationRepository>() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,6 +43,7 @@ class LoginFragment :
                 is Resource.Success -> {
                     //Store data and navigate
                     showDialog("Login Successful", true)
+                    viewModel.saveUser(it.value)
                 }
 
                 is Resource.Failure -> {
@@ -70,7 +69,7 @@ class LoginFragment :
         }
     }
 
-    private fun showLoader(show : Boolean) {
+    private fun showLoader(show: Boolean) {
         binding.progressCircular.visibility = if (show) View.VISIBLE else View.GONE
         binding.loginBtn.visibility = if (show) View.GONE else View.VISIBLE
         binding.email.isEnabled = !show
