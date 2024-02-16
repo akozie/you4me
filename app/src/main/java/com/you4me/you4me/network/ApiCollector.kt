@@ -19,22 +19,22 @@ interface ApiCollector {
     suspend fun register(@Body obj: JsonObject): RegisterResponse
 
     @GET("genders")
-    suspend fun getGenders() :ArrayList<ValueLabelResponse>
+    suspend fun getGenders(): ArrayList<ValueLabelResponse>
 
-    @GET("asexualOrientations")
-    suspend fun getSexualOrientations() : ArrayList<ValueLabelResponse>
+    @GET("sexualOrientations")
+    suspend fun getSexualOrientations(): ArrayList<ValueLabelResponse>
 
     @GET("ageGroups")
-    suspend fun getAgeGroups() : ArrayList<ValueLabelResponse>
+    suspend fun getAgeGroups(): ArrayList<ValueLabelResponse>
 
     @GET("religions")
-    suspend fun getReligions() : ArrayList<ValueLabelResponse>
+    suspend fun getReligions(): ArrayList<ValueLabelResponse>
 
     @GET("countries")
-    suspend fun getCountries() : ArrayList<ValueLabelResponse>
+    suspend fun getCountries(): ArrayList<ValueLabelResponse>
 
     @GET("countries/{countryId}/states")
     suspend fun getStates(
-        @Path("countryId") countryId : String
-    ) : ArrayList<ValueLabelResponse>
+        @Path("countryId") countryId: String
+    ): ArrayList<ValueLabelResponse>
 }

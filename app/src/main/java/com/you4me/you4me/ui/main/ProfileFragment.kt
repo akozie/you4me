@@ -21,6 +21,7 @@ class ProfileFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addListeners()
+        addObservers()
     }
 
     override fun getViewModel() = ProfileViewModel::class.java
@@ -32,7 +33,7 @@ class ProfileFragment :
 
     override fun getRepository() = ProfileRepository(dataSource.buildApi(ApiCollector::class.java))
 
-    private fun addListeners() {
+    private fun addObservers() {
         viewModel.sexualOrientations.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -101,6 +102,19 @@ class ProfileFragment :
         }
     }
 
+    private fun addListeners() {
+        binding.editBtn.setOnClickListener {
+            when(binding.editBtn.text) {
+                getText(R.string.update) -> {
+
+                }
+                getText(R.string.edit) -> {
+                    switchProfile(true)
+                }
+            }
+        }
+    }
+
     private fun setupSpinner(values: ArrayList<ValueLabelResponse>, spinner: Int) {
         val names = values.map {
             it.label
@@ -113,13 +127,29 @@ class ProfileFragment :
             names
         ).also { adapter ->
             when (spinner) {
-                SEXUAL_ORIENTATION_SPINNER -> binding.sexualOrientation.adapter = adapter
-                AGE_GROUP_SPINNER -> binding.agePreference.adapter = adapter
-                RELIGION_SPINNER -> binding.religionPreference.adapter = adapter
-                COUNTRY_SPINNER -> binding.country.adapter = adapter
-                STATE_SPINNER -> binding.state.adapter = adapter
+                SEXUAL_ORIENTATION_SPINNER -> binding.sexualOrientationSpinner.adapter = adapter
+                AGE_GROUP_SPINNER -> binding.agePreferenceSpinner.adapter = adapter
+                RELIGION_SPINNER -> binding.religionPreferenceSpinner.adapter = adapter
+                COUNTRY_SPINNER -> binding.countrySpinner.adapter = adapter
+                STATE_SPINNER -> binding.stateSpinner.adapter = adapter
             }
         }
+    }
+
+    private fun switchProfile(edit: Boolean) {
+        binding.sexualOrientationSpinner.visibility = if (edit) View.VISIBLE else View.GONE
+        binding.agePreferenceSpinner.visibility = if (edit) View.VISIBLE else View.GONE
+        binding.religionPreferenceSpinner.visibility = if (edit) View.VISIBLE else View.GONE
+        binding.countrySpinner.visibility = if (edit) View.VISIBLE else View.GONE
+        binding.stateSpinner.visibility = if (edit) View.VISIBLE else View.GONE
+
+        binding.editBtn.text = getText(if (edit) R.string.update else R.string.edit)
+
+        binding.sexualOrientationTxt.visibility = if (!edit) View.VISIBLE else View.GONE
+        binding.agePreferenceTxt.visibility = if (!edit) View.VISIBLE else View.GONE
+        binding.religionPreferenceTxt.visibility = if (!edit) View.VISIBLE else View.GONE
+        binding.countryTxt.visibility = if (!edit) View.VISIBLE else View.GONE
+        binding.stateTxt.visibility = if (!edit) View.VISIBLE else View.GONE
     }
 
     companion object {
