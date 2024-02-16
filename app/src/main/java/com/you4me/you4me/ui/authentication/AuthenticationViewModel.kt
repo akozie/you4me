@@ -1,24 +1,22 @@
 package com.you4me.you4me.ui.authentication
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
-import com.you4me.you4me.models.LoginResponse
+import com.you4me.you4me.models.User
 import com.you4me.you4me.models.RegisterResponse
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.AuthenticationRepository
 import com.you4me.you4me.ui.base.SingleLiveEvent
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 
 class AuthenticationViewModel(private val repository: AuthenticationRepository) : ViewModel() {
 
-    private val _loginResponse: MutableLiveData<Resource<LoginResponse>> =
-        SingleLiveEvent<Resource<LoginResponse>>()
-    val loginResponse: LiveData<Resource<LoginResponse>>
+    private val _loginResponse: MutableLiveData<Resource<User>> =
+        SingleLiveEvent<Resource<User>>()
+    val loginResponse: LiveData<Resource<User>>
         get() = _loginResponse
 
     private val _registerResponse: MutableLiveData<Resource<RegisterResponse>> =SingleLiveEvent()

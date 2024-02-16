@@ -47,14 +47,21 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     //navigation
-    implementation ("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation ("androidx.navigation:navigation-ui-ktx:2.7.7")
+    val navigationVersion = "2.7.7"
+    implementation ("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
+    implementation ("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 
     //retrofit
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    val retrofitVersion = "2.9.0"
+    implementation ("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation ("com.squareup.retrofit2:converter-gson:$retrofitVersion")
     //Logging Interceptor
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
+
+    //room
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
