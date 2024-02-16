@@ -5,56 +5,124 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.SpinnerAdapter
 import com.you4me.you4me.R
+import com.you4me.you4me.databinding.FragmentProfileBinding
+import com.you4me.you4me.models.ValueLabelResponse
+import com.you4me.you4me.network.ApiCollector
+import com.you4me.you4me.network.Resource
+import com.you4me.you4me.repository.ProfileRepository
+import com.you4me.you4me.ui.base.BaseFragment
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class ProfileFragment :
+    BaseFragment<ProfileViewModel, FragmentProfileBinding, ProfileRepository>() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ProfileFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ProfileFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        addListeners()
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun getViewModel() = ProfileViewModel::class.java
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = FragmentProfileBinding.inflate(inflater, container, false)
+
+    override fun getRepository() = ProfileRepository(dataSource.buildApi(ApiCollector::class.java))
+
+    private fun addListeners() {
+        viewModel.sexualOrientations.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    setupSpinner(it.value, SEXUAL_ORIENTATION_SPINNER)
+                }
+
+                is Resource.Failure -> {
+
+                }
+            }
+        }
+        viewModel.ageGroups.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    setupSpinner(it.value, AGE_GROUP_SPINNER)
+                }
+
+                is Resource.Failure -> {
+
+                }
+            }
+        }
+        viewModel.religions.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    setupSpinner(it.value, RELIGION_SPINNER)
+                }
+
+                is Resource.Failure -> {
+
+                }
+            }
+        }
+        viewModel.countries.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    setupSpinner(it.value, COUNTRY_SPINNER)
+                }
+
+                is Resource.Failure -> {
+
+                }
+            }
+        }
+        viewModel.sexualOrientations.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    setupSpinner(it.value, SEXUAL_ORIENTATION_SPINNER)
+                }
+
+                is Resource.Failure -> {
+
+                }
+            }
+        }
+        viewModel.states.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    setupSpinner(it.value, STATE_SPINNER)
+                }
+
+                is Resource.Failure -> {
+
+                }
+            }
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+    private fun setupSpinner(values: ArrayList<ValueLabelResponse>, spinner: Int) {
+        ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            values
+        ).also { adapter ->
+            when (spinner) {
+                SEXUAL_ORIENTATION_SPINNER -> binding.sexualOrientation.adapter = adapter
+                AGE_GROUP_SPINNER -> binding.agePreference.adapter = adapter
+                RELIGION_SPINNER -> binding.religionPreference.adapter = adapter
+                COUNTRY_SPINNER -> binding.country.adapter = adapter
+                STATE_SPINNER -> binding.state.adapter = adapter
+            }
+        }
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProfileFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ProfileFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        const val SEXUAL_ORIENTATION_SPINNER = 1
+        const val AGE_GROUP_SPINNER = 2
+        const val RELIGION_SPINNER = 3
+        const val COUNTRY_SPINNER = 4
+        const val STATE_SPINNER = 5
     }
+
 }
