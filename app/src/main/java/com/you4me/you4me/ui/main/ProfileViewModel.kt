@@ -6,11 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.Resource
+import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.base.SingleLiveEvent
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(private val repository: ProfileRepository) : ViewModel() {
+class ProfileViewModel(private val repository: ProfileRepository, private val dbRepository: DbRepository) : ViewModel() {
 
     private val _genders: MutableLiveData<Resource<ArrayList<ValueLabelResponse>>> =
         SingleLiveEvent()

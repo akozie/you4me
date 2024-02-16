@@ -102,10 +102,15 @@ class ProfileFragment :
     }
 
     private fun setupSpinner(values: ArrayList<ValueLabelResponse>, spinner: Int) {
+        val names = values.map {
+            it.label
+        }.toMutableList()
+        names.add(0, "")
+
         ArrayAdapter(
             requireContext(),
-            android.R.layout.simple_spinner_dropdown_item,
-            values
+            android.R.layout.simple_spinner_item,
+            names
         ).also { adapter ->
             when (spinner) {
                 SEXUAL_ORIENTATION_SPINNER -> binding.sexualOrientation.adapter = adapter

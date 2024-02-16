@@ -10,11 +10,11 @@ import com.you4me.you4me.models.User
 @Dao
 interface UserDAO {
     @Query("SELECT * FROM User")
-    fun getUser(): List<User>
+    suspend fun getUser(): List<User>
 
     @Delete
-    fun deleteUser(user: User)
+    suspend fun deleteUser(user: User)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun saveUserData(user: User)
+    suspend fun saveUserData(user: User)
 }

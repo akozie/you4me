@@ -1,5 +1,6 @@
 package com.you4me.you4me.ui.authentication
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.AuthenticationRepository
 import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.ui.main.MainActivity
 import com.you4me.you4me.utils.validateEmail
 import com.you4me.you4me.utils.validatePassword
 
@@ -44,6 +46,7 @@ class LoginFragment :
                     //Store data and navigate
                     showDialog("Login Successful", true)
                     viewModel.saveUser(it.value)
+                    startActivity(Intent(requireActivity(), MainActivity::class.java))
                 }
 
                 is Resource.Failure -> {
