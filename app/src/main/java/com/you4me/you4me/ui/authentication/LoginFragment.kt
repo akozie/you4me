@@ -57,8 +57,8 @@ class LoginFragment :
             }
         }
         binding.loginBtn.setOnClickListener {
-            val email = binding.email.text
-            val password = binding.password.text
+            val email = binding.email.text?.trim()
+            val password = binding.password.text?.trim()
 
             if (validate(email, password)) {
                 binding.emailLyt.error = null

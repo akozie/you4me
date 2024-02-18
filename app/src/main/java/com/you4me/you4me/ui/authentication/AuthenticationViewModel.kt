@@ -45,8 +45,6 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository, 
     }
 
     fun saveUser(user : User) {
-        viewModelScope.launch { dbRepository.insertUser(user) }.invokeOnCompletion {
-            Log.d("tagged", it?.message ?: "Done")
-        }
+        viewModelScope.launch { dbRepository.insertUser(user) }
     }
 }

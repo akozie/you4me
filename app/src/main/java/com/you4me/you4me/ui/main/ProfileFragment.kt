@@ -1,6 +1,7 @@
 package com.you4me.you4me.ui.main
 
 import android.os.Bundle
+import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.SpinnerAdapter
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentProfileBinding
+import com.you4me.you4me.models.User
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
@@ -34,6 +36,9 @@ class ProfileFragment :
     override fun getRepository() = ProfileRepository(dataSource.buildApi(ApiCollector::class.java))
 
     private fun addObservers() {
+        viewModel.user.observe(viewLifecycleOwner) {
+            populateViews(it)
+        }
         viewModel.sexualOrientations.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -104,10 +109,11 @@ class ProfileFragment :
 
     private fun addListeners() {
         binding.editBtn.setOnClickListener {
-            when(binding.editBtn.text) {
+            when (binding.editBtn.text) {
                 getText(R.string.update) -> {
 
                 }
+
                 getText(R.string.edit) -> {
                     switchProfile(true)
                 }
@@ -143,6 +149,7 @@ class ProfileFragment :
         binding.countrySpinner.visibility = if (edit) View.VISIBLE else View.GONE
         binding.stateSpinner.visibility = if (edit) View.VISIBLE else View.GONE
 
+        binding.name.isEnabled = edit
         binding.editBtn.text = getText(if (edit) R.string.update else R.string.edit)
 
         binding.sexualOrientationTxt.visibility = if (!edit) View.VISIBLE else View.GONE
@@ -150,6 +157,15 @@ class ProfileFragment :
         binding.religionPreferenceTxt.visibility = if (!edit) View.VISIBLE else View.GONE
         binding.countryTxt.visibility = if (!edit) View.VISIBLE else View.GONE
         binding.stateTxt.visibility = if (!edit) View.VISIBLE else View.GONE
+    }
+
+    private fun populateViews(user: User) {
+        binding.name.setText(user.name)
+        binding.countryTxt.text = user.country
+        binding.stateTxt.text = user.state
+        binding.religionPreferenceTxt.text = user.religion
+        binding.agePreferenceTxt.text = user.agePreferred
+        binding.sexualOrientationTxt.text = user.sexualOrientation
     }
 
     companion object {

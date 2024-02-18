@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.you4me.you4me.models.User
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.DbRepository
@@ -43,13 +44,24 @@ class ProfileViewModel(private val repository: ProfileRepository, private val db
     val states: LiveData<Resource<ArrayList<ValueLabelResponse>>>
         get() = _states
 
+    private val _user: MutableLiveData<User> = SingleLiveEvent()
+    val user : LiveData<User>
+        get() = _user
+
 
     init {
+        getUser()
         getGenders()
         getCountries()
         getSexualOrientations()
         getAgeGroups()
         getReligions()
+    }
+
+    private fun getUser() {
+        viewModelScope.launch {
+            _user.value = dbRepository.getUser()
+        }
     }
 
     private fun getGenders() {

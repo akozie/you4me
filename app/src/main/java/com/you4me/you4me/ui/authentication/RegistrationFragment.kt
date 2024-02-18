@@ -57,9 +57,9 @@ class RegistrationFragment :
             }
         }
         binding.signUpBtn.setOnClickListener {
-            val email = binding.email.text
-            val password = binding.password.text
-            val confirmPassword = binding.confirmPassword.text
+            val email = binding.email.text?.trim()
+            val password = binding.password.text?.trim()
+            val confirmPassword = binding.confirmPassword.text?.trim()
             if (validate(email, password, confirmPassword)) {
                 showLoader(true)
                 viewModel.register(email.toString(), password.toString())
