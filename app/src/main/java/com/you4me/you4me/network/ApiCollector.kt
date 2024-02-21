@@ -6,6 +6,7 @@ import com.you4me.you4me.models.RegisterResponse
 import com.you4me.you4me.models.ValueLabelResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -37,4 +38,10 @@ interface ApiCollector {
     suspend fun getStates(
         @Path("countryId") countryId: String
     ): ArrayList<ValueLabelResponse>
+
+    @PATCH("users/{userId}")
+    suspend fun updateUserInfo(
+        @Path("userId") userId : String,
+        @Body obj : JsonObject
+    )
 }

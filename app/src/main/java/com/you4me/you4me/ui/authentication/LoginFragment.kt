@@ -51,8 +51,8 @@ class LoginFragment :
 
                 is Resource.Failure -> {
                     val message =
-                        if (it.isNetworkError) "Please check your internet" else it.errorBody?.string()
-                    showDialog(message ?: "Please try again", true)
+                        if (it.isNetworkError) "Please check your internet" else it.message
+                    showDialog(message ?: it.errorBody ?: "Please try again", true)
                 }
             }
         }

@@ -1,9 +1,11 @@
-package com.you4me.you4me.ui.main
+package com.you4me.you4me.ui.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.JsonObject
+import com.you4me.you4me.models.UpdateUserBody
 import com.you4me.you4me.models.User
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.Resource
@@ -48,6 +50,9 @@ class ProfileViewModel(private val repository: ProfileRepository, private val db
     val user : LiveData<User>
         get() = _user
 
+    private val _updateUserResponse : MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val updateUserResponse : LiveData<Resource<Unit>>
+        get() = _updateUserResponse
 
     init {
         getUser()
@@ -97,6 +102,24 @@ class ProfileViewModel(private val repository: ProfileRepository, private val db
     fun getStates(countryId: String) {
         viewModelScope.launch {
             _states.value = repository.getStates(countryId)
+        }
+    }
+
+    fun updateUserInfo( userBody: UpdateUserBody) {
+        viewModelScope.launch {
+            val obj = JsonObject()
+            userBody.apply {
+                obj.addProperty("name", name)
+                obj.addProperty("country", country)
+                obj.addProperty("state", state)
+                obj.addProperty("age_preferred", age_preferred)
+                obj.addProperty("religion_preferred", religion_preferred)
+                obj.addProperty("sexual_orientation", sexual_orientation)
+                obj.addProperty("dob", dob)
+                obj.addProperty("gender", gender)
+            }
+
+            _updateUserResponse.value = repository.updateUserInfo(_user.value!!.userId, obj)
         }
     }
 

@@ -17,7 +17,7 @@
         tools:layout="@layout/fragment_find_date" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.you4me.you4me.ui.main.ProfileFragment"
+        android:name="com.you4me.you4me.ui.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment

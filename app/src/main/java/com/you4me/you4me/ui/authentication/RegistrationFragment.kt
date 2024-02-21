@@ -51,7 +51,7 @@ class RegistrationFragment :
 
                 is Resource.Failure -> {
                     val message =
-                        if (it.isNetworkError) "Please check your internet" else it.errorBody?.string()
+                        if (it.isNetworkError) "Please check your internet" else it.errorBody
                     showDialog(message ?: "Please try again", true)
                 }
             }

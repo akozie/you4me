@@ -5,11 +5,13 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="country">Country</string>
     <string name="create_video">Create a compelling 30-second video introducing yourself</string>
+    <string name="date_hint">yyyy-mm-dd</string>
     <string name="dob">Date of Birth</string>
     <string name="edit">Edit</string>
     <string name="email_address">Email Address</string>
     <string name="existing_user">Existing user? <font fgcolor="#ff0052">Sign in here</font></string>
     <string name="find_date">Find Date</string>
+    <string name="gender">Gender</string>
     <string name="go_on_date">Go on date</string>
     <string name="home">Home</string>
     <string name="likes">Likes</string>

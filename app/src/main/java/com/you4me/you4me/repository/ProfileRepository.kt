@@ -1,5 +1,7 @@
 package com.you4me.you4me.repository
 
+import com.google.gson.JsonObject
+import com.you4me.you4me.models.UpdateUserBody
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
@@ -32,4 +34,6 @@ class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository
         apiCollector.getStates(countryId)
     }
 
+    suspend fun updateUserInfo(userId: String, userBody: JsonObject) =
+        safeApiCall { apiCollector.updateUserInfo(userId, userBody) }
 }

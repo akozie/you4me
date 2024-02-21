@@ -7,7 +7,7 @@ import com.you4me.you4me.repository.BaseRepository
 import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.authentication.AuthenticationViewModel
-import com.you4me.you4me.ui.main.ProfileViewModel
+import com.you4me.you4me.ui.profile.ProfileViewModel
 import java.lang.IllegalArgumentException
 
 class ViewModelFactory(
