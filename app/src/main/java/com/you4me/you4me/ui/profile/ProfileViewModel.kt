@@ -1,7 +1,6 @@
 package com.you4me.you4me.ui.profile
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.you4me.you4me.models.CloudinaryVideoUploadResponse
 import com.you4me.you4me.models.RegisterVideoUploadBody
@@ -19,9 +17,7 @@ import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.ProfileRepository
-import com.you4me.you4me.ui.base.SingleLiveEvent
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 
 
 class ProfileViewModel(
@@ -30,49 +26,49 @@ class ProfileViewModel(
 ) : ViewModel() {
 
     private val _genders: MutableLiveData<Resource<ArrayList<ValueLabelResponse>>> =
-        SingleLiveEvent()
+        MutableLiveData()
     val genders: LiveData<Resource<ArrayList<ValueLabelResponse>>>
         get() = _genders
 
     private val _countries: MutableLiveData<Resource<ArrayList<ValueLabelResponse>>> =
-        SingleLiveEvent()
+        MutableLiveData()
     val countries: LiveData<Resource<ArrayList<ValueLabelResponse>>>
         get() = _countries
 
     private val _sexualOrientations: MutableLiveData<Resource<ArrayList<ValueLabelResponse>>> =
-        SingleLiveEvent()
+        MutableLiveData()
     val sexualOrientations: LiveData<Resource<ArrayList<ValueLabelResponse>>>
         get() = _sexualOrientations
 
     private val _ageGroups: MutableLiveData<Resource<ArrayList<ValueLabelResponse>>> =
-        SingleLiveEvent()
+        MutableLiveData()
     val ageGroups: LiveData<Resource<ArrayList<ValueLabelResponse>>>
         get() = _ageGroups
 
     private val _religions: MutableLiveData<Resource<ArrayList<ValueLabelResponse>>> =
-        SingleLiveEvent()
+        MutableLiveData()
     val religions: LiveData<Resource<ArrayList<ValueLabelResponse>>>
         get() = _religions
 
     private val _states: MutableLiveData<Resource<ArrayList<ValueLabelResponse>>> =
-        SingleLiveEvent()
+        MutableLiveData()
     val states: LiveData<Resource<ArrayList<ValueLabelResponse>>>
         get() = _states
 
-    private val _user: MutableLiveData<User> = SingleLiveEvent()
+    private val _user: MutableLiveData<User> = MutableLiveData()
     val user: LiveData<User>
         get() = _user
 
-    private val _updateUserResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    private val _updateUserResponse: MutableLiveData<Resource<Unit>> = MutableLiveData()
     val updateUserResponse: LiveData<Resource<Unit>>
         get() = _updateUserResponse
 
     private val _uploadVideoCloudinaryResponse: MutableLiveData<CloudinaryVideoUploadResponse> =
-        SingleLiveEvent()
+        MutableLiveData()
     val uploadVideoCloudinaryResponse: LiveData<CloudinaryVideoUploadResponse>
         get() = _uploadVideoCloudinaryResponse
 
-    private val _registerVideoUploadResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    private val _registerVideoUploadResponse: MutableLiveData<Resource<Unit>> = MutableLiveData()
     val registerVideoUploadResponse: LiveData<Resource<Unit>>
         get() = _registerVideoUploadResponse
 

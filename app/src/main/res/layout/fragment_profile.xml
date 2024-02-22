@@ -327,8 +327,8 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:hint="@string/date_hint"
-            android:visibility="gone"
-            android:inputType="none" />
+            android:inputType="none"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/dob_txt"
@@ -387,9 +387,17 @@
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/divider7" />
 
-    <include
-        android:id="@+id/circular_lyt"
-        layout="@layout/progress_indicator"
-        app:layout_constraintTop_toBottomOf="@id/divider7"/>
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress_circular"
+        style="@style/Widget.Material3.CircularProgressIndicator.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="4dp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider7" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
