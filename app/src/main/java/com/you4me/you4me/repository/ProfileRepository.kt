@@ -1,6 +1,7 @@
 package com.you4me.you4me.repository
 
 import com.google.gson.JsonObject
+import com.you4me.you4me.models.RegisterVideoUploadBody
 import com.you4me.you4me.models.UpdateUserBody
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.ApiCollector
@@ -36,4 +37,9 @@ class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository
 
     suspend fun updateUserInfo(userId: String, userBody: JsonObject) =
         safeApiCall { apiCollector.updateUserInfo(userId, userBody) }
+
+    suspend fun registerVideoUpload(
+        userId: String,
+        registerVideoUploadBody: RegisterVideoUploadBody
+    ) = safeApiCall { apiCollector.registerVideoUpload(userId, registerVideoUploadBody) }
 }

@@ -1,10 +1,18 @@
 package com.you4me.you4me.ui.profile
 
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
+import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.you4me.you4me.models.CloudinaryVideoUploadResponse
+import com.you4me.you4me.models.RegisterVideoUploadBody
 import com.you4me.you4me.models.UpdateUserBody
 import com.you4me.you4me.models.User
 import com.you4me.you4me.models.ValueLabelResponse
@@ -13,8 +21,13 @@ import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.base.SingleLiveEvent
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
-class ProfileViewModel(private val repository: ProfileRepository, private val dbRepository: DbRepository) : ViewModel() {
+
+class ProfileViewModel(
+    private val repository: ProfileRepository,
+    private val dbRepository: DbRepository
+) : ViewModel() {
 
     private val _genders: MutableLiveData<Resource<ArrayList<ValueLabelResponse>>> =
         SingleLiveEvent()
@@ -47,12 +60,21 @@ class ProfileViewModel(private val repository: ProfileRepository, private val db
         get() = _states
 
     private val _user: MutableLiveData<User> = SingleLiveEvent()
-    val user : LiveData<User>
+    val user: LiveData<User>
         get() = _user
 
-    private val _updateUserResponse : MutableLiveData<Resource<Unit>> = SingleLiveEvent()
-    val updateUserResponse : LiveData<Resource<Unit>>
+    private val _updateUserResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val updateUserResponse: LiveData<Resource<Unit>>
         get() = _updateUserResponse
+
+    private val _uploadVideoCloudinaryResponse: MutableLiveData<CloudinaryVideoUploadResponse> =
+        SingleLiveEvent()
+    val uploadVideoCloudinaryResponse: LiveData<CloudinaryVideoUploadResponse>
+        get() = _uploadVideoCloudinaryResponse
+
+    private val _registerVideoUploadResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val registerVideoUploadResponse: LiveData<Resource<Unit>>
+        get() = _registerVideoUploadResponse
 
     init {
         getUser()
@@ -105,7 +127,7 @@ class ProfileViewModel(private val repository: ProfileRepository, private val db
         }
     }
 
-    fun updateUserInfo( userBody: UpdateUserBody) {
+    fun updateUserInfo(userBody: UpdateUserBody) {
         viewModelScope.launch {
             val obj = JsonObject()
             userBody.apply {
@@ -123,4 +145,45 @@ class ProfileViewModel(private val repository: ProfileRepository, private val db
         }
     }
 
+    fun uploadVideo(videoUri: Uri) {
+        viewModelScope.launch {
+            MediaManager.get()
+                .upload(videoUri).option("resource_type", "auto").callback(object : UploadCallback {
+                    override fun onStart(requestId: String?) {
+
+                    }
+
+                    override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
+
+                    }
+
+                    override fun onSuccess(
+                        requestId: String?,
+                        resultData: MutableMap<Any?, Any?>?
+                    ) {
+                        _uploadVideoCloudinaryResponse.value = resultData?.let {
+                            CloudinaryVideoUploadResponse.from(
+                                it
+                            )
+                        }
+                    }
+
+                    override fun onError(requestId: String?, error: ErrorInfo?) {
+
+                    }
+
+                    override fun onReschedule(requestId: String?, error: ErrorInfo?) {
+
+                    }
+
+                }).dispatch()
+        }
+    }
+
+    fun registerVideoUpload(registerVideoUploadBody: RegisterVideoUploadBody) {
+        viewModelScope.launch {
+            _registerVideoUploadResponse.value =
+                repository.registerVideoUpload(_user.value!!.userId, registerVideoUploadBody)
+        }
+    }
 }

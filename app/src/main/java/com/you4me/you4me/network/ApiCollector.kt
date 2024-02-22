@@ -3,6 +3,7 @@ package com.you4me.you4me.network
 import com.google.gson.JsonObject
 import com.you4me.you4me.models.User
 import com.you4me.you4me.models.RegisterResponse
+import com.you4me.you4me.models.RegisterVideoUploadBody
 import com.you4me.you4me.models.ValueLabelResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -43,5 +44,11 @@ interface ApiCollector {
     suspend fun updateUserInfo(
         @Path("userId") userId : String,
         @Body obj : JsonObject
+    )
+
+    @POST("users/{userId}/uploads")
+    suspend fun registerVideoUpload(
+        @Path("userId") userId: String,
+        @Body registerVideoUploadBody: RegisterVideoUploadBody
     )
 }

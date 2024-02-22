@@ -1,8 +1,11 @@
 package com.you4me.you4me.ui.profile
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,11 +13,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.CalendarView.OnDateChangeListener
-import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentProfileBinding
+import com.you4me.you4me.models.RegisterVideoUploadBody
 import com.you4me.you4me.models.UpdateUserBody
 import com.you4me.you4me.models.User
 import com.you4me.you4me.models.ValueLabelResponse
@@ -37,6 +42,7 @@ class ProfileFragment :
     private lateinit var sexualOrientation: String
     private lateinit var state: String
     private lateinit var country: String
+    private lateinit var user: User
 
     private lateinit var countries: ArrayList<ValueLabelResponse>
     private lateinit var states: ArrayList<ValueLabelResponse>
@@ -46,28 +52,26 @@ class ProfileFragment :
     private lateinit var sexualOrientations: ArrayList<ValueLabelResponse>
 
     private lateinit var calendar: Calendar
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addListeners()
         addObservers()
-        setupViews()
-
-        calendar = Calendar.getInstance()
+        setupView()
     }
 
     override fun getViewModel() = ProfileViewModel::class.java
 
     override fun getFragmentBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
+        inflater: LayoutInflater, container: ViewGroup?
     ) = FragmentProfileBinding.inflate(inflater, container, false)
 
     override fun getRepository() = ProfileRepository(dataSource.buildApi(ApiCollector::class.java))
 
     private fun addObservers() {
         viewModel.user.observe(viewLifecycleOwner) {
-            Log.d("Profile Fragment", "Populate views called")
+            user = it
             populateViews(it)
         }
         viewModel.sexualOrientations.observe(viewLifecycleOwner) {
@@ -159,9 +163,7 @@ class ProfileFragment :
             when (it) {
                 is Resource.Success -> {
                     Toast.makeText(
-                        requireContext(),
-                        "Profile Update Successful",
-                        Toast.LENGTH_SHORT
+                        requireContext(), "Profile Update Successful", Toast.LENGTH_SHORT
                     ).show()
                     switchProfile(false)
                 }
@@ -169,6 +171,24 @@ class ProfileFragment :
                 is Resource.Failure -> {
                     showDialog(it.message ?: it.errorBody ?: "An error occurred")
                 }
+            }
+        }
+        viewModel.uploadVideoCloudinaryResponse.observe(viewLifecycleOwner) {
+            viewModel.registerVideoUpload(
+                RegisterVideoUploadBody(
+                    it.url,
+                    user.userId,
+                    it.public_id
+                )
+            )
+        }
+        viewModel.registerVideoUploadResponse.observe(viewLifecycleOwner) {
+            when(it){
+                is Resource.Success -> {
+                    showLoader(false)
+                    Toast.makeText(requireContext(), "Video Upload Successful!", Toast.LENGTH_SHORT).show()
+                }
+                is Resource.Failure -> {}
             }
         }
     }
@@ -196,6 +216,11 @@ class ProfileFragment :
                     switchProfile(true)
                 }
             }
+        }
+
+        binding.addVideoLyt.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+            activityResultLauncher.launch(intent)
         }
 
         binding.stateSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -258,17 +283,16 @@ class ProfileFragment :
                 }
             }
 
-        binding.genderSpinner.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    if (p2 == 0) return
-                    gender = genders[p2 - 1].value
-                }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-
-                }
+        binding.genderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                if (p2 == 0) return
+                gender = genders[p2 - 1].value
             }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+        }
     }
 
     private fun setupSpinner(values: ArrayList<ValueLabelResponse>, spinner: Int) {
@@ -278,9 +302,7 @@ class ProfileFragment :
         names.add(0, "Select")
 
         ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_item,
-            names
+            requireContext(), android.R.layout.simple_spinner_item, names
         ).also { adapter ->
             when (spinner) {
                 SEXUAL_ORIENTATION_SPINNER -> binding.sexualOrientationSpinner.adapter = adapter
@@ -302,7 +324,8 @@ class ProfileFragment :
         binding.dob.visibility = if (edit) View.VISIBLE else View.GONE
         binding.genderSpinner.visibility = if (edit) View.VISIBLE else View.GONE
 
-        binding.name.inputType = if (edit) InputType.TYPE_TEXT_VARIATION_PERSON_NAME else InputType.TYPE_NULL
+        binding.name.inputType =
+            if (edit) InputType.TYPE_TEXT_VARIATION_PERSON_NAME else InputType.TYPE_NULL
         binding.editBtn.text = getText(if (edit) R.string.update else R.string.edit)
 
         binding.sexualOrientationTxt.visibility = if (!edit) View.VISIBLE else View.GONE
@@ -314,7 +337,8 @@ class ProfileFragment :
         binding.genderTxt.visibility = if (!edit) View.VISIBLE else View.GONE
     }
 
-    private fun setupViews() {
+    private fun setupView() {
+        calendar = Calendar.getInstance()
         binding.dob.inputType = InputType.TYPE_NULL
         val date = OnDateSetListener { view, year, month, day ->
             calendar.set(Calendar.YEAR, year)
@@ -332,6 +356,14 @@ class ProfileFragment :
                 calendar.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
+        activityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Activity.RESULT_OK) {
+                    val videoUri = it.data?.data ?: return@registerForActivityResult
+                    showLoader(true)
+                    viewModel.uploadVideo(videoUri)
+                }
+            }
     }
 
     private fun updateDateOfBirth() {
@@ -373,6 +405,7 @@ class ProfileFragment :
         const val COUNTRY_SPINNER = 4
         const val STATE_SPINNER = 5
         const val GENDER_SPINNER = 6
+        const val PERMISSION_REQUEST_CODE = 0
     }
 
 }
