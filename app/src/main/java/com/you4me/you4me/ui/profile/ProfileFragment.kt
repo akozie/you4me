@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.InputType
@@ -25,9 +26,11 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import java.util.UUID
 
 class ProfileFragment :
     BaseFragment<ProfileViewModel, FragmentProfileBinding, ProfileRepository>() {
@@ -52,6 +55,8 @@ class ProfileFragment :
     private lateinit var calendar: Calendar
     private lateinit var dateFormat: SimpleDateFormat
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var videoUri: Uri
+    private lateinit var videoId: String
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -95,7 +100,8 @@ class ProfileFragment :
                     religiousPreferences = it.value
                     setupSpinner(it.value, RELIGION_SPINNER)
                     binding.religionPreferenceTxt.text =
-                        religiousPreferences.firstOrNull { s -> s.value == religionPreferred }?.label ?: ""
+                        religiousPreferences.firstOrNull { s -> s.value == religionPreferred }?.label
+                            ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -108,7 +114,8 @@ class ProfileFragment :
                 is Resource.Success -> {
                     countries = it.value
                     setupSpinner(it.value, COUNTRY_SPINNER)
-                    binding.countryTxt.text = countries.firstOrNull { s -> s.value == country }?.label ?: ""
+                    binding.countryTxt.text =
+                        countries.firstOrNull { s -> s.value == country }?.label ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -122,7 +129,8 @@ class ProfileFragment :
                     sexualOrientations = it.value
                     setupSpinner(it.value, SEXUAL_ORIENTATION_SPINNER)
                     binding.sexualOrientationTxt.text =
-                        sexualOrientations.firstOrNull { s -> s.value == sexualOrientation }?.label ?: ""
+                        sexualOrientations.firstOrNull { s -> s.value == sexualOrientation }?.label
+                            ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -135,7 +143,8 @@ class ProfileFragment :
                 is Resource.Success -> {
                     states = it.value
                     if (it.value.isNotEmpty()) setupSpinner(it.value, STATE_SPINNER)
-                    binding.stateTxt.text = states.firstOrNull { s -> s.value == state }?.label ?: ""
+                    binding.stateTxt.text =
+                        states.firstOrNull { s -> s.value == state }?.label ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -148,7 +157,8 @@ class ProfileFragment :
                 is Resource.Success -> {
                     genders = it.value
                     setupSpinner(it.value, GENDER_SPINNER)
-                    binding.genderTxt.text = genders.firstOrNull { s -> s.value == gender }?.label ?: ""
+                    binding.genderTxt.text =
+                        genders.firstOrNull { s -> s.value == gender }?.label ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -160,9 +170,7 @@ class ProfileFragment :
             showLoader(false)
             when (it) {
                 is Resource.Success -> {
-                    Toast.makeText(
-                        requireContext(), "Profile Update Successful", Toast.LENGTH_SHORT
-                    ).show()
+                    showToast("Profile Update Successful")
                     switchProfile(false)
                 }
 
@@ -171,19 +179,43 @@ class ProfileFragment :
                 }
             }
         }
-        viewModel.uploadVideoCloudinaryResponse.observe(viewLifecycleOwner) {
-            viewModel.registerVideoUpload(
-                RegisterVideoUploadBody(
-                    it.url, user.userId, it.public_id
-                )
-            )
+        viewModel.validateVideoUpload.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    val intent =
+                        Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+                    activityResultLauncher.launch(intent)
+                }
+
+                is Resource.Failure -> {
+                    showLoader(false)
+                    if (it.errorCode == 400) {
+                        showToast("You already uploaded a video")
+                    } else {
+                        showDialog(it.message ?: it.errorBody ?: "An error occurred")
+                    }
+                }
+            }
         }
         viewModel.registerVideoUploadResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
+                    viewModel.uploadVideo(videoUri, videoId)
+                }
+
+                is Resource.Failure -> {
                     showLoader(false)
-                    Toast.makeText(requireContext(), "Video Upload Successful!", Toast.LENGTH_SHORT)
-                        .show()
+                }
+            }
+        }
+        viewModel.uploadVideoCloudinaryResponse.observe(viewLifecycleOwner) {
+            viewModel.updateVideoUrl(it.public_id, it.url)
+        }
+        viewModel.updateVideoUrlResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    showLoader(false)
+                    showToast("Video Upload Successful!")
                 }
 
                 is Resource.Failure -> {}
@@ -217,8 +249,8 @@ class ProfileFragment :
         }
 
         binding.addVideoLyt.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
-            activityResultLauncher.launch(intent)
+            showLoader(true)
+            viewModel.validateVideoUpload()
         }
 
         binding.stateSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -323,6 +355,8 @@ class ProfileFragment :
                     binding.countrySpinner.setSelection(countries.indexOfFirst { it.value == country } + 1)
                 }
 
+//                This comment was left here by SEUN......
+
                 STATE_SPINNER -> {
                     binding.stateSpinner.adapter = adapter
                     binding.stateSpinner.setSelection(states.indexOfFirst { it.value == state } + 1)
@@ -382,9 +416,17 @@ class ProfileFragment :
         activityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
-                    val videoUri = it.data?.data ?: return@registerForActivityResult
+                    videoUri = it.data?.data ?: return@registerForActivityResult
+                    videoId = UUID.randomUUID().toString()
                     showLoader(true)
-                    viewModel.uploadVideo(videoUri)
+
+                    viewModel.registerVideoUpload(
+                        RegisterVideoUploadBody(
+                            "",
+                            user.userId,
+                            videoId
+                        )
+                    )
                 }
             }
     }
@@ -395,9 +437,6 @@ class ProfileFragment :
     }
 
     private fun populateViews(user: User) {
-        if (viewModel.states.value != null) {
-
-        }
         binding.name.setText(user.name)
         binding.countryTxt.text = user.country
         binding.stateTxt.text = user.state

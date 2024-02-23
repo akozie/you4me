@@ -17,7 +17,7 @@ abstract class BaseRepository {
                when (throwable) {
                    is HttpException -> {
                        val body = throwable.response()?.errorBody()?.string()
-                       val obj = body?.let { JSONObject(it) }
+                       val obj = if (!body.isNullOrBlank()) JSONObject(body) else null
 
                        Resource.Failure(
                            false,

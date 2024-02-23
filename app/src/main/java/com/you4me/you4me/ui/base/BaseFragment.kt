@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -54,5 +55,9 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
         builder.setMessage(message)
         builder.show()
         return builder
+    }
+
+    fun showToast(message : String, length : Int = Toast.LENGTH_SHORT) {
+        Toast.makeText(requireContext(), message, length).show()
     }
 }

@@ -17,6 +17,7 @@ import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.ProfileRepository
+import com.you4me.you4me.ui.base.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 
@@ -64,13 +65,21 @@ class ProfileViewModel(
         get() = _updateUserResponse
 
     private val _uploadVideoCloudinaryResponse: MutableLiveData<CloudinaryVideoUploadResponse> =
-        MutableLiveData()
+        SingleLiveEvent()
     val uploadVideoCloudinaryResponse: LiveData<CloudinaryVideoUploadResponse>
         get() = _uploadVideoCloudinaryResponse
 
-    private val _registerVideoUploadResponse: MutableLiveData<Resource<Unit>> = MutableLiveData()
+    private val _registerVideoUploadResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
     val registerVideoUploadResponse: LiveData<Resource<Unit>>
         get() = _registerVideoUploadResponse
+
+    private val _validateVideoUploadResponse : MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val validateVideoUpload : LiveData<Resource<Unit>>
+        get() = _validateVideoUploadResponse
+
+    private val _updateVideoUrlResponse : MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val updateVideoUrlResponse  : LiveData<Resource<Unit>>
+        get() = _updateVideoUrlResponse
 
     init {
         getUser()
@@ -141,10 +150,13 @@ class ProfileViewModel(
         }
     }
 
-    fun uploadVideo(videoUri: Uri) {
+    fun uploadVideo(videoUri: Uri, videoId : String) {
         viewModelScope.launch {
             MediaManager.get()
-                .upload(videoUri).option("resource_type", "auto").callback(object : UploadCallback {
+                .upload(videoUri)
+                .option("resource_type", "auto")
+                .option("public_id", videoId)
+                .callback(object : UploadCallback {
                     override fun onStart(requestId: String?) {
 
                     }
@@ -176,10 +188,24 @@ class ProfileViewModel(
         }
     }
 
+    fun validateVideoUpload() {
+        viewModelScope.launch {
+            _validateVideoUploadResponse.value = repository.validateVideoUpload(_user.value!!.userId)
+        }
+    }
+
     fun registerVideoUpload(registerVideoUploadBody: RegisterVideoUploadBody) {
         viewModelScope.launch {
             _registerVideoUploadResponse.value =
                 repository.registerVideoUpload(_user.value!!.userId, registerVideoUploadBody)
+        }
+    }
+
+    fun updateVideoUrl(videoId: String, videoUrl: String) {
+        val obj = JsonObject()
+        obj.addProperty("video_url", videoUrl)
+        viewModelScope.launch {
+            _updateVideoUrlResponse.value = repository.updateVideoUrl(videoId, obj)
         }
     }
 }

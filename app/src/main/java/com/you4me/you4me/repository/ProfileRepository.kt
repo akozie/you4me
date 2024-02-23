@@ -38,8 +38,15 @@ class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository
     suspend fun updateUserInfo(userId: String, userBody: JsonObject) =
         safeApiCall { apiCollector.updateUserInfo(userId, userBody) }
 
+    suspend fun validateVideoUpload(userId: String) = safeApiCall {
+        apiCollector.validateVideoUpload(userId)
+    }
+
     suspend fun registerVideoUpload(
         userId: String,
         registerVideoUploadBody: RegisterVideoUploadBody
     ) = safeApiCall { apiCollector.registerVideoUpload(userId, registerVideoUploadBody) }
+
+    suspend fun updateVideoUrl(videoId : String, obj : JsonObject) =
+        safeApiCall { apiCollector.updateVideoUrl(videoId, obj) }
 }

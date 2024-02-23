@@ -46,9 +46,20 @@ interface ApiCollector {
         @Body obj : JsonObject
     )
 
+    @GET("users/{userId}/validate-upload")
+    suspend fun validateVideoUpload(
+        @Path("userId") userId: String,
+    )
+
     @POST("users/{userId}/uploads")
     suspend fun registerVideoUpload(
         @Path("userId") userId: String,
         @Body registerVideoUploadBody: RegisterVideoUploadBody
+    )
+
+    @PATCH("videos/{videoID}")
+    suspend fun updateVideoUrl(
+        @Path("videoID") videoId : String,
+        @Body obj: JsonObject
     )
 }
