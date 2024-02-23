@@ -79,8 +79,9 @@ class ProfileFragment :
                 is Resource.Success -> {
                     agePreferences = it.value
                     setupSpinner(it.value, AGE_GROUP_SPINNER)
+
                     binding.agePreferenceTxt.text =
-                        agePreferences.first { s -> s.value == agePreferred }.label
+                        agePreferences.firstOrNull { s -> s.value == agePreferred }?.label ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -94,7 +95,7 @@ class ProfileFragment :
                     religiousPreferences = it.value
                     setupSpinner(it.value, RELIGION_SPINNER)
                     binding.religionPreferenceTxt.text =
-                        religiousPreferences.first { s -> s.value == religionPreferred }.label
+                        religiousPreferences.firstOrNull { s -> s.value == religionPreferred }?.label ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -107,7 +108,7 @@ class ProfileFragment :
                 is Resource.Success -> {
                     countries = it.value
                     setupSpinner(it.value, COUNTRY_SPINNER)
-                    binding.countryTxt.text = countries.first { s -> s.value == country }.label
+                    binding.countryTxt.text = countries.firstOrNull { s -> s.value == country }?.label ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -121,7 +122,7 @@ class ProfileFragment :
                     sexualOrientations = it.value
                     setupSpinner(it.value, SEXUAL_ORIENTATION_SPINNER)
                     binding.sexualOrientationTxt.text =
-                        sexualOrientations.first { s -> s.value == sexualOrientation }.label
+                        sexualOrientations.firstOrNull { s -> s.value == sexualOrientation }?.label ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -134,7 +135,7 @@ class ProfileFragment :
                 is Resource.Success -> {
                     states = it.value
                     if (it.value.isNotEmpty()) setupSpinner(it.value, STATE_SPINNER)
-                    binding.stateTxt.text = states.first { s -> s.value == state }.label
+                    binding.stateTxt.text = states.firstOrNull { s -> s.value == state }?.label ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -147,7 +148,7 @@ class ProfileFragment :
                 is Resource.Success -> {
                     genders = it.value
                     setupSpinner(it.value, GENDER_SPINNER)
-                    binding.genderTxt.text = genders.first { s -> s.value == gender }.label
+                    binding.genderTxt.text = genders.firstOrNull { s -> s.value == gender }?.label ?: ""
                 }
 
                 is Resource.Failure -> {
