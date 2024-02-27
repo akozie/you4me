@@ -84,9 +84,6 @@ class ProfileFragment :
                 is Resource.Success -> {
                     agePreferences = it.value
                     setupSpinner(it.value, AGE_GROUP_SPINNER)
-
-                    binding.agePreferenceTxt.text =
-                        agePreferences.firstOrNull { s -> s.value == agePreferred }?.label ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -99,9 +96,6 @@ class ProfileFragment :
                 is Resource.Success -> {
                     religiousPreferences = it.value
                     setupSpinner(it.value, RELIGION_SPINNER)
-                    binding.religionPreferenceTxt.text =
-                        religiousPreferences.firstOrNull { s -> s.value == religionPreferred }?.label
-                            ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -114,8 +108,6 @@ class ProfileFragment :
                 is Resource.Success -> {
                     countries = it.value
                     setupSpinner(it.value, COUNTRY_SPINNER)
-                    binding.countryTxt.text =
-                        countries.firstOrNull { s -> s.value == country }?.label ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -128,9 +120,6 @@ class ProfileFragment :
                 is Resource.Success -> {
                     sexualOrientations = it.value
                     setupSpinner(it.value, SEXUAL_ORIENTATION_SPINNER)
-                    binding.sexualOrientationTxt.text =
-                        sexualOrientations.firstOrNull { s -> s.value == sexualOrientation }?.label
-                            ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -143,8 +132,6 @@ class ProfileFragment :
                 is Resource.Success -> {
                     states = it.value
                     if (it.value.isNotEmpty()) setupSpinner(it.value, STATE_SPINNER)
-                    binding.stateTxt.text =
-                        states.firstOrNull { s -> s.value == state }?.label ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -157,8 +144,6 @@ class ProfileFragment :
                 is Resource.Success -> {
                     genders = it.value
                     setupSpinner(it.value, GENDER_SPINNER)
-                    binding.genderTxt.text =
-                        genders.firstOrNull { s -> s.value == gender }?.label ?: ""
                 }
 
                 is Resource.Failure -> {
@@ -171,7 +156,6 @@ class ProfileFragment :
             when (it) {
                 is Resource.Success -> {
                     showToast("Profile Update Successful")
-                    switchProfile(false)
                 }
 
                 is Resource.Failure -> {
@@ -225,27 +209,21 @@ class ProfileFragment :
 
     private fun addListeners() {
         binding.editBtn.setOnClickListener {
-            when (binding.editBtn.text) {
-                getText(R.string.update) -> {
-                    showLoader(true)
-                    viewModel.updateUserInfo(
-                        UpdateUserBody(
-                            agePreferred,
-                            country,
-                            dob,
-                            gender,
-                            binding.name.text.toString(),
-                            religionPreferred,
-                            sexualOrientation,
-                            state
-                        )
-                    )
-                }
-
-                getText(R.string.edit) -> {
-                    switchProfile(true)
-                }
-            }
+//            when (binding.editBtn.text) {
+//                getText(R.string.update) -> {
+            showLoader(true)
+            viewModel.updateUserInfo(
+                UpdateUserBody(
+                    agePreferred,
+                    country,
+                    dob,
+                    gender,
+                    binding.name.text.toString(),
+                    religionPreferred,
+                    sexualOrientation,
+                    state
+                )
+            )
         }
 
         binding.addVideoLyt.setOnClickListener {
@@ -282,6 +260,8 @@ class ProfileFragment :
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     if (p2 == 0) return
                     sexualOrientation = sexualOrientations[p2 - 1].value
+                    binding.genderLyt.visibility = if (sexualOrientation == "4") View.VISIBLE
+                    else View.GONE
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -370,28 +350,6 @@ class ProfileFragment :
         }
     }
 
-    private fun switchProfile(edit: Boolean) {
-        binding.sexualOrientationSpinner.visibility = if (edit) View.VISIBLE else View.GONE
-        binding.agePreferenceSpinner.visibility = if (edit) View.VISIBLE else View.GONE
-        binding.religionPreferenceSpinner.visibility = if (edit) View.VISIBLE else View.GONE
-        binding.countrySpinner.visibility = if (edit) View.VISIBLE else View.GONE
-        binding.stateSpinner.visibility = if (edit) View.VISIBLE else View.GONE
-        binding.dob.visibility = if (edit) View.VISIBLE else View.GONE
-        binding.genderSpinner.visibility = if (edit) View.VISIBLE else View.GONE
-
-        binding.name.inputType =
-            if (edit) InputType.TYPE_TEXT_VARIATION_PERSON_NAME else InputType.TYPE_NULL
-        binding.editBtn.text = getText(if (edit) R.string.update else R.string.edit)
-
-        binding.sexualOrientationTxt.visibility = if (!edit) View.VISIBLE else View.GONE
-        binding.agePreferenceTxt.visibility = if (!edit) View.VISIBLE else View.GONE
-        binding.religionPreferenceTxt.visibility = if (!edit) View.VISIBLE else View.GONE
-        binding.countryTxt.visibility = if (!edit) View.VISIBLE else View.GONE
-        binding.stateTxt.visibility = if (!edit) View.VISIBLE else View.GONE
-        binding.dobTxt.visibility = if (!edit) View.VISIBLE else View.GONE
-        binding.genderTxt.visibility = if (!edit) View.VISIBLE else View.GONE
-    }
-
     private fun setupView() {
         dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.UK)
         calendar = Calendar.getInstance()
@@ -438,15 +396,11 @@ class ProfileFragment :
 
     private fun populateViews(user: User) {
         binding.name.setText(user.name)
-        binding.countryTxt.text = user.country
-        binding.stateTxt.text = user.state
-        binding.religionPreferenceTxt.text = user.religion
-        binding.agePreferenceTxt.text = user.agePreferred
-        binding.sexualOrientationTxt.text = user.sexualOrientation
         binding.dob.setText(user.dob)
-        binding.dobTxt.text = user.dob
 
         viewModel.getStates(user.country)
+        binding.genderLyt.visibility = if (user.sexualOrientation == "4") View.VISIBLE
+        else View.GONE
 
         name = user.name
         country = user.country
