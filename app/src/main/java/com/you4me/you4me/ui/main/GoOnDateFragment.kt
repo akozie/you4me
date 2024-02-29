@@ -1,60 +1,63 @@
 package com.you4me.you4me.ui.main
 
+import android.app.Activity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.you4me.you4me.R
+import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.PlaceTypes
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.you4me.you4me.databinding.FragmentGoOnDateBinding
+import com.you4me.you4me.repository.MainRepository
+import com.you4me.you4me.ui.base.BaseFragment
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, MainRepository>() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [GoOnDateFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class GoOnDateFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private val startAutoComplete =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val intent = result.data
+                if (intent != null) {
+                    println("Not null")
+                    val place = Autocomplete.getPlaceFromIntent(intent)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+//                    //fill text input
+                    binding.searchDateLocations.setText("${place.name}, ${place.address}")
+                } else {
+                    Log.d("Place Result", "Intent Null")
+                }
+            }
+            else if (result.resultCode == Activity.RESULT_CANCELED) {
+                Log.d("Place Result", "Cancelled")
+            }
+        }
+
+    private fun startAutoCompleteIntent() {
+        val fields = arrayListOf(Place.Field.NAME, Place.Field.ADDRESS)
+
+        val intent =
+            Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                .setTypesFilter(listOf(PlaceTypes.ESTABLISHMENT)).build(ctx)
+        startAutoComplete.launch(intent)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.searchDateLocations.setOnClickListener {
+            startAutoCompleteIntent()
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_go_on_date, container, false)
-    }
+    override fun getViewModel() = MainViewModel::class.java
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment GoOnDateFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            GoOnDateFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
+    override fun getFragmentBinding(
+        inflater: LayoutInflater, container: ViewGroup?
+    ) = FragmentGoOnDateBinding.inflate(layoutInflater)
+
+    override fun getRepository() = MainRepository()
 }

@@ -1,7 +1,13 @@
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "local.defaults.properties"
+}
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -46,6 +52,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
+    //cloudinary
     implementation("com.cloudinary:cloudinary-android-core:2.5.0")
 
     //navigation
@@ -57,6 +65,7 @@ dependencies {
     val retrofitVersion = "2.9.0"
     implementation ("com.squareup.retrofit2:retrofit:$retrofitVersion")
     implementation ("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+
     //Logging Interceptor
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
@@ -66,6 +75,10 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
+
+    //google places api
+    implementation("com.google.android.libraries.places:places:3.3.0")
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.10"))
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

@@ -1,6 +1,7 @@
 package com.you4me.you4me.ui.base
 
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
     protected val dataSource = RemoteDataSource()
     protected lateinit var binding: B
     protected lateinit var viewModel: VM
+    protected lateinit var ctx : Context
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,6 +41,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
                     findNavController().popBackStack()
                 }
             })
+        ctx = requireContext()
 
         return binding.root
     }

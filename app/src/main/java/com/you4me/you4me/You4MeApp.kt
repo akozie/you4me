@@ -1,7 +1,9 @@
 package com.you4me.you4me
 
 import android.app.Application
+import android.util.Log
 import com.cloudinary.android.MediaManager
+import com.google.android.libraries.places.api.Places
 
 class You4MeApp : Application() {
 
