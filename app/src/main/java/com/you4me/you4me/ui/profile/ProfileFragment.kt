@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +30,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.UUID
-import java.util.concurrent.TimeUnit
 
 
 class ProfileFragment :
@@ -38,7 +38,9 @@ class ProfileFragment :
     private lateinit var name: String
     private lateinit var agePreferred: String
     private lateinit var dob: String
+    private lateinit var phone: String
     private lateinit var gender: String
+    private lateinit var religion: String
     private lateinit var religionPreferred: String
     private lateinit var sexualOrientation: String
     private lateinit var state: String
@@ -49,7 +51,7 @@ class ProfileFragment :
     private lateinit var states: ArrayList<ValueLabelResponse>
     private lateinit var agePreferences: ArrayList<ValueLabelResponse>
     private lateinit var genders: ArrayList<ValueLabelResponse>
-    private lateinit var religiousPreferences: ArrayList<ValueLabelResponse>
+    private lateinit var religions: ArrayList<ValueLabelResponse>
     private lateinit var sexualOrientations: ArrayList<ValueLabelResponse>
 
     private lateinit var calendar: Calendar
@@ -94,8 +96,9 @@ class ProfileFragment :
         viewModel.religions.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    religiousPreferences = it.value
+                    religions = it.value
                     setupSpinner(it.value, RELIGION_SPINNER)
+                    setupSpinner(it.value, RELIGION_PREFERENCE_SPINNER)
                 }
 
                 is Resource.Failure -> {
@@ -217,9 +220,11 @@ class ProfileFragment :
                     dob,
                     gender,
                     binding.name.text.toString(),
+                    religion,
                     religionPreferred,
                     sexualOrientation,
-                    state
+                    state,
+                    binding.phone.text.toString()
                 )
             )
         }
@@ -271,7 +276,19 @@ class ProfileFragment :
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     if (p2 == 0) return
-                    religionPreferred = religiousPreferences[p2 - 1].value
+                    religionPreferred = religions[p2 - 1].value
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                }
+            }
+
+        binding.religionSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    if (p2 == 0) return
+                    religion = religions[p2 - 1].value
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -324,8 +341,8 @@ class ProfileFragment :
                 }
 
                 RELIGION_SPINNER -> {
-                    binding.religionPreferenceSpinner.adapter = adapter
-                    binding.religionPreferenceSpinner.setSelection(religiousPreferences.indexOfFirst { it.value == religionPreferred } + 1)
+                    binding.religionSpinner.adapter = adapter
+                    binding.religionSpinner.setSelection(religions.indexOfFirst { it.value == religion } + 1)
                 }
 
                 COUNTRY_SPINNER -> {
@@ -344,6 +361,11 @@ class ProfileFragment :
                     binding.genderSpinner.adapter = adapter
                     binding.genderSpinner.setSelection(genders.indexOfFirst { it.value == gender } + 1)
                 }
+
+                RELIGION_PREFERENCE_SPINNER -> {
+                    binding.religionPreferenceSpinner.adapter = adapter
+                    binding.religionPreferenceSpinner.setSelection(religions.indexOfFirst { it.value == religionPreferred } + 1)
+                }
             }
         }
     }
@@ -352,10 +374,10 @@ class ProfileFragment :
         dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.UK)
         calendar = Calendar.getInstance()
         binding.dob.inputType = InputType.TYPE_NULL
-        val date = OnDateSetListener { _, year, month, _ ->
+        val date = OnDateSetListener { _, year, month, day ->
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, month)
-            calendar.set(Calendar.DAY_OF_MONTH, month)
+            calendar.set(Calendar.DAY_OF_MONTH, day)
             updateDateOfBirth()
         }
 
@@ -398,17 +420,22 @@ class ProfileFragment :
 
     private fun populateViews(user: User) {
         binding.name.setText(user.name)
+
+        Log.d("Name", user.name)
         binding.dob.setText(user.dob)
+        binding.phone.setText(user.phone)
 
         viewModel.getStates(user.country)
         binding.genderLyt.visibility = if (user.sexualOrientation == "4") View.VISIBLE
         else View.GONE
 
         name = user.name
+        phone = user.phone
         country = user.country
         state = user.state
         gender = user.gender
         religionPreferred = user.religionPreferred
+        religion = user.religion
         agePreferred = user.agePreferred
         sexualOrientation = user.sexualOrientation
         dob = user.dob
@@ -433,6 +460,7 @@ class ProfileFragment :
         const val COUNTRY_SPINNER = 4
         const val STATE_SPINNER = 5
         const val GENDER_SPINNER = 6
+        const val RELIGION_PREFERENCE_SPINNER = 7
     }
 
 }

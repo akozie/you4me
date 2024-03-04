@@ -27,7 +27,8 @@ class ViewModelFactory(
                 dbRepository
             ) as T
             modelClass.isAssignableFrom(MainViewModel::class.java) -> MainViewModel(
-                repository as MainRepository
+                repository as MainRepository,
+                dbRepository
             ) as T
 
             else -> throw IllegalArgumentException("ViewModel Class not found")

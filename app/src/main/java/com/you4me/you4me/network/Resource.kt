@@ -6,6 +6,7 @@ sealed class Resource<out T> {
         val isNetworkError : Boolean,
         val errorCode : Int?,
         val message : String?,
+        val error : String?,
         val errorBody : String?
     ) : Resource<Nothing>()
 }

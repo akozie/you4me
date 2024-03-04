@@ -60,7 +60,7 @@ class ProfileViewModel(
     val user: LiveData<User>
         get() = _user
 
-    private val _updateUserResponse: MutableLiveData<Resource<Unit>> = MutableLiveData()
+    private val _updateUserResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
     val updateUserResponse: LiveData<Resource<Unit>>
         get() = _updateUserResponse
 
@@ -140,6 +140,7 @@ class ProfileViewModel(
                 obj.addProperty("country", country)
                 obj.addProperty("state", state)
                 obj.addProperty("age_preferred", age_preferred)
+                obj.addProperty("religion", religion)
                 obj.addProperty("religion_preferred", religion_preferred)
                 obj.addProperty("sexual_orientation", sexual_orientation)
                 obj.addProperty("dob", dob)

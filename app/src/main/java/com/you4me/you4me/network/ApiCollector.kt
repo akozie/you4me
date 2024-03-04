@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import com.you4me.you4me.models.User
 import com.you4me.you4me.models.RegisterResponse
 import com.you4me.you4me.models.RegisterVideoUploadBody
+import com.you4me.you4me.models.SubmitDateBody
 import com.you4me.you4me.models.ValueLabelResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -42,8 +43,8 @@ interface ApiCollector {
 
     @PATCH("users/{userId}")
     suspend fun updateUserInfo(
-        @Path("userId") userId : String,
-        @Body obj : JsonObject
+        @Path("userId") userId: String,
+        @Body obj: JsonObject
     )
 
     @GET("users/{userId}/validate-upload")
@@ -59,7 +60,13 @@ interface ApiCollector {
 
     @PATCH("videos/{videoID}")
     suspend fun updateVideoUrl(
-        @Path("videoID") videoId : String,
+        @Path("videoID") videoId: String,
         @Body obj: JsonObject
     )
+
+    @GET("payment-modes")
+    suspend fun getPaymentModes(): ArrayList<ValueLabelResponse>
+
+    @POST("dates")
+    suspend fun submitDate(@Body body: SubmitDateBody)
 }

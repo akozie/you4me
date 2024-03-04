@@ -7,13 +7,19 @@
     android:padding="16dp"
     tools:context=".ui.main.GoOnDateFragment">
 
-    <com.google.android.material.textfield.TextInputEditText
+    <TextView
         android:id="@+id/search_date_locations"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
-        app:drawableStartCompat="@drawable/baseline_location_searching_24"
+        app:drawableStartCompat="@drawable/quantum_ic_search_grey600_24"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/dividerTop"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toBottomOf="@id/search_date_locations"
+        android:layout_marginTop="4dp"/>
 
     <TextView
         android:id="@+id/date_txt"
@@ -48,7 +54,7 @@
         android:padding="8dp"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_date_locations"
+        app:layout_constraintTop_toBottomOf="@id/dividerTop"
         tools:text="4:00pm" />
 
     <TextView
@@ -86,12 +92,12 @@
 
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/edit_btn"
+        android:id="@+id/save_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:padding="16dp"
-        android:text="@string/edit"
+        android:text="@string/save"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/divider" />

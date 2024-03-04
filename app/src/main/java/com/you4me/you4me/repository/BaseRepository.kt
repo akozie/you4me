@@ -23,11 +23,12 @@ abstract class BaseRepository {
                            false,
                            throwable.code(),
                            obj?.getString("message"),
+                           obj?.getString("error"),
                            body
                        )
                    }
                    else -> {
-                       Resource.Failure(isNetworkError = true, null, "An error occurred", null)
+                       Resource.Failure(isNetworkError = true, null, "An error occurred", null, null)
                    }
                }
             }
