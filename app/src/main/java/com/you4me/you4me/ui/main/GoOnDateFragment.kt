@@ -100,6 +100,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                     binding.searchDateLocations.text.toString(),
                     binding.time.text.toString()
                 )
+                showLoader(true)
             } else showToast("Please select a location for your date")
         }
     }
@@ -118,13 +119,14 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
             }
         }
         viewModel.submitDateResponse.observe(viewLifecycleOwner) {
+            showLoader(false)
             when (it) {
                 is Resource.Success -> {
                     showDialog("Date submission successful!!")
                 }
 
                 is Resource.Failure -> {
-                    showDialog(it.error ?: it.message ?: it.errorBody ?: "")
+                    showDialog(it.message ?: it.errorBody ?: "")
                 }
             }
         }
@@ -148,6 +150,11 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
 
     private fun updateProposedDate() {
         binding.date.text = dateFormat.format(calendar.time)
+    }
+
+    private fun showLoader(show: Boolean) {
+        binding.progressCircular.visibility = if (show) View.VISIBLE else View.GONE
+        binding.saveBtn.visibility = if (show) View.GONE else View.VISIBLE
     }
 
     override fun getViewModel() = MainViewModel::class.java

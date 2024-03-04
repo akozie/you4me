@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.you4me.you4me.models.AddDateInterestBody
+import com.you4me.you4me.models.AddSwipeBody
+import com.you4me.you4me.models.FetchDatesResponse
 import com.you4me.you4me.models.Place
 import com.you4me.you4me.models.SubmitDateBody
 import com.you4me.you4me.models.User
@@ -11,6 +14,7 @@ import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.MainRepository
+import com.you4me.you4me.ui.base.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -27,9 +31,21 @@ class MainViewModel(
     val paymentModes: LiveData<Resource<ArrayList<ValueLabelResponse>>>
         get() = _paymentModes
 
-    private val _submitDateResponse = MutableLiveData<Resource<Unit>>()
+    private val _submitDateResponse = SingleLiveEvent<Resource<Unit>>()
     val submitDateResponse: LiveData<Resource<Unit>>
         get() = _submitDateResponse
+
+    val _fetchDates = SingleLiveEvent<Resource<FetchDatesResponse>>()
+    val fetchDates: LiveData<Resource<FetchDatesResponse>>
+        get() = _fetchDates
+
+    val _addSwipe = MutableLiveData<Resource<Unit>>()
+    val addSwipe: LiveData<Resource<Unit>>
+        get() = _addSwipe
+
+    val _addDateInterest = MutableLiveData<Resource<Unit>>()
+    val addDateInterest: LiveData<Resource<Unit>>
+        get() = _addDateInterest
 
     init {
         getUser()
@@ -58,6 +74,36 @@ class MainViewModel(
         )
         viewModelScope.launch {
             _submitDateResponse.value = repository.submitDate(submitDateBody)
+        }
+    }
+
+    fun fetchDates() {
+        viewModelScope.launch {
+            _fetchDates.value = repository.fetchDates(user.value!!.userId)
+        }
+    }
+
+    fun addDateInterest(date: String, time: String, proposer: String) {
+        viewModelScope.launch {
+            _addDateInterest.value = repository.addDateInterest(
+                AddDateInterestBody(
+                    date,
+                    time,
+                    proposer,
+                    user.value!!.userId
+                )
+            )
+        }
+    }
+
+    fun addSwipe(dateId: String, personId: String, like: Boolean) {
+        viewModelScope.launch {
+            _addSwipe.value = repository.addSwipe(AddSwipeBody(
+                if (like) "like" else "dislike",
+                dateId,
+                personId,
+                user.value!!.userId
+            ))
         }
     }
 }

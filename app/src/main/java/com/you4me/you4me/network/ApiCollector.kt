@@ -1,6 +1,9 @@
 package com.you4me.you4me.network
 
 import com.google.gson.JsonObject
+import com.you4me.you4me.models.AddDateInterestBody
+import com.you4me.you4me.models.AddSwipeBody
+import com.you4me.you4me.models.FetchDatesResponse
 import com.you4me.you4me.models.User
 import com.you4me.you4me.models.RegisterResponse
 import com.you4me.you4me.models.RegisterVideoUploadBody
@@ -11,6 +14,7 @@ import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface ApiCollector {
@@ -69,4 +73,15 @@ interface ApiCollector {
 
     @POST("dates")
     suspend fun submitDate(@Body body: SubmitDateBody)
+
+    @GET("dates")
+    suspend fun fetchDates(
+        @Query("user_id") userId : String
+    ) : FetchDatesResponse
+
+    @POST("dates/interests/{dateId}")
+    suspend fun addDateInterest(@Body body: AddDateInterestBody)
+
+    @POST("swipes")
+    suspend fun addSwipe(@Body body: AddSwipeBody)
 }
