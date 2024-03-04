@@ -23,10 +23,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent = result.data
                 if (intent != null) {
-                    println("Not null")
                     val place = Autocomplete.getPlaceFromIntent(intent)
-
-//                    //fill text input
                     binding.searchDateLocations.setText("${place.name}, ${place.address}")
                 } else {
                     Log.d("Place Result", "Intent Null")

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -13,10 +14,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentProfileBinding
 import com.you4me.you4me.models.RegisterVideoUploadBody
 import com.you4me.you4me.models.UpdateUserBody
@@ -26,11 +25,12 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.base.BaseFragment
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.UUID
+import java.util.concurrent.TimeUnit
+
 
 class ProfileFragment :
     BaseFragment<ProfileViewModel, FragmentProfileBinding, ProfileRepository>() {
@@ -209,8 +209,6 @@ class ProfileFragment :
 
     private fun addListeners() {
         binding.editBtn.setOnClickListener {
-//            when (binding.editBtn.text) {
-//                getText(R.string.update) -> {
             showLoader(true)
             viewModel.updateUserInfo(
                 UpdateUserBody(
@@ -375,16 +373,20 @@ class ProfileFragment :
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
                     videoUri = it.data?.data ?: return@registerForActivityResult
-                    videoId = UUID.randomUUID().toString()
-                    showLoader(true)
+                    if (checkVideoDuration(videoUri)) {
+                        videoId = UUID.randomUUID().toString()
+                        showLoader(true)
 
-                    viewModel.registerVideoUpload(
-                        RegisterVideoUploadBody(
-                            "",
-                            user.userId,
-                            videoId
+                        viewModel.registerVideoUpload(
+                            RegisterVideoUploadBody(
+                                "",
+                                user.userId,
+                                videoId
+                            )
                         )
-                    )
+                    } else {
+                        showDialog("Video duration must not be longer than 30 seconds")
+                    }
                 }
             }
     }
@@ -415,6 +417,13 @@ class ProfileFragment :
     private fun showLoader(show: Boolean) {
         binding.progressCircular.visibility = if (show) View.VISIBLE else View.GONE
         binding.editBtn.visibility = if (show) View.GONE else View.VISIBLE
+    }
+
+    private fun checkVideoDuration(uri: Uri) : Boolean {
+        val mp: MediaPlayer = MediaPlayer.create(ctx, uri)
+        val duration = mp.duration.toLong()
+        mp.release()
+        return duration <= 30000
     }
 
     companion object {
