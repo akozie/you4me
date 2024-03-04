@@ -1,18 +1,23 @@
 package com.you4me.you4me.network
 
 import com.google.gson.JsonObject
+import com.you4me.you4me.models.AcceptDateInterestBody
 import com.you4me.you4me.models.AddDateInterestBody
 import com.you4me.you4me.models.AddSwipeBody
+import com.you4me.you4me.models.FetchDateInterest
 import com.you4me.you4me.models.FetchDatesResponse
+import com.you4me.you4me.models.GetSubscriptionStatus
 import com.you4me.you4me.models.User
 import com.you4me.you4me.models.RegisterResponse
 import com.you4me.you4me.models.RegisterVideoUploadBody
+import com.you4me.you4me.models.RejectDateInterestBody
 import com.you4me.you4me.models.SubmitDateBody
 import com.you4me.you4me.models.ValueLabelResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -74,7 +79,7 @@ interface ApiCollector {
     @POST("dates")
     suspend fun submitDate(@Body body: SubmitDateBody)
 
-    @GET("dates")
+    @GET(" dates")
     suspend fun fetchDates(
         @Query("user_id") userId : String
     ) : FetchDatesResponse
@@ -84,4 +89,26 @@ interface ApiCollector {
 
     @POST("swipes")
     suspend fun addSwipe(@Body body: AddSwipeBody)
+
+    @GET("users/{userId}/dates/interests")
+    suspend fun fetchDateInterests(
+        @Path("userId") userId: String
+    ) : FetchDateInterest
+
+    @GET("users/{userId}/subscription/status")
+    suspend fun getSubscriptionStatus(
+        @Path("userId") userId: String
+    ) : GetSubscriptionStatus
+
+    @PUT("/dates/{interestId}/interests")
+    suspend fun rejectDateInterest(
+        @Path("interestId") interestId : String,
+        @Body body: RejectDateInterestBody
+    )
+
+    @PUT("/dates/{interestId}/interests")
+    suspend fun acceptDateInterest(
+        @Path("interestId") interestId : String,
+        @Body body: AcceptDateInterestBody
+    )
 }

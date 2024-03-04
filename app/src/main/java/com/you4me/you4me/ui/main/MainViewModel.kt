@@ -4,10 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.you4me.you4me.models.AcceptDateInterestBody
 import com.you4me.you4me.models.AddDateInterestBody
 import com.you4me.you4me.models.AddSwipeBody
+import com.you4me.you4me.models.FetchDateInterest
 import com.you4me.you4me.models.FetchDatesResponse
+import com.you4me.you4me.models.GetSubscriptionStatus
 import com.you4me.you4me.models.Place
+import com.you4me.you4me.models.RejectDateInterestBody
 import com.you4me.you4me.models.SubmitDateBody
 import com.you4me.you4me.models.User
 import com.you4me.you4me.models.ValueLabelResponse
@@ -46,6 +50,22 @@ class MainViewModel(
     val _addDateInterest = MutableLiveData<Resource<Unit>>()
     val addDateInterest: LiveData<Resource<Unit>>
         get() = _addDateInterest
+
+    val _fetchDateInterests = SingleLiveEvent<Resource<FetchDateInterest>>()
+    val fetchDateInterests: LiveData<Resource<FetchDateInterest>>
+        get() = _fetchDateInterests
+
+    val _getSubscriptionStatus = SingleLiveEvent<Resource<GetSubscriptionStatus>>()
+    val getSubscriptionStatus: LiveData<Resource<GetSubscriptionStatus>>
+        get() = _getSubscriptionStatus
+
+    val _rejectDateInterest = MutableLiveData<Resource<Unit>>()
+    val rejectDateInterest: LiveData<Resource<Unit>>
+        get() = _rejectDateInterest
+
+    val _acceptDateInterest = MutableLiveData<Resource<Unit>>()
+    val acceptDateInterest: LiveData<Resource<Unit>>
+        get() = _acceptDateInterest
 
     init {
         getUser()
@@ -98,12 +118,41 @@ class MainViewModel(
 
     fun addSwipe(dateId: String, personId: String, like: Boolean) {
         viewModelScope.launch {
-            _addSwipe.value = repository.addSwipe(AddSwipeBody(
-                if (like) "like" else "dislike",
-                dateId,
-                personId,
-                user.value!!.userId
-            ))
+            _addSwipe.value = repository.addSwipe(
+                AddSwipeBody(
+                    if (like) "like" else "dislike",
+                    dateId,
+                    personId,
+                    user.value!!.userId
+                )
+            )
+        }
+    }
+
+    fun fetchDateInterests() {
+        viewModelScope.launch {
+            _fetchDateInterests.value = repository.fetchDateInterest(user.value!!.userId)
+        }
+    }
+
+    fun getSubscriptionStatus() {
+        viewModelScope.launch {
+            _getSubscriptionStatus.value = repository.getSubscriptionStatus(user.value!!.userId)
+        }
+    }
+
+    fun rejectDateInterest(interestId: String, rejectDate: RejectDateInterestBody) {
+        viewModelScope.launch {
+            _rejectDateInterest.value = repository.rejectDateInterest(interestId, rejectDate)
+        }
+    }
+
+    fun acceptDateInterest(interestId: String, dateId: String) {
+        viewModelScope.launch {
+            _acceptDateInterest.value = repository.acceptDateInterest(
+                interestId,
+                AcceptDateInterestBody(dateId, "PENDING_TIME_APPROVAL", user.value!!.userId)
+            )
         }
     }
 }

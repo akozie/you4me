@@ -1,60 +1,166 @@
 package com.you4me.you4me.ui.main
 
+import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.you4me.you4me.R
+import android.widget.MediaController
+import com.you4me.you4me.databinding.FragmentLikesBinding
+import com.you4me.you4me.models.FetchDateInterest
+import com.you4me.you4me.models.RejectDateInterestBody
+import com.you4me.you4me.network.ApiCollector
+import com.you4me.you4me.network.Resource
+import com.you4me.you4me.repository.MainRepository
+import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.OnSwipeTouchListener
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepository>() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LikesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class LikesFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var dateInterests = FetchDateInterest()
+    private var currentIdx = -1
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private lateinit var mediaControls: MediaController
+
+    override fun getViewModel() = MainViewModel::class.java
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater, container: ViewGroup?
+    ): FragmentLikesBinding {
+        return FragmentLikesBinding.inflate(layoutInflater)
+    }
+
+    override fun getRepository() = MainRepository(dataSource.buildApi(ApiCollector::class.java))
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getSubscriptionStatus()
+        setupObservers()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupView() {
+        viewModel.fetchDateInterests()
+        mediaControls = MediaController(ctx)
+        mediaControls.setAnchorView(binding.userVideo)
+        mediaControls.setMediaPlayer(binding.userVideo)
+        binding.userVideo.setMediaController(mediaControls)
+
+        binding.acceptBtn.setOnClickListener {
+            if (currentIdx < 0) return@setOnClickListener
+            val d = dateInterests[currentIdx]
+            viewModel.acceptDateInterest(d.interestID, d.dateID)
+        }
+        binding.rejectBtn.setOnClickListener {
+            if (currentIdx < 0) return@setOnClickListener
+            val d = dateInterests[currentIdx]
+            viewModel.rejectDateInterest(d.interestID, RejectDateInterestBody(d.dateID, "REJECTED"))
+        }
+
+        binding.mainLyt.setOnTouchListener(object : OnSwipeTouchListener(ctx) {
+            override fun onSwipeLeft() {
+                view?.performClick()
+                super.onSwipeLeft()
+                if (currentIdx < 0) return
+                val d = dateInterests[currentIdx]
+                viewModel.rejectDateInterest(
+                    d.interestID,
+                    RejectDateInterestBody(d.dateID, "REJECTED")
+                )
+            }
+
+
+            override fun onSwipeRight() {
+                view?.performClick()
+                super.onSwipeRight()
+                if (currentIdx < 0) return
+                val d = dateInterests[currentIdx]
+                viewModel.acceptDateInterest(d.interestID, d.dateID)
+            }
+        })
+    }
+
+    private fun setupObservers() {
+        viewModel.getSubscriptionStatus.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    if (it.value.isFreeTrial || it.value.isPremium) {
+                        setupView()
+                    } else {
+                        showDialog("You need to subscribe to access this screen", false)
+                    }
+                }
+
+                is Resource.Failure -> {
+                    showDialog(it.message ?: it.errorBody ?: "")
+                }
+            }
+        }
+
+        viewModel.fetchDateInterests.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    if (it.value.isEmpty()) switchScreens(true)
+                    else {
+                        dateInterests = it.value
+                        setScreen()
+                    }
+                }
+
+                is Resource.Failure -> {
+                    showDialog(it.message ?: it.errorBody ?: "")
+                }
+            }
+        }
+
+        viewModel.rejectDateInterest.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    showToast("Success")
+                    if (currentIdx < dateInterests.lastIndex) setScreen()
+                    else {
+                        showToast("No more dates available")
+                        switchScreens(true)
+                    }
+                }
+
+                is Resource.Failure -> {
+                    showDialog(it.message ?: it.errorBody ?: "")
+                }
+            }
+        }
+
+        viewModel.acceptDateInterest.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    showToast("Success")
+                    if (currentIdx < dateInterests.lastIndex) setScreen()
+                    else {
+                        showToast("No more dates available")
+                        switchScreens(true)
+                    }
+                }
+
+                is Resource.Failure -> {
+                    showDialog(it.message ?: it.errorBody ?: "")
+                }
+            }
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_likes, container, false)
+    private fun setScreen() {
+        currentIdx++
+        val date = dateInterests[currentIdx]
+
+        binding.userName.text = "${date.name}, ${date.age}"
+        val videoUrI = Uri.parse(date.videoURL)
+        binding.userVideo.setVideoURI(videoUrI)
+        binding.userVideo.start()
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LikesFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LikesFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun switchScreens(empty: Boolean) {
+        binding.mainLyt.visibility = if (empty) View.GONE else View.VISIBLE
+        binding.emptyLyt.visibility = if (empty) View.VISIBLE else View.GONE
     }
 }

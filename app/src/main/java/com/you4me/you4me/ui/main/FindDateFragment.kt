@@ -14,6 +14,7 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.OnSwipeTouchListener
+import com.you4me.you4me.utils.fetchDates
 
 
 class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, MainRepository>() {
@@ -39,6 +40,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         setupObservers()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupView() {
         mediaControls = MediaController(ctx)
         mediaControls.setAnchorView(binding.userVideo)
@@ -64,7 +66,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
             )
         }
 
-        @SuppressLint("ClickableViewAccessibility")
+
         binding.mainLyt.setOnTouchListener(object : OnSwipeTouchListener(ctx) {
             override fun onSwipeLeft() {
                 view?.performClick()
@@ -95,14 +97,16 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
 
     private fun setupObservers() {
         viewModel.fetchDates.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is Resource.Success -> {
-                    if (it.value.isEmpty()) switchScreens(true)
+                    if (it.value.isEmpty())
+                        switchScreens(true)
                     else {
                         dates = it.value
                         setScreen()
                     }
                 }
+
                 is Resource.Failure -> {
                     showToast(it.message ?: it.errorBody ?: "")
                 }
@@ -112,7 +116,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
             viewModel.fetchDates()
         }
         viewModel.addDateInterest.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is Resource.Success -> {
                     val d = dates[currentIdx]
                     viewModel.addSwipe(
@@ -121,13 +125,14 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                         true
                     )
                 }
+
                 is Resource.Failure -> {
                     showToast(it.message ?: it.errorBody ?: "")
                 }
             }
         }
         viewModel.addSwipe.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is Resource.Success -> {
                     showToast("Success")
                     if (currentIdx < dates.lastIndex) setScreen()
@@ -136,6 +141,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                         switchScreens(true)
                     }
                 }
+
                 is Resource.Failure -> {
                     showToast(it.message ?: it.errorBody ?: "")
                 }
@@ -148,12 +154,14 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         val date = dates[currentIdx]
 
         binding.userName.text = "${date.name}, ${date.age}"
+        binding.location.text = date.place
+        binding.payment.text = date.payment
         val videoUrI = Uri.parse(date.videoURL)
         binding.userVideo.setVideoURI(videoUrI)
         binding.userVideo.start()
     }
 
-    private fun switchScreens(empty : Boolean) {
+    private fun switchScreens(empty: Boolean) {
         binding.mainLyt.visibility = if (empty) View.GONE else View.VISIBLE
         binding.emptyLyt.visibility = if (empty) View.VISIBLE else View.GONE
     }
