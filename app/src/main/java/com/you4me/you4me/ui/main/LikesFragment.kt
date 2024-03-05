@@ -35,7 +35,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getSubscriptionStatus()
+
         setupObservers()
     }
 
@@ -49,11 +49,13 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 
         binding.acceptBtn.setOnClickListener {
             if (currentIdx < 0) return@setOnClickListener
+            showLoading(true)
             val d = dateInterests[currentIdx]
             viewModel.acceptDateInterest(d.interestID, d.dateID)
         }
         binding.rejectBtn.setOnClickListener {
             if (currentIdx < 0) return@setOnClickListener
+            showLoading(true)
             val d = dateInterests[currentIdx]
             viewModel.rejectDateInterest(d.interestID, RejectDateInterestBody(d.dateID, "REJECTED"))
         }
@@ -64,6 +66,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 super.onSwipeLeft()
                 if (currentIdx < 0) return
                 val d = dateInterests[currentIdx]
+                showLoading(true)
                 viewModel.rejectDateInterest(
                     d.interestID,
                     RejectDateInterestBody(d.dateID, "REJECTED")
@@ -75,6 +78,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 view?.performClick()
                 super.onSwipeRight()
                 if (currentIdx < 0) return
+                showLoading(true)
                 val d = dateInterests[currentIdx]
                 viewModel.acceptDateInterest(d.interestID, d.dateID)
             }
@@ -82,6 +86,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     }
 
     private fun setupObservers() {
+        viewModel.user.observe(viewLifecycleOwner) {viewModel.getSubscriptionStatus()}
         viewModel.getSubscriptionStatus.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -101,7 +106,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         viewModel.fetchDateInterests.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    if (it.value.isEmpty()) switchScreens(true)
+                    if (it.value.isEmpty()) showEmpty()
                     else {
                         dateInterests = it.value
                         setScreen()
@@ -115,13 +120,14 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         }
 
         viewModel.rejectDateInterest.observe(viewLifecycleOwner) {
+            showLoading(false)
             when (it) {
                 is Resource.Success -> {
                     showToast("Success")
                     if (currentIdx < dateInterests.lastIndex) setScreen()
                     else {
                         showToast("No more dates available")
-                        switchScreens(true)
+                        showEmpty()
                     }
                 }
 
@@ -132,13 +138,14 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         }
 
         viewModel.acceptDateInterest.observe(viewLifecycleOwner) {
+            showLoading(false)
             when (it) {
                 is Resource.Success -> {
                     showToast("Success")
                     if (currentIdx < dateInterests.lastIndex) setScreen()
                     else {
                         showToast("No more dates available")
-                        switchScreens(true)
+                        showEmpty()
                     }
                 }
 
@@ -159,8 +166,14 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         binding.userVideo.start()
     }
 
-    private fun switchScreens(empty: Boolean) {
-        binding.mainLyt.visibility = if (empty) View.GONE else View.VISIBLE
-        binding.emptyLyt.visibility = if (empty) View.VISIBLE else View.GONE
+    private fun showEmpty() {
+        binding.mainLyt.visibility = View.GONE
+        binding.emptyLyt.visibility = View.VISIBLE
+    }
+
+    private fun showLoading(loading: Boolean) {
+        binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
+        binding.emptyLyt.visibility = if (loading) View.GONE else View.VISIBLE
+        binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
 }

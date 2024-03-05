@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginVertical="32dp"
+    android:gravity="center"
     android:orientation="horizontal"
     android:paddingHorizontal="16dp"
     tools:context=".ui.main.LikesFragment">
@@ -12,7 +13,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_lyt"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/title_text"
@@ -93,10 +95,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"
         android:text="@string/no_date_interests"
         android:textAlignment="center"
         android:textSize="28sp"
+        android:visibility="gone"
         app:drawableTopCompat="@drawable/baseline_not_interested_24" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/loader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone" />
 
 </LinearLayout>

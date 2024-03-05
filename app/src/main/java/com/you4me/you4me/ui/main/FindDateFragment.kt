@@ -14,7 +14,6 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.OnSwipeTouchListener
-import com.you4me.you4me.utils.fetchDates
 
 
 class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, MainRepository>() {
@@ -50,6 +49,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         binding.acceptBtn.setOnClickListener {
             if (currentIdx < 0) return@setOnClickListener
             val d = dates[currentIdx]
+            showLoading(true)
             viewModel.addDateInterest(
                 d.date,
                 d.time,
@@ -58,6 +58,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         }
         binding.rejectBtn.setOnClickListener {
             if (currentIdx < 0) return@setOnClickListener
+            showLoading(true)
             val d = dates[currentIdx]
             viewModel.addSwipe(
                 d.dateId,
@@ -72,6 +73,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 view?.performClick()
                 super.onSwipeLeft()
                 if (currentIdx < 0) return
+                showLoading(true)
                 val d = dates[currentIdx]
                 viewModel.addSwipe(
                     d.dateId,
@@ -85,6 +87,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 view?.performClick()
                 super.onSwipeRight()
                 if (currentIdx < 0) return
+                showLoading(true)
                 val d = dates[currentIdx]
                 viewModel.addDateInterest(
                     d.date,
@@ -100,7 +103,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
             when (it) {
                 is Resource.Success -> {
                     if (it.value.isEmpty())
-                        switchScreens(true)
+                        showEmpty()
                     else {
                         dates = it.value
                         setScreen()
@@ -127,18 +130,20 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 }
 
                 is Resource.Failure -> {
+                    showLoading(false)
                     showToast(it.message ?: it.errorBody ?: "")
                 }
             }
         }
         viewModel.addSwipe.observe(viewLifecycleOwner) {
+            showLoading(false)
             when (it) {
                 is Resource.Success -> {
                     showToast("Success")
                     if (currentIdx < dates.lastIndex) setScreen()
                     else {
                         showToast("No more dates available")
-                        switchScreens(true)
+                        showEmpty()
                     }
                 }
 
@@ -161,8 +166,14 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         binding.userVideo.start()
     }
 
-    private fun switchScreens(empty: Boolean) {
-        binding.mainLyt.visibility = if (empty) View.GONE else View.VISIBLE
-        binding.emptyLyt.visibility = if (empty) View.VISIBLE else View.GONE
+    private fun showEmpty() {
+        binding.mainLyt.visibility = View.GONE
+        binding.emptyLyt.visibility = View.VISIBLE
+    }
+
+    private fun showLoading(loading: Boolean) {
+        binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
+        binding.emptyLyt.visibility = if (loading) View.GONE else View.VISIBLE
+        binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
 }

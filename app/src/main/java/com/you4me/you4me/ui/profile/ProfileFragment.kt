@@ -3,6 +3,7 @@ package com.you4me.you4me.ui.profile
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
+import android.app.Dialog
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
@@ -15,9 +16,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.MediaController
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.you4me.you4me.databinding.FragmentProfileBinding
+import com.you4me.you4me.databinding.VideoDialogBinding
 import com.you4me.you4me.models.RegisterVideoUploadBody
 import com.you4me.you4me.models.UpdateUserBody
 import com.you4me.you4me.models.User
@@ -57,8 +60,12 @@ class ProfileFragment :
     private lateinit var calendar: Calendar
     private lateinit var dateFormat: SimpleDateFormat
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
-    private lateinit var videoUri: Uri
+    private var videoUri: Uri? = null
     private lateinit var videoId: String
+
+    private lateinit var mediaControls: MediaController
+
+    private lateinit var videoViewBinding: VideoDialogBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -79,6 +86,7 @@ class ProfileFragment :
         viewModel.user.observe(viewLifecycleOwner) {
             user = it
             populateViews(it)
+            setupVideo()
         }
 
         viewModel.ageGroups.observe(viewLifecycleOwner) {
@@ -187,7 +195,7 @@ class ProfileFragment :
         viewModel.registerVideoUploadResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    viewModel.uploadVideo(videoUri, videoId)
+                    viewModel.uploadVideo(videoUri!!, videoId)
                 }
 
                 is Resource.Failure -> {
@@ -203,6 +211,7 @@ class ProfileFragment :
                 is Resource.Success -> {
                     showLoader(false)
                     showToast("Video Upload Successful!")
+                    videoViewBinding.videoView.setVideoURI(videoUri)
                 }
 
                 is Resource.Failure -> {}
@@ -371,6 +380,7 @@ class ProfileFragment :
     }
 
     private fun setupView() {
+        videoViewBinding = VideoDialogBinding.inflate(layoutInflater, null, false)
         dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.UK)
         calendar = Calendar.getInstance()
         binding.dob.inputType = InputType.TYPE_NULL
@@ -391,11 +401,20 @@ class ProfileFragment :
             ).show()
         }
 
+        binding.btnPlay.setOnClickListener {
+            if (videoUri == null) {
+                showToast("please upload a video")
+                return@setOnClickListener
+            } else {
+                showVideoDialog()
+            }
+        }
+
         activityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
                     videoUri = it.data?.data ?: return@registerForActivityResult
-                    if (checkVideoDuration(videoUri)) {
+                    if (checkVideoDuration(videoUri!!)) {
                         videoId = UUID.randomUUID().toString()
                         showLoader(true)
 
@@ -446,11 +465,29 @@ class ProfileFragment :
         binding.editBtn.visibility = if (show) View.GONE else View.VISIBLE
     }
 
-    private fun checkVideoDuration(uri: Uri) : Boolean {
+    private fun checkVideoDuration(uri: Uri): Boolean {
         val mp: MediaPlayer = MediaPlayer.create(ctx, uri)
         val duration = mp.duration.toLong()
         mp.release()
         return duration <= 30000
+    }
+
+    private fun setupVideo() {
+        if (user.videoURL.isNotBlank()) videoUri = Uri.parse(user.videoURL)
+        mediaControls = MediaController(ctx)
+        mediaControls.setAnchorView(videoViewBinding.videoView)
+        mediaControls.setMediaPlayer(videoViewBinding.videoView)
+        videoViewBinding.videoView.setMediaController(mediaControls)
+//        val videoUrI = Uri.parse(user.videoURL)
+        videoViewBinding.videoView.setVideoURI(videoUri)
+//        videoViewBinding.videoView.start()
+    }
+
+    private fun showVideoDialog() {
+        val dialog = Dialog(ctx)
+        dialog.setContentView(videoViewBinding.root)
+        dialog.show()
+        videoViewBinding.videoView.start()
     }
 
     companion object {
