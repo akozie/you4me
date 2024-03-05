@@ -5,8 +5,12 @@ import android.app.Dialog
 import android.util.Patterns
 import android.widget.TextView
 import com.you4me.you4me.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-class Utils {
+object Utils {
+
+    fun getDateFormat() = SimpleDateFormat("yyyy/MM/dd", Locale.UK)
     fun isInternetConnected() : Boolean {
         return try {
             val command = "ping -c 1 google.com"

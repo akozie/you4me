@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter
 import android.widget.MediaController
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.siddigital.enairaofflineapp.utils.Utils
 import com.you4me.you4me.databinding.FragmentProfileBinding
 import com.you4me.you4me.databinding.VideoDialogBinding
 import com.you4me.you4me.models.RegisterVideoUploadBody
@@ -58,7 +59,7 @@ class ProfileFragment :
     private lateinit var sexualOrientations: ArrayList<ValueLabelResponse>
 
     private lateinit var calendar: Calendar
-    private lateinit var dateFormat: SimpleDateFormat
+//    private lateinit var dateFormat: SimpleDateFormat
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private var videoUri: Uri? = null
     private lateinit var videoId: String
@@ -381,7 +382,7 @@ class ProfileFragment :
 
     private fun setupView() {
         videoViewBinding = VideoDialogBinding.inflate(layoutInflater, null, false)
-        dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.UK)
+//        dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.UK)
         calendar = Calendar.getInstance()
         binding.dob.inputType = InputType.TYPE_NULL
         val date = OnDateSetListener { _, year, month, day ->
@@ -433,7 +434,7 @@ class ProfileFragment :
     }
 
     private fun updateDateOfBirth() {
-        binding.dob.setText(dateFormat.format(calendar.time))
+        binding.dob.setText(Utils.getDateFormat().format(calendar.time))
         dob = binding.dob.text.toString()
     }
 

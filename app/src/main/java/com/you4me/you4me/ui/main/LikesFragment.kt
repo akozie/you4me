@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.MediaController
 import com.you4me.you4me.databinding.FragmentLikesBinding
 import com.you4me.you4me.models.FetchDateInterest
-import com.you4me.you4me.models.RejectDateInterestBody
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
@@ -51,13 +50,16 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             if (currentIdx < 0) return@setOnClickListener
             showLoading(true)
             val d = dateInterests[currentIdx]
-            viewModel.acceptDateInterest(d.interestID, d.dateID)
+            viewModel.updateDateInterest(d.interestID, d.dateID, "PENDING_TIME_APPROVAL")
         }
         binding.rejectBtn.setOnClickListener {
             if (currentIdx < 0) return@setOnClickListener
             showLoading(true)
             val d = dateInterests[currentIdx]
-            viewModel.rejectDateInterest(d.interestID, RejectDateInterestBody(d.dateID, "REJECTED"))
+            viewModel.rejectDateInterest(
+                d.interestID,
+                d.dateID, "REJECTED"
+            )
         }
 
         binding.mainLyt.setOnTouchListener(object : OnSwipeTouchListener(ctx) {
@@ -69,7 +71,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 showLoading(true)
                 viewModel.rejectDateInterest(
                     d.interestID,
-                    RejectDateInterestBody(d.dateID, "REJECTED")
+                    d.dateID, "REJECTED"
                 )
             }
 
@@ -80,7 +82,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 if (currentIdx < 0) return
                 showLoading(true)
                 val d = dateInterests[currentIdx]
-                viewModel.acceptDateInterest(d.interestID, d.dateID)
+                viewModel.updateDateInterest(d.interestID, d.dateID, "PENDING_TIME_APPROVAL")
             }
         })
     }
@@ -137,7 +139,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             }
         }
 
-        viewModel.acceptDateInterest.observe(viewLifecycleOwner) {
+        viewModel.updateDateInterest.observe(viewLifecycleOwner) {
             showLoading(false)
             when (it) {
                 is Resource.Success -> {

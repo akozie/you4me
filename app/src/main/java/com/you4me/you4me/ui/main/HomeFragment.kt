@@ -1,60 +1,137 @@
 package com.you4me.you4me.ui.main
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.you4me.you4me.R
+import com.you4me.you4me.adapter.DateInterestsRequiringApprovalRecyclerAdapter
+import com.you4me.you4me.adapter.InviteeDateForApprovalRecyclerAdapter
+import com.you4me.you4me.adapter.UpcomingDatesRecyclerAdapter
+import com.you4me.you4me.databinding.FragmentHomeBinding
+import com.you4me.you4me.models.DateInterestsRequiringApproval
+import com.you4me.you4me.models.InviteeDatesRequiringApproval
+import com.you4me.you4me.models.UpcomingDates
+import com.you4me.you4me.network.ApiCollector
+import com.you4me.you4me.network.Resource
+import com.you4me.you4me.repository.MainRepository
+import com.you4me.you4me.ui.base.BaseFragment
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>() {
+    override fun getViewModel() = MainViewModel::class.java
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentHomeBinding {
+        return FragmentHomeBinding.inflate(layoutInflater)
+    }
+
+    override fun getRepository() = MainRepository(dataSource.buildApi(ApiCollector::class.java))
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        addObservers()
+    }
+
+    private fun addObservers() {
+        viewModel.user.observe(viewLifecycleOwner) {
+            viewModel.getUpcomingDates()
+            viewModel.getInviteeDatesRequiringApproval()
+            viewModel.getDateInterestsRequiringApproval()
+        }
+
+        viewModel.upcomingDates.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    setupUpcomingDates(it.value)
+                }
+
+                is Resource.Failure -> {}
+            }
+        }
+
+        viewModel.inviteeDatesRequiringApproval.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    setupInviteeDates(it.value)
+                }
+
+                is Resource.Failure -> {}
+            }
+        }
+
+        viewModel.dateInterestsRequiringApproval.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    setupDateInterests(it.value)
+                }
+
+                is Resource.Failure -> {}
+            }
+        }
+
+        viewModel.rejectDateInterest.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    showToast("Date status updated")
+                    //switch ui
+                }
+
+                is Resource.Failure -> {}
+            }
+        }
+
+        viewModel.updateDateInterest.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    showToast("Date status updated")
+                    //switch ui
+                }
+
+                is Resource.Failure -> {}
+            }
+        }
+
+        viewModel.proposeNewDateTime.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    showToast("Date status updated")
+                    //switch ui
+                }
+
+                is Resource.Failure -> {}
+            }
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    private fun setupDateInterests(dates: DateInterestsRequiringApproval) {
+        if (dates.isEmpty()) {
+            binding.dateInterestRecycler.visibility = View.GONE
+            binding.noDatesInterests.visibility = View.VISIBLE
+        } else {
+            val adapter = DateInterestsRequiringApprovalRecyclerAdapter(dates, viewModel)
+            binding.dateInterestRecycler.adapter = adapter
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun setupInviteeDates(dates: InviteeDatesRequiringApproval) {
+        if (dates.isEmpty()) {
+            binding.inviteeDatesRecycler.visibility = View.GONE
+            binding.noApprovedDatesInterests.visibility = View.VISIBLE
+        } else {
+            val adapter = InviteeDateForApprovalRecyclerAdapter(dates, viewModel)
+            binding.inviteeDatesRecycler.adapter = adapter
+        }
+    }
+
+    private fun setupUpcomingDates(dates: UpcomingDates) {
+        if (dates.isEmpty()) {
+            binding.upcomingDatesRecycler.visibility = View.GONE
+            binding.noUpcomingDates.visibility = View.VISIBLE
+        } else {
+            val adapter = UpcomingDatesRecyclerAdapter(dates, ctx)
+            binding.upcomingDatesRecycler.adapter = adapter
+        }
     }
 }

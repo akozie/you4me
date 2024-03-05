@@ -1,17 +1,21 @@
 package com.you4me.you4me.network
 
 import com.google.gson.JsonObject
-import com.you4me.you4me.models.AcceptDateInterestBody
+import com.you4me.you4me.models.UpdateDateInterestBody
 import com.you4me.you4me.models.AddDateInterestBody
 import com.you4me.you4me.models.AddSwipeBody
+import com.you4me.you4me.models.DateInterestsRequiringApproval
 import com.you4me.you4me.models.FetchDateInterest
 import com.you4me.you4me.models.FetchDatesResponse
 import com.you4me.you4me.models.GetSubscriptionStatus
+import com.you4me.you4me.models.InviteeDatesRequiringApproval
+import com.you4me.you4me.models.ProposeNewDateTimeBody
 import com.you4me.you4me.models.User
 import com.you4me.you4me.models.RegisterResponse
 import com.you4me.you4me.models.RegisterVideoUploadBody
 import com.you4me.you4me.models.RejectDateInterestBody
 import com.you4me.you4me.models.SubmitDateBody
+import com.you4me.you4me.models.UpcomingDates
 import com.you4me.you4me.models.ValueLabelResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -107,8 +111,30 @@ interface ApiCollector {
     )
 
     @PUT("/dates/{interestId}/interests")
-    suspend fun acceptDateInterest(
+    suspend fun updateDateInterest(
         @Path("interestId") interestId : String,
-        @Body body: AcceptDateInterestBody
+        @Body body: UpdateDateInterestBody
+    )
+
+    @GET("users/{userId}/dates/upcoming")
+    suspend fun getUpcomingDates(
+        @Path("userId") userId : String
+    ) : UpcomingDates
+
+    @GET("users/{userId}/dates/interests/pending-approval")
+    suspend fun getInviteeDatesRequiringApproval(
+        @Path("userId") userId : String
+    ) : InviteeDatesRequiringApproval
+
+    @GET("users/{userId}/dates/interests/creator/require-approval")
+    suspend fun getDateInterestsRequiringApproval(
+        @Path("userId") userId : String
+    ) : DateInterestsRequiringApproval
+
+    @PUT("users/{userId}/dates/interests/{interestId}/propose-time")
+    suspend fun proposeNewDateTime(
+        @Path("userId") userId : String,
+        @Path("interestId") interestId: String,
+        @Body body: ProposeNewDateTimeBody
     )
 }

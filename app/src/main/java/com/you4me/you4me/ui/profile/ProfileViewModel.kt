@@ -145,6 +145,7 @@ class ProfileViewModel(
                 obj.addProperty("sexual_orientation", sexual_orientation)
                 obj.addProperty("dob", dob)
                 obj.addProperty("gender", gender)
+                obj.addProperty("phone", phone)
             }
 
             _updateUserResponse.value = repository.updateUserInfo(_user.value!!.userId, obj)

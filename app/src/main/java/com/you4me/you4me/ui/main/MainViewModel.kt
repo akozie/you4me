@@ -4,15 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.you4me.you4me.models.AcceptDateInterestBody
+import com.you4me.you4me.models.UpdateDateInterestBody
 import com.you4me.you4me.models.AddDateInterestBody
 import com.you4me.you4me.models.AddSwipeBody
+import com.you4me.you4me.models.DateInterestsRequiringApproval
 import com.you4me.you4me.models.FetchDateInterest
 import com.you4me.you4me.models.FetchDatesResponse
 import com.you4me.you4me.models.GetSubscriptionStatus
+import com.you4me.you4me.models.InviteeDatesRequiringApproval
 import com.you4me.you4me.models.Place
+import com.you4me.you4me.models.ProposeNewDateTimeBody
 import com.you4me.you4me.models.RejectDateInterestBody
 import com.you4me.you4me.models.SubmitDateBody
+import com.you4me.you4me.models.UpcomingDates
 import com.you4me.you4me.models.User
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.Resource
@@ -39,33 +43,51 @@ class MainViewModel(
     val submitDateResponse: LiveData<Resource<Unit>>
         get() = _submitDateResponse
 
-    val _fetchDates = SingleLiveEvent<Resource<FetchDatesResponse>>()
+    private val _fetchDates = SingleLiveEvent<Resource<FetchDatesResponse>>()
     val fetchDates: LiveData<Resource<FetchDatesResponse>>
         get() = _fetchDates
 
-    val _addSwipe = MutableLiveData<Resource<Unit>>()
+    private val _addSwipe = MutableLiveData<Resource<Unit>>()
     val addSwipe: LiveData<Resource<Unit>>
         get() = _addSwipe
 
-    val _addDateInterest = MutableLiveData<Resource<Unit>>()
+    private val _addDateInterest = MutableLiveData<Resource<Unit>>()
     val addDateInterest: LiveData<Resource<Unit>>
         get() = _addDateInterest
 
-    val _fetchDateInterests = SingleLiveEvent<Resource<FetchDateInterest>>()
+    private val _fetchDateInterests = SingleLiveEvent<Resource<FetchDateInterest>>()
     val fetchDateInterests: LiveData<Resource<FetchDateInterest>>
         get() = _fetchDateInterests
 
-    val _getSubscriptionStatus = SingleLiveEvent<Resource<GetSubscriptionStatus>>()
+    private val _getSubscriptionStatus = SingleLiveEvent<Resource<GetSubscriptionStatus>>()
     val getSubscriptionStatus: LiveData<Resource<GetSubscriptionStatus>>
         get() = _getSubscriptionStatus
 
-    val _rejectDateInterest = MutableLiveData<Resource<Unit>>()
+    private val _rejectDateInterest = MutableLiveData<Resource<Unit>>()
     val rejectDateInterest: LiveData<Resource<Unit>>
         get() = _rejectDateInterest
 
-    val _acceptDateInterest = MutableLiveData<Resource<Unit>>()
-    val acceptDateInterest: LiveData<Resource<Unit>>
-        get() = _acceptDateInterest
+    private val _updateDateInterest = MutableLiveData<Resource<Unit>>()
+    val updateDateInterest: LiveData<Resource<Unit>>
+        get() = _updateDateInterest
+
+    private val _upcomingDates = SingleLiveEvent<Resource<UpcomingDates>>()
+    val upcomingDates: LiveData<Resource<UpcomingDates>>
+        get() = _upcomingDates
+
+    private val _inviteeDatesRequiringApproval =
+        SingleLiveEvent<Resource<InviteeDatesRequiringApproval>>()
+    val inviteeDatesRequiringApproval: LiveData<Resource<InviteeDatesRequiringApproval>>
+        get() = _inviteeDatesRequiringApproval
+
+    private val _dateInterestsRequiringApproval =
+        SingleLiveEvent<Resource<DateInterestsRequiringApproval>>()
+    val dateInterestsRequiringApproval: LiveData<Resource<DateInterestsRequiringApproval>>
+        get() = _dateInterestsRequiringApproval
+
+    private val _proposeNewDateTime = SingleLiveEvent<Resource<Unit>>()
+    val proposeNewDateTime: LiveData<Resource<Unit>>
+        get() = _proposeNewDateTime
 
     init {
         getUser()
@@ -141,17 +163,56 @@ class MainViewModel(
         }
     }
 
-    fun rejectDateInterest(interestId: String, rejectDate: RejectDateInterestBody) {
+    fun rejectDateInterest(interestId: String, dateId: String, status: String) {
         viewModelScope.launch {
-            _rejectDateInterest.value = repository.rejectDateInterest(interestId, rejectDate)
+            _rejectDateInterest.value = repository.rejectDateInterest(
+                interestId, RejectDateInterestBody(
+                    dateId, status
+                )
+            )
         }
     }
 
-    fun acceptDateInterest(interestId: String, dateId: String) {
+    fun updateDateInterest(interestId: String, dateId: String, status: String) {
         viewModelScope.launch {
-            _acceptDateInterest.value = repository.acceptDateInterest(
+            _updateDateInterest.value = repository.acceptDateInterest(
                 interestId,
-                AcceptDateInterestBody(dateId, "PENDING_TIME_APPROVAL", user.value!!.userId)
+                UpdateDateInterestBody(dateId, status, user.value!!.userId)
+            )
+        }
+    }
+
+    fun getUpcomingDates() {
+        viewModelScope.launch {
+            _upcomingDates.value = repository.getUpcomingDates(user.value!!.userId)
+        }
+    }
+
+    fun getInviteeDatesRequiringApproval() {
+        viewModelScope.launch {
+            _inviteeDatesRequiringApproval.value =
+                repository.inviteeDatesRequiringApproval(user.value!!.userId)
+        }
+    }
+
+    fun getDateInterestsRequiringApproval() {
+        viewModelScope.launch {
+            _dateInterestsRequiringApproval.value =
+                repository.getDateInterestsRequiringApproval(user.value!!.userId)
+        }
+    }
+
+    fun proposeNewDateTime(
+        dateId: String,
+        interestId: String,
+        proposedDate: String,
+        proposedTime: String
+    ) {
+        viewModelScope.launch {
+            _proposeNewDateTime.value = repository.proposeNewDateTime(
+                user.value!!.userId,
+                interestId,
+                ProposeNewDateTimeBody(dateId, interestId, proposedDate, proposedTime)
             )
         }
     }
