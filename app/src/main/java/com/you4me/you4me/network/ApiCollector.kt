@@ -34,6 +34,11 @@ interface ApiCollector {
     @POST("users")
     suspend fun register(@Body obj: JsonObject): RegisterResponse
 
+    @GET("users/{userId}")
+    suspend fun getUser(
+        @Path("userId") userId: String
+    ): User
+
     @GET("genders")
     suspend fun getGenders(): ArrayList<ValueLabelResponse>
 
@@ -83,10 +88,10 @@ interface ApiCollector {
     @POST("dates")
     suspend fun submitDate(@Body body: SubmitDateBody)
 
-    @GET(" dates")
+    @GET("dates")
     suspend fun fetchDates(
-        @Query("user_id") userId : String
-    ) : FetchDatesResponse
+        @Query("user_id") userId: String
+    ): FetchDatesResponse
 
     @POST("dates/interests/{dateId}")
     suspend fun addDateInterest(@Body body: AddDateInterestBody)
@@ -97,43 +102,43 @@ interface ApiCollector {
     @GET("users/{userId}/dates/interests")
     suspend fun fetchDateInterests(
         @Path("userId") userId: String
-    ) : FetchDateInterest
+    ): FetchDateInterest
 
     @GET("users/{userId}/subscription/status")
     suspend fun getSubscriptionStatus(
         @Path("userId") userId: String
-    ) : GetSubscriptionStatus
+    ): GetSubscriptionStatus
 
     @PUT("/dates/{interestId}/interests")
     suspend fun rejectDateInterest(
-        @Path("interestId") interestId : String,
+        @Path("interestId") interestId: String,
         @Body body: RejectDateInterestBody
     )
 
     @PUT("/dates/{interestId}/interests")
     suspend fun updateDateInterest(
-        @Path("interestId") interestId : String,
+        @Path("interestId") interestId: String,
         @Body body: UpdateDateInterestBody
     )
 
     @GET("users/{userId}/dates/upcoming")
     suspend fun getUpcomingDates(
-        @Path("userId") userId : String
-    ) : UpcomingDates
+        @Path("userId") userId: String
+    ): UpcomingDates
 
     @GET("users/{userId}/dates/interests/pending-approval")
     suspend fun getInviteeDatesRequiringApproval(
-        @Path("userId") userId : String
-    ) : InviteeDatesRequiringApproval
+        @Path("userId") userId: String
+    ): InviteeDatesRequiringApproval
 
     @GET("users/{userId}/dates/interests/creator/require-approval")
     suspend fun getDateInterestsRequiringApproval(
-        @Path("userId") userId : String
-    ) : DateInterestsRequiringApproval
+        @Path("userId") userId: String
+    ): DateInterestsRequiringApproval
 
     @PUT("users/{userId}/dates/interests/{interestId}/propose-time")
     suspend fun proposeNewDateTime(
-        @Path("userId") userId : String,
+        @Path("userId") userId: String,
         @Path("interestId") interestId: String,
         @Body body: ProposeNewDateTimeBody
     )

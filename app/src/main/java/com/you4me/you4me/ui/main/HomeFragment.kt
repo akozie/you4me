@@ -1,5 +1,7 @@
 package com.you4me.you4me.ui.main
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -47,7 +49,9 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
                     setupUpcomingDates(it.value)
                 }
 
-                is Resource.Failure -> {}
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
             }
         }
 
@@ -57,7 +61,9 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
                     setupInviteeDates(it.value)
                 }
 
-                is Resource.Failure -> {}
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
             }
         }
 
@@ -78,7 +84,9 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
                     //switch ui
                 }
 
-                is Resource.Failure -> {}
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
             }
         }
 
@@ -89,7 +97,9 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
                     //switch ui
                 }
 
-                is Resource.Failure -> {}
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
             }
         }
 
@@ -100,7 +110,9 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
                     //switch ui
                 }
 
-                is Resource.Failure -> {}
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
             }
         }
     }
@@ -120,7 +132,7 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
             binding.inviteeDatesRecycler.visibility = View.GONE
             binding.noApprovedDatesInterests.visibility = View.VISIBLE
         } else {
-            val adapter = InviteeDateForApprovalRecyclerAdapter(dates, viewModel)
+            val adapter = InviteeDateForApprovalRecyclerAdapter(dates, viewModel, ctx)
             binding.inviteeDatesRecycler.adapter = adapter
         }
     }
@@ -134,4 +146,20 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
             binding.upcomingDatesRecycler.adapter = adapter
         }
     }
+
+//    private fun closeApp() {
+//        AlertDialog.Builder(requireContext()).setMessage(
+//            "Are you sure you want to close the app?"
+//        ).setPositiveButton(
+//            "Cancel"
+//        ) { dialog, _ ->
+//            dialog.dismiss()
+//        }.setNegativeButton(
+//            "Close App"
+//        ) { dialog, _ ->
+//            dialog.dismiss()
+//            startActivity(Intent(requireActivity(), AuthenticationActivity::class.java))
+//            if (activity != null) requireActivity().finish()
+//        }.setCancelable(true).create().show()
+//    }
 }

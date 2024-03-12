@@ -9,6 +9,7 @@ import com.you4me.you4me.network.Resource
 
 class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository() {
 
+    suspend fun getUser(userId: String) = safeApiCall { apiCollector.getUser(userId) }
     suspend fun getGenders(): Resource<ArrayList<ValueLabelResponse>> {
         return safeApiCall {
             apiCollector.getGenders()
@@ -47,6 +48,6 @@ class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository
         registerVideoUploadBody: RegisterVideoUploadBody
     ) = safeApiCall { apiCollector.registerVideoUpload(userId, registerVideoUploadBody) }
 
-    suspend fun updateVideoUrl(videoId : String, obj : JsonObject) =
+    suspend fun updateVideoUrl(videoId: String, obj: JsonObject) =
         safeApiCall { apiCollector.updateVideoUrl(videoId, obj) }
 }

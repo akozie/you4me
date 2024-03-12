@@ -8,4 +8,6 @@ class DbRepository(private val appDb : AppDatabase) {
     suspend fun insertUser(user: User) = appDb.UserDAO().saveUserData(user)
 
     suspend fun getUser() = appDb.UserDAO().getUser().first()
+
+    suspend fun clear() = appDb.UserDAO().deleteAllUsers()
 }

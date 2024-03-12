@@ -30,9 +30,7 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.base.BaseFragment
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 import java.util.UUID
 
 
@@ -68,6 +66,8 @@ class ProfileFragment :
 
     private lateinit var videoViewBinding: VideoDialogBinding
 
+    private lateinit var updateBody : UpdateUserBody
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addListeners()
@@ -84,10 +84,23 @@ class ProfileFragment :
     override fun getRepository() = ProfileRepository(dataSource.buildApi(ApiCollector::class.java))
 
     private fun addObservers() {
-        viewModel.user.observe(viewLifecycleOwner) {
+        viewModel.dbUser.observe(viewLifecycleOwner) {
             user = it
+            viewModel.getUserDetails(it.userId)
             populateViews(it)
-            setupVideo()
+        }
+
+        viewModel.user.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    user = it.value
+                    setupVideo()
+                }
+
+                is Resource.Failure -> {
+
+                }
+            }
         }
 
         viewModel.ageGroups.observe(viewLifecycleOwner) {
@@ -168,6 +181,7 @@ class ProfileFragment :
             when (it) {
                 is Resource.Success -> {
                     showToast("Profile Update Successful")
+                    viewModel.updateUser(updateBody)
                 }
 
                 is Resource.Failure -> {
@@ -223,19 +237,20 @@ class ProfileFragment :
     private fun addListeners() {
         binding.editBtn.setOnClickListener {
             showLoader(true)
+             updateBody = UpdateUserBody(
+                agePreferred,
+                country,
+                dob,
+                gender,
+                binding.name.text.toString(),
+                religion,
+                religionPreferred,
+                sexualOrientation,
+                state,
+                binding.phone.text.toString()
+            )
             viewModel.updateUserInfo(
-                UpdateUserBody(
-                    agePreferred,
-                    country,
-                    dob,
-                    gender,
-                    binding.name.text.toString(),
-                    religion,
-                    religionPreferred,
-                    sexualOrientation,
-                    state,
-                    binding.phone.text.toString()
-                )
+                updateBody
             )
         }
 
@@ -474,7 +489,7 @@ class ProfileFragment :
     }
 
     private fun setupVideo() {
-        if (user.videoURL.isNotBlank()) videoUri = Uri.parse(user.videoURL)
+        if (user.videoURL.isNotBlank()) videoUri = Uri.parse(user.videoURL.replace("http:", "https:"))
         mediaControls = MediaController(ctx)
         mediaControls.setAnchorView(videoViewBinding.videoView)
         mediaControls.setMediaPlayer(videoViewBinding.videoView)

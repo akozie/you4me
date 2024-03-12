@@ -16,6 +16,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.siddigital.enairaofflineapp.utils.Utils
 import com.you4me.you4me.databinding.FragmentGoOnDateBinding
 import com.you4me.you4me.models.SubmitDateBody
 import com.you4me.you4me.models.ValueLabelResponse
@@ -61,7 +62,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
         binding.searchDateLocations.setOnClickListener {
             startAutoCompleteIntent()
         }
-        dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.UK)
+        dateFormat = Utils.getDateFormat()
         calendar = Calendar.getInstance()
         updateProposedDate()
         binding.time.text = "12:00"
@@ -84,7 +85,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
 
         val time = TimePickerDialog.OnTimeSetListener { timePicker, i, i2 ->
             val hour = i.toString().padStart(2, '0')
-            val minute = i.toString().padStart(2, '0')
+            val minute = i2.toString().padStart(2, '0')
             binding.time.text = "$hour:$minute"
         }
 

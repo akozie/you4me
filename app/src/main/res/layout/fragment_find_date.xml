@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginVertical="32dp"
+    android:gravity="center"
     android:orientation="horizontal"
     android:paddingHorizontal="32dp"
     tools:context=".ui.main.FindDateFragment">
@@ -48,6 +49,7 @@
             android:layout_height="wrap_content"
             android:drawablePadding="8dp"
             android:textSize="16sp"
+            android:layout_marginTop="8dp"
             app:drawableStartCompat="@drawable/navigation_tilted"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_name"
@@ -59,6 +61,7 @@
             android:layout_height="wrap_content"
             android:drawablePadding="8dp"
             android:textSize="16sp"
+            android:layout_marginTop="8dp"
             app:drawableStartCompat="@drawable/baseline_credit_card_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/location"
@@ -101,10 +104,10 @@
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/loader"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:indeterminate="true"
-        android:visibility="gone" />
+        android:indeterminate="true" />
 
 </LinearLayout>

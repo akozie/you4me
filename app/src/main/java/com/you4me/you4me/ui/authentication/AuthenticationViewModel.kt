@@ -47,4 +47,8 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository, 
     fun saveUser(user : User) {
         viewModelScope.launch { dbRepository.insertUser(user) }
     }
+
+    fun clearUser() {
+        viewModelScope.launch { dbRepository.clear() }
+    }
 }

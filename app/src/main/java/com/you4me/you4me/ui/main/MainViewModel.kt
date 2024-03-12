@@ -47,11 +47,11 @@ class MainViewModel(
     val fetchDates: LiveData<Resource<FetchDatesResponse>>
         get() = _fetchDates
 
-    private val _addSwipe = MutableLiveData<Resource<Unit>>()
+    private val _addSwipe = SingleLiveEvent<Resource<Unit>>()
     val addSwipe: LiveData<Resource<Unit>>
         get() = _addSwipe
 
-    private val _addDateInterest = MutableLiveData<Resource<Unit>>()
+    private val _addDateInterest = SingleLiveEvent<Resource<Unit>>()
     val addDateInterest: LiveData<Resource<Unit>>
         get() = _addDateInterest
 
@@ -63,11 +63,11 @@ class MainViewModel(
     val getSubscriptionStatus: LiveData<Resource<GetSubscriptionStatus>>
         get() = _getSubscriptionStatus
 
-    private val _rejectDateInterest = MutableLiveData<Resource<Unit>>()
+    private val _rejectDateInterest = SingleLiveEvent<Resource<Unit>>()
     val rejectDateInterest: LiveData<Resource<Unit>>
         get() = _rejectDateInterest
 
-    private val _updateDateInterest = MutableLiveData<Resource<Unit>>()
+    private val _updateDateInterest = SingleLiveEvent<Resource<Unit>>()
     val updateDateInterest: LiveData<Resource<Unit>>
         get() = _updateDateInterest
 

@@ -56,8 +56,12 @@ class ProfileViewModel(
     val states: LiveData<Resource<ArrayList<ValueLabelResponse>>>
         get() = _states
 
-    private val _user: MutableLiveData<User> = MutableLiveData()
-    val user: LiveData<User>
+    private val _dbUser: MutableLiveData<User> = MutableLiveData()
+    val dbUser: LiveData<User>
+        get() = _dbUser
+
+    private val _user: MutableLiveData<Resource<User>> = MutableLiveData()
+    val user: LiveData<Resource<User>>
         get() = _user
 
     private val _updateUserResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
@@ -82,7 +86,7 @@ class ProfileViewModel(
         get() = _updateVideoUrlResponse
 
     init {
-        getUser()
+        getUserFromDb()
         getGenders()
         getCountries()
         getSexualOrientations()
@@ -90,9 +94,20 @@ class ProfileViewModel(
         getReligions()
     }
 
-    private fun getUser() {
+    fun saveUser(user : User) {
+        viewModelScope.launch { dbRepository.insertUser(user) }
+        _dbUser.value = user
+    }
+
+    private fun getUserFromDb() {
         viewModelScope.launch {
-            _user.value = dbRepository.getUser()
+            _dbUser.value = dbRepository.getUser()
+        }
+    }
+
+    fun getUserDetails(userId : String) {
+        viewModelScope.launch {
+            _user.value = repository.getUser(userId)
         }
     }
 
@@ -132,6 +147,32 @@ class ProfileViewModel(
         }
     }
 
+    fun updateUser(userBody: UpdateUserBody) {
+        val u = dbUser.value!!
+        val uUser = User(
+            u.userId,
+            u.agePreferred,
+            u.convertedDate,
+            userBody.country,
+            userBody.dob,
+            u.email,
+            userBody.gender,
+            u.isVideoBeingReviewed,
+            userBody.name,
+            u.password,
+            userBody.phone,
+            userBody.religion,
+            userBody.religion_preferred,
+            userBody.sexual_orientation,
+            userBody.state,
+            u.status,
+            u.token,
+            u.videoStatus,
+            u.videoURL
+        )
+        saveUser(uUser)
+    }
+
     fun updateUserInfo(userBody: UpdateUserBody) {
         viewModelScope.launch {
             val obj = JsonObject()
@@ -148,7 +189,7 @@ class ProfileViewModel(
                 obj.addProperty("phone", phone)
             }
 
-            _updateUserResponse.value = repository.updateUserInfo(_user.value!!.userId, obj)
+            _updateUserResponse.value = repository.updateUserInfo(_dbUser.value!!.userId, obj)
         }
     }
 
@@ -192,14 +233,14 @@ class ProfileViewModel(
 
     fun validateVideoUpload() {
         viewModelScope.launch {
-            _validateVideoUploadResponse.value = repository.validateVideoUpload(_user.value!!.userId)
+            _validateVideoUploadResponse.value = repository.validateVideoUpload(_dbUser.value!!.userId)
         }
     }
 
     fun registerVideoUpload(registerVideoUploadBody: RegisterVideoUploadBody) {
         viewModelScope.launch {
             _registerVideoUploadResponse.value =
-                repository.registerVideoUpload(_user.value!!.userId, registerVideoUploadBody)
+                repository.registerVideoUpload(_dbUser.value!!.userId, registerVideoUploadBody)
         }
     }
 

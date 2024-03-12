@@ -9,11 +9,13 @@ import android.view.ViewGroup
 import android.widget.MediaController
 import com.you4me.you4me.databinding.FragmentFindDateBinding
 import com.you4me.you4me.models.FetchDatesResponseItem
+import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.OnSwipeTouchListener
+import com.you4me.you4me.utils.fetchDates
 
 
 class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, MainRepository>() {
@@ -22,6 +24,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
     private var currentIdx = -1
 
     private lateinit var mediaControls: MediaController
+    private var paymentModes : ArrayList<ValueLabelResponse>? = null
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
@@ -99,6 +102,17 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
     }
 
     private fun setupObservers() {
+        viewModel.paymentModes.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    paymentModes = it.value
+                }
+
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
+            }
+        }
         viewModel.fetchDates.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -160,8 +174,8 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
 
         binding.userName.text = "${date.name}, ${date.age}"
         binding.location.text = date.place
-        binding.payment.text = date.payment
-        val videoUrI = Uri.parse(date.videoURL)
+        binding.payment.text = paymentModes?.first { it.value == date.payment}?.label ?: date.payment
+        val videoUrI = Uri.parse(date.videoURL.replace("http:", "https:"))
         binding.userVideo.setVideoURI(videoUrI)
         binding.userVideo.start()
     }
