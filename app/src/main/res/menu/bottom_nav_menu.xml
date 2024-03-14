@@ -16,7 +16,7 @@
     <item
         android:id="@+id/likesFragment"
         android:icon="@drawable/baseline_favorite_24"
-        android:title="@string/likes" />
+        android:title="@string/date_interests" />
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/baseline_account_circle_24"

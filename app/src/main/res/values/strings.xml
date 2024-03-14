@@ -35,4 +35,5 @@
     <string name="religion">Religion</string>
     <string name="phone_number">Phone Number</string>
     <string name="no_date_interests">No date interests</string>
+    <string name="date_interests">Date Interests</string>
 </resources>
