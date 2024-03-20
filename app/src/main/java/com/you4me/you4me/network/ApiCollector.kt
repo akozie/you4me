@@ -109,13 +109,13 @@ interface ApiCollector {
         @Path("userId") userId: String
     ): GetSubscriptionStatus
 
-    @PUT("/dates/{interestId}/interests")
+    @PUT("dates/{interestId}/interests")
     suspend fun rejectDateInterest(
         @Path("interestId") interestId: String,
         @Body body: RejectDateInterestBody
     )
 
-    @PUT("/dates/{interestId}/interests")
+    @PUT("dates/{interestId}/interests")
     suspend fun updateDateInterest(
         @Path("interestId") interestId: String,
         @Body body: UpdateDateInterestBody

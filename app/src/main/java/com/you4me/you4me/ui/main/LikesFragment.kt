@@ -1,12 +1,12 @@
 package com.you4me.you4me.ui.main
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.MediaController
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import com.you4me.you4me.databinding.FragmentLikesBinding
 import com.you4me.you4me.models.FetchDateInterest
 import com.you4me.you4me.network.ApiCollector
@@ -20,7 +20,10 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     private var dateInterests = FetchDateInterest()
     private var currentIdx = -1
 
-    private lateinit var mediaControls: MediaController
+    private var player: ExoPlayer? = null
+    private var playWhenReady = true
+    private var mediaItemIndex = 0
+    private var playbackPosition = 0L
 
     override fun getViewModel() = MainViewModel::class.java
 
@@ -34,17 +37,23 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.loader.show()
         setupObservers()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initializePlayer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        releasePlayer()
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupView() {
         viewModel.fetchDateInterests()
-        mediaControls = MediaController(ctx)
-        mediaControls.setAnchorView(binding.userVideo)
-        mediaControls.setMediaPlayer(binding.userVideo)
-        binding.userVideo.setMediaController(mediaControls)
 
         binding.acceptBtn.setOnClickListener {
             if (currentIdx < 0) return@setOnClickListener
@@ -57,8 +66,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             showLoading(true)
             val d = dateInterests[currentIdx]
             viewModel.rejectDateInterest(
-                d.interestID,
-                d.dateID, "REJECTED"
+                d.interestID, d.dateID, "REJECTED"
             )
         }
 
@@ -70,8 +78,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 val d = dateInterests[currentIdx]
                 showLoading(true)
                 viewModel.rejectDateInterest(
-                    d.interestID,
-                    d.dateID, "REJECTED"
+                    d.interestID, d.dateID, "REJECTED"
                 )
             }
 
@@ -88,7 +95,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     }
 
     private fun setupObservers() {
-        viewModel.user.observe(viewLifecycleOwner) {viewModel.getSubscriptionStatus()}
+        viewModel.user.observe(viewLifecycleOwner) { viewModel.getSubscriptionStatus() }
         viewModel.getSubscriptionStatus.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -159,23 +166,50 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     }
 
     private fun setScreen() {
+        showLoading(false)
         currentIdx++
         val date = dateInterests[currentIdx]
 
+        val mediaItem = MediaItem.fromUri(date.videoURL.replace("http:", "https:"))
+        player?.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
+        player?.playWhenReady = playWhenReady
+        player?.prepare()
+
         binding.userName.text = "${date.name}, ${date.age}"
-        val videoUrI = Uri.parse(date.videoURL)
-        binding.userVideo.setVideoURI(videoUrI)
-        binding.userVideo.start()
+        binding.location.text = date.venue
+        binding.dateODate.text = "${date.proposedDate} : ${date.proposedTime}"
+    }
+
+    private fun releasePlayer() {
+        player?.let { exoPlayer ->
+            playbackPosition = exoPlayer.currentPosition
+            mediaItemIndex = exoPlayer.currentMediaItemIndex
+            playWhenReady = exoPlayer.playWhenReady
+            exoPlayer.release()
+        }
+        player = null
+    }
+
+    private fun initializePlayer() {
+        player = ExoPlayer.Builder(ctx).build().also {
+            binding.userVideo.player = it
+            if (currentIdx != -1) {
+                val mediaItem = MediaItem.fromUri(dateInterests[currentIdx].videoURL.replace("http:", "https:"))
+                it.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
+                it.playWhenReady = playWhenReady
+                it.prepare()
+            }
+        }
     }
 
     private fun showEmpty() {
         binding.mainLyt.visibility = View.GONE
         binding.emptyLyt.visibility = View.VISIBLE
+        binding.loader.visibility = View.GONE
     }
 
     private fun showLoading(loading: Boolean) {
         binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
-        binding.emptyLyt.visibility = if (loading) View.GONE else View.VISIBLE
         binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
 }

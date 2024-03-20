@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import com.you4me.you4me.databinding.FragmentFindDateBinding
 import com.you4me.you4me.models.FetchDatesResponseItem
 import com.you4me.you4me.models.ValueLabelResponse
@@ -23,8 +25,12 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
     private var dates = ArrayList<FetchDatesResponseItem>()
     private var currentIdx = -1
 
-    private lateinit var mediaControls: MediaController
-    private var paymentModes : ArrayList<ValueLabelResponse>? = null
+    private var player: ExoPlayer? = null
+    private var playWhenReady = true
+    private var mediaItemIndex = 0
+    private var playbackPosition = 0L
+
+    private var paymentModes: ArrayList<ValueLabelResponse>? = null
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
@@ -42,12 +48,22 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         setupObservers()
     }
 
+    override fun onResume() {
+        super.onResume()
+        initializePlayer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        releasePlayer()
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun setupView() {
-        mediaControls = MediaController(ctx)
-        mediaControls.setAnchorView(binding.userVideo)
-        mediaControls.setMediaPlayer(binding.userVideo)
-        binding.userVideo.setMediaController(mediaControls)
+//        mediaControls = MediaController(ctx)
+//        mediaControls.setAnchorView(binding.userVideo)
+//        mediaControls.setMediaPlayer(binding.userVideo)
+//        binding.userVideo.setMediaController(mediaControls)
 
         binding.acceptBtn.setOnClickListener {
             if (currentIdx < 0) return@setOnClickListener
@@ -116,8 +132,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         viewModel.fetchDates.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    if (it.value.isEmpty())
-                        showEmpty()
+                    if (it.value.isEmpty()) showEmpty()
                     else {
                         dates = it.value
                         setScreen()
@@ -174,10 +189,36 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
 
         binding.userName.text = "${date.name}, ${date.age}"
         binding.location.text = date.place
-        binding.payment.text = paymentModes?.first { it.value == date.payment}?.label ?: date.payment
-        val videoUrI = Uri.parse(date.videoURL.replace("http:", "https:"))
-        binding.userVideo.setVideoURI(videoUrI)
-        binding.userVideo.start()
+        binding.payment.text =
+            paymentModes?.firstOrNull { it.value == date.payment }?.label ?: date.payment
+
+        val mediaItem = MediaItem.fromUri(date.videoURL.replace("http:", "https:"))
+        player?.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
+        player?.playWhenReady = playWhenReady
+        player?.prepare()
+    }
+
+    private fun releasePlayer() {
+        player?.let { exoPlayer ->
+            playbackPosition = exoPlayer.currentPosition
+            mediaItemIndex = exoPlayer.currentMediaItemIndex
+            playWhenReady = exoPlayer.playWhenReady
+            exoPlayer.release()
+        }
+        player = null
+    }
+
+    private fun initializePlayer() {
+        player = ExoPlayer.Builder(ctx).build().also {
+            binding.userVideo.player = it
+            if (currentIdx != -1) {
+                val mediaItem =
+                    MediaItem.fromUri(dates[currentIdx].videoURL.replace("http:", "https:"))
+                it.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
+                it.playWhenReady = playWhenReady
+                it.prepare()
+            }
+        }
     }
 
     private fun showEmpty() {

@@ -58,16 +58,16 @@ dependencies {
 
     //navigation
     val navigationVersion = "2.7.7"
-    implementation ("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
-    implementation ("androidx.navigation:navigation-ui-ktx:$navigationVersion")
+    implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
+    implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 
     //retrofit
     val retrofitVersion = "2.9.0"
-    implementation ("com.squareup.retrofit2:retrofit:$retrofitVersion")
-    implementation ("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
 
     //Logging Interceptor
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
     //room
     val roomVersion = "2.6.1"
@@ -79,6 +79,18 @@ dependencies {
     //google places api
     implementation("com.google.android.libraries.places:places:3.3.0")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.10"))
+
+    //google play billing
+    implementation("com.android.billingclient:billing:6.2.0")
+
+    //google auth
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+
+    //videoview
+    val mediaVersion = "1.3.0"
+    implementation("androidx.media3:media3-exoplayer:$mediaVersion")
+    implementation("androidx.media3:media3-ui:$mediaVersion")
+    implementation("androidx.media3:media3-exoplayer-dash:$mediaVersion")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

@@ -19,6 +19,8 @@ import android.widget.ArrayAdapter
 import android.widget.MediaController
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import com.siddigital.enairaofflineapp.utils.Utils
 import com.you4me.you4me.databinding.FragmentProfileBinding
 import com.you4me.you4me.databinding.VideoDialogBinding
@@ -62,7 +64,8 @@ class ProfileFragment :
     private var videoUri: Uri? = null
     private lateinit var videoId: String
 
-    private lateinit var mediaControls: MediaController
+//    private lateinit var mediaControls: MediaController
+    private var player: ExoPlayer? = null
 
     private lateinit var videoViewBinding: VideoDialogBinding
 
@@ -226,7 +229,8 @@ class ProfileFragment :
                 is Resource.Success -> {
                     showLoader(false)
                     showToast("Video Upload Successful!")
-                    videoViewBinding.videoView.setVideoURI(videoUri)
+//                    videoViewBinding.videoView.setVideoURI(videoUri)
+                    initializePlayer()
                 }
 
                 is Resource.Failure -> {}
@@ -397,7 +401,6 @@ class ProfileFragment :
 
     private fun setupView() {
         videoViewBinding = VideoDialogBinding.inflate(layoutInflater, null, false)
-//        dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.UK)
         calendar = Calendar.getInstance()
         binding.dob.inputType = InputType.TYPE_NULL
         val date = OnDateSetListener { _, year, month, day ->
@@ -456,7 +459,6 @@ class ProfileFragment :
     private fun populateViews(user: User) {
         binding.name.setText(user.name)
 
-        Log.d("Name", user.name)
         binding.dob.setText(user.dob)
         binding.phone.setText(user.phone)
 
@@ -490,21 +492,36 @@ class ProfileFragment :
 
     private fun setupVideo() {
         if (user.videoURL.isNotBlank()) videoUri = Uri.parse(user.videoURL.replace("http:", "https:"))
-        mediaControls = MediaController(ctx)
-        mediaControls.setAnchorView(videoViewBinding.videoView)
-        mediaControls.setMediaPlayer(videoViewBinding.videoView)
-        videoViewBinding.videoView.setMediaController(mediaControls)
-//        val videoUrI = Uri.parse(user.videoURL)
-        videoViewBinding.videoView.setVideoURI(videoUri)
-//        videoViewBinding.videoView.start()
+        initializePlayer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        releasePlayer()
     }
 
     private fun showVideoDialog() {
         val dialog = Dialog(ctx)
         dialog.setContentView(videoViewBinding.root)
         dialog.show()
-        videoViewBinding.videoView.start()
+        player?.play()
     }
+
+    private fun releasePlayer() {
+        player?.release()
+        player = null
+    }
+
+    private fun initializePlayer() {
+        if (player != null) player = null
+        player = ExoPlayer.Builder(ctx).build().also {
+            videoViewBinding.videoView.player = it
+                val mediaItem = MediaItem.fromUri(videoUri!!)
+                it.setMediaItem(mediaItem)
+                it.prepare()
+        }
+    }
+
 
     companion object {
         const val SEXUAL_ORIENTATION_SPINNER = 1

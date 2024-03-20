@@ -26,7 +26,7 @@
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <VideoView
+        <androidx.media3.ui.PlayerView
             android:id="@+id/user_video"
             android:layout_width="match_parent"
             android:layout_height="250dp"
@@ -56,15 +56,15 @@
             tools:text="Domino's" />
 
         <TextView
-            android:id="@+id/payment"
+            android:id="@+id/date_o_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawablePadding="8dp"
             android:textSize="16sp"
-            app:drawableStartCompat="@drawable/baseline_credit_card_24"
+            app:drawableStartCompat="@drawable/baseline_access_time_24_big"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/location"
-            tools:text="Together" />
+            tools:text="12/02/2023 : 3:00pm" />
 
         <ImageButton
             android:id="@+id/reject_btn"
@@ -75,7 +75,7 @@
             android:src="@drawable/baseline_cancel_24"
             app:layout_constraintEnd_toStartOf="@id/accept_btn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/payment" />
+            app:layout_constraintTop_toBottomOf="@id/date_o_date" />
 
         <ImageButton
             android:id="@+id/accept_btn"

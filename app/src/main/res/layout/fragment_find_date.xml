@@ -25,7 +25,7 @@
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <VideoView
+        <androidx.media3.ui.PlayerView
             android:id="@+id/user_video"
             android:layout_width="match_parent"
             android:layout_height="250dp"

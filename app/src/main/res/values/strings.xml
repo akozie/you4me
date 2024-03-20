@@ -36,4 +36,6 @@
     <string name="phone_number">Phone Number</string>
     <string name="no_date_interests">No date interests</string>
     <string name="date_interests">Date Interests</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="sign_up_with_google">Sign up with Google</string>
 </resources>
