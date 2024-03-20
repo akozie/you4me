@@ -2,7 +2,6 @@ package com.you4me.you4me.ui.authentication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.you4me.you4me.R
 import com.you4me.you4me.databinding.ActivityAuthenticationBinding
 
 class AuthenticationActivity : AppCompatActivity() {

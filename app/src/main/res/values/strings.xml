@@ -18,6 +18,9 @@
     <string name="login">Login</string>
     <string name="name">Name</string>
     <string name="new_user">New user? <font fgcolor="#ff0052">Sign up here</font></string>
+    <string name="onboarding_txt1">Start your love story with a date, not endless messages.</string>
+    <string name="onboarding_txt2">There is something truly special about connecting with someone face to face.</string>
+    <string name="onboarding_txt3">No chats, plan outings, find love.</string>
     <string name="password">Password</string>
     <string name="profile">Profile</string>
     <string name="register">Register</string>
@@ -38,4 +41,6 @@
     <string name="date_interests">Date Interests</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_up_with_google">Sign up with Google</string>
+    <string name="circle">Circle</string>
+    <string name="next">Next</string>
 </resources>

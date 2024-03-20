@@ -25,7 +25,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
     protected val dataSource = RemoteDataSource()
     protected lateinit var binding: B
     protected lateinit var viewModel: VM
-    protected lateinit var ctx : Context
+    protected lateinit var ctx: Context
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,7 +38,8 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
         requireActivity().onBackPressedDispatcher
             .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().popBackStack()
+                    if (!findNavController().popBackStack())
+                        requireActivity().onBackPressed()
                 }
             })
         ctx = requireContext()
@@ -60,7 +61,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
         return builder
     }
 
-    fun showToast(message : String, length : Int = Toast.LENGTH_SHORT) {
+    fun showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
         Toast.makeText(requireContext(), message, length).show()
     }
 }

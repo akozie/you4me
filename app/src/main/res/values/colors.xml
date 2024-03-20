@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="primary_pink">#ffff0052</color>
+    <color name="grey_circle">#59656F</color>
 </resources>
