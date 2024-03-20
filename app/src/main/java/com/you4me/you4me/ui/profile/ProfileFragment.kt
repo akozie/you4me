@@ -502,6 +502,9 @@ class ProfileFragment :
 
     private fun showVideoDialog() {
         val dialog = Dialog(ctx)
+        if (videoViewBinding.root.parent != null) {
+            (videoViewBinding.root.parent as ViewGroup).removeView(videoViewBinding.root)
+        }
         dialog.setContentView(videoViewBinding.root)
         dialog.show()
         player?.play()
