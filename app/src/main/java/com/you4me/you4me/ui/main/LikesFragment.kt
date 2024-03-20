@@ -7,6 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchasesResponseListener
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryPurchasesParams
+import com.google.common.collect.ImmutableList
 import com.you4me.you4me.databinding.FragmentLikesBinding
 import com.you4me.you4me.models.FetchDateInterest
 import com.you4me.you4me.network.ApiCollector
@@ -25,6 +36,31 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     private var mediaItemIndex = 0
     private var playbackPosition = 0L
 
+    private lateinit var billingClient: BillingClient
+    private lateinit var productDetails: ProductDetails
+    private lateinit var queryProductDetailsParams: QueryProductDetailsParams
+
+    private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
+        // To be implemented in a later section.
+    }
+
+    private val purchasesResponseListener = PurchasesResponseListener { billingResult, purchases ->
+        if (purchases.isNotEmpty() && purchases[0].purchaseState == Purchase.PurchaseState.PURCHASED) {
+            //continue
+        } else {
+            billingClient.queryProductDetailsAsync(queryProductDetailsParams) { billingResult, productDetailsList ->
+                // check billingResult
+                // process returned productDetailsList
+                println("billing result code ${billingResult.responseCode}")
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    println(productDetailsList.joinToString(","))
+                    productDetails = productDetailsList[0]
+                    showBilling()
+                }
+            }
+        }
+    }
+
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
@@ -39,6 +75,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         super.onViewCreated(view, savedInstanceState)
         binding.loader.show()
         setupObservers()
+        setupBilling()
     }
 
     override fun onResume() {
@@ -211,5 +248,60 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     private fun showLoading(loading: Boolean) {
         binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
         binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
+    }
+
+    private fun setupBilling() {
+        billingClient =
+            BillingClient.newBuilder(ctx.applicationContext).setListener(purchasesUpdatedListener)
+                .enablePendingPurchases().build()
+
+        queryProductDetailsParams = QueryProductDetailsParams.newBuilder().setProductList(
+            ImmutableList.of(
+                QueryProductDetailsParams.Product.newBuilder().setProductId("you4me_premium")
+                    .setProductType(BillingClient.ProductType.SUBS).build()
+            )
+        ).build()
+
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    // The BillingClient is ready. You can query purchases here.
+                    val params = QueryPurchasesParams.newBuilder()
+                        .setProductType(BillingClient.ProductType.SUBS)
+
+                    // uses queryPurchasesAsync Kotlin extension function
+                    println("called query purchases async")
+                    billingClient.queryPurchasesAsync(params.build(), purchasesResponseListener)
+
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+            }
+        })
+    }
+
+    private fun showBilling() {
+        println("show billing")
+        val t = productDetails.subscriptionOfferDetails?.get(0)?.offerToken
+
+        val productDetailsParamsList = listOf(
+            BillingFlowParams.ProductDetailsParams.newBuilder()
+                // retrieve a value for "productDetails" by calling queryProductDetailsAsync()
+                .setProductDetails(productDetails)
+                // For One-time product, "setOfferToken" method shouldn't be called.
+                // For subscriptions, to get an offer token, call ProductDetails.subscriptionOfferDetails()
+                // for a list of offers that are available to the user
+                .setOfferToken(t!!).build()
+        )
+
+        val billingFlowParams =
+            BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParamsList)
+                .build()
+
+// Launch the billing flow
+        val billingResult = billingClient.launchBillingFlow(requireActivity(), billingFlowParams)
     }
 }

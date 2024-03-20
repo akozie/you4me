@@ -36,9 +36,5 @@ class MainActivity : AppCompatActivity() {
         if (!Places.isInitialized()) {
             Places.initializeWithNewPlacesApiEnabled(applicationContext, placesSecretKey)
         }
-
-        // Create a new PlacesClient instance
-//        val placesClient = Places.createClient(this)
-
     }
 }
