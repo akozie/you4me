@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -27,8 +28,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
         binding.bottomNavBar.setupWithNavController(navHostFragment.findNavController())
+
+
+        navHostFragment.findNavController()
+            .addOnDestinationChangedListener { _, destination, _ ->
+                when (destination.id) {
+                    R.id.notificationsFragment -> {
+                        binding.bottomNavBar.visibility = View.GONE
+                    }
+
+                    else -> binding.bottomNavBar.visibility = View.VISIBLE
+                }
+            }
     }
 
     private fun initializePlacesSdk() {
