@@ -9,7 +9,11 @@
         android:id="@+id/homeFragment"
         android:name="com.you4me.you4me.ui.main.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_notificationsFragment"
+            app:destination="@id/notificationsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/findDateFragment"
         android:name="com.you4me.you4me.ui.main.FindDateFragment"
@@ -30,4 +34,9 @@
         android:name="com.you4me.you4me.ui.main.LikesFragment"
         android:label="fragment_likes"
         tools:layout="@layout/fragment_likes" />
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.you4me.you4me.ui.main.NotificationsFragment"
+        android:label="fragment_notifications"
+        tools:layout="@layout/fragment_notifications" />
 </navigation>

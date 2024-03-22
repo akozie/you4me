@@ -12,7 +12,11 @@ import com.you4me.you4me.network.ApiCollector
 class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() {
 
     suspend fun updatePushToken(userId: String, token: JsonObject) =
-        apiCollector.updatePushToken(userId, token)
+        safeApiCall{ apiCollector.updatePushToken(userId, token) }
+
+    suspend fun getNotifications(userId: String) = safeApiCall { apiCollector.getNotifications(userId) }
+
+    suspend fun markNotificationAsRead(notificationId : String) = safeApiCall { apiCollector.markNotificationAsRead(notificationId) }
 
     suspend fun getPaymentModes() = safeApiCall { apiCollector.getPaymentModes() }
 

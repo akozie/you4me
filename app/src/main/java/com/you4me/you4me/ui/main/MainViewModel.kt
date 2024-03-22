@@ -12,6 +12,7 @@ import com.you4me.you4me.models.FetchDateInterest
 import com.you4me.you4me.models.FetchDatesResponse
 import com.you4me.you4me.models.GetSubscriptionStatus
 import com.you4me.you4me.models.InviteeDatesRequiringApproval
+import com.you4me.you4me.models.Notification
 import com.you4me.you4me.models.Place
 import com.you4me.you4me.models.ProposeNewDateTimeBody
 import com.you4me.you4me.models.RejectDateInterestBody
@@ -89,6 +90,10 @@ class MainViewModel(
     val proposeNewDateTime: LiveData<Resource<Unit>>
         get() = _proposeNewDateTime
 
+    val _getNotificationsResponse = MutableLiveData<Resource<ArrayList<Notification>>>()
+    val getNotificationsResponse : LiveData<Resource<ArrayList<Notification>>>
+        get() = _getNotificationsResponse
+
     init {
         getUser()
         fetchPaymentModes()
@@ -97,6 +102,18 @@ class MainViewModel(
     private fun getUser() {
         viewModelScope.launch {
             _user.value = dbRepository.getUser()
+        }
+    }
+
+    fun getNotifications(userId : String) {
+        viewModelScope.launch {
+            _getNotificationsResponse.value = repository.getNotifications(userId)
+        }
+    }
+
+    fun markNotificationAsRead(notificationId : String) {
+        viewModelScope.launch {
+            repository.markNotificationAsRead(notificationId)
         }
     }
 

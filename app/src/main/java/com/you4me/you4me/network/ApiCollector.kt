@@ -9,6 +9,7 @@ import com.you4me.you4me.models.FetchDateInterest
 import com.you4me.you4me.models.FetchDatesResponse
 import com.you4me.you4me.models.GetSubscriptionStatus
 import com.you4me.you4me.models.InviteeDatesRequiringApproval
+import com.you4me.you4me.models.Notification
 import com.you4me.you4me.models.ProposeNewDateTimeBody
 import com.you4me.you4me.models.User
 import com.you4me.you4me.models.RegisterResponse
@@ -158,5 +159,15 @@ interface ApiCollector {
         @Path("userId") userId: String,
         @Path("interestId") interestId: String,
         @Body body: ProposeNewDateTimeBody
+    )
+
+    @GET("notifications/users/{userId}")
+    suspend fun getNotifications(
+        @Path("userId") userId: String,
+    ) : ArrayList<Notification>
+
+    @PATCH("notifications/{notifyId}")
+    suspend fun markNotificationAsRead(
+        @Path("notifyId") notificationId : String
     )
 }

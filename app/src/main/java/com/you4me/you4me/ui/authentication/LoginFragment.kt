@@ -25,8 +25,6 @@ class LoginFragment :
         if (!isOnBoardingDone()) findNavController().navigate(R.id.action_loginFragment_to_onboardingFragment)
         if (sharedPrefHelper.getBoolean(SharedPrefHelper.IS_LOGGED_IN)){
             startActivity(Intent(requireActivity(), MainActivity::class.java))
-        } else {
-            viewModel.clearUser()
         }
         setupViews()
     }
@@ -51,13 +49,13 @@ class LoginFragment :
             when (it) {
                 is Resource.Success -> {
                     //Store data and navigate
-                    showDialog("Login Successful", true)
+                    val dialog = showDialog("Login Successful", true)
                     viewModel.saveUser(it.value)
                     sharedPrefHelper.saveString(SharedPrefHelper.USER_ID, it.value.userId)
                     sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, true)
                     binding.email.text?.clear()
                     binding.password.text?.clear()
-
+                    dialog.dismiss()
                     startActivity(Intent(requireActivity(), MainActivity::class.java))
                 }
 
@@ -69,6 +67,8 @@ class LoginFragment :
             }
         }
         binding.loginBtn.setOnClickListener {
+            viewModel.clearUser()
+            sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, false)
             val email = binding.email.text?.trim()
             val password = binding.password.text?.trim()
 

@@ -46,4 +46,7 @@
     <string name="delete_your_account">Delete your account</string>
     <string name="click_to_delete_your_account">Click here if you wish to delete your account</string>
     <string name="log_out">Log out</string>
+    <string name="notifications">Notifications</string>
+    <string name="mark_as_read">Mark as read</string>
+    <string name="no_notifications_available">No notifications available</string>
 </resources>

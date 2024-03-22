@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import com.you4me.you4me.R
 import com.you4me.you4me.adapter.DateInterestsRequiringApprovalRecyclerAdapter
 import com.you4me.you4me.adapter.InviteeDateForApprovalRecyclerAdapter
 import com.you4me.you4me.adapter.UpcomingDatesRecyclerAdapter
@@ -34,6 +36,7 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addObservers()
+        binding.notificationIcon.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment) }
     }
 
     private fun addObservers() {
@@ -41,6 +44,7 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
             viewModel.getUpcomingDates()
             viewModel.getInviteeDatesRequiringApproval()
             viewModel.getDateInterestsRequiringApproval()
+            viewModel.getNotifications(it.userId)
         }
 
         viewModel.upcomingDates.observe(viewLifecycleOwner) {
@@ -112,6 +116,24 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
 
                 is Resource.Failure -> {
                     showToast(it.message ?: it.errorBody ?: "")
+                }
+            }
+        }
+
+        viewModel.getNotificationsResponse.observe(viewLifecycleOwner) {
+            when(it) {
+                is Resource.Success -> {
+                    val isUnseen = it.value.map { n->
+                        n.seen.lowercase() == "false"
+                    }.contains(true)
+                    if (it.value.isEmpty() || !isUnseen) {
+                        binding.unreadNotificationsDot.visibility = View.GONE
+                    } else {
+                        binding.unreadNotificationsDot.visibility = View.VISIBLE
+                    }
+                }
+                is Resource.Failure -> {
+
                 }
             }
         }
