@@ -10,6 +10,9 @@ import com.you4me.you4me.network.Resource
 class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository() {
 
     suspend fun getUser(userId: String) = safeApiCall { apiCollector.getUser(userId) }
+
+    suspend fun deleteUser(userId: String) = safeApiCall { apiCollector.deleteUser(userId) }
+
     suspend fun getGenders(): Resource<ArrayList<ValueLabelResponse>> {
         return safeApiCall {
             apiCollector.getGenders()

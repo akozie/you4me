@@ -1,6 +1,7 @@
 package com.you4me.you4me.ui.profile
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.Dialog
@@ -449,6 +450,33 @@ class ProfileFragment :
                     }
                 }
             }
+
+        binding.deleteAccLyt.setOnClickListener {
+            val alertDialog = AlertDialog.Builder(ctx)
+            alertDialog.setTitle("Delete account?")
+            alertDialog.setMessage("Selecting delete will delete your account forever. This action is not reversible")
+            alertDialog.setPositiveButton("Cancel"){ dialog, int ->
+                dialog.dismiss()
+            }
+            alertDialog.setNegativeButton("Delete"){ dialog, int ->
+                viewModel.deleteUser(user.userId)
+                viewModel.deleteUserResponse.observe(viewLifecycleOwner) {
+                    when (it) {
+                        is Resource.Success -> {
+                            showToast("Account Deleted Successfully!")
+                            requireActivity().finish()
+                        }
+                        is Resource.Failure -> {
+                            dialog.dismiss()
+                            showDialog(it.message ?: "")
+                        }
+                    }
+                }
+            }
+            alertDialog.setCancelable(false)
+            alertDialog.show()
+
+        }
     }
 
     private fun updateDateOfBirth() {

@@ -43,4 +43,6 @@
     <string name="sign_up_with_google">Sign up with Google</string>
     <string name="circle">Circle</string>
     <string name="next">Next</string>
+    <string name="delete_your_account">Delete your account</string>
+    <string name="click_to_delete_your_account">Click here if you wish to delete your account</string>
 </resources>

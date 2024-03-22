@@ -68,6 +68,12 @@ interface ApiCollector {
         @Path("countryId") countryId: String
     ): ArrayList<ValueLabelResponse>
 
+
+    @POST("delete/{userId}")
+    suspend fun deleteUser(
+        @Path("userId") userId: String
+    )
+
     @PATCH("users/{userId}")
     suspend fun updateUserInfo(
         @Path("userId") userId: String,

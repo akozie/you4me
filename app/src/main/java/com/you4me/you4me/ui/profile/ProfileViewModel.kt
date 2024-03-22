@@ -85,6 +85,10 @@ class ProfileViewModel(
     val updateVideoUrlResponse  : LiveData<Resource<Unit>>
         get() = _updateVideoUrlResponse
 
+    private val _deleteUserResponse : MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val deleteUserResponse  : LiveData<Resource<Unit>>
+        get() = _deleteUserResponse
+
     init {
         getUserFromDb()
         getGenders()
@@ -92,6 +96,12 @@ class ProfileViewModel(
         getSexualOrientations()
         getAgeGroups()
         getReligions()
+    }
+
+    fun deleteUser(userId: String) {
+        viewModelScope.launch {
+            _deleteUserResponse.value = repository.deleteUser(userId)
+        }
     }
 
     fun saveUser(user : User) {
