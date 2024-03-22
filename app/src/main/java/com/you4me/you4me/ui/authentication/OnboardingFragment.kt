@@ -1,13 +1,11 @@
 package com.you4me.you4me.ui.authentication
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView.OnScrollListener
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.navigation.fragment.findNavController
@@ -16,24 +14,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.you4me.you4me.R
 import com.you4me.you4me.adapter.OnboardingRecyclerAdapter
 import com.you4me.you4me.databinding.FragmentOnboardingBinding
+import com.you4me.you4me.utils.SharedPrefHelper
 
 class OnboardingFragment : Fragment() {
     private lateinit var binding: FragmentOnboardingBinding
     private var curPosition = 0
+    private lateinit var sharedPrefHelper: SharedPrefHelper
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentOnboardingBinding.inflate(layoutInflater)
-        if (isOnBoardingDone()) findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
-        else setup()
+        sharedPrefHelper = SharedPrefHelper(requireContext())
+//        if (isOnBoardingDone()) findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
+//        else
+            setup()
         return binding.root
     }
 
     private fun isOnBoardingDone(): Boolean {
-        val sharedPref = requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
-        return sharedPref?.getBoolean("Finished", false) ?: false
+        return sharedPrefHelper.getBoolean(SharedPrefHelper.IS_ONBOARDED)
     }
 
     private fun setup() {
@@ -67,7 +68,7 @@ class OnboardingFragment : Fragment() {
         )
 
         binding.loginBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
+            findNavController().popBackStack()
             onBoardingFinished()
         }
         binding.registerBtn.setOnClickListener {
@@ -110,9 +111,6 @@ class OnboardingFragment : Fragment() {
     }
 
     private fun onBoardingFinished() {
-        val sharedPref = activity?.getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
-        val editor = sharedPref?.edit()
-        editor?.putBoolean("Finished", true)
-        editor?.apply()
+        sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_ONBOARDED, true)
     }
 }

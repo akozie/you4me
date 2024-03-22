@@ -89,6 +89,10 @@ class ProfileViewModel(
     val deleteUserResponse  : LiveData<Resource<Unit>>
         get() = _deleteUserResponse
 
+    private val _logoutResponse : MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val logoutResponse  : LiveData<Resource<Unit>>
+        get() = _logoutResponse
+
     init {
         getUserFromDb()
         getGenders()
@@ -96,6 +100,12 @@ class ProfileViewModel(
         getSexualOrientations()
         getAgeGroups()
         getReligions()
+    }
+
+    fun logout(userId: String) {
+        viewModelScope.launch {
+            _logoutResponse.value = repository.logout(userId)
+        }
     }
 
     fun deleteUser(userId: String) {

@@ -1,82 +1,83 @@
 package com.you4me.you4me.service
-
-import android.Manifest
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.SystemClock
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
-import com.google.firebase.messaging.FirebaseMessagingService
-import com.google.firebase.messaging.RemoteMessage
-import com.google.gson.JsonObject
-import com.you4me.you4me.R
-import com.you4me.you4me.network.ApiCollector
-import com.you4me.you4me.network.RemoteDataSource
-import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.ui.main.MainActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-
-class MyFirebaseMessagingService : FirebaseMessagingService() {
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(Dispatchers.IO + job)
-    override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        // Handle FCM messages here
-        showNotification(
-            remoteMessage.notification?.title.toString(),
-            remoteMessage.notification?.body.toString()
-        )
-    }
-
-    override fun onNewToken(token: String) {
-        super.onNewToken(token)
-        val sharedPref = getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
-        val userId = sharedPref.getString("user_id", "")!!
-        if (userId.isNotBlank()) updateToken(userId, token)
-    }
-
-    private fun showNotification(title: String, body: String) {
-        val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        val pendingIntent: PendingIntent =
-            PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-
-        val builder = NotificationCompat.Builder(this, "YOU_4_ME_CHANNEL_ID")
-            .setSmallIcon(R.drawable.icon)
-            .setContentTitle(title)
-            .setContentText(body)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-
-        with(NotificationManagerCompat.from(this)) {
-
-            if (ContextCompat.checkSelfPermission(
-                    applicationContext,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                val id = SystemClock.uptimeMillis().toInt();
-                notify(id, builder.build())
-            }
-        }
-    }
-
-    private fun updateToken(userId: String, token: String) {
-        val obj = JsonObject()
-        obj.addProperty("pushToken", token)
-        val repo = MainRepository(RemoteDataSource().buildApi(ApiCollector::class.java))
-        scope.launch { repo.updatePushToken(userId, obj) }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
-    }
-}
+//
+//import android.Manifest
+//import android.app.PendingIntent
+//import android.content.Intent
+//import android.content.pm.PackageManager
+//import android.os.SystemClock
+//import androidx.core.app.NotificationCompat
+//import androidx.core.app.NotificationManagerCompat
+//import androidx.core.content.ContextCompat
+//import com.google.firebase.messaging.FirebaseMessagingService
+//import com.google.firebase.messaging.RemoteMessage
+//import com.google.gson.JsonObject
+//import com.you4me.you4me.R
+//import com.you4me.you4me.network.ApiCollector
+//import com.you4me.you4me.network.RemoteDataSource
+//import com.you4me.you4me.repository.MainRepository
+//import com.you4me.you4me.ui.main.MainActivity
+//import com.you4me.you4me.utils.SharedPrefHelper
+//import kotlinx.coroutines.CoroutineScope
+//import kotlinx.coroutines.Dispatchers
+//import kotlinx.coroutines.SupervisorJob
+//import kotlinx.coroutines.launch
+//
+//class MyFirebaseMessagingService : FirebaseMessagingService() {
+//    private val job = SupervisorJob()
+//    private val scope = CoroutineScope(Dispatchers.IO + job)
+//    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+//        // Handle FCM messages here
+//        showNotification(
+//            remoteMessage.notification?.title.toString(),
+//            remoteMessage.notification?.body.toString()
+//        )
+//    }
+//
+//    override fun onNewToken(token: String) {
+//        super.onNewToken(token)
+//        val sharedPref = SharedPrefHelper(applicationContext)
+////        val sharedPref = getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
+//        val userId = sharedPref.getString(SharedPrefHelper.USER_ID, "")
+//        if (userId.isNotBlank()) updateToken(userId, token)
+//    }
+//
+//    private fun showNotification(title: String, body: String) {
+//        val intent = Intent(this, MainActivity::class.java).apply {
+//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//        }
+//        val pendingIntent: PendingIntent =
+//            PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+//
+//        val builder = NotificationCompat.Builder(this, "YOU_4_ME_CHANNEL_ID")
+//            .setSmallIcon(R.drawable.icon)
+//            .setContentTitle(title)
+//            .setContentText(body)
+//            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//            .setContentIntent(pendingIntent)
+//            .setAutoCancel(true)
+//
+//        with(NotificationManagerCompat.from(this)) {
+//
+//            if (ContextCompat.checkSelfPermission(
+//                    applicationContext,
+//                    Manifest.permission.POST_NOTIFICATIONS
+//                ) == PackageManager.PERMISSION_GRANTED
+//            ) {
+//                val id = SystemClock.uptimeMillis().toInt();
+//                notify(id, builder.build())
+//            }
+//        }
+//    }
+//
+//    private fun updateToken(userId: String, token: String) {
+//        val obj = JsonObject()
+//        obj.addProperty("pushToken", token)
+//        val repo = MainRepository(RemoteDataSource().buildApi(ApiCollector::class.java))
+//        scope.launch { repo.updatePushToken(userId, obj) }
+//    }
+//
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        job.cancel()
+//    }
+//}

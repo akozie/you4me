@@ -1,4 +1,4 @@
-package com.you4me.you4me
+package com.you4me.you4me.database
 
 import androidx.room.Dao
 import androidx.room.Delete

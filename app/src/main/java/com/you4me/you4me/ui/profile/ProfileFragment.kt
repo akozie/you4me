@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.MediaController
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.media3.common.MediaItem
@@ -33,6 +34,7 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.SharedPrefHelper
 import java.util.Calendar
 import java.util.UUID
 
@@ -60,12 +62,10 @@ class ProfileFragment :
     private lateinit var sexualOrientations: ArrayList<ValueLabelResponse>
 
     private lateinit var calendar: Calendar
-//    private lateinit var dateFormat: SimpleDateFormat
+
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private var videoUri: Uri? = null
     private lateinit var videoId: String
-
-//    private lateinit var mediaControls: MediaController
     private var player: ExoPlayer? = null
 
     private lateinit var videoViewBinding: VideoDialogBinding
@@ -451,19 +451,20 @@ class ProfileFragment :
                 }
             }
 
-        binding.deleteAccLyt.setOnClickListener {
+        binding.logout.setOnClickListener {
             val alertDialog = AlertDialog.Builder(ctx)
-            alertDialog.setTitle("Delete account?")
-            alertDialog.setMessage("Selecting delete will delete your account forever. This action is not reversible")
+            alertDialog.setTitle("Log out?")
             alertDialog.setPositiveButton("Cancel"){ dialog, int ->
                 dialog.dismiss()
             }
-            alertDialog.setNegativeButton("Delete"){ dialog, int ->
-                viewModel.deleteUser(user.userId)
-                viewModel.deleteUserResponse.observe(viewLifecycleOwner) {
+            alertDialog.setNegativeButton("Log out"){ dialog, int ->
+                viewModel.logout(user.userId)
+                viewModel.logoutResponse.observe(viewLifecycleOwner) {
                     when (it) {
                         is Resource.Success -> {
-                            showToast("Account Deleted Successfully!")
+                            showToast("Account logged out successfully!")
+                            sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, false)
+                            //change shared pref to is logged out
                             requireActivity().finish()
                         }
                         is Resource.Failure -> {
@@ -475,7 +476,35 @@ class ProfileFragment :
             }
             alertDialog.setCancelable(false)
             alertDialog.show()
-
+        }
+        binding.deleteAccLyt.setOnClickListener {
+            val alertDialog = AlertDialog.Builder(ctx)
+            alertDialog.setTitle("Delete account?")
+            alertDialog.setMessage("Selecting delete will delete your account forever. This action is not reversible")
+            alertDialog.setPositiveButton("Cancel"){ dialog, int ->
+                dialog.dismiss()
+            }
+            alertDialog.setNegativeButton("Delete"){ dialog, int ->
+                dialog.dismiss()
+                val dialogg = showDialog("Please wait", false)
+                viewModel.deleteUser(user.userId)
+                viewModel.deleteUserResponse.observe(viewLifecycleOwner) {
+                    dialogg.dismiss()
+                    when (it) {
+                        is Resource.Success -> {
+                            showToast("Account Deleted Successfully!", Toast.LENGTH_LONG)
+                            sharedPrefHelper.clearTempPreferences()
+                            dialog.dismiss()
+                            requireActivity().finish()
+                        }
+                        is Resource.Failure -> {
+                            dialog.dismiss()
+                            showDialog(it.message ?: "")
+                        }
+                    }
+                }
+            }
+            alertDialog.show()
         }
     }
 

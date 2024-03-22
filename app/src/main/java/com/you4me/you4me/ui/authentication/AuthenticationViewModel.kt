@@ -45,9 +45,11 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository, 
     }
 
     fun signInWithGoogle(token : String, isLogin : Boolean = true) {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("token", token)
         viewModelScope.launch {
             if (isLogin) {
-                _loginResponse.value = repository.googleSignIn(token)
+                _loginResponse.value = repository.googleSignIn(jsonObject)
             }
         }
     }

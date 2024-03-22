@@ -31,6 +31,9 @@ interface ApiCollector {
     @POST("login")
     suspend fun login(@Body obj: JsonObject): User
 
+    @POST("logout/{userId}")
+    suspend fun logout(@Path("userId") userId: String)
+
     @POST("users")
     suspend fun register(@Body obj: JsonObject): RegisterResponse
 
@@ -67,7 +70,6 @@ interface ApiCollector {
     suspend fun getStates(
         @Path("countryId") countryId: String
     ): ArrayList<ValueLabelResponse>
-
 
     @POST("delete/{userId}")
     suspend fun deleteUser(

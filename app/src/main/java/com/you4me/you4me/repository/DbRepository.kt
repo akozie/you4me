@@ -1,6 +1,6 @@
 package com.you4me.you4me.repository
 
-import com.you4me.you4me.AppDatabase
+import com.you4me.you4me.database.AppDatabase
 import com.you4me.you4me.models.User
 
 class DbRepository(private val appDb : AppDatabase) {

@@ -9,6 +9,8 @@ import com.you4me.you4me.network.Resource
 
 class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository() {
 
+    suspend fun logout(userId: String) = safeApiCall { apiCollector.logout(userId) }
+
     suspend fun getUser(userId: String) = safeApiCall { apiCollector.getUser(userId) }
 
     suspend fun deleteUser(userId: String) = safeApiCall { apiCollector.deleteUser(userId) }

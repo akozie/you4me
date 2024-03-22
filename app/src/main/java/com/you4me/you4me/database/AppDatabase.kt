@@ -1,4 +1,4 @@
-package com.you4me.you4me
+package com.you4me.you4me.database
 
 import android.content.Context
 import androidx.room.Database

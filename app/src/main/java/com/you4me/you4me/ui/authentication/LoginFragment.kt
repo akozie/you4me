@@ -1,23 +1,19 @@
 package com.you4me.you4me.ui.authentication
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.you4me.you4me.AppDatabase
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentLoginBinding
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.AuthenticationRepository
-import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.main.MainActivity
+import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.validateEmail
 import com.you4me.you4me.utils.validatePassword
 
@@ -26,8 +22,17 @@ class LoginFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.clearUser()
+        if (!isOnBoardingDone()) findNavController().navigate(R.id.action_loginFragment_to_onboardingFragment)
+        if (sharedPrefHelper.getBoolean(SharedPrefHelper.IS_LOGGED_IN)){
+            startActivity(Intent(requireActivity(), MainActivity::class.java))
+        } else {
+            viewModel.clearUser()
+        }
         setupViews()
+    }
+
+    private fun isOnBoardingDone(): Boolean {
+        return sharedPrefHelper.getBoolean(SharedPrefHelper.IS_ONBOARDED)
     }
 
     override fun getViewModel() = AuthenticationViewModel::class.java
@@ -48,10 +53,10 @@ class LoginFragment :
                     //Store data and navigate
                     showDialog("Login Successful", true)
                     viewModel.saveUser(it.value)
-                    val sharedPref = requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
-                    val editor = sharedPref?.edit()
-                    editor?.putString("user_id", it.value.userId)
-                    editor?.apply()
+                    sharedPrefHelper.saveString(SharedPrefHelper.USER_ID, it.value.userId)
+                    sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, true)
+                    binding.email.text?.clear()
+                    binding.password.text?.clear()
 
                     startActivity(Intent(requireActivity(), MainActivity::class.java))
                 }

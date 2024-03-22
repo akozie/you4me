@@ -18,6 +18,7 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.AuthenticationRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.validateEmail
 import com.you4me.you4me.utils.validatePassword
 
@@ -60,7 +61,7 @@ class RegistrationFragment :
             try {
                 val account = task.result
 //                if (task.isSuccessful) {
-                    viewModel.signInWithGoogle(account.idToken!!)
+                viewModel.signInWithGoogle(account.idToken!!)
 //                } else {
 //                    Log.d("error", "error")
 //                }
@@ -70,10 +71,11 @@ class RegistrationFragment :
         }
 
         viewModel.loginResponse.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is Resource.Success -> {
                     Log.d("success", it.value.toString())
                 }
+
                 is Resource.Failure -> {
                     Log.d("error fail", it.message ?: "fjf")
                 }
@@ -104,6 +106,8 @@ class RegistrationFragment :
                         getText(R.string.registration_success_login),
                         Toast.LENGTH_SHORT
                     ).show()
+                    sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, false)
+                    findNavController().popBackStack()
                 }
 
                 is Resource.Failure -> {

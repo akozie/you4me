@@ -2,7 +2,6 @@ package com.you4me.you4me.ui.base
 
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,10 +14,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
-import com.you4me.you4me.AppDatabase
+import com.you4me.you4me.database.AppDatabase
 import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.repository.BaseRepository
 import com.you4me.you4me.repository.DbRepository
+import com.you4me.you4me.utils.SharedPrefHelper
+import kotlinx.coroutines.flow.toList
 
 abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository> : Fragment() {
 
@@ -26,6 +27,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
     protected lateinit var binding: B
     protected lateinit var viewModel: VM
     protected lateinit var ctx: Context
+    protected lateinit var sharedPrefHelper: SharedPrefHelper
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,15 +36,8 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
         binding = getFragmentBinding(inflater, container)
         val factory = ViewModelFactory(getRepository(), getDbRepository())
         viewModel = ViewModelProvider(this, factory)[getViewModel()]
-
-        requireActivity().onBackPressedDispatcher
-            .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (!findNavController().popBackStack())
-                        requireActivity().onBackPressed()
-                }
-            })
         ctx = requireContext()
+        sharedPrefHelper = SharedPrefHelper(ctx)
 
         return binding.root
     }

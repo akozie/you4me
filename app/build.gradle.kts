@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-    id("com.google.gms.google-services")
+//    id("com.google.gms.google-services")
 }
 
 android {
@@ -57,7 +57,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     //firebase
-    implementation("com.google.firebase:firebase-messaging:23.4.1")
+//    implementation("com.google.firebase:firebase-messaging:23.4.1")
 
     //cloudinary
     implementation("com.cloudinary:cloudinary-android-core:2.5.0")

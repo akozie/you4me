@@ -23,6 +23,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageButton
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/baseline_logout_24"
+            android:background="@android:color/transparent"
+            android:padding="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/log_out" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/name_lyt"
             style="@style/Widget.Material3.TextInputLayout.FilledBox"
