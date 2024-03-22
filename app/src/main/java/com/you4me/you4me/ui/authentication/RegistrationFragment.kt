@@ -58,9 +58,25 @@ class RegistrationFragment :
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
+                val account = task.result
+//                if (task.isSuccessful) {
+                    viewModel.signInWithGoogle(account.idToken!!)
+//                } else {
+//                    Log.d("error", "error")
+//                }
             } catch (e: ApiException) {
                 Log.w("Registration", "Google sign in failed", e)
+            }
+        }
 
+        viewModel.loginResponse.observe(viewLifecycleOwner) {
+            when(it) {
+                is Resource.Success -> {
+                    Log.d("success", it.value.toString())
+                }
+                is Resource.Failure -> {
+                    Log.d("error fail", it.message ?: "fjf")
+                }
             }
         }
     }

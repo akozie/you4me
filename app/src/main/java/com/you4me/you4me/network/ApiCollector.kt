@@ -34,10 +34,19 @@ interface ApiCollector {
     @POST("users")
     suspend fun register(@Body obj: JsonObject): RegisterResponse
 
+    @POST("google-sign-on")
+    suspend fun googleSignIn(@Body token: JsonObject): User
+
     @GET("users/{userId}")
     suspend fun getUser(
         @Path("userId") userId: String
     ): User
+
+    @PATCH("push-tokens/{userId}")
+    suspend fun updatePushToken(
+        @Path("userId") userId: String,
+        @Body token: JsonObject
+    )
 
     @GET("genders")
     suspend fun getGenders(): ArrayList<ValueLabelResponse>

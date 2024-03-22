@@ -1,5 +1,6 @@
 package com.you4me.you4me.repository
 
+import com.google.gson.JsonObject
 import com.you4me.you4me.models.UpdateDateInterestBody
 import com.you4me.you4me.models.AddDateInterestBody
 import com.you4me.you4me.models.AddSwipeBody
@@ -9,6 +10,10 @@ import com.you4me.you4me.models.SubmitDateBody
 import com.you4me.you4me.network.ApiCollector
 
 class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() {
+
+    suspend fun updatePushToken(userId: String, token: JsonObject) =
+        apiCollector.updatePushToken(userId, token)
+
     suspend fun getPaymentModes() = safeApiCall { apiCollector.getPaymentModes() }
 
     suspend fun submitDate(submitDateBody: SubmitDateBody) =
@@ -52,7 +57,11 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
         apiCollector.getDateInterestsRequiringApproval(userId)
     }
 
-    suspend fun proposeNewDateTime(userId: String, interestId: String, body: ProposeNewDateTimeBody) = safeApiCall {
+    suspend fun proposeNewDateTime(
+        userId: String,
+        interestId: String,
+        body: ProposeNewDateTimeBody
+    ) = safeApiCall {
         apiCollector.proposeNewDateTime(userId, interestId, body)
     }
 

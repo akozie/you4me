@@ -1,5 +1,6 @@
 package com.you4me.you4me.ui.authentication
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
@@ -47,6 +48,11 @@ class LoginFragment :
                     //Store data and navigate
                     showDialog("Login Successful", true)
                     viewModel.saveUser(it.value)
+                    val sharedPref = requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
+                    val editor = sharedPref?.edit()
+                    editor?.putString("user_id", it.value.userId)
+                    editor?.apply()
+
                     startActivity(Intent(requireActivity(), MainActivity::class.java))
                 }
 
@@ -79,7 +85,6 @@ class LoginFragment :
         binding.email.isEnabled = !show
         binding.password.isEnabled = !show
     }
-
     private fun validate(email: CharSequence?, password: CharSequence?): Boolean {
         if (email.validateEmail()) {
             if (password.validatePassword()) {

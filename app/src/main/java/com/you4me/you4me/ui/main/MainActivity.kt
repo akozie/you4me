@@ -1,5 +1,8 @@
 package com.you4me.you4me.ui.main
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -20,6 +23,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupViews()
         initializePlacesSdk()
+        createNotificationChannel()
     }
 
     private fun setupViews() {
@@ -35,6 +39,19 @@ class MainActivity : AppCompatActivity() {
         }
         if (!Places.isInitialized()) {
             Places.initializeWithNewPlacesApiEnabled(applicationContext, placesSecretKey)
+        }
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "You4meNotificationChannel"
+            val description = "Channel for You4me FCM notifications"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("YOU_4_ME_CHANNEL_ID", name, importance)
+            channel.description = description
+
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
         }
     }
 }

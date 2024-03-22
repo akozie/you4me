@@ -44,6 +44,14 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository, 
         }
     }
 
+    fun signInWithGoogle(token : String, isLogin : Boolean = true) {
+        viewModelScope.launch {
+            if (isLogin) {
+                _loginResponse.value = repository.googleSignIn(token)
+            }
+        }
+    }
+
     fun saveUser(user : User) {
         viewModelScope.launch { dbRepository.insertUser(user) }
     }

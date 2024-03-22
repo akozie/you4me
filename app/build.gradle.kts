@@ -8,6 +8,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -53,6 +54,11 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
+    //firebase
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
+
     //cloudinary
     implementation("com.cloudinary:cloudinary-android-core:2.5.0")
 
@@ -91,9 +97,6 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:$mediaVersion")
     implementation("androidx.media3:media3-ui:$mediaVersion")
     implementation("androidx.media3:media3-exoplayer-dash:$mediaVersion")
-
-    implementation("androidx.viewpager2:viewpager2:1.0.0")
-    implementation("com.tbuonomo:dotsindicator:4.3")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
