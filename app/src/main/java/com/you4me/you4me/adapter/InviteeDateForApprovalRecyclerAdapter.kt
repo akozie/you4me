@@ -32,7 +32,7 @@ class InviteeDateForApprovalRecyclerAdapter(
         holder.binding.apply {
             name.text = date.name
             location.text = date.place
-            dateODate.text = "${date.place} : ${date.time}"
+            dateODate.text = "${date.date} : ${date.time}"
 
             acceptBtn.setOnClickListener {
                 //accept

@@ -41,16 +41,16 @@ class RegistrationFragment :
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(ctx, gso)
 
-        binding.googleSignUpBtn.setOnClickListener {
-            val account = GoogleSignIn.getLastSignedInAccount(ctx)
-            if (account != null) {
-                //navigate to dashboard
-                showToast("Already signed in")
-            } else {
-                val signInIntent = mGoogleSignInClient.signInIntent
-                startActivityForResult(signInIntent, RC_SIGN_IN)
-            }
-        }
+//        binding.googleSignUpBtn.setOnClickListener {
+//            val account = GoogleSignIn.getLastSignedInAccount(ctx)
+//            if (account != null) {
+//                //navigate to dashboard
+//                showToast("Already signed in")
+//            } else {
+//                val signInIntent = mGoogleSignInClient.signInIntent
+//                startActivityForResult(signInIntent, RC_SIGN_IN)
+//            }
+//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

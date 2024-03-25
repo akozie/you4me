@@ -69,4 +69,5 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
         apiCollector.proposeNewDateTime(userId, interestId, body)
     }
 
+    suspend fun registerPayment(obj : JsonObject) = safeApiCall { apiCollector.registerPayment(obj) }
 }

@@ -164,10 +164,16 @@ interface ApiCollector {
     @GET("notifications/users/{userId}")
     suspend fun getNotifications(
         @Path("userId") userId: String,
-    ) : ArrayList<Notification>
+    ): ArrayList<Notification>
 
     @PATCH("notifications/{notifyId}")
     suspend fun markNotificationAsRead(
-        @Path("notifyId") notificationId : String
+        @Path("notifyId") notificationId: String
     )
+
+    @POST("payments")
+    suspend fun registerPayment(
+        @Body obj: JsonObject
+    )
+
 }

@@ -2,6 +2,7 @@ package com.you4me.you4me.ui.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +19,10 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
 import com.google.common.collect.ImmutableList
+import com.google.gson.JsonObject
 import com.you4me.you4me.databinding.FragmentLikesBinding
 import com.you4me.you4me.models.FetchDateInterest
+import com.you4me.you4me.models.User
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
@@ -40,13 +43,40 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     private lateinit var productDetails: ProductDetails
     private lateinit var queryProductDetailsParams: QueryProductDetailsParams
 
+    private lateinit var user: User
+    private var isSubscribed : Boolean? = null
+
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
-        // To be implemented in a later section.
+        if (!purchases.isNullOrEmpty() && purchases[0].purchaseState == Purchase.PurchaseState.PURCHASED) {
+            val p = purchases[0]
+            val obj = JsonObject()
+            obj.addProperty("purchase_token", p.purchaseToken)
+            obj.addProperty("order_id", p.orderId)
+            obj.addProperty("purchase_time", p.purchaseTime)
+            obj.addProperty("product_id", p.products[0])
+            obj.addProperty("period", p.quantity)
+            obj.addProperty("user_id", user.userId)
+           viewModel.registerPayment(obj)
+        }
     }
 
     private val purchasesResponseListener = PurchasesResponseListener { billingResult, purchases ->
         if (purchases.isNotEmpty() && purchases[0].purchaseState == Purchase.PurchaseState.PURCHASED) {
             //continue
+            if (isSubscribed != null && isSubscribed == false) {
+                val obj = JsonObject()
+
+                purchases[0].apply {
+                    obj.addProperty("purchase_token", this.purchaseToken)
+                    obj.addProperty("order_id", this.orderId)
+                    obj.addProperty("purchase_time", this.purchaseTime)
+                    obj.addProperty("product_id", this.products[0])
+                    obj.addProperty("period", this.quantity)
+                    obj.addProperty("user_id", user.userId)
+                }
+                viewModel.registerPayment(obj)
+            }
+            Log.d("google play purchase", purchases[0].toString())
         } else {
             billingClient.queryProductDetailsAsync(queryProductDetailsParams) { billingResult, productDetailsList ->
                 // check billingResult
@@ -132,14 +162,19 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     }
 
     private fun setupObservers() {
-        viewModel.user.observe(viewLifecycleOwner) { viewModel.getSubscriptionStatus() }
+        viewModel.user.observe(viewLifecycleOwner) {
+            user = it
+            viewModel.getSubscriptionStatus()
+        }
         viewModel.getSubscriptionStatus.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
                     if (it.value.isFreeTrial || it.value.isPremium) {
+                        isSubscribed = true
                         setupView()
                     } else {
                         showDialog("You need to subscribe to access this screen", false)
+                        isSubscribed = false
                     }
                 }
 
@@ -193,6 +228,20 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                         showToast("No more dates available")
                         showEmpty()
                     }
+                }
+
+                is Resource.Failure -> {
+                    showDialog(it.message ?: it.errorBody ?: "")
+                }
+            }
+        }
+
+        viewModel._updatePaymentResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    showToast("Payment success!")
+                    viewModel.getSubscriptionStatus()
+
                 }
 
                 is Resource.Failure -> {

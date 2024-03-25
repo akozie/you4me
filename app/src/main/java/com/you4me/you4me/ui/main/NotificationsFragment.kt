@@ -13,6 +13,8 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.base.ViewModelFactory
+import java.text.SimpleDateFormat
+import java.time.LocalDate
 
 class NotificationsFragment :
     BaseFragment<MainViewModel, FragmentNotificationsBinding, MainRepository>() {
@@ -38,6 +40,8 @@ class NotificationsFragment :
                 is Resource.Success -> {
                     if (it.value.isEmpty()) showEmpty()
                     else {
+//                        val notification = it.value
+//                        notification.reverse()
                         setupRecycler(it.value)
                     }
                 }
@@ -49,7 +53,13 @@ class NotificationsFragment :
     }
 
     private fun setupRecycler(notifications : ArrayList<Notification>) {
-        val adapter = NotificationsRecyclerAdapter(notifications, this, viewModel)
+        val dateFormat = SimpleDateFormat("yyyy/MM/ddhh:mm")
+
+        val n = notifications.
+        sortedByDescending {
+            dateFormat.parse("${it.date}${it.time}")
+        }
+        val adapter = NotificationsRecyclerAdapter(n, this, viewModel)
         binding.notificationsRecyclerView.adapter = adapter
     }
 

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.JsonObject
 import com.you4me.you4me.models.UpdateDateInterestBody
 import com.you4me.you4me.models.AddDateInterestBody
 import com.you4me.you4me.models.AddSwipeBody
@@ -91,8 +92,12 @@ class MainViewModel(
         get() = _proposeNewDateTime
 
     val _getNotificationsResponse = MutableLiveData<Resource<ArrayList<Notification>>>()
-    val getNotificationsResponse : LiveData<Resource<ArrayList<Notification>>>
+    val getNotificationsResponse: LiveData<Resource<ArrayList<Notification>>>
         get() = _getNotificationsResponse
+
+    val _updatePaymentResponse = MutableLiveData<Resource<Unit>>()
+    val updatePaymentResponse: LiveData<Resource<Unit>>
+        get() = _updatePaymentResponse
 
     init {
         getUser()
@@ -105,13 +110,13 @@ class MainViewModel(
         }
     }
 
-    fun getNotifications(userId : String) {
+    fun getNotifications(userId: String) {
         viewModelScope.launch {
             _getNotificationsResponse.value = repository.getNotifications(userId)
         }
     }
 
-    fun markNotificationAsRead(notificationId : String) {
+    fun markNotificationAsRead(notificationId: String) {
         viewModelScope.launch {
             repository.markNotificationAsRead(notificationId)
         }
@@ -232,5 +237,9 @@ class MainViewModel(
                 ProposeNewDateTimeBody(dateId, interestId, proposedDate, proposedTime)
             )
         }
+    }
+
+    fun registerPayment(obj: JsonObject) {
+        viewModelScope.launch { _updatePaymentResponse.value = repository.registerPayment(obj) }
     }
 }

@@ -573,6 +573,7 @@ class ProfileFragment :
     }
 
     private fun initializePlayer() {
+        if (videoUri == null) return
         if (player != null) player = null
         player = ExoPlayer.Builder(ctx).build().also {
             videoViewBinding.videoView.player = it

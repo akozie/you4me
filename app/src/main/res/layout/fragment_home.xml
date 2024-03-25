@@ -24,17 +24,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
+        <TextView
             android:id="@+id/unread_notifications_dot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:visibility="gone"
-            android:src="@drawable/baseline_circle_24"
+            tools:text="13"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary_pink"
+            android:background="@color/white"
             android:contentDescription="@string/notifications"
             app:layout_constraintEnd_toEndOf="@id/notification_icon"
-            app:layout_constraintTop_toTopOf="@id/notification_icon"
-            app:tint="@color/primary_pink" />
+            app:layout_constraintTop_toTopOf="@id/notification_icon" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -74,65 +75,83 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="You have no upcoming dates"
+        android:text="@string/you_have_no_upcoming_dates"
         android:textSize="16sp"
         android:visibility="gone" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Approved Date Interests"
-        android:textSize="20sp" />
-
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/invitee_dates_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/approved_date_item" />
-
-    <TextView
-        android:id="@+id/no_approved_dates_interests"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="You have no approved date interests"
-        android:textSize="16sp"
-        android:visibility="gone" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Dates requiring approval"
-        android:textSize="20sp" />
-
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/date_interest_recycler"
+    <LinearLayout
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/date_interest_requiring_approval_item" />
+        android:id="@+id/approved_dates_lyt">
 
-    <TextView
-        android:id="@+id/no_dates_interests"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/approved_date_interests"
+            android:textSize="20sp" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/invitee_dates_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/approved_date_item" />
+
+    </LinearLayout>
+
+<!--    <TextView-->
+<!--        android:id="@+id/no_approved_dates_interests"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:text="You have no approved date interests"-->
+<!--        android:textSize="16sp"-->
+<!--        android:visibility="gone" />-->
+
+    <LinearLayout
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="You have no date interests requiring approval"
-        android:textSize="16sp"
-        android:visibility="gone" />
+        android:orientation="vertical"
+        android:id="@+id/dates_requiring_app_lyt">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/dates_requiring_approval"
+            android:textSize="20sp" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/date_interest_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/date_interest_requiring_approval_item" />
+
+    </LinearLayout>
+
+<!--    <TextView-->
+<!--        android:id="@+id/no_dates_interests"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:text="You have no date interests requiring approval"-->
+<!--        android:textSize="16sp"-->
+<!--        android:visibility="gone" />-->
 
 </LinearLayout>

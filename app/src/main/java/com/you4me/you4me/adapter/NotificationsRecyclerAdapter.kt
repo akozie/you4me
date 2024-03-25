@@ -9,7 +9,7 @@ import com.you4me.you4me.models.Notification
 import com.you4me.you4me.ui.main.MainViewModel
 
 class NotificationsRecyclerAdapter(
-    private val notifications: ArrayList<Notification>,
+    private val notifications: List<Notification>,
     private val context: Fragment,
     private val vm: MainViewModel
 ) : RecyclerView.Adapter<NotificationsRecyclerAdapter.MyViewHolder>() {
@@ -18,13 +18,14 @@ class NotificationsRecyclerAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val notification = notifications[position]
         holder.binding.notificationText.text = notification.message
+        holder.binding.dateTime.text = "${notification.time} - ${notification.date}"
         if (notification.seen == "true") {
-            holder.binding.notificationText.setBackgroundColor(context.resources.getColor(R.color.white))
+            holder.binding.notificationLyt.setBackgroundColor(context.resources.getColor(R.color.white))
         }
         holder.binding.root.setOnClickListener {
             if (notification.seen == "false") {
                 vm.markNotificationAsRead(notification.notify_id)
-                holder.binding.notificationText.setBackgroundColor(context.resources.getColor(R.color.white))
+                holder.binding.notificationLyt.setBackgroundColor(context.resources.getColor(R.color.white))
             }
         }
     }

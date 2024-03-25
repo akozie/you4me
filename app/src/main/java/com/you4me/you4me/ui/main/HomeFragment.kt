@@ -1,7 +1,5 @@
 package com.you4me.you4me.ui.main
 
-import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -123,12 +121,13 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
         viewModel.getNotificationsResponse.observe(viewLifecycleOwner) {
             when(it) {
                 is Resource.Success -> {
-                    val isUnseen = it.value.map { n->
-                        n.seen.lowercase() == "false"
-                    }.contains(true)
-                    if (it.value.isEmpty() || !isUnseen) {
+                    val unseenCount = it.value.mapNotNull { n->
+                        if (n.seen.lowercase() == "false") n else null
+                    }.size
+                    if (it.value.isEmpty() || unseenCount < 1) {
                         binding.unreadNotificationsDot.visibility = View.GONE
                     } else {
+                        binding.unreadNotificationsDot.text = unseenCount.toString()
                         binding.unreadNotificationsDot.visibility = View.VISIBLE
                     }
                 }
@@ -141,9 +140,9 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
 
     private fun setupDateInterests(dates: DateInterestsRequiringApproval) {
         if (dates.isEmpty()) {
-            binding.dateInterestRecycler.visibility = View.GONE
-            binding.noDatesInterests.visibility = View.VISIBLE
+            binding.datesRequiringAppLyt.visibility = View.GONE
         } else {
+            binding.datesRequiringAppLyt.visibility = View.VISIBLE
             val adapter = DateInterestsRequiringApprovalRecyclerAdapter(dates, viewModel)
             binding.dateInterestRecycler.adapter = adapter
         }
@@ -151,9 +150,9 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
 
     private fun setupInviteeDates(dates: InviteeDatesRequiringApproval) {
         if (dates.isEmpty()) {
-            binding.inviteeDatesRecycler.visibility = View.GONE
-            binding.noApprovedDatesInterests.visibility = View.VISIBLE
+            binding.approvedDatesLyt.visibility = View.GONE
         } else {
+            binding.approvedDatesLyt.visibility = View.VISIBLE
             val adapter = InviteeDateForApprovalRecyclerAdapter(dates, viewModel, ctx)
             binding.inviteeDatesRecycler.adapter = adapter
         }
