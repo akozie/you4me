@@ -29,7 +29,7 @@ class OnboardingFragment : Fragment() {
         sharedPrefHelper = SharedPrefHelper(requireContext())
 //        if (isOnBoardingDone()) findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
 //        else
-            setup()
+        setup()
         return binding.root
     }
 
@@ -75,6 +75,10 @@ class OnboardingFragment : Fragment() {
             findNavController().navigate(R.id.action_onboardingFragment_to_registrationFragment)
             onBoardingFinished()
         }
+        binding.skipBtn.setOnClickListener {
+            binding.onboardingRecycler.smoothScrollToPosition(2)
+            setPosition(2)
+        }
     }
 
     private fun setPosition(pos: Int) {
@@ -90,6 +94,7 @@ class OnboardingFragment : Fragment() {
                 ImageViewCompat.setImageTintList(binding.circle3, grey)
                 binding.endLyt.visibility = View.GONE
                 binding.nextBtn.visibility = View.VISIBLE
+                binding.skipBtn.visibility = View.VISIBLE
             }
 
             1 -> {
@@ -98,6 +103,7 @@ class OnboardingFragment : Fragment() {
                 ImageViewCompat.setImageTintList(binding.circle3, grey)
                 binding.endLyt.visibility = View.GONE
                 binding.nextBtn.visibility = View.VISIBLE
+                binding.skipBtn.visibility = View.VISIBLE
             }
 
             2 -> {
@@ -106,6 +112,7 @@ class OnboardingFragment : Fragment() {
                 ImageViewCompat.setImageTintList(binding.circle3, pink)
                 binding.endLyt.visibility = View.VISIBLE
                 binding.nextBtn.visibility = View.GONE
+                binding.skipBtn.visibility = View.GONE
             }
         }
     }

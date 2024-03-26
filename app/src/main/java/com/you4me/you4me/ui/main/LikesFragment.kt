@@ -45,6 +45,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 
     private lateinit var user: User
     private var isSubscribed : Boolean? = null
+    private var hasCheckedBilling = false
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
         if (!purchases.isNullOrEmpty() && purchases[0].purchaseState == Purchase.PurchaseState.PURCHASED) {
@@ -62,6 +63,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 
     private val purchasesResponseListener = PurchasesResponseListener { billingResult, purchases ->
         if (purchases.isNotEmpty() && purchases[0].purchaseState == Purchase.PurchaseState.PURCHASED) {
+            hasCheckedBilling = true
             //continue
             if (isSubscribed != null && isSubscribed == false) {
                 val obj = JsonObject()
@@ -78,6 +80,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             }
             Log.d("google play purchase", purchases[0].toString())
         } else {
+            hasCheckedBilling = true
             billingClient.queryProductDetailsAsync(queryProductDetailsParams) { billingResult, productDetailsList ->
                 // check billingResult
                 // process returned productDetailsList
@@ -85,7 +88,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     println(productDetailsList.joinToString(","))
                     productDetails = productDetailsList[0]
-                    showBilling()
+                    if (isSubscribed != null && isSubscribed == false) showBilling()
                 }
             }
         }
@@ -175,6 +178,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                     } else {
                         showDialog("You need to subscribe to access this screen", false)
                         isSubscribed = false
+                        if (hasCheckedBilling) showBilling()
                     }
                 }
 
@@ -262,8 +266,6 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         player?.prepare()
 
         binding.userName.text = "${date.name}, ${date.age}"
-        binding.location.text = date.venue
-        binding.dateODate.text = "${date.proposedDate} : ${date.proposedTime}"
     }
 
     private fun releasePlayer() {

@@ -2,38 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:layout_marginTop="12dp">
+    android:layout_marginTop="12dp"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/text"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:layout_weight="1"
         android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@id/divider"
         app:layout_constraintEnd_toStartOf="@id/add_to_calender"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="You have a date with jane doe at so so and so. Add to calendar" />
 
-    <ImageButton
+
+    <TextView
         android:id="@+id/add_to_calender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="6dp"
-        android:backgroundTint="@color/primary_pink"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/rounded_bg"
         android:padding="6dp"
-        android:src="@drawable/outline_calendar_month_24"
-        app:layout_constraintBottom_toBottomOf="@id/text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/text"
-        app:layout_constraintTop_toTopOf="@id/text"
-        app:tint="@color/white" />
-
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:backgroundTint="@color/primary_pink"
+        android:text="@string/add_to_calendar" />
 
 </LinearLayout>

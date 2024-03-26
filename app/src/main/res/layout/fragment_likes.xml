@@ -1,74 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primary_pink"
     android:gravity="center"
-    android:orientation="horizontal"
     tools:context=".ui.main.LikesFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main_lyt"
+    <LinearLayout
+        android:id="@+id/ly1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="@color/primary_pink">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/ly1"
+        <ImageView
+            android:id="@+id/likes_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/likes_icon"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/title_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="32dp"
+            android:text="@string/interested_in_you"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/likes_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:text="@string/interest_in_date"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/title_text" />
 
-            <ImageView
-                android:id="@+id/likes_icon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/likes_icon"
-                app:tint="@color/white" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/title_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/interested_in_you"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/likes_icon" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="32dp"
-                android:textColor="@color/white"
-                android:text="@string/interest_in_date"
-                android:textAlignment="center"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title_text" />
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ly1">
 
-        </LinearLayout>
-
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:cardCornerRadius="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ly1">
+            android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/main_lyt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="32dp">
+                android:layout_margin="32dp"
+                android:visibility="gone">
 
                 <androidx.media3.ui.PlayerView
                     android:id="@+id/user_video"
@@ -87,28 +92,6 @@
                     app:layout_constraintTop_toBottomOf="@id/user_video"
                     tools:text="Jane Doe, 23" />
 
-                <TextView
-                    android:id="@+id/location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="8dp"
-                    android:textSize="16sp"
-                    app:drawableStartCompat="@drawable/navigation_tilted"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/user_name"
-                    tools:text="Domino's" />
-
-                <TextView
-                    android:id="@+id/date_o_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="8dp"
-                    android:textSize="16sp"
-                    app:drawableStartCompat="@drawable/baseline_access_time_24_big"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/location"
-                    tools:text="12/02/2023 : 3:00pm" />
-
                 <ImageButton
                     android:id="@+id/reject_btn"
                     android:layout_width="wrap_content"
@@ -118,7 +101,7 @@
                     android:src="@drawable/baseline_cancel_24"
                     app:layout_constraintEnd_toStartOf="@id/accept_btn"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/date_o_date" />
+                    app:layout_constraintTop_toBottomOf="@id/user_name" />
 
                 <ImageButton
                     android:id="@+id/accept_btn"
@@ -131,26 +114,30 @@
                     app:layout_constraintStart_toEndOf="@id/reject_btn"
                     app:layout_constraintTop_toTopOf="@id/reject_btn" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/empty_lyt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/no_date_interests"
-        android:textAlignment="center"
-        android:textSize="28sp"
-        android:visibility="gone"
-        app:drawableTopCompat="@drawable/baseline_not_interested_24" />
+        <TextView
+            android:id="@+id/empty_lyt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/no_date_interests"
+            android:textAlignment="center"
+            android:textSize="28sp"
+            android:visibility="gone"
+            app:drawableTopCompat="@drawable/baseline_not_interested_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/loader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminate="true"
-        android:visibility="gone" />
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/loader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.cardview.widget.CardView>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
