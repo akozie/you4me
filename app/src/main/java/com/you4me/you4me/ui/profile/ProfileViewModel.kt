@@ -180,8 +180,8 @@ class ProfileViewModel(
             u.isVideoBeingReviewed,
             userBody.name,
             u.password,
-            userBody.phone,
-            userBody.religion,
+            "",
+            "",
             userBody.religion_preferred,
             userBody.sexual_orientation,
             userBody.state,
@@ -201,12 +201,10 @@ class ProfileViewModel(
                 obj.addProperty("country", country)
                 obj.addProperty("state", state)
                 obj.addProperty("age_preferred", age_preferred)
-                obj.addProperty("religion", religion)
                 obj.addProperty("religion_preferred", religion_preferred)
                 obj.addProperty("sexual_orientation", sexual_orientation)
                 obj.addProperty("dob", dob)
                 obj.addProperty("gender", gender)
-                obj.addProperty("phone", phone)
             }
 
             _updateUserResponse.value = repository.updateUserInfo(_dbUser.value!!.userId, obj)

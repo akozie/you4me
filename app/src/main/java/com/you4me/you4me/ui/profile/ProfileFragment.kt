@@ -24,6 +24,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import com.siddigital.enairaofflineapp.utils.Utils
+import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentProfileBinding
 import com.you4me.you4me.databinding.VideoDialogBinding
 import com.you4me.you4me.models.RegisterVideoUploadBody
@@ -45,9 +46,7 @@ class ProfileFragment :
     private lateinit var name: String
     private lateinit var agePreferred: String
     private lateinit var dob: String
-    private lateinit var phone: String
     private lateinit var gender: String
-    private lateinit var religion: String
     private lateinit var religionPreferred: String
     private lateinit var sexualOrientation: String
     private lateinit var state: String
@@ -98,7 +97,11 @@ class ProfileFragment :
             when (it) {
                 is Resource.Success -> {
                     user = it.value
-                    setupVideo()
+                    if (it.value.videoURL.isNotBlank()) {
+                        binding.btnPlay.visibility = View.VISIBLE
+                        binding.divider7.visibility = View.VISIBLE
+                        setupVideo()
+                    }
                 }
 
                 is Resource.Failure -> {
@@ -123,7 +126,6 @@ class ProfileFragment :
             when (it) {
                 is Resource.Success -> {
                     religions = it.value
-                    setupSpinner(it.value, RELIGION_SPINNER)
                     setupSpinner(it.value, RELIGION_PREFERENCE_SPINNER)
                 }
 
@@ -196,9 +198,7 @@ class ProfileFragment :
         viewModel.validateVideoUpload.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    val intent =
-                        Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
-                    activityResultLauncher.launch(intent)
+                    showVideoRegulationsDialog()
                 }
 
                 is Resource.Failure -> {
@@ -248,11 +248,9 @@ class ProfileFragment :
                 dob,
                 gender,
                 binding.name.text.toString(),
-                religion,
                 religionPreferred,
                 sexualOrientation,
-                state,
-                binding.phone.text.toString()
+                state
             )
             viewModel.updateUserInfo(
                 updateBody
@@ -314,18 +312,6 @@ class ProfileFragment :
                 }
             }
 
-        binding.religionSpinner.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    if (p2 == 0) return
-                    religion = religions[p2 - 1].value
-                }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-
-                }
-            }
-
         binding.agePreferenceSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -370,11 +356,6 @@ class ProfileFragment :
                     binding.agePreferenceSpinner.setSelection(agePreferences.indexOfFirst { it.value == agePreferred } + 1)
                 }
 
-                RELIGION_SPINNER -> {
-                    binding.religionSpinner.adapter = adapter
-                    binding.religionSpinner.setSelection(religions.indexOfFirst { it.value == religion } + 1)
-                }
-
                 COUNTRY_SPINNER -> {
                     binding.countrySpinner.adapter = adapter
                     binding.countrySpinner.setSelection(countries.indexOfFirst { it.value == country } + 1)
@@ -402,6 +383,8 @@ class ProfileFragment :
 
     private fun setupView() {
         videoViewBinding = VideoDialogBinding.inflate(layoutInflater, null, false)
+        binding.btnPlay.visibility = View.GONE
+        binding.divider7.visibility = View.GONE
         calendar = Calendar.getInstance()
         binding.dob.inputType = InputType.TYPE_NULL
         val date = OnDateSetListener { _, year, month, day ->
@@ -422,12 +405,12 @@ class ProfileFragment :
         }
 
         binding.btnPlay.setOnClickListener {
-            if (videoUri == null) {
-                showToast("please upload a video")
-                return@setOnClickListener
-            } else {
+//            if (videoUri == null) {
+//                showToast("please upload a video")
+//                return@setOnClickListener
+//            } else {
                 showVideoDialog()
-            }
+//            }
         }
 
         activityResultLauncher =
@@ -517,19 +500,16 @@ class ProfileFragment :
         binding.name.setText(user.name)
 
         binding.dob.setText(user.dob)
-        binding.phone.setText(user.phone)
 
         viewModel.getStates(user.country)
         binding.genderLyt.visibility = if (user.sexualOrientation == "4") View.VISIBLE
         else View.GONE
 
         name = user.name
-        phone = user.phone
         country = user.country
         state = user.state
         gender = user.gender
         religionPreferred = user.religionPreferred
-        religion = user.religion
         agePreferred = user.agePreferred
         sexualOrientation = user.sexualOrientation
         dob = user.dob
@@ -548,13 +528,28 @@ class ProfileFragment :
     }
 
     private fun setupVideo() {
-        if (user.videoURL.isNotBlank()) videoUri = Uri.parse(user.videoURL.replace("http:", "https:"))
+        videoUri = Uri.parse(user.videoURL.replace("http:", "https:"))
         initializePlayer()
     }
 
     override fun onPause() {
         super.onPause()
         releasePlayer()
+    }
+
+    private fun showVideoRegulationsDialog() {
+        val builder = AlertDialog.Builder(ctx)
+        builder.setTitle("Upload Requirements and Regulations")
+        builder.setMessage(getString(R.string.video_regulations))
+        builder.setPositiveButton("Select Video") { d, i ->
+            val intent =
+                Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+            activityResultLauncher.launch(intent)
+        }
+        builder.setNegativeButton("Cancel") { d, i ->
+            d.dismiss()
+        }
+        builder.show()
     }
 
     private fun showVideoDialog() {
@@ -587,7 +582,6 @@ class ProfileFragment :
     companion object {
         const val SEXUAL_ORIENTATION_SPINNER = 1
         const val AGE_GROUP_SPINNER = 2
-        const val RELIGION_SPINNER = 3
         const val COUNTRY_SPINNER = 4
         const val STATE_SPINNER = 5
         const val GENDER_SPINNER = 6

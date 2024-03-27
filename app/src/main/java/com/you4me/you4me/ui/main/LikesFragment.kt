@@ -44,7 +44,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     private lateinit var queryProductDetailsParams: QueryProductDetailsParams
 
     private lateinit var user: User
-    private var isSubscribed : Boolean? = null
+    private var isSubscribed: Boolean? = null
     private var hasCheckedBilling = false
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
@@ -57,7 +57,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             obj.addProperty("product_id", p.products[0])
             obj.addProperty("period", p.quantity)
             obj.addProperty("user_id", user.userId)
-           viewModel.registerPayment(obj)
+            viewModel.registerPayment(obj)
         }
     }
 
@@ -178,17 +178,21 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                     } else {
                         showDialog("You need to subscribe to access this screen", false)
                         isSubscribed = false
+                        showEmpty()
+                        showLoading(false)
                         if (hasCheckedBilling) showBilling()
                     }
                 }
 
                 is Resource.Failure -> {
-                    showDialog(it.message ?: it.errorBody ?: "")
+                    if (it.message == null && it.errorBody == null) showEmpty()
+                    else showDialog(it.message ?: it.errorBody ?: "")
                 }
             }
         }
 
         viewModel.fetchDateInterests.observe(viewLifecycleOwner) {
+            showLoading(false)
             when (it) {
                 is Resource.Success -> {
                     if (it.value.isEmpty()) showEmpty()
@@ -199,7 +203,8 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 }
 
                 is Resource.Failure -> {
-                    showDialog(it.message ?: it.errorBody ?: "")
+                    if (it.message == null && it.errorBody == null) showEmpty()
+                    else showDialog(it.message ?: it.errorBody ?: "")
                 }
             }
         }
@@ -282,7 +287,8 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         player = ExoPlayer.Builder(ctx).build().also {
             binding.userVideo.player = it
             if (currentIdx != -1) {
-                val mediaItem = MediaItem.fromUri(dateInterests[currentIdx].videoURL.replace("http:", "https:"))
+                val mediaItem =
+                    MediaItem.fromUri(dateInterests[currentIdx].videoURL.replace("http:", "https:"))
                 it.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
                 it.playWhenReady = playWhenReady
                 it.prepare()

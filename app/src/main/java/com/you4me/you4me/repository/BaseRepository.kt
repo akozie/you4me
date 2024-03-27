@@ -27,7 +27,7 @@ abstract class BaseRepository {
                        )
                    }
                    else -> {
-                       Resource.Failure(isNetworkError = true, null, "An error occurred", null)
+                       Resource.Failure(isNetworkError = true, null, "Please check your internet", null)
                    }
                }
             }

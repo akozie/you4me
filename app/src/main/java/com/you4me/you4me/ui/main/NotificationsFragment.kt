@@ -31,6 +31,7 @@ class NotificationsFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.loader.show()
         viewModel.user.observe(viewLifecycleOwner) {
             viewModel.getNotifications(it.userId)
         }
@@ -38,15 +39,14 @@ class NotificationsFragment :
         viewModel.getNotificationsResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
+                    binding.loader.hide()
                     if (it.value.isEmpty()) showEmpty()
                     else {
-//                        val notification = it.value
-//                        notification.reverse()
                         setupRecycler(it.value)
                     }
                 }
                 is Resource.Failure -> {
-
+                    showToast(it.message ?: it.errorBody ?: "Error: ${it.errorCode ?: ""}")
                 }
             }
         }
