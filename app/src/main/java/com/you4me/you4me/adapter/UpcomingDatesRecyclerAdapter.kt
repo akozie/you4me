@@ -16,7 +16,7 @@ class UpcomingDatesRecyclerAdapter(private val dates: UpcomingDates, private val
     class MyViewHolder(val binding : UpcomingDateItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val binding = UpcomingDateItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+        val binding = UpcomingDateItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
     }
 

@@ -12,9 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@id/add_to_calender"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:text="You have a date with jane doe at so so and so. Add to calendar" />
 
 
