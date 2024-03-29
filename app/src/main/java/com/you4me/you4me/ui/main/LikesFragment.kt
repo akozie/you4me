@@ -87,7 +87,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 println("billing result code ${billingResult.responseCode}")
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     println(productDetailsList.joinToString(","))
-                    productDetails = productDetailsList[0]
+                    productDetails = productDetailsList.first { it.productId == "you4me_premium" }
                     if (isSubscribed != null && isSubscribed == false) showBilling()
                 }
             }
