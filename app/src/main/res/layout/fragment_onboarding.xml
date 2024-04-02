@@ -1,108 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
     tools:context=".ui.authentication.OnboardingFragment">
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/onboarding_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/onboarding_screen" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="36dp"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/skip_btn"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/skip"
-            app:cornerRadius="25dp" />
+            android:layout_marginHorizontal="32dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_editor_absoluteX="32dp">
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/skip_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/skip"
+                app:cornerRadius="25dp" />
 
-        <ImageView
-            android:id="@+id/circle_1"
-            android:layout_width="wrap_content"
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/circle_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/circle"
+                android:src="@drawable/baseline_circle_24"
+                app:tint="@color/primary_pink" />
+
+            <ImageView
+                android:id="@+id/circle_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:contentDescription="@string/circle"
+                android:src="@drawable/baseline_circle_24" />
+
+            <ImageView
+                android:id="@+id/circle_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/circle"
+                android:src="@drawable/baseline_circle_24" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/next_btn"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/next"
+                app:cornerRadius="25dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/end_lyt"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/circle"
-            android:src="@drawable/baseline_circle_24"
-            app:tint="@color/primary_pink" />
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/circle_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:contentDescription="@string/circle"
-            android:src="@drawable/baseline_circle_24" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/register_btn"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:padding="16dp"
+                android:text="@string/register"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="25dp" />
 
-        <ImageView
-            android:id="@+id/circle_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/circle"
-            android:src="@drawable/baseline_circle_24" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/login_btn"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:padding="16dp"
+                android:text="@string/login"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/next_btn"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/next"
-            app:cornerRadius="25dp" />
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/end_lyt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/register_btn"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:padding="16dp"
-            android:text="@string/register"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:cornerRadius="25dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/login_btn"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:padding="16dp"
-            android:text="@string/login"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
