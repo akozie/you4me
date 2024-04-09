@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.navigation.fragment.findNavController
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -172,11 +173,13 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         viewModel.getSubscriptionStatus.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    if (it.value.isFreeTrial || it.value.isPremium) {
+                    if (1 == 15) {
                         isSubscribed = true
                         setupView()
                     } else {
-                        showDialog("You need to subscribe to access this screen", false)
+                        showAlertDialog(requireContext(), "You need to subscribe to access this screen", "OK"){
+                            findNavController().popBackStack()
+                        }
                         isSubscribed = false
                         showEmpty()
                         showLoading(false)
@@ -298,7 +301,8 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 
     private fun showEmpty() {
         binding.mainLyt.visibility = View.GONE
-        binding.emptyLyt.visibility = View.VISIBLE
+        binding.constraintLayout2.visibility = View.VISIBLE
+//        binding.emptyLyt.visibility = View.VISIBLE
         binding.loader.visibility = View.GONE
     }
 
@@ -341,9 +345,10 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     }
 
     private fun showBilling() {
-        println("show billing")
+        Log.d("show billing", "show billing")
         val t = productDetails.subscriptionOfferDetails?.get(0)?.offerToken
 
+        Log.d("PRODUCT_DETAILS", "${productDetails}")
         val productDetailsParamsList = listOf(
             BillingFlowParams.ProductDetailsParams.newBuilder()
                 // retrieve a value for "productDetails" by calling queryProductDetailsAsync()

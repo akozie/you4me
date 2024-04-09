@@ -1,9 +1,13 @@
 package com.you4me.you4me.ui.main
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.you4me.you4me.R
 import com.you4me.you4me.adapter.DateInterestsRequiringApprovalRecyclerAdapter
@@ -13,13 +17,19 @@ import com.you4me.you4me.databinding.FragmentHomeBinding
 import com.you4me.you4me.models.DateInterestsRequiringApproval
 import com.you4me.you4me.models.InviteeDatesRequiringApproval
 import com.you4me.you4me.models.UpcomingDates
+import com.you4me.you4me.models.UpcomingDatesItem
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.Utils.ADD_EVENT_REQUEST_CODE
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 
-class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>() {
+class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>(),
+    UpcomingDatesRecyclerAdapter.CalendarResultListener {
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
@@ -138,6 +148,19 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
         }
     }
 
+    // Override onActivityResult to handle the result of the calendar activity
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ADD_EVENT_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                // The user successfully added the event to the calendar
+                Log.d("OKKKKK", "Event added to calendar")
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                // The user canceled the operation
+                Log.d("NNNNOKKKKK","Event addition canceled")
+            }
+        }
+    }
     private fun setupDateInterests(dates: DateInterestsRequiringApproval) {
         if (dates.isEmpty()) {
             binding.datesRequiringAppLyt.visibility = View.GONE
@@ -163,8 +186,24 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
             binding.upcomingDatesRecycler.visibility = View.GONE
             binding.noUpcomingDates.visibility = View.VISIBLE
         } else {
-            val adapter = UpcomingDatesRecyclerAdapter(dates, ctx)
+            val dummyData = UpcomingDates().apply {
+                add(UpcomingDatesItem("Meeting", "2024-03-05", "1", "Team Meeting", "Conference Room", "2024-04-05", "09:00", "1"))
+                add(UpcomingDatesItem("Birthday", "2024-04-10", "2", "John's Birthday", "John's House", "2024-04-10", "18:30", "2"))
+                add(UpcomingDatesItem("Appointment", "2024-04-15", "3", "Dentist Appointment", "Dentist Clinic", "2024-04-15", "11:00", "3"))
+            }
+//            val adapter = UpcomingDatesRecyclerAdapter(dummyData, requireContext())
+            val adapter = UpcomingDatesRecyclerAdapter(requireActivity(), this, dates, ctx)
             binding.upcomingDatesRecycler.adapter = adapter
+        }
+    }
+
+    override fun onCalendarEventAdded(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            // The user successfully added the event to the calendar
+            Log.d("OKKKKK", "Event added to calendar")
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            // The user canceled the operation
+            Log.d("NNNNOKKKKK","Event addition canceled")
         }
     }
 

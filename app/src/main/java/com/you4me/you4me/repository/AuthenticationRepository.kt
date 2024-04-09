@@ -21,4 +21,7 @@ class AuthenticationRepository(private val api: ApiCollector) : BaseRepository()
     }
 
     suspend fun googleSignIn(token: JsonObject) = safeApiCall { api.googleSignIn(token) }
+
+    suspend fun getUser(userId: String) = safeApiCall { api.getUser(userId) }
+
 }

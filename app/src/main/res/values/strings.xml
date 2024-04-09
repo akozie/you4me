@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">You4me</string>
+    <string name="default_web_id">264358783975-1e9bshanasnnhig1v8puo6l8u9k83ku7.apps.googleusercontent.com</string>
+
+
     <string name="add_video">Add a video</string>
     <string name="age_preference">Age Preference</string>
     <string name="confirm_password">Confirm Password</string>
@@ -16,7 +19,7 @@
     <string name="home">Home</string>
     <string name="likes">Likes</string>
     <string name="login">Login</string>
-    <string name="name">Name</string>
+    <string name="name">Enter your name</string>
     <string name="new_user">New user? <font fgcolor="#ff0052">Sign up here</font></string>
     <string name="onboarding_txt1">Start your love story with a date, not endless messages.</string>
     <string name="onboarding_txt2">There is something truly special about connecting with someone face to face.</string>
@@ -29,6 +32,7 @@
     <string name="sexual_orientation">Sexual Orientation</string>
     <string name="state">State</string>
     <string name="update">Update</string>
+    <string name="upload">Upload</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="date">Date</string>
@@ -61,4 +65,5 @@
     <string name="view_existing_video">View existing video</string>
     <string name="video_regulations">Share intriguing insights about yourself, including captivating facts and reasons why you would make a great date.\n\nPlease not that videos containing any form of nudity will not be accepted.\n\nKindly be aware that videos unrelated to dating content will be declined, and repeated violations may result in permanent account suspension</string>
     <string name="upcoming_dates">Upcoming Dates</string>
+
 </resources>

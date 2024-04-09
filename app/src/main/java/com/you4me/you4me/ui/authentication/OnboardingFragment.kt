@@ -72,7 +72,7 @@ class OnboardingFragment : Fragment() {
             onBoardingFinished()
         }
         binding.registerBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_onboardingFragment_to_registrationFragment)
+         //   findNavController().navigate(R.id.action_onboardingFragment_to_registrationFragment)
             onBoardingFinished()
         }
         binding.skipBtn.setOnClickListener {

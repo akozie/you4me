@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-//    id("com.google.gms.google-services")
+  //  id("com.google.gms.google-services")
 }
 
 android {
@@ -57,7 +57,9 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     //firebase
-//    implementation("com.google.firebase:firebase-messaging:23.4.1")
+    implementation(platform("com.google.firebase:firebase-bom:30.4.1"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.0.8")
 
     //cloudinary
     implementation("com.cloudinary:cloudinary-android-core:2.5.0")
@@ -91,6 +93,10 @@ dependencies {
 
     //google auth
     implementation("com.google.android.gms:play-services-auth:21.0.0")
+
+    //lottie
+    implementation("com.airbnb.android:lottie:4.2.0")
+
 
     //videoview
     val mediaVersion = "1.3.0"

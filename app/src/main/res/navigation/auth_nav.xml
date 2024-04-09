@@ -13,9 +13,6 @@
         <action
             android:id="@+id/action_loginFragment_to_registrationFragment"
             app:destination="@id/registrationFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_onboardingFragment"
-            app:destination="@id/onboardingFragment" />
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
@@ -25,16 +22,5 @@
         <action
             android:id="@+id/action_registrationFragment_to_loginFragment"
             app:destination="@id/loginFragment"/>
-    </fragment>
-    <fragment
-        android:id="@+id/onboardingFragment"
-        android:name="com.you4me.you4me.ui.authentication.OnboardingFragment"
-        android:label="fragment_onboarding"
-        tools:layout="@layout/fragment_onboarding" >
-        <action
-            android:id="@+id/action_onboardingFragment_to_registrationFragment"
-            app:destination="@id/registrationFragment"
-            app:popUpTo="@id/onboardingFragment"
-            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

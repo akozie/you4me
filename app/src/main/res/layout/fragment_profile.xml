@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
     android:layout_marginVertical="16dp"
     android:paddingHorizontal="32dp"
     tools:context=".ui.profile.ProfileFragment">
@@ -22,68 +24,103 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <TextView
             android:id="@+id/logout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/log_out"
             android:padding="8dp"
             android:src="@drawable/baseline_logout_24"
+            android:text="@string/log_out"
+            android:textColor="@color/primary_pink"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline5"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/delete_acc_lyt" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/name_lyt"
-            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+        <!--        <ImageButton-->
+        <!--            android:id="@+id/logout"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:background="@android:color/transparent"-->
+        <!--            android:contentDescription="@string/log_out"-->
+        <!--            android:padding="8dp"-->
+        <!--            android:src="@drawable/baseline_logout_24"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--        <com.google.android.material.textfield.TextInputLayout-->
+<!--            android:id="@+id/name_lyt"-->
+<!--            style="@style/Widget.Material3.TextInputLayout.FilledBox"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            android:hint="@string/name"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/profile_txt">-->
+
+<!--            <com.google.android.material.textfield.TextInputEditText-->
+<!--                android:id="@+id/name"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:textSize="16sp"-->
+<!--                android:background="@android:color/transparent" />-->
+
+<!--        </com.google.android.material.textfield.TextInputLayout>-->
+
+        <EditText
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="30dp"
             android:hint="@string/name"
-            app:layout_constraintTop_toBottomOf="@id/profile_txt">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_txt" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent" />
-
-        </com.google.android.material.textfield.TextInputLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/gender_lyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="15dp"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/name_lyt">
+            app:layout_constraintTop_toBottomOf="@id/name">
 
-            <TextView
-                android:id="@+id/gender_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gender"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toStartOf="@id/gender_spinner"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+<!--            <TextView-->
+<!--                android:id="@+id/gender_label"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/gender"-->
+<!--                android:textSize="16sp"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/gender_spinner"-->
+<!--                app:layout_constraintHorizontal_chainStyle="spread_inside"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
 
-            <Spinner
-                android:id="@+id/gender_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/gender_label"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/gender_label"
-                app:layout_constraintTop_toTopOf="@id/gender_label" />
+<!--            <Spinner-->
+<!--                android:id="@+id/gender_spinner"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/gender_label"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toEndOf="@id/gender_label"-->
+<!--                app:layout_constraintTop_toTopOf="@id/gender_label" />-->
 
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider8"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/gender_label" />
+<!--            <com.google.android.material.divider.MaterialDivider-->
+<!--                android:id="@+id/divider8"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_marginTop="4dp"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/gender_label" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -91,21 +128,20 @@
             android:id="@+id/sexual_orientation_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="10dp"
             android:text="@string/sexual_orientation"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@id/sexual_orientation_spinner"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/name"
             app:layout_constraintTop_toBottomOf="@id/gender_lyt" />
+
 
         <Spinner
             android:id="@+id/sexual_orientation_spinner"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@id/sexual_orientation_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/sexual_orientation_label"
+            app:layout_constraintEnd_toEndOf="@+id/name"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
             app:layout_constraintTop_toTopOf="@id/sexual_orientation_label" />
 
         <com.google.android.material.divider.MaterialDivider
@@ -116,24 +152,48 @@
             app:layout_constraintTop_toBottomOf="@id/sexual_orientation_label" />
 
         <TextView
-            android:id="@+id/age_preference_label"
+            android:id="@+id/gender_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/age_preference"
+            android:layout_marginTop="20dp"
+            android:text="@string/gender"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@id/age_preference_spinner"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/sexual_orientation_label"
             app:layout_constraintTop_toBottomOf="@id/divider1" />
 
         <Spinner
-            android:id="@+id/age_preference_spinner"
+            android:id="@+id/gender_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/gender_label"
+            app:layout_constraintEnd_toEndOf="@+id/sexual_orientation_spinner"
+            app:layout_constraintStart_toStartOf="@+id/sexual_orientation_spinner"
+            app:layout_constraintTop_toTopOf="@id/gender_label" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider8"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toBottomOf="@id/gender_label" />
+
+        <TextView
+            android:id="@+id/age_preference_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/age_preference_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/age_preference_label"
+            android:layout_marginTop="20dp"
+            android:text="@string/age_preference"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/gender_label"
+            app:layout_constraintTop_toBottomOf="@id/divider8" />
+
+        <Spinner
+            android:id="@+id/age_preference_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/age_preference_label"
+            app:layout_constraintEnd_toEndOf="@+id/gender_spinner"
+            app:layout_constraintStart_toStartOf="@+id/gender_spinner"
             app:layout_constraintTop_toTopOf="@id/age_preference_label" />
 
         <com.google.android.material.divider.MaterialDivider
@@ -147,21 +207,19 @@
             android:id="@+id/religion_preference_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="20dp"
             android:text="@string/religion_preference"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@id/religion_preference_spinner"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/age_preference_label"
             app:layout_constraintTop_toBottomOf="@id/divider2" />
 
         <Spinner
             android:id="@+id/religion_preference_spinner"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@id/religion_preference_label"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/religion_preference_label"
+            app:layout_constraintStart_toStartOf="@+id/age_preference_spinner"
             app:layout_constraintTop_toTopOf="@id/religion_preference_label" />
 
         <com.google.android.material.divider.MaterialDivider
@@ -175,21 +233,19 @@
             android:id="@+id/country_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="20dp"
             android:text="@string/country"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@id/country_spinner"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/religion_preference_label"
             app:layout_constraintTop_toBottomOf="@id/divider9" />
 
         <Spinner
             android:id="@+id/country_spinner"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@id/country_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/country_label"
+            app:layout_constraintEnd_toEndOf="@+id/religion_preference_spinner"
+            app:layout_constraintStart_toStartOf="@+id/religion_preference_spinner"
             app:layout_constraintTop_toTopOf="@id/country_label" />
 
         <com.google.android.material.divider.MaterialDivider
@@ -203,21 +259,19 @@
             android:id="@+id/state_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="20dp"
             android:text="@string/state"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@id/state_spinner"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider4" />
 
         <Spinner
             android:id="@+id/state_spinner"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@id/state_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/state_label"
+            app:layout_constraintEnd_toEndOf="@+id/country_spinner"
+            app:layout_constraintStart_toStartOf="@+id/country_spinner"
             app:layout_constraintTop_toTopOf="@id/state_label" />
 
         <com.google.android.material.divider.MaterialDivider
@@ -231,11 +285,9 @@
             android:id="@+id/dob_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="20dp"
             android:text="@string/dob"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@id/dob"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider5" />
 
@@ -246,9 +298,9 @@
             android:background="@android:color/transparent"
             android:hint="@string/date_hint"
             android:inputType="none"
+            android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="@id/dob_label"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/dob_label"
             app:layout_constraintTop_toTopOf="@id/dob_label" />
 
         <com.google.android.material.divider.MaterialDivider
@@ -262,7 +314,7 @@
             android:id="@+id/add_video_lyt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical"
             android:text="Update Video"
             android:textColor="@android:color/holo_blue_dark"
@@ -281,7 +333,7 @@
             android:id="@+id/btn_play"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical"
             android:text="@string/view_existing_video"
             android:textColor="@android:color/holo_blue_dark"
@@ -300,7 +352,7 @@
             android:id="@+id/delete_acc_lyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider7">
@@ -316,6 +368,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:text="@string/click_to_delete_your_account"
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="12sp" />
@@ -332,12 +385,13 @@
             android:id="@+id/edit_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="10dp"
             android:padding="16dp"
-            android:text="@string/update"
+            android:text="@string/upload"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/delete_acc_lyt" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline5" />
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progress_circular"
@@ -351,6 +405,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider7" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.9" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

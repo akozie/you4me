@@ -17,13 +17,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.MediaController
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
-import com.siddigital.enairaofflineapp.utils.Utils
+import com.you4me.you4me.utils.Utils
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentProfileBinding
 import com.you4me.you4me.databinding.VideoDialogBinding
@@ -102,6 +101,7 @@ class ProfileFragment :
                         binding.divider7.visibility = View.VISIBLE
                         setupVideo()
                     }
+                    binding.editBtn.text = if (it.value.status.contains("incomplete")) getString(R.string.upload) else getString(R.string.update)
                 }
 
                 is Resource.Failure -> {
@@ -291,8 +291,11 @@ class ProfileFragment :
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     if (p2 == 0) return
                     sexualOrientation = sexualOrientations[p2 - 1].value
-                    binding.genderLyt.visibility = if (sexualOrientation == "4") View.VISIBLE
-                    else View.GONE
+                    Log.d("GENDER", sexualOrientation.toString())
+                    //binding.genderLyt.visibility = if (sexualOrientation == "4") View.VISIBLE else View.GONE
+                    binding.genderLabel.visibility = if (sexualOrientation == "4") View.VISIBLE else View.GONE
+                    binding.genderSpinner.visibility = if (sexualOrientation == "4") View.VISIBLE else View.GONE
+                    binding.divider8.visibility = if (sexualOrientation == "4") View.VISIBLE else View.GONE
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -343,7 +346,7 @@ class ProfileFragment :
         names.add(0, "Select")
 
         ArrayAdapter(
-            requireContext(), android.R.layout.simple_spinner_item, names
+            requireContext(), R.layout.spinner_item_layout, names
         ).also { adapter ->
             when (spinner) {
                 SEXUAL_ORIENTATION_SPINNER -> {

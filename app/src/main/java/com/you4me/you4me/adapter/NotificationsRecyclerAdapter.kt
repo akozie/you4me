@@ -3,6 +3,7 @@ package com.you4me.you4me.adapter
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.you4me.you4me.utils.Utils.formatDate
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.NotoficationItemBinding
 import com.you4me.you4me.models.Notification
@@ -18,7 +19,7 @@ class NotificationsRecyclerAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val notification = notifications[position]
         holder.binding.notificationText.text = notification.message
-        holder.binding.dateTime.text = "${notification.time} - ${notification.date}"
+        holder.binding.dateTime.text = formatDate("${notification.date}", "${notification.time}")
         if (notification.seen == "true") {
             holder.binding.notificationLyt.setBackgroundColor(context.resources.getColor(R.color.white))
         }

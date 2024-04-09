@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.siddigital.enairaofflineapp.utils.Utils
+import com.you4me.you4me.utils.Utils
 import com.you4me.you4me.databinding.ApprovedDateItemBinding
 import com.you4me.you4me.models.InviteeDatesRequiringApproval
 import com.you4me.you4me.ui.main.MainViewModel
@@ -45,7 +45,6 @@ class InviteeDateForApprovalRecyclerAdapter(
                 acceptBtn.visibility = View.GONE
                 newTimeBtn.visibility = View.GONE
                 newDateTimeLyt.visibility = View.VISIBLE
-
             }
             updateTimeBtn.setOnClickListener {
                 //propose new time

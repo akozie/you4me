@@ -26,6 +26,11 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository, 
     val registerResponse: LiveData<Resource<RegisterResponse>>
         get() = _registerResponse
 
+    private val _user: MutableLiveData<Resource<User>> = MutableLiveData()
+    val user: LiveData<Resource<User>>
+        get() = _user
+
+
     fun login(email: String, password: String) {
         val obj = JsonObject()
         obj.addProperty("email", email)
@@ -51,6 +56,12 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository, 
             if (isLogin) {
                 _loginResponse.value = repository.googleSignIn(jsonObject)
             }
+        }
+    }
+
+    fun getUserDetails(userId : String) {
+        viewModelScope.launch {
+            _user.value = repository.getUser(userId)
         }
     }
 

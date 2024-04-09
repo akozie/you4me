@@ -56,6 +56,21 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
         return builder
     }
 
+    fun showAlertDialog(
+        context: Context,
+        message: String,
+        positiveButtonTitle: String,
+        onPositiveButtonClick: () -> Unit,
+    ) {
+        val alertDialog = android.app.AlertDialog.Builder(context).setMessage(message)
+            .setPositiveButton(positiveButtonTitle) { _, _ ->
+                onPositiveButtonClick()
+                // Dismiss the dialog when "Yes" is clicked
+               // alertDialog(context).dismiss()
+            }.setCancelable(false).create()
+
+        alertDialog.show()
+    }
     fun showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
         Toast.makeText(requireContext(), message, length).show()
     }

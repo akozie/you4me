@@ -1,12 +1,11 @@
 package com.you4me.you4me.ui.main
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.MediaController
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import com.you4me.you4me.databinding.FragmentFindDateBinding
@@ -17,7 +16,6 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.OnSwipeTouchListener
-import com.you4me.you4me.utils.fetchDates
 
 
 class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, MainRepository>() {
@@ -145,7 +143,14 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
             }
         }
         viewModel.user.observe(viewLifecycleOwner) {
-            viewModel.fetchDates()
+            if (it.status == "incomplete") {
+                binding.completeProfileLayout.visibility = View.VISIBLE
+                binding.constraintLayout2.visibility = View.GONE
+                return@observe
+            } else {
+                binding.completeProfileLayout.visibility = View.GONE
+                viewModel.fetchDates()
+            }
         }
         viewModel.addDateInterest.observe(viewLifecycleOwner) {
             when (it) {
@@ -222,13 +227,17 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
     }
 
     private fun showEmpty() {
+        binding.lottieAnimationView.setAnimation("dating.json")
+        binding.lottieAnimationView.playAnimation()
         binding.mainLyt.visibility = View.GONE
-        binding.emptyLyt.visibility = View.VISIBLE
+        binding.constraintLayout2.visibility = View.VISIBLE
+//        binding.emptyLyt.visibility = View.VISIBLE
     }
 
     private fun showLoading(loading: Boolean) {
         binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
-        binding.emptyLyt.visibility = if (loading) View.GONE else View.VISIBLE
+        binding.constraintLayout2.visibility = if (loading) View.GONE else View.VISIBLE
+//        binding.emptyLyt.visibility = if (loading) View.GONE else View.VISIBLE
         binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
 }

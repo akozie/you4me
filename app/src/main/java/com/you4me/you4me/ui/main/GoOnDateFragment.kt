@@ -1,6 +1,5 @@
 package com.you4me.you4me.ui.main
 
-import android.R
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -10,30 +9,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.siddigital.enairaofflineapp.utils.Utils
+import com.you4me.you4me.utils.Utils
+import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentGoOnDateBinding
-import com.you4me.you4me.models.SubmitDateBody
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import java.util.*
 
 class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, MainRepository>() {
 
     private lateinit var calendar: Calendar
     private lateinit var dateFormat: SimpleDateFormat
 
-    private lateinit var paymentModes : ArrayList<ValueLabelResponse>
+    private lateinit var paymentModes: ArrayList<ValueLabelResponse>
 
     private val startAutoComplete =
         registerForActivityResult(
@@ -136,7 +133,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
     private fun setupSpinner(values: ArrayList<ValueLabelResponse>) {
         val labels = values.map { it.label }
         ArrayAdapter(
-            requireContext(), R.layout.simple_spinner_item, labels
+            requireContext(), R.layout.spinner_item_layout, labels
         ).also { adapter -> binding.whoPaysSpinner.adapter = adapter }
     }
 

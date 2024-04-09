@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="android:textColor">@color/primary_pink</item>
+    </style>
+
+    <style name="onBoarding_button">
+        <item name="borderWidth">@dimen/margin_4dp</item>
+        <item name="backgroundTint">@color/primary_pink</item>
+        <item name="android:layout_marginTop">@dimen/margin_80dp</item>
+        <item name="android:layout_marginBottom">@dimen/margin_10dp</item>
+        <item name="cornerRadius">@dimen/margin_10dp</item>
+    </style>
+
+</resources>

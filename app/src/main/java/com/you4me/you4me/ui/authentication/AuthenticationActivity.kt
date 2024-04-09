@@ -12,7 +12,7 @@ class AuthenticationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAuthenticationBinding.inflate(layoutInflater)
 
-        installSplashScreen()
+      //  installSplashScreen()
 
         setContentView(binding.root)
     }

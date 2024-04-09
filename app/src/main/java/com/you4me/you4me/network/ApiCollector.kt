@@ -176,4 +176,9 @@ interface ApiCollector {
         @Body obj: JsonObject
     )
 
+    @GET("users")
+    suspend fun registerPayment(
+        @Path("userId") userId: String,
+    )
+
 }

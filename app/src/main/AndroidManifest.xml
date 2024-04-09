@@ -17,9 +17,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.You4me"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.authentication.OnBoardingActivity"
+            android:exported="true"
+            android:theme="@style/You4meSplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/icon" />
+
         <service
             android:name=".service.MyFirebaseMessagingService"
             android:exported="false">
@@ -27,18 +38,13 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="false" />
         <activity
             android:name=".ui.authentication.AuthenticationActivity"
-            android:exported="true"
-            android:theme="@style/Theme.App.Starting">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:exported="true">
         </activity>
     </application>
 

@@ -1,7 +1,8 @@
-package com.siddigital.enairaofflineapp.utils
+package com.you4me.you4me.utils
 
 import android.app.Activity
 import android.app.Dialog
+import android.util.Log
 import android.util.Patterns
 import android.widget.TextView
 import com.you4me.you4me.R
@@ -9,6 +10,9 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 object Utils {
+
+    const val ADD_EVENT_REQUEST_CODE = 1001 // Any unique request code
+    const val GOOGLE_SIGN_IN_RQ_CODE = 100
 
     fun getDateFormat() = SimpleDateFormat("yyyy/MM/dd", Locale.UK)
     fun isInternetConnected() : Boolean {
@@ -18,6 +22,24 @@ object Utils {
         } catch (e: Exception) {
             false
         }
+    }
+
+    fun formatDate(dateString: String, timeString: String): String {
+        // Combine date and time strings
+        val combinedString = "$dateString $timeString"
+
+        // Define the input format
+        val inputFormat = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
+
+        // Define the output format
+        val outputFormat = SimpleDateFormat("EEEE, MMMM dd, yyyy hh:mm a", Locale.getDefault())
+
+        // Parse the combined string into a Date object
+        val date = inputFormat.parse(combinedString)
+
+        // Format the Date object into the desired format
+        Log.d("CHECKING", outputFormat.format(date!!))
+        return outputFormat.format(date!!)
     }
 
 //    fun showErrorDialog(activity: Activity, message: String, resolve: String? = null) {
