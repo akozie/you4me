@@ -13,8 +13,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.gson.Gson
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentLoginBinding
+import com.you4me.you4me.models.User
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.AuthenticationRepository
@@ -32,8 +34,8 @@ class LoginFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-      //  if (!isOnBoardingDone()) findNavController().navigate(R.id.action_loginFragment_to_onboardingFragment)
-        if (sharedPrefHelper.getBoolean(SharedPrefHelper.IS_LOGGED_IN)){
+        //  if (!isOnBoardingDone()) findNavController().navigate(R.id.action_loginFragment_to_onboardingFragment)
+        if (sharedPrefHelper.getBoolean(SharedPrefHelper.IS_LOGGED_IN)) {
             startActivity(Intent(requireActivity(), MainActivity::class.java))
         }
         setupViews()
@@ -93,18 +95,33 @@ class LoginFragment :
             viewModel.loginResponse.observe(viewLifecycleOwner) {
                 when (it) {
                     is Resource.Success -> {
+                        //viewModel.clearUser()
                         viewModel.getUserDetails(it.value.userId)
-                        viewModel.user.observe(viewLifecycleOwner) {user ->
+                        viewModel.user.observe(viewLifecycleOwner) { user ->
                             showLoader(false)
                             when (user) {
                                 is Resource.Success -> {
                                     val dialog = showDialog("Login Successful", true)
                                     viewModel.saveUser(user.value)
                                     Log.d("CHECKING", user.value.toString())
-                                    sharedPrefHelper.saveString(SharedPrefHelper.USER_ID, user.value.userId)
-                                    sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, true)
+                                    val gson = Gson()
+                                    val userProfileJsonString = gson.toJson(it.value)
+                                    sharedPrefHelper.saveString(SharedPrefHelper.USER_PROFILE, userProfileJsonString)
+                                    sharedPrefHelper.saveString(
+                                        SharedPrefHelper.USER_ID,
+                                        user.value.userId
+                                    )
+                                    sharedPrefHelper.saveBoolean(
+                                        SharedPrefHelper.IS_LOGGED_IN,
+                                        true
+                                    )
                                     dialog.dismiss()
-                                    startActivity(Intent(requireActivity(), MainActivity::class.java))
+                                    startActivity(
+                                        Intent(
+                                            requireActivity(),
+                                            MainActivity::class.java
+                                        )
+                                    )
                                     requireActivity().finish()
                                 }
 
@@ -119,7 +136,7 @@ class LoginFragment :
                         val message =
                             if (it.isNetworkError) "Please check your internet" else it.message
                                 ?: it.errorBody
-                        showAlertDialog(requireContext(), message ?: "Please try again", "OK"){
+                        showAlertDialog(requireContext(), message ?: "Please try again", "OK") {
                             findNavController().popBackStack()
                         }
                     }
@@ -143,6 +160,7 @@ class LoginFragment :
         AuthenticationRepository(dataSource.buildApi(ApiCollector::class.java))
 
     private fun setupViews() {
+       // viewModel.clearUser()
         viewModel.loginResponse.observe(viewLifecycleOwner) {
             showLoader(false)
             when (it) {
@@ -152,6 +170,9 @@ class LoginFragment :
                     viewModel.saveUser(it.value)
                     Log.d("CHECKING", it.value.toString())
                     sharedPrefHelper.saveString(SharedPrefHelper.USER_ID, it.value.userId)
+                    val gson = Gson()
+                    val userProfileJsonString = gson.toJson(it.value)
+                    sharedPrefHelper.saveString(SharedPrefHelper.USER_PROFILE, userProfileJsonString)
                     sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, true)
                     binding.email.text?.clear()
                     binding.password.text?.clear()
@@ -163,7 +184,11 @@ class LoginFragment :
                 is Resource.Failure -> {
                     val message =
                         if (it.isNetworkError) "Please check your internet" else it.message
-                    showAlertDialog(requireContext(), message ?: it.errorBody ?: "Please try again", "OK"){}
+                    showAlertDialog(
+                        requireContext(),
+                        message ?: it.errorBody ?: "Please try again",
+                        "OK"
+                    ) {}
                 }
             }
         }
@@ -191,6 +216,7 @@ class LoginFragment :
         binding.email.isEnabled = !show
         binding.password.isEnabled = !show
     }
+
     private fun validate(email: CharSequence?, password: CharSequence?): Boolean {
         if (email.validateEmail()) {
             if (password.validatePassword()) {

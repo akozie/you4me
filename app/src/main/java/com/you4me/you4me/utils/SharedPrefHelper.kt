@@ -2,11 +2,14 @@ package com.you4me.you4me.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.gson.Gson
+import com.you4me.you4me.models.User
 
 class SharedPrefHelper(context: Context) {
 
     companion object {
         const val USER_ID = "user_id"
+        const val USER_PROFILE = "user_profile"
         const val IS_LOGGED_IN = "is_logged_in"
         const val IS_ONBOARDED = "onboarding_finished"
     }
@@ -14,13 +17,21 @@ class SharedPrefHelper(context: Context) {
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("You4me_Preferences", 0)
 
-    fun getString(key: String, defValue: String): String {
-        return sharedPreferences.getString(key, defValue).toString()
+    fun getString(key: String): String {
+        return sharedPreferences.getString(key, "").toString()
     }
 
     fun saveString(key: String, value: String) {
         sharedPreferences.edit().putString(key, value).apply()
     }
+
+//    fun saveUser(key: String, value: User) {
+//        sharedPreferences.edit().putString(key, value.toString()).apply()
+//    }
+//
+//    fun getUser(key: String): String {
+//        return sharedPreferences.getString(key, "").toString()
+//    }
 
     fun saveInt(key: String, balance: Int) {
         sharedPreferences.edit().putInt(key, balance).apply()

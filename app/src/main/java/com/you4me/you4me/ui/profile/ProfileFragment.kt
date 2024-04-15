@@ -22,6 +22,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import com.google.gson.Gson
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentProfileBinding
 import com.you4me.you4me.databinding.VideoDialogBinding
@@ -67,6 +68,18 @@ class ProfileFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
+        Log.d("PROFILEID", userProfile)
+        val gson = Gson()
+        val userProfileJsonString = gson.toJson(userProfile)
+        val newUser: User? = gson.fromJson(userProfile, User::class.java)
+        Log.d("OKKPROFILEID", newUser.toString())
+        if (newUser != null) {
+            user = newUser
+            populateViews(user)
+        }
+//        viewModel.getUserDetails(user.userId)
+
         addListeners()
         addObservers()
         setupView()
@@ -81,11 +94,12 @@ class ProfileFragment :
     override fun getRepository() = ProfileRepository(dataSource.buildApi(ApiCollector::class.java))
 
     private fun addObservers() {
-        viewModel.dbUser.observe(viewLifecycleOwner) {
-            user = it
-            viewModel.getUserDetails(it.userId)
-            populateViews(it)
-        }
+        //viewModel.getUserFromDb()
+        //  viewModel.dbUser.observe(viewLifecycleOwner) {
+        //   user = it
+        //  viewModel.getUserDetails(it.userId)
+        //  }
+
 
         viewModel.user.observe(viewLifecycleOwner) {
             when (it) {
@@ -197,7 +211,7 @@ class ProfileFragment :
                 }
 
                 is Resource.Failure -> {
-                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
+                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
                 }
             }
         }
@@ -212,7 +226,7 @@ class ProfileFragment :
                     if (it.errorCode == 400) {
                         showToast("You already uploaded a video")
                     } else {
-                        showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
+                        showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
                     }
                 }
             }
@@ -460,13 +474,18 @@ class ProfileFragment :
                             showToast("Account logged out successfully!")
                             sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, false)
                             //change shared pref to is logged out
-                            val intent = Intent(requireContext(), AuthenticationActivity::class.java)
+                            val intent =
+                                Intent(requireContext(), AuthenticationActivity::class.java)
                             startActivity(intent)
                             requireActivity().finish()
                         }
                         is Resource.Failure -> {
                             dialog.dismiss()
-                            showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
+                            showAlertDialog(
+                                requireContext(),
+                                it.message ?: it.errorBody ?: "",
+                                "OK"
+                            ) {}
                         }
                     }
                 }
@@ -496,7 +515,11 @@ class ProfileFragment :
                         }
                         is Resource.Failure -> {
                             dialog.dismiss()
-                            showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
+                            showAlertDialog(
+                                requireContext(),
+                                it.message ?: it.errorBody ?: "",
+                                "OK"
+                            ) {}
                         }
                     }
                 }
@@ -560,6 +583,7 @@ class ProfileFragment :
             activityResultLauncher.launch(intent)
         }
         builder.setNegativeButton("Cancel") { d, i ->
+            showLoader(false)
             d.dismiss()
         }
         builder.show()

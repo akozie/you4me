@@ -13,6 +13,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.gson.Gson
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentRegistrationBinding
 import com.you4me.you4me.network.ApiCollector
@@ -105,6 +106,7 @@ class RegistrationFragment :
             viewModel.loginResponse.observe(viewLifecycleOwner) {
                 when (it) {
                     is Resource.Success -> {
+                        //viewModel.clearUser()
                         viewModel.getUserDetails(it.value.userId)
                         viewModel.user.observe(viewLifecycleOwner) { user ->
                             showLoader(false)
@@ -113,6 +115,9 @@ class RegistrationFragment :
                                     val dialog = showDialog("Registration Successful", true)
                                     viewModel.saveUser(user.value)
                                     Log.d("CHECKING", user.value.toString())
+                                    val gson = Gson()
+                                    val userProfileJsonString = gson.toJson(it.value)
+                                    sharedPrefHelper.saveString(SharedPrefHelper.USER_PROFILE, userProfileJsonString)
                                     sharedPrefHelper.saveString(
                                         SharedPrefHelper.USER_ID,
                                         user.value.userId
@@ -154,10 +159,11 @@ class RegistrationFragment :
 
     private fun setupViews() {
         binding.login.setOnClickListener { findNavController().popBackStack() }
-        viewModel.registerResponse.observe(viewLifecycleOwner) {user ->
+        viewModel.registerResponse.observe(viewLifecycleOwner) { user ->
             showLoader(false)
             when (user) {
                 is Resource.Success -> {
+                    //viewModel.clearUser()
                     viewModel.getUserDetails(user.value.userId)
                     viewModel.user.observe(viewLifecycleOwner) {
                         when (it) {
@@ -165,6 +171,9 @@ class RegistrationFragment :
                                 val dialog = showDialog("Registration Successful", true)
                                 viewModel.saveUser(it.value)
                                 Log.d("CHECKING", it.value.toString())
+                                val gson = Gson()
+                                val userProfileJsonString = gson.toJson(it.value)
+                                sharedPrefHelper.saveString(SharedPrefHelper.USER_PROFILE, userProfileJsonString)
                                 sharedPrefHelper.saveString(
                                     SharedPrefHelper.USER_ID,
                                     it.value.userId

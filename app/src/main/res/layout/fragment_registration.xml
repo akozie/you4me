@@ -109,7 +109,7 @@
         android:background="@drawable/rectangle_box_button_google"
         android:gravity="center"
         android:text="Google"
-        android:textColor="@color/blue"
+        android:textColor="@color/white"
         android:textSize="17sp"
         android:textStyle="bold"
         app:drawableStartCompat="@drawable/google_icon"

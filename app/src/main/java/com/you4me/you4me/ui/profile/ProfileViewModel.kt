@@ -94,7 +94,7 @@ class ProfileViewModel(
         get() = _logoutResponse
 
     init {
-        getUserFromDb()
+        //getUserFromDb()
         getGenders()
         getCountries()
         getSexualOrientations()
@@ -115,11 +115,14 @@ class ProfileViewModel(
     }
 
     fun saveUser(user : User) {
-        viewModelScope.launch { dbRepository.insertUser(user) }
+        viewModelScope.launch {
+            dbRepository.clear()
+            dbRepository.insertUser(user)
+        }
         _dbUser.value = user
     }
 
-    private fun getUserFromDb() {
+    fun getUserFromDb() {
         viewModelScope.launch {
             _dbUser.value = dbRepository.getUser()
         }
