@@ -134,6 +134,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                     else {
                         dates = it.value
                         setScreen()
+                        binding.mainLyt.visibility = View.VISIBLE
                     }
                 }
 
@@ -231,13 +232,12 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         binding.lottieAnimationView.playAnimation()
         binding.mainLyt.visibility = View.GONE
         binding.constraintLayout2.visibility = View.VISIBLE
-//        binding.emptyLyt.visibility = View.VISIBLE
     }
 
     private fun showLoading(loading: Boolean) {
         binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
         binding.constraintLayout2.visibility = if (loading) View.GONE else View.VISIBLE
-//        binding.emptyLyt.visibility = if (loading) View.GONE else View.VISIBLE
         binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
+
 }
