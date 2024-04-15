@@ -84,7 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
+            app:layout_constraintGuide_percent="0.45" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/gender_lyt"
@@ -192,8 +192,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@+id/age_preference_label"
-            app:layout_constraintEnd_toEndOf="@+id/gender_spinner"
-            app:layout_constraintStart_toStartOf="@+id/gender_spinner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
             app:layout_constraintTop_toTopOf="@id/age_preference_label" />
 
         <com.google.android.material.divider.MaterialDivider

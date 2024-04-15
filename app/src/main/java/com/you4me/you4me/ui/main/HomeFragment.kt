@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import com.you4me.you4me.R
+import com.you4me.you4me.You4MeApp
 import com.you4me.you4me.adapter.DateInterestsRequiringApprovalRecyclerAdapter
 import com.you4me.you4me.adapter.InviteeDateForApprovalRecyclerAdapter
 import com.you4me.you4me.adapter.UpcomingDatesRecyclerAdapter
@@ -40,6 +42,15 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
     }
 
     override fun getRepository() = MainRepository(dataSource.buildApi(ApiCollector::class.java))
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                activity?.finishAffinity()
+            }
+        })
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -151,6 +162,7 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
     // Override onActivityResult to handle the result of the calendar activity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        Log.d("RESULTCODEK", "$requestCode")
         if (requestCode == ADD_EVENT_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 // The user successfully added the event to the calendar
@@ -205,6 +217,21 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
             // The user canceled the operation
             Log.d("NNNNOKKKKK","Event addition canceled")
         }
+    }
+
+    override fun startActivityForCalendarEvent(intent: Intent, resultCode: Int) {
+        Log.d("RESULTCODEK", "$resultCode")
+        startActivityForResult(intent, ADD_EVENT_REQUEST_CODE)
+
+//        if (resultCode == ADD_EVENT_REQUEST_CODE) {
+//            if (resultCode == Activity.RESULT_OK) {
+//                // The user successfully added the event to the calendar
+//                Log.d("OKKKKK", "Event added to calendar")
+//            } else if (resultCode == Activity.RESULT_CANCELED) {
+//                // The user canceled the operation
+//                Log.d("NNNNOKKKKK", "Event addition canceled")
+//            }
+//        }
     }
 
 //    private fun closeApp() {

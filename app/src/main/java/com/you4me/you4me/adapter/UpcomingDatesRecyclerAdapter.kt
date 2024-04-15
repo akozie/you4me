@@ -58,7 +58,9 @@ class UpcomingDatesRecyclerAdapter(private val activity: Activity, private val l
 //        listener.onEventAdded(ADD_EVENT_REQUEST_CODE)
         // Start activity to add event to calendar
 //        context.startActivity(intent)
-        startActivityForCalendarEvent(intent)
+        //startActivityForResult(activity,intent, ADD_EVENT_REQUEST_CODE, null)
+        listener.startActivityForCalendarEvent(intent, ADD_EVENT_REQUEST_CODE)
+        //startActivityForCalendarEvent(intent)
     }
 
 
@@ -70,6 +72,7 @@ class UpcomingDatesRecyclerAdapter(private val activity: Activity, private val l
 
     interface CalendarResultListener {
         fun onCalendarEventAdded(resultCode: Int, data: Intent?)
+        fun startActivityForCalendarEvent(intent: Intent, resultCode: Int)
     }
 
 }

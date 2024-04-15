@@ -112,7 +112,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                 }
 
                 is Resource.Failure -> {
-                    showToast(it.message ?: it.errorBody ?: "")
+                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
                 }
             }
         }
@@ -124,7 +124,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                 }
 
                 is Resource.Failure -> {
-                    showDialog(it.message ?: it.errorBody ?: "")
+                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
                 }
             }
         }

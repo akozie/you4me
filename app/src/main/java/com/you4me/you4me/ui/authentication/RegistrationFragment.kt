@@ -128,6 +128,7 @@ class RegistrationFragment :
                                             MainActivity::class.java
                                         )
                                     )
+                                    requireActivity().finish()
                                 }
 
                                 is Resource.Failure -> {
@@ -153,11 +154,11 @@ class RegistrationFragment :
 
     private fun setupViews() {
         binding.login.setOnClickListener { findNavController().popBackStack() }
-        viewModel.registerResponse.observe(viewLifecycleOwner) {
+        viewModel.registerResponse.observe(viewLifecycleOwner) {user ->
             showLoader(false)
-            when (it) {
+            when (user) {
                 is Resource.Success -> {
-                    viewModel.getUserDetails(it.value.userId)
+                    viewModel.getUserDetails(user.value.userId)
                     viewModel.user.observe(viewLifecycleOwner) {
                         when (it) {
                             is Resource.Success -> {
@@ -184,8 +185,8 @@ class RegistrationFragment :
 
                 is Resource.Failure -> {
                     val message =
-                        if (it.isNetworkError) "Please check your internet" else it.message
-                            ?: it.errorBody
+                        if (user.isNetworkError) "Please check your internet" else user.message
+                            ?: user.errorBody
                     showAlertDialog(requireContext(), message ?: "Please try again", "OK") {
                         findNavController().popBackStack()
                     }

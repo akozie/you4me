@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -14,14 +16,26 @@ import com.google.android.libraries.places.api.Places
 import com.you4me.you4me.BuildConfig
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.ActivityMainBinding
+import com.you4me.you4me.models.User
+import com.you4me.you4me.network.Resource
+import com.you4me.you4me.ui.authentication.AuthenticationViewModel
+import com.you4me.you4me.ui.profile.ProfileViewModel
+import com.you4me.you4me.utils.SharedPrefHelper
+import com.you4me.you4me.utils.Utils.showAlertDialog
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val viewModel by viewModels<ProfileViewModel>()
+    private lateinit var user: User
+    private lateinit var sharedPrefHelper: SharedPrefHelper
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        sharedPrefHelper = SharedPrefHelper(this)
         setupViews()
         initializePlacesSdk()
         createNotificationChannel()
@@ -68,4 +82,27 @@ class MainActivity : AppCompatActivity() {
             notificationManager.createNotificationChannel(channel)
         }
     }
+
+//    override fun onBackPressed() {
+//        super.onBackPressed()
+////        viewModel.dbUser.observe(this) {
+////            user = it
+////        }
+//        showAlertDialog(this, "Do you want to logout?", "YES", "NO", {
+//            viewModel.logout(user.userId)
+//            viewModel.logoutResponse.observe(this) {
+//                when (it) {
+//                    is Resource.Success -> {
+//                        Toast.makeText(this,"Account logged out successfully!", Toast.LENGTH_SHORT).show()
+//                        sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, false)
+//                        //change shared pref to is logged out
+//                        finish()
+//                    }
+//                    is Resource.Failure -> {
+//                        Toast.makeText(this,it.message ?: it.errorBody ?: "", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
+//        }, {})
+//    }
 }

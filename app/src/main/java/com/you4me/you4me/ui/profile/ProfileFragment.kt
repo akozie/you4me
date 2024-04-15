@@ -22,7 +22,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
-import com.you4me.you4me.utils.Utils
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentProfileBinding
 import com.you4me.you4me.databinding.VideoDialogBinding
@@ -33,10 +32,11 @@ import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.ProfileRepository
+import com.you4me.you4me.ui.authentication.AuthenticationActivity
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.SharedPrefHelper
-import java.util.Calendar
-import java.util.UUID
+import com.you4me.you4me.utils.Utils
+import java.util.*
 
 
 class ProfileFragment :
@@ -51,24 +51,19 @@ class ProfileFragment :
     private lateinit var state: String
     private lateinit var country: String
     private lateinit var user: User
-
     private lateinit var countries: ArrayList<ValueLabelResponse>
     private lateinit var states: ArrayList<ValueLabelResponse>
     private lateinit var agePreferences: ArrayList<ValueLabelResponse>
     private lateinit var genders: ArrayList<ValueLabelResponse>
     private lateinit var religions: ArrayList<ValueLabelResponse>
     private lateinit var sexualOrientations: ArrayList<ValueLabelResponse>
-
     private lateinit var calendar: Calendar
-
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private var videoUri: Uri? = null
     private lateinit var videoId: String
     private var player: ExoPlayer? = null
-
     private lateinit var videoViewBinding: VideoDialogBinding
-
-    private lateinit var updateBody : UpdateUserBody
+    private lateinit var updateBody: UpdateUserBody
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -101,7 +96,10 @@ class ProfileFragment :
                         binding.divider7.visibility = View.VISIBLE
                         setupVideo()
                     }
-                    binding.editBtn.text = if (it.value.status.contains("incomplete")) getString(R.string.upload) else getString(R.string.update)
+                    binding.editBtn.text =
+                        if (it.value.status.contains("incomplete")) getString(R.string.upload) else getString(
+                            R.string.update
+                        )
                 }
 
                 is Resource.Failure -> {
@@ -151,6 +149,14 @@ class ProfileFragment :
                 is Resource.Success -> {
                     sexualOrientations = it.value
                     setupSpinner(it.value, SEXUAL_ORIENTATION_SPINNER)
+                    Log.d("GENDERRRR", "${it.value[0].value}")
+                    binding.genderLabel.visibility =
+                        if (it.value[0].value == "4") View.VISIBLE else View.GONE
+                    binding.genderSpinner.visibility =
+                        if (it.value[0].value == "4") View.VISIBLE else View.GONE
+                    binding.divider8.visibility =
+                        if (it.value[0].value == "4") View.VISIBLE else View.GONE
+
                 }
 
                 is Resource.Failure -> {
@@ -191,7 +197,7 @@ class ProfileFragment :
                 }
 
                 is Resource.Failure -> {
-                    showDialog(it.message ?: it.errorBody ?: "An error occurred")
+                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
                 }
             }
         }
@@ -206,7 +212,7 @@ class ProfileFragment :
                     if (it.errorCode == 400) {
                         showToast("You already uploaded a video")
                     } else {
-                        showDialog(it.message ?: it.errorBody ?: "An error occurred")
+                        showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
                     }
                 }
             }
@@ -242,7 +248,7 @@ class ProfileFragment :
     private fun addListeners() {
         binding.editBtn.setOnClickListener {
             showLoader(true)
-             updateBody = UpdateUserBody(
+            updateBody = UpdateUserBody(
                 agePreferred,
                 country,
                 dob,
@@ -293,9 +299,12 @@ class ProfileFragment :
                     sexualOrientation = sexualOrientations[p2 - 1].value
                     Log.d("GENDER", sexualOrientation.toString())
                     //binding.genderLyt.visibility = if (sexualOrientation == "4") View.VISIBLE else View.GONE
-                    binding.genderLabel.visibility = if (sexualOrientation == "4") View.VISIBLE else View.GONE
-                    binding.genderSpinner.visibility = if (sexualOrientation == "4") View.VISIBLE else View.GONE
-                    binding.divider8.visibility = if (sexualOrientation == "4") View.VISIBLE else View.GONE
+                    binding.genderLabel.visibility =
+                        if (sexualOrientation == "4") View.VISIBLE else View.GONE
+                    binding.genderSpinner.visibility =
+                        if (sexualOrientation == "4") View.VISIBLE else View.GONE
+                    binding.divider8.visibility =
+                        if (sexualOrientation == "4") View.VISIBLE else View.GONE
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -412,7 +421,7 @@ class ProfileFragment :
 //                showToast("please upload a video")
 //                return@setOnClickListener
 //            } else {
-                showVideoDialog()
+            showVideoDialog()
 //            }
         }
 
@@ -440,10 +449,10 @@ class ProfileFragment :
         binding.logout.setOnClickListener {
             val alertDialog = AlertDialog.Builder(ctx)
             alertDialog.setTitle("Log out?")
-            alertDialog.setPositiveButton("Cancel"){ dialog, int ->
+            alertDialog.setPositiveButton("Cancel") { dialog, int ->
                 dialog.dismiss()
             }
-            alertDialog.setNegativeButton("Log out"){ dialog, int ->
+            alertDialog.setNegativeButton("Log out") { dialog, int ->
                 viewModel.logout(user.userId)
                 viewModel.logoutResponse.observe(viewLifecycleOwner) {
                     when (it) {
@@ -451,11 +460,13 @@ class ProfileFragment :
                             showToast("Account logged out successfully!")
                             sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, false)
                             //change shared pref to is logged out
+                            val intent = Intent(requireContext(), AuthenticationActivity::class.java)
+                            startActivity(intent)
                             requireActivity().finish()
                         }
                         is Resource.Failure -> {
                             dialog.dismiss()
-                            showDialog(it.message ?: "")
+                            showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
                         }
                     }
                 }
@@ -467,10 +478,10 @@ class ProfileFragment :
             val alertDialog = AlertDialog.Builder(ctx)
             alertDialog.setTitle("Delete account?")
             alertDialog.setMessage("Selecting delete will delete your account forever. This action is not reversible")
-            alertDialog.setPositiveButton("Cancel"){ dialog, int ->
+            alertDialog.setPositiveButton("Cancel") { dialog, int ->
                 dialog.dismiss()
             }
-            alertDialog.setNegativeButton("Delete"){ dialog, int ->
+            alertDialog.setNegativeButton("Delete") { dialog, int ->
                 dialog.dismiss()
                 val dialogg = showDialog("Please wait", false)
                 viewModel.deleteUser(user.userId)
@@ -485,7 +496,7 @@ class ProfileFragment :
                         }
                         is Resource.Failure -> {
                             dialog.dismiss()
-                            showDialog(it.message ?: "")
+                            showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
                         }
                     }
                 }
@@ -505,8 +516,7 @@ class ProfileFragment :
         binding.dob.setText(user.dob)
 
         viewModel.getStates(user.country)
-        binding.genderLyt.visibility = if (user.sexualOrientation == "4") View.VISIBLE
-        else View.GONE
+//        binding.genderLyt.visibility = if (user.sexualOrientation == "4") View.VISIBLE else View.GONE
 
         name = user.name
         country = user.country
@@ -575,9 +585,9 @@ class ProfileFragment :
         if (player != null) player = null
         player = ExoPlayer.Builder(ctx).build().also {
             videoViewBinding.videoView.player = it
-                val mediaItem = MediaItem.fromUri(videoUri!!)
-                it.setMediaItem(mediaItem)
-                it.prepare()
+            val mediaItem = MediaItem.fromUri(videoUri!!)
+            it.setMediaItem(mediaItem)
+            it.prepare()
         }
     }
 

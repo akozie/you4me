@@ -4,31 +4,25 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AnimationUtils
+import android.view.animation.DecelerateInterpolator
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingFlowParams
-import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.ProductDetails
-import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.PurchasesResponseListener
-import com.android.billingclient.api.PurchasesUpdatedListener
-import com.android.billingclient.api.QueryProductDetailsParams
-import com.android.billingclient.api.QueryPurchasesParams
+import com.android.billingclient.api.*
 import com.google.common.collect.ImmutableList
 import com.google.gson.JsonObject
+import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentLikesBinding
-import com.you4me.you4me.models.FetchDateInterest
-import com.you4me.you4me.models.User
+import com.you4me.you4me.models.*
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
-import com.you4me.you4me.utils.OnSwipeTouchListener
 
 class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepository>() {
 
@@ -141,28 +135,97 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             )
         }
 
-        binding.mainLyt.setOnTouchListener(object : OnSwipeTouchListener(ctx) {
-            override fun onSwipeLeft() {
-                view?.performClick()
-                super.onSwipeLeft()
-                if (currentIdx < 0) return
-                val d = dateInterests[currentIdx]
-                showLoading(true)
-                viewModel.rejectDateInterest(
-                    d.interestID, d.dateID, "REJECTED"
-                )
+        binding.mainLyt.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    // Save the initial touch position
+                    binding.mainLyt.setTag(R.id.tag_touch_start_x, event.x)
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    // Calculate the swipe distance
+                    val startX = binding.mainLyt.getTag(R.id.tag_touch_start_x) as Float
+                    val endX = event.x
+                    val swipeDistance = endX - startX
+
+                    // Apply the tilt animation based on the swipe direction
+                    if (swipeDistance > 0) {
+                        startTiltAnimation(true)
+                        if (currentIdx < 0) {
+                            //do nothing
+                        } else {
+                            showLoading(true)
+                            val d = dateInterests[currentIdx]
+                            viewModel.updateDateInterest(
+                                d.interestID,
+                                d.dateID,
+                                "PENDING_TIME_APPROVAL"
+                            )
+                        }
+                    } else {
+                        startSecondTiltAnimation(true)
+                        if (currentIdx < 0) {
+                            //do nothing
+                        } else {
+                            val d = dateInterests[currentIdx]
+                            showLoading(true)
+                            viewModel.rejectDateInterest(
+                                d.interestID, d.dateID, "REJECTED"
+                            )
+                        }
+                    }
+                    true
+                }
+                else -> false
             }
+        }
+    }
 
 
-            override fun onSwipeRight() {
-                view?.performClick()
-                super.onSwipeRight()
-                if (currentIdx < 0) return
-                showLoading(true)
-                val d = dateInterests[currentIdx]
-                viewModel.updateDateInterest(d.interestID, d.dateID, "PENDING_TIME_APPROVAL")
-            }
-        })
+//        binding.mainLyt.setOnTouchListener(object : OnSwipeTouchListener(ctx) {
+//            override fun onSwipeLeft() {
+//                view?.performClick()
+//                super.onSwipeLeft()
+//                if (currentIdx < 0) return
+//                val d = dateInterests[currentIdx]
+//                showLoading(true)
+//                viewModel.rejectDateInterest(
+//                    d.interestID, d.dateID, "REJECTED"
+//                )
+//            }
+//
+//
+//            override fun onSwipeRight() {
+//                view?.performClick()
+//                super.onSwipeRight()
+//                if (currentIdx < 0) return
+//                showLoading(true)
+//                val d = dateInterests[currentIdx]
+//                viewModel.updateDateInterest(d.interestID, d.dateID, "PENDING_TIME_APPROVAL")
+//            }
+//        })
+    // }
+
+
+    private fun startTiltAnimation(isRightSwipe: Boolean) {
+        val tiltAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.tilt_animation)
+        if (isRightSwipe) {
+            tiltAnimation.interpolator = AccelerateDecelerateInterpolator()
+        } else {
+            tiltAnimation.interpolator = DecelerateInterpolator()
+        }
+        binding.mainLyt.startAnimation(tiltAnimation)
+    }
+
+    private fun startSecondTiltAnimation(isRightSwipe: Boolean) {
+        val tiltAnimation =
+            AnimationUtils.loadAnimation(requireContext(), R.anim.second_tilt_animation)
+        if (isRightSwipe) {
+            tiltAnimation.interpolator = AccelerateDecelerateInterpolator()
+        } else {
+            tiltAnimation.interpolator = DecelerateInterpolator()
+        }
+        binding.mainLyt.startAnimation(tiltAnimation)
     }
 
     private fun setupObservers() {
@@ -173,11 +236,15 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         viewModel.getSubscriptionStatus.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    if (1 == 15) {
+                    if (it.value.isFreeTrial || it.value.isPremium) {
                         isSubscribed = true
                         setupView()
                     } else {
-                        showAlertDialog(requireContext(), "You need to subscribe to access this screen", "OK"){
+                        showAlertDialog(
+                            requireContext(),
+                            "You need to subscribe to access this screen",
+                            "OK"
+                        ) {
                             findNavController().popBackStack()
                         }
                         isSubscribed = false
@@ -189,7 +256,11 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 
                 is Resource.Failure -> {
                     if (it.message == null && it.errorBody == null) showEmpty()
-                    else showDialog(it.message ?: it.errorBody ?: "")
+                    else showAlertDialog(
+                        requireContext(),
+                        it.message ?: it.errorBody ?: "",
+                        "OK"
+                    ) {}
                 }
             }
         }
@@ -198,6 +269,64 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             showLoading(false)
             when (it) {
                 is Resource.Success -> {
+//                    val dummyData = FetchDateInterest().apply {
+//                        add(
+//                            FetchDateInterestItem(
+//                                "Meeting",
+//                                "2024-03-05",
+//                                "1",
+//                                "Team Meeting",
+//                                "Conference Room",
+//                                "2024-04-05",
+//                                "09:00",
+//                                "1",
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+//                            )
+//                        )
+//                        add(
+//                            FetchDateInterestItem(
+//                                "Birthday",
+//                                "2024-04-10",
+//                                "2",
+//                                "John's Birthday",
+//                                "John's House",
+//                                "2024-04-10",
+//                                "18:30",
+//                                "2",
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+//                            )
+//                        )
+//                        add(
+//                            FetchDateInterestItem(
+//                                "Appointment",
+//                                "2024-04-15",
+//                                "3",
+//                                "Dentist Appointment",
+//                                "Dentist Clinic",
+//                                "2024-04-15",
+//                                "11:00",
+//                                "3",
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+//                            )
+//                        )
+//                    }
+//                    dateInterests = dummyData
+//                    setScreen()
                     if (it.value.isEmpty()) showEmpty()
                     else {
                         dateInterests = it.value
@@ -207,7 +336,12 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 
                 is Resource.Failure -> {
                     if (it.message == null && it.errorBody == null) showEmpty()
-                    else showDialog(it.message ?: it.errorBody ?: "")
+                    else showAlertDialog(
+                        requireContext(),
+                        it.message ?: it.errorBody ?: "",
+                        "OK"
+                    ) {}
+
                 }
             }
         }
@@ -225,7 +359,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 }
 
                 is Resource.Failure -> {
-                    showDialog(it.message ?: it.errorBody ?: "")
+                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
                 }
             }
         }
@@ -243,7 +377,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 }
 
                 is Resource.Failure -> {
-                    showDialog(it.message ?: it.errorBody ?: "")
+                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
                 }
             }
         }
@@ -257,7 +391,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 }
 
                 is Resource.Failure -> {
-                    showDialog(it.message ?: it.errorBody ?: "")
+                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
                 }
             }
         }

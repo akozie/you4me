@@ -105,6 +105,7 @@ class LoginFragment :
                                     sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, true)
                                     dialog.dismiss()
                                     startActivity(Intent(requireActivity(), MainActivity::class.java))
+                                    requireActivity().finish()
                                 }
 
                                 is Resource.Failure -> {
@@ -156,6 +157,7 @@ class LoginFragment :
                     binding.password.text?.clear()
                     dialog.dismiss()
                     startActivity(Intent(requireActivity(), MainActivity::class.java))
+                    activity?.finish()
                 }
 
                 is Resource.Failure -> {
