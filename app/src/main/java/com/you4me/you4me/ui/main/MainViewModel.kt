@@ -1,5 +1,8 @@
 package com.you4me.you4me.ui.main
 
+import android.content.Context
+import android.util.JsonToken
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,9 +35,13 @@ class MainViewModel(
     private val dbRepository: DbRepository
 ) : ViewModel() {
 
-    private val _user: MutableLiveData<User> = MutableLiveData()
+    val _user: MutableLiveData<User> = MutableLiveData()
     val user: LiveData<User>
         get() = _user
+
+    private val _existingUser: MutableLiveData<Resource<User>> = MutableLiveData()
+    val existingUser: LiveData<Resource<User>>
+        get() = _existingUser
 
 
     private val _paymentModes = MutableLiveData<Resource<ArrayList<ValueLabelResponse>>>()
@@ -91,9 +98,13 @@ class MainViewModel(
     val proposeNewDateTime: LiveData<Resource<Unit>>
         get() = _proposeNewDateTime
 
-    val _getNotificationsResponse = MutableLiveData<Resource<ArrayList<Notification>>>()
+    private val _getNotificationsResponse = MutableLiveData<Resource<ArrayList<Notification>>>()
     val getNotificationsResponse: LiveData<Resource<ArrayList<Notification>>>
         get() = _getNotificationsResponse
+
+    private val _updateFirebaseTokenResponse = MutableLiveData<Resource<Unit>>()
+    val updateFirebaseTokenResponse: LiveData<Resource<Unit>>
+        get() = _updateFirebaseTokenResponse
 
     val _updatePaymentResponse = MutableLiveData<Resource<Unit>>()
     val updatePaymentResponse: LiveData<Resource<Unit>>
@@ -101,7 +112,7 @@ class MainViewModel(
 
     init {
         getUser()
-        fetchPaymentModes()
+        //fetchPaymentModes()
     }
 
     private fun getUser() {
@@ -110,9 +121,23 @@ class MainViewModel(
         }
     }
 
-    fun getNotifications(userId: String) {
+    fun getNotifications() {
         viewModelScope.launch {
-            _getNotificationsResponse.value = repository.getNotifications(userId)
+            _getNotificationsResponse.value = repository.getNotifications(_user.value!!.userId)
+//            Log.d("NOTIFICATION", user.value.toString())
+        }
+    }
+
+    fun updatePushToken(token: JsonObject) {
+        viewModelScope.launch {
+            Log.d("FIREBASE", _user.value.toString())
+            _updateFirebaseTokenResponse.value = repository.updatePushToken(_user.value!!.userId, token)
+        }
+    }
+    fun pushToken(token: JsonObject, userId: String) {
+        viewModelScope.launch {
+            Log.d("NEW_FIREBASE", _user.value.toString())
+            _updateFirebaseTokenResponse.value = repository.updatePushToken(userId, token)
         }
     }
 
@@ -122,7 +147,7 @@ class MainViewModel(
         }
     }
 
-    private fun fetchPaymentModes() {
+     fun fetchPaymentModes() {
         viewModelScope.launch {
             _paymentModes.value = repository.getPaymentModes()
         }
@@ -134,7 +159,7 @@ class MainViewModel(
             paymentMode,
             Place(place),
             time,
-            _user.value!!.userId
+            user.value!!.userId
         )
         viewModelScope.launch {
             _submitDateResponse.value = repository.submitDate(submitDateBody)
@@ -143,18 +168,19 @@ class MainViewModel(
 
     fun fetchDates() {
         viewModelScope.launch {
-            _fetchDates.value = repository.fetchDates(user.value!!.userId)
+            _fetchDates.value = repository.fetchDates(_user.value!!.userId)
         }
     }
 
-    fun addDateInterest(date: String, time: String, proposer: String) {
+    fun addDateInterest(dateId: String, date: String, time: String, proposer: String) {
         viewModelScope.launch {
             _addDateInterest.value = repository.addDateInterest(
+                dateId,
                 AddDateInterestBody(
                     date,
                     time,
-                    proposer,
-                    user.value!!.userId
+                    _user.value!!.userId,
+                    proposer
                 )
             )
         }
@@ -167,7 +193,7 @@ class MainViewModel(
                     if (like) "like" else "dislike",
                     dateId,
                     personId,
-                    user.value!!.userId
+                    _user.value!!.userId
                 )
             )
         }
@@ -175,13 +201,13 @@ class MainViewModel(
 
     fun fetchDateInterests() {
         viewModelScope.launch {
-            _fetchDateInterests.value = repository.fetchDateInterest(user.value!!.userId)
+            _fetchDateInterests.value = repository.fetchDateInterest(_user.value!!.userId)
         }
     }
 
     fun getSubscriptionStatus() {
         viewModelScope.launch {
-            _getSubscriptionStatus.value = repository.getSubscriptionStatus(user.value!!.userId)
+            _getSubscriptionStatus.value = repository.getSubscriptionStatus(_user.value!!.userId)
         }
     }
 
@@ -199,28 +225,35 @@ class MainViewModel(
         viewModelScope.launch {
             _updateDateInterest.value = repository.acceptDateInterest(
                 interestId,
-                UpdateDateInterestBody(dateId, status, user.value!!.userId)
+                UpdateDateInterestBody(dateId, status, _user.value!!.userId)
             )
         }
     }
 
     fun getUpcomingDates() {
         viewModelScope.launch {
-            _upcomingDates.value = repository.getUpcomingDates(user.value!!.userId)
+            _upcomingDates.value = repository.getUpcomingDates(_user.value!!.userId)
+        }
+    }
+
+    fun getUserDetails(userId : String) {
+        viewModelScope.launch {
+            _existingUser.value = repository.getExistingUser(userId)
+           // _user.value = existingUser.value
         }
     }
 
     fun getInviteeDatesRequiringApproval() {
         viewModelScope.launch {
             _inviteeDatesRequiringApproval.value =
-                repository.inviteeDatesRequiringApproval(user.value!!.userId)
+                repository.inviteeDatesRequiringApproval(_user.value!!.userId)
         }
     }
 
     fun getDateInterestsRequiringApproval() {
         viewModelScope.launch {
             _dateInterestsRequiringApproval.value =
-                repository.getDateInterestsRequiringApproval(user.value!!.userId)
+                repository.getDateInterestsRequiringApproval(_user.value!!.userId)
         }
     }
 

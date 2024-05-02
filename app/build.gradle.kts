@@ -8,19 +8,26 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-  //  id("com.google.gms.google-services")
+    id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.you4me.you4me"
     compileSdk = 34
 
+//    tasks.named("mergeDebugResources") {
+//        dependsOn("processDebugGoogleServices")
+//    }
+
     defaultConfig {
+        configurations.all {
+            resolutionStrategy { force("androidx.core:core-ktx:1.6.0") }
+        }
         applicationId = "com.you4me.you4me"
         minSdk = 24
         targetSdk = 34
-        versionCode = 9
-        versionName = "1.007"
+        versionCode = 12
+        versionName = "1.12"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -65,7 +72,7 @@ dependencies {
     implementation("com.cloudinary:cloudinary-android-core:2.5.0")
 
     //navigation
-    val navigationVersion = "2.7.7"
+    val navigationVersion = "2.5.3"
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 
@@ -90,6 +97,7 @@ dependencies {
 
     //google play billing
     implementation("com.android.billingclient:billing:6.2.0")
+//    implementation("com.android.billingclient:billing:6.2.0")
 
     //google auth
     implementation("com.google.android.gms:play-services-auth:21.0.0")
@@ -104,7 +112,15 @@ dependencies {
     implementation("androidx.media3:media3-ui:$mediaVersion")
     implementation("androidx.media3:media3-exoplayer-dash:$mediaVersion")
 
+    //workmanager
+    val workVersion = "2.7.0-alpha05"
+    implementation("androidx.work:work-runtime-ktx:$workVersion")
+
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
 }
+
+apply(plugin = "com.google.gms.google-services")

@@ -46,6 +46,11 @@ interface ApiCollector {
         @Path("userId") userId: String
     ): User
 
+    @GET("users/{userId}")
+    suspend fun getExistingUser(
+        @Path("userId") userId: String
+    ): User
+
     @PATCH("push-tokens/{userId}")
     suspend fun updatePushToken(
         @Path("userId") userId: String,
@@ -112,7 +117,10 @@ interface ApiCollector {
     ): FetchDatesResponse
 
     @POST("dates/interests/{dateId}")
-    suspend fun addDateInterest(@Body body: AddDateInterestBody)
+    suspend fun addDateInterest(
+        @Path("dateId") dateId: String,
+        @Body body: AddDateInterestBody
+    )
 
     @POST("swipes")
     suspend fun addSwipe(@Body body: AddSwipeBody)
@@ -180,5 +188,10 @@ interface ApiCollector {
     suspend fun registerPayment(
         @Path("userId") userId: String,
     )
+
+//    https://j3rmo1mo2a.execute-api.us-east-1.amazonaws.com/prod/dates/interests/3f0bdbc2-4ad8-42f9-91bb-1461675fa3f8
+//    I/okhttp.OkHttpClient: Content-Type: application/json; charset=UTF-8
+//    I/okhttp.OkHttpClient: Content-Length: 155
+//    I/okhttp.OkHttpClient: {"proposedDate":"May 30, 2024","proposedTime":"12:00","submittedBy":"65b48397-bc37-43fa-85cc-4515a0cd4ff3","userId":"4691acb0-bb6a-475a-bafd-4e96eb4a705f"}
 
 }

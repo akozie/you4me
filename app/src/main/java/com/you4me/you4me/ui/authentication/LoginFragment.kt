@@ -92,20 +92,22 @@ class LoginFragment :
         account?.idToken?.let { it ->
             Log.d("GOOGLE_TOKEN", it)
             viewModel.signInWithGoogle(it)
-            viewModel.loginResponse.observe(viewLifecycleOwner) {
+            viewModel.signWithGoogleLoginResponse.observe(viewLifecycleOwner) {
                 when (it) {
                     is Resource.Success -> {
                         //viewModel.clearUser()
+                        Log.d("NOT_TOKEN", it.value.userId)
                         viewModel.getUserDetails(it.value.userId)
                         viewModel.user.observe(viewLifecycleOwner) { user ->
                             showLoader(false)
                             when (user) {
                                 is Resource.Success -> {
+                                    viewModel.clearUser()
                                     val dialog = showDialog("Login Successful", true)
                                     viewModel.saveUser(user.value)
                                     Log.d("CHECKING", user.value.toString())
                                     val gson = Gson()
-                                    val userProfileJsonString = gson.toJson(it.value)
+                                    val userProfileJsonString = gson.toJson(user.value)
                                     sharedPrefHelper.saveString(SharedPrefHelper.USER_PROFILE, userProfileJsonString)
                                     sharedPrefHelper.saveString(
                                         SharedPrefHelper.USER_ID,
@@ -166,6 +168,7 @@ class LoginFragment :
             when (it) {
                 is Resource.Success -> {
                     //Store data and navigate
+                    viewModel.clearUser()
                     val dialog = showDialog("Login Successful", true)
                     viewModel.saveUser(it.value)
                     Log.d("CHECKING", it.value.toString())

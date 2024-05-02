@@ -1,6 +1,7 @@
 package com.you4me.you4me.ui.profile
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -94,7 +95,7 @@ class ProfileViewModel(
         get() = _logoutResponse
 
     init {
-        //getUserFromDb()
+        getUserFromDb()
         getGenders()
         getCountries()
         getSexualOrientations()
@@ -209,6 +210,7 @@ class ProfileViewModel(
                 obj.addProperty("dob", dob)
                 obj.addProperty("gender", gender)
             }
+            Log.d("DB_CHECKING", _dbUser.value!!.userId)
 
             _updateUserResponse.value = repository.updateUserInfo(_dbUser.value!!.userId, obj)
         }

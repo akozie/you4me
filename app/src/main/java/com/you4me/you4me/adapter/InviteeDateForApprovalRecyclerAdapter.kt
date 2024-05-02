@@ -25,20 +25,29 @@ class InviteeDateForApprovalRecyclerAdapter(
         return MyViewHolder(v)
     }
 
-    override fun getItemCount() = dates.size
-
+    override fun getItemCount(): Int {
+        // Check if the dates array is not empty
+        return if (dates.isNotEmpty()) {
+            // Always return 1 (the count of the first element)
+            1
+        } else {
+            // If the array is empty, return 0 or handle accordingly
+            0
+        }
+    }
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val date = dates[position]
         holder.binding.apply {
-            name.text = date.name
-            location.text = date.place
-            dateODate.text = "${date.date} : ${date.time}"
+           // name.text = date.name
+            location.text = "Cheers! Your date with ${date.name} is scheduled for ${date.date} at ${date.time}. Does this date and time work for you?"
+           // dateODate.text = "${date.date} : ${date.time}"
 
             acceptBtn.setOnClickListener {
                 //accept
                 //update list and ui
                 viewModel.updateDateInterest(date.interestId, date.dateId, "APPROVED")
-                dates.removeAt(position)
+                dates.clear()
+//                dates.removeAt(position)
                 notifyItemRemoved(position)
             }
             newTimeBtn.setOnClickListener {
@@ -55,7 +64,8 @@ class InviteeDateForApprovalRecyclerAdapter(
                     newDate.text.toString(),
                     newTime.text.toString()
                 )
-                dates.removeAt(position)
+                dates.clear()
+//                dates.removeAt(position)
                 notifyItemRemoved(position)
             }
 

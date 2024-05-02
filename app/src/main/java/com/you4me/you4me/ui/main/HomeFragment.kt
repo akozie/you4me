@@ -10,20 +10,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
+import com.google.gson.Gson
 import com.you4me.you4me.R
 import com.you4me.you4me.You4MeApp
 import com.you4me.you4me.adapter.DateInterestsRequiringApprovalRecyclerAdapter
 import com.you4me.you4me.adapter.InviteeDateForApprovalRecyclerAdapter
 import com.you4me.you4me.adapter.UpcomingDatesRecyclerAdapter
 import com.you4me.you4me.databinding.FragmentHomeBinding
-import com.you4me.you4me.models.DateInterestsRequiringApproval
-import com.you4me.you4me.models.InviteeDatesRequiringApproval
-import com.you4me.you4me.models.UpcomingDates
-import com.you4me.you4me.models.UpcomingDatesItem
+import com.you4me.you4me.models.*
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils.ADD_EVENT_REQUEST_CODE
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -32,6 +31,9 @@ import java.util.*
 
 class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>(),
     UpcomingDatesRecyclerAdapter.CalendarResultListener {
+
+    private lateinit var user: User
+
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
@@ -54,17 +56,36 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
+        Log.d("PROFILEID", userProfile)
+        val gson = Gson()
+        user = gson.fromJson(userProfile, User::class.java)
+//         viewModel.getNewUser(requireContext())
+        viewModel.getUserDetails(user.userId)
+        viewModel.fetchPaymentModes()
         addObservers()
         binding.notificationIcon.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment) }
     }
 
     private fun addObservers() {
-        viewModel.user.observe(viewLifecycleOwner) {
-            viewModel.getUpcomingDates()
-            viewModel.getInviteeDatesRequiringApproval()
-            viewModel.getDateInterestsRequiringApproval()
-            viewModel.getNotifications(it.userId)
+        viewModel.existingUser.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                 Log.d("OK_DONR", it.value.toString())
+//                    viewModel._user.value = it.value
+                    viewModel.getUpcomingDates()
+                    viewModel.getInviteeDatesRequiringApproval()
+                    viewModel.getDateInterestsRequiringApproval()
+                    viewModel.getNotifications()
+                }
+
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
+            }
         }
+
+
 
         viewModel.upcomingDates.observe(viewLifecycleOwner) {
             when (it) {
@@ -130,6 +151,7 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
             when (it) {
                 is Resource.Success -> {
                     showToast("Date status updated")
+                    Log.d("REQUEST_PROCESSED", "REQUEST_PROCESSED")
                     //switch ui
                 }
 
@@ -188,6 +210,12 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
             binding.approvedDatesLyt.visibility = View.GONE
         } else {
             binding.approvedDatesLyt.visibility = View.VISIBLE
+//            val dummyData = InviteeDatesRequiringApproval().apply {
+//                add(InviteeDatesRequiringApprovalItem("Meeting", "2024-03-05", "1", "Team Meeting", "Man1", "2024-04-05", "09:00", "1:00", "hhhuu"))
+//                add(InviteeDatesRequiringApprovalItem("Meeting", "2024-03-06", "1", "Team Meeting", "Man2", "2024-04-05", "08:00", "2:00", "hhhuu"))
+//                add(InviteeDatesRequiringApprovalItem("Meeting", "2024-03-07", "1", "Team Meeting", "Man3", "2024-04-05", "07:00", "3:00", "hhhuu"))
+//            }
+//            val adapter = InviteeDateForApprovalRecyclerAdapter(dummyData, viewModel, ctx)
             val adapter = InviteeDateForApprovalRecyclerAdapter(dates, viewModel, ctx)
             binding.inviteeDatesRecycler.adapter = adapter
         }
@@ -198,12 +226,6 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
             binding.upcomingDatesRecycler.visibility = View.GONE
             binding.noUpcomingDates.visibility = View.VISIBLE
         } else {
-            val dummyData = UpcomingDates().apply {
-                add(UpcomingDatesItem("Meeting", "2024-03-05", "1", "Team Meeting", "Conference Room", "2024-04-05", "09:00", "1"))
-                add(UpcomingDatesItem("Birthday", "2024-04-10", "2", "John's Birthday", "John's House", "2024-04-10", "18:30", "2"))
-                add(UpcomingDatesItem("Appointment", "2024-04-15", "3", "Dentist Appointment", "Dentist Clinic", "2024-04-15", "11:00", "3"))
-            }
-//            val adapter = UpcomingDatesRecyclerAdapter(dummyData, requireContext())
             val adapter = UpcomingDatesRecyclerAdapter(requireActivity(), this, dates, ctx)
             binding.upcomingDatesRecycler.adapter = adapter
         }

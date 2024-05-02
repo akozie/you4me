@@ -23,6 +23,7 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.BillingManager
 
 class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepository>() {
 
@@ -37,7 +38,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     private lateinit var billingClient: BillingClient
     private lateinit var productDetails: ProductDetails
     private lateinit var queryProductDetailsParams: QueryProductDetailsParams
-
+    private lateinit var billingManager: BillingManager
     private lateinit var user: User
     private var isSubscribed: Boolean? = null
     private var hasCheckedBilling = false
@@ -83,7 +84,11 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     println(productDetailsList.joinToString(","))
                     productDetails = productDetailsList.first { it.productId == "you4me_premium" }
-                    if (isSubscribed != null && isSubscribed == false) showBilling()
+                    if (isSubscribed != null && isSubscribed == false) {
+//                        billingManager.launchBillingFlowForPremium()
+                        Log.d("FIRST_PID", productDetailsList.first().productId)
+                    showBilling()
+                    }
                 }
             }
         }
@@ -103,6 +108,9 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         super.onViewCreated(view, savedInstanceState)
         binding.loader.show()
         setupObservers()
+//        billingManager = BillingManager(requireActivity())
+
+
         setupBilling()
     }
 
@@ -250,7 +258,11 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                         isSubscribed = false
                         showEmpty()
                         showLoading(false)
-                        if (hasCheckedBilling) showBilling()
+                        if (hasCheckedBilling) {
+//                            billingManager.launchBillingFlowForPremium()
+                            Log.d("THIS_IS", it.value.toString())
+                            showBilling()
+                        }
                     }
                 }
 
@@ -269,64 +281,6 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             showLoading(false)
             when (it) {
                 is Resource.Success -> {
-//                    val dummyData = FetchDateInterest().apply {
-//                        add(
-//                            FetchDateInterestItem(
-//                                "Meeting",
-//                                "2024-03-05",
-//                                "1",
-//                                "Team Meeting",
-//                                "Conference Room",
-//                                "2024-04-05",
-//                                "09:00",
-//                                "1",
-//                                "",
-//                                "",
-//                                "",
-//                                "",
-//                                "",
-//                                "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-//                            )
-//                        )
-//                        add(
-//                            FetchDateInterestItem(
-//                                "Birthday",
-//                                "2024-04-10",
-//                                "2",
-//                                "John's Birthday",
-//                                "John's House",
-//                                "2024-04-10",
-//                                "18:30",
-//                                "2",
-//                                "",
-//                                "",
-//                                "",
-//                                "",
-//                                "",
-//                                "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
-//                            )
-//                        )
-//                        add(
-//                            FetchDateInterestItem(
-//                                "Appointment",
-//                                "2024-04-15",
-//                                "3",
-//                                "Dentist Appointment",
-//                                "Dentist Clinic",
-//                                "2024-04-15",
-//                                "11:00",
-//                                "3",
-//                                "",
-//                                "",
-//                                "",
-//                                "",
-//                                "",
-//                                "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-//                            )
-//                        )
-//                    }
-//                    dateInterests = dummyData
-//                    setScreen()
                     if (it.value.isEmpty()) showEmpty()
                     else {
                         dateInterests = it.value
@@ -335,13 +289,8 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 }
 
                 is Resource.Failure -> {
-                    if (it.message == null && it.errorBody == null) showEmpty()
-                    else showAlertDialog(
-                        requireContext(),
-                        it.message ?: it.errorBody ?: "",
-                        "OK"
-                    ) {}
-
+                    binding.constraintLayout2.visibility = View.VISIBLE
+                    binding.mainLyt.visibility = View.GONE
                 }
             }
         }
@@ -396,6 +345,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             }
         }
     }
+
 
     private fun setScreen() {
         showLoading(false)
@@ -497,7 +447,14 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParamsList)
                 .build()
 
-// Launch the billing flow
-        val billingResult = billingClient.launchBillingFlow(requireActivity(), billingFlowParams)
+        // Launch the billing flow
+        billingClient.launchBillingFlow(requireActivity(), billingFlowParams)
+//        val billingResult = billingClient.launchBillingFlow(requireActivity(), billingFlowParams)
+//        Log.d("BILL_RESULT", billingResult.toString())
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//        billingManager.endConnection()
     }
 }

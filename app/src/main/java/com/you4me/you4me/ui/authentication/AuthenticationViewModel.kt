@@ -22,6 +22,11 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository, 
     val loginResponse: LiveData<Resource<User>>
         get() = _loginResponse
 
+    private val _signWithGoogleLoginResponse: MutableLiveData<Resource<User>> =
+        SingleLiveEvent<Resource<User>>()
+    val signWithGoogleLoginResponse: LiveData<Resource<User>>
+        get() = _signWithGoogleLoginResponse
+
     private val _registerResponse: MutableLiveData<Resource<RegisterResponse>> =SingleLiveEvent()
     val registerResponse: LiveData<Resource<RegisterResponse>>
         get() = _registerResponse
@@ -49,13 +54,11 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository, 
         }
     }
 
-    fun signInWithGoogle(token : String, isLogin : Boolean = true) {
+    fun signInWithGoogle(token : String) {
         val jsonObject = JsonObject()
         jsonObject.addProperty("token", token)
         viewModelScope.launch {
-            if (isLogin) {
-                _loginResponse.value = repository.googleSignIn(jsonObject)
-            }
+            _signWithGoogleLoginResponse.value = repository.googleSignIn(jsonObject)
         }
     }
 

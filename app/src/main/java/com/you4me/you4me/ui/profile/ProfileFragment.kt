@@ -71,14 +71,12 @@ class ProfileFragment :
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         Log.d("PROFILEID", userProfile)
         val gson = Gson()
-        val userProfileJsonString = gson.toJson(userProfile)
         val newUser: User? = gson.fromJson(userProfile, User::class.java)
         Log.d("OKKPROFILEID", newUser.toString())
         if (newUser != null) {
             user = newUser
             populateViews(user)
         }
-//        viewModel.getUserDetails(user.userId)
 
         addListeners()
         addObservers()
@@ -94,14 +92,11 @@ class ProfileFragment :
     override fun getRepository() = ProfileRepository(dataSource.buildApi(ApiCollector::class.java))
 
     private fun addObservers() {
-        //viewModel.getUserFromDb()
-        //  viewModel.dbUser.observe(viewLifecycleOwner) {
-        //   user = it
-        //  viewModel.getUserDetails(it.userId)
-        //  }
 
 
+        viewModel.getUserDetails(user.userId)
         viewModel.user.observe(viewLifecycleOwner) {
+            Log.d("USER_MINE", it.toString())
             when (it) {
                 is Resource.Success -> {
                     user = it.value
@@ -113,6 +108,10 @@ class ProfileFragment :
                     binding.editBtn.text =
                         if (it.value.status.contains("incomplete")) getString(R.string.upload) else getString(
                             R.string.update
+                        )
+                    binding.addVideoLyt.text =
+                        if (it.value.status.contains("incomplete")) getString(R.string.upload_video) else getString(
+                            R.string.update_video
                         )
                 }
 

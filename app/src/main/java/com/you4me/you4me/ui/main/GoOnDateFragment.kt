@@ -22,6 +22,8 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import org.json.JSONException
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -124,7 +126,14 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                 }
 
                 is Resource.Failure -> {
-                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
+                    try {
+                        val jsonObject = JSONObject(it.errorBody)
+                        val error = jsonObject.getString("error")
+                        showAlertDialog(requireContext(),  error ?: it.message?: "", "OK"){}
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                        showAlertDialog(requireContext(),  it.message?: "", "OK"){}
+                    }
                 }
             }
         }

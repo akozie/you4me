@@ -2,14 +2,13 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="200dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp">
+        android:padding="@dimen/padding_15dp">
 
 <!--        <VideoView-->
 <!--            android:id="@+id/video"-->
@@ -23,9 +22,9 @@
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:textStyle="bold"
+            android:textSize="@dimen/text_size_20sp"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Jane Doe" />
@@ -35,6 +34,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawablePadding="4dp"
+            android:textSize="@dimen/text_size_17sp"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/margin_5dp"
             app:drawableStartCompat="@drawable/baseline_access_time_24"
             app:layout_constraintStart_toStartOf="@id/name"
             app:layout_constraintTop_toBottomOf="@id/name"
@@ -42,23 +44,28 @@
 
         <TextView
             android:id="@+id/location"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:drawablePadding="4dp"
-            app:drawableStartCompat="@drawable/baseline_location_pin_24"
+            android:text="ffvhgvhhb ghvhvbh hvbhjjb jbgvtg hjbhbjbn,j hjbhk,b hbhbhb hjbhbhb hbhbhb "
+            android:textSize="@dimen/text_size_17sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/name"
-            app:layout_constraintTop_toBottomOf="@id/date_o_date"
-            tools:text="Casablanca museum" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/accept_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/margin_20dp"
             android:background="@drawable/rounded_bg"
-            android:padding="4dp"
-            android:text="Accept?"
+            android:padding="@dimen/padding_15dp"
+            android:layout_marginEnd="@dimen/margin_15dp"
+            android:layout_marginBottom="@dimen/margin_5dp"
+            android:text="Yes, Perfect!"
+            android:visibility="visible"
             android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/new_time_btn"
             app:layout_constraintStart_toStartOf="@id/name"
             app:layout_constraintTop_toBottomOf="@id/location" />
@@ -67,50 +74,61 @@
             android:id="@+id/new_time_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_15dp"
             android:background="@drawable/rounded_bg"
             android:backgroundTint="#EC2525"
-            android:padding="4dp"
-            android:text="New Time?"
+            android:visibility="visible"
+            android:padding="@dimen/padding_15dp"
+            android:text="No, Propose another time"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@id/accept_btn"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/location"
             app:layout_constraintStart_toEndOf="@id/accept_btn"
             app:layout_constraintTop_toTopOf="@id/accept_btn" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/new_date_time_lyt"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintStart_toStartOf="@id/name"
-            android:gravity="center"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/name"
             app:layout_constraintTop_toBottomOf="@id/location">
 
             <TextView
                 android:id="@+id/new_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                tools:text="24/07/07"/>
+                android:textSize="@dimen/text_size_17sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="24/07/07" />
             <!-- switch to underline text -->
 
             <TextView
                 android:id="@+id/new_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="07:07"/>
+                android:textSize="@dimen/text_size_17sp"
+                app:layout_constraintBottom_toBottomOf="@+id/new_date"
+                app:layout_constraintEnd_toStartOf="@+id/update_time_btn"
+                app:layout_constraintStart_toEndOf="@+id/new_date"
+                app:layout_constraintTop_toTopOf="@+id/new_date"
+                tools:text="07:07" />
 
 
             <TextView
                 android:id="@+id/update_time_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save"
                 android:background="@drawable/rounded_bg"
-                android:padding="6dp"
-                android:layout_marginStart="16dp"
-                android:textColor="@color/white"/>
-        </LinearLayout>
+                android:padding="@dimen/padding_15dp"
+                android:text="Save"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

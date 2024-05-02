@@ -65,14 +65,4 @@ object Utils {
         alertDialog.show()
     }
 
-//    fun showErrorDialog(activity: Activity, message: String, resolve: String? = null) {
-//        val view = activity.layoutInflater.inflate(R.layout.error_dialog, null)
-//        view.findViewById<TextView>(R.id.title).text = activity.getString(R.string.error)
-//        view.findViewById<TextView>(R.id.message).text = message
-//        if (resolve != null) view.findViewById<TextView>(R.id.resolve).text = resolve
-//
-//        val dialog = Dialog(activity)
-//        dialog.setContentView(view)
-//        dialog.show()
-//    }
 }

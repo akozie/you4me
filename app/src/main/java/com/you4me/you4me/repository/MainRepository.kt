@@ -27,8 +27,8 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
         apiCollector.fetchDates(userId)
     }
 
-    suspend fun addDateInterest(addDateInterestBody: AddDateInterestBody) = safeApiCall {
-        apiCollector.addDateInterest(addDateInterestBody)
+    suspend fun addDateInterest(dateId: String, addDateInterestBody: AddDateInterestBody) = safeApiCall {
+        apiCollector.addDateInterest(dateId, addDateInterestBody)
     }
 
     suspend fun addSwipe(addSwipeBody: AddSwipeBody) = safeApiCall {
@@ -42,6 +42,8 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
     suspend fun getSubscriptionStatus(userId: String) = safeApiCall {
         apiCollector.getSubscriptionStatus(userId)
     }
+
+    suspend fun getExistingUser(userId: String) = safeApiCall { apiCollector.getUser(userId) }
 
     suspend fun rejectDateInterest(interestId: String, rejectDate: RejectDateInterestBody) =
         safeApiCall {

@@ -33,7 +33,7 @@ class NotificationsFragment :
         super.onViewCreated(view, savedInstanceState)
         binding.loader.show()
         viewModel.user.observe(viewLifecycleOwner) {
-            viewModel.getNotifications(it.userId)
+            viewModel.getNotifications()
         }
 
         viewModel.getNotificationsResponse.observe(viewLifecycleOwner) {

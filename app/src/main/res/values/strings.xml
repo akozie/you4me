@@ -31,8 +31,10 @@
     <string name="religion_preference">Religion Preference</string>
     <string name="sexual_orientation">Sexual Orientation</string>
     <string name="state">State</string>
+    <string name="update_video">Update video</string>
     <string name="update">Update</string>
     <string name="upload">Upload</string>
+    <string name="upload_video">Upload video</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="date">Date</string>

@@ -12,35 +12,83 @@ import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.libraries.places.api.Places
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.you4me.you4me.BuildConfig
 import com.you4me.you4me.R
+import com.you4me.you4me.database.AppDatabase
 import com.you4me.you4me.databinding.ActivityMainBinding
 import com.you4me.you4me.models.User
+import com.you4me.you4me.network.ApiCollector
+import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.network.Resource
+import com.you4me.you4me.repository.DbRepository
+import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.authentication.AuthenticationViewModel
 import com.you4me.you4me.ui.profile.ProfileViewModel
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils.showAlertDialog
 
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val viewModel by viewModels<ProfileViewModel>()
+//    private val viewModel by viewModels<MainViewModel>()
+    private lateinit var viewModel: MainViewModel
+    private lateinit var repository: MainRepository
     private lateinit var user: User
     private lateinit var sharedPrefHelper: SharedPrefHelper
+   private lateinit var firebaseInstance: FirebaseMessaging
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        repository = MainRepository(RemoteDataSource().buildApi(ApiCollector::class.java))
+        viewModel = MainViewModel(repository, DbRepository(AppDatabase.invoke(this)))
         sharedPrefHelper = SharedPrefHelper(this)
+        val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
+        val gson = Gson()
+        user = gson.fromJson(userProfile, User::class.java)
+       // viewModel.getNewUser(this, user.userId)
         setupViews()
         initializePlacesSdk()
         createNotificationChannel()
+
+        firebaseInstance = FirebaseMessaging.getInstance()
+        getFireBaseToken(firebaseInstance) {
+            val obj = JsonObject()
+            obj.addProperty("pushToken", it)
+            sendTokenToBackend(obj, user.userId)
+        }
     }
 
+    private fun getFireBaseToken(
+        firebaseMessagingInstance: FirebaseMessaging,
+        actionToPerformWithTheReceivedToken: (received: String) -> Unit,
+    ) {
+        firebaseMessagingInstance.token.addOnCompleteListener(
+            OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    return@OnCompleteListener
+                }
+
+                val token = task.result
+                actionToPerformWithTheReceivedToken(token)
+            },
+        )
+    }
+
+    private fun sendTokenToBackend(
+        token: JsonObject,
+        userId: String
+    ) {
+        viewModel.pushToken(token, userId)
+    }
     private fun setupViews() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
