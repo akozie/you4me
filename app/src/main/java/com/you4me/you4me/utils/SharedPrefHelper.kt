@@ -12,6 +12,7 @@ class SharedPrefHelper(context: Context) {
         const val USER_PROFILE = "user_profile"
         const val IS_LOGGED_IN = "is_logged_in"
         const val IS_ONBOARDED = "onboarding_finished"
+        const val IS_SUBSCRIBED = "is_subscribed"
     }
 
     private val sharedPreferences: SharedPreferences =

@@ -28,6 +28,7 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.SingleLiveEvent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -148,6 +149,7 @@ class MainViewModel(
     }
 
      fun fetchPaymentModes() {
+         Log.d("ME--me", "ME")
         viewModelScope.launch {
             _paymentModes.value = repository.getPaymentModes()
         }
@@ -167,8 +169,8 @@ class MainViewModel(
     }
 
     fun fetchDates() {
-        viewModelScope.launch {
-            _fetchDates.value = repository.fetchDates(_user.value!!.userId)
+        viewModelScope.launch(Dispatchers.IO) {
+            _fetchDates.postValue(repository.fetchDates(_user.value!!.userId))
         }
     }
 

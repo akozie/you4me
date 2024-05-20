@@ -99,10 +99,11 @@
 
     <Spinner
         android:id="@+id/who_pays_spinner"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/who_pays_text"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/who_pays_text"
         app:layout_constraintTop_toTopOf="@id/who_pays_text" />
 
     <com.google.android.material.divider.MaterialDivider

@@ -101,7 +101,11 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                     binding.time.text.toString()
                 )
                 showLoader(true)
-            } else showToast("Please select a location for your date")
+            } else if (binding.whoPaysText.text.isEmpty()){
+                showToast("Please choose ")
+            }else {
+                showToast("Please select a location for your date")
+            }
         }
     }
 

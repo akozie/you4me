@@ -24,6 +24,7 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.BillingManager
+import com.you4me.you4me.utils.SharedPrefHelper.Companion.IS_SUBSCRIBED
 
 class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepository>() {
 
@@ -40,8 +41,11 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     private lateinit var queryProductDetailsParams: QueryProductDetailsParams
     private lateinit var billingManager: BillingManager
     private lateinit var user: User
-    private var isSubscribed: Boolean? = null
+    private var isSubscribed: Boolean = false
+    private var displayToast: Boolean = false
     private var hasCheckedBilling = false
+    private var isUserSubscribed = false
+    private lateinit var obj: JsonObject
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
         if (!purchases.isNullOrEmpty() && purchases[0].purchaseState == Purchase.PurchaseState.PURCHASED) {
@@ -53,7 +57,9 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             obj.addProperty("product_id", p.products[0])
             obj.addProperty("period", p.quantity)
             obj.addProperty("user_id", user.userId)
-            viewModel.registerPayment(obj)
+//            viewModel.registerPayment(obj)
+            Log.d("GGLEOBJ_1", obj.toString())
+
         }
     }
 
@@ -61,20 +67,25 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         if (purchases.isNotEmpty() && purchases[0].purchaseState == Purchase.PurchaseState.PURCHASED) {
             hasCheckedBilling = true
             //continue
-            if (isSubscribed != null && isSubscribed == false) {
-                val obj = JsonObject()
-
+            isUserSubscribed = sharedPrefHelper.getBoolean(IS_SUBSCRIBED)
+            Log.d("IS_SUB", isUserSubscribed.toString())
+            if (!isUserSubscribed) {
+                obj = JsonObject()
                 purchases[0].apply {
                     obj.addProperty("purchase_token", this.purchaseToken)
                     obj.addProperty("order_id", this.orderId)
-                    obj.addProperty("purchase_time", this.purchaseTime)
+                    obj.addProperty("purchase_time", "${this.purchaseTime}")
                     obj.addProperty("product_id", this.products[0])
-                    obj.addProperty("period", this.quantity)
+                    obj.addProperty("period", "${this.quantity}")
                     obj.addProperty("user_id", user.userId)
                 }
                 viewModel.registerPayment(obj)
+                displayToast = true
+                Log.d("GGLEOBJ", obj.toString())
             }
-            Log.d("google play purchase", purchases[0].toString())
+            Log.d("google_play_purchase", purchases[0].toString())
+            Log.d("google_new_purchase", obj.toString())
+//            viewModel.registerPayment(obj)
         } else {
             hasCheckedBilling = true
             billingClient.queryProductDetailsAsync(queryProductDetailsParams) { billingResult, productDetailsList ->
@@ -83,12 +94,15 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 println("billing result code ${billingResult.responseCode}")
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     println(productDetailsList.joinToString(","))
+//                    if (productDetails.toString().isNotEmpty()){
                     productDetails = productDetailsList.first { it.productId == "you4me_premium" }
-                    if (isSubscribed != null && isSubscribed == false) {
-//                        billingManager.launchBillingFlowForPremium()
-                        Log.d("FIRST_PID", productDetailsList.first().productId)
-                    showBilling()
+                    if (!isUserSubscribed) {
+                        Log.d("FIRST_PID", productDetailsList.first().toString())
+                        showBilling()
                     }
+//                    } else {
+//                        //
+                    // }
                 }
             }
         }
@@ -248,6 +262,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                         isSubscribed = true
                         setupView()
                     } else {
+                        isSubscribed = false
                         showAlertDialog(
                             requireContext(),
                             "You need to subscribe to access this screen",
@@ -255,12 +270,11 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                         ) {
                             findNavController().popBackStack()
                         }
-                        isSubscribed = false
                         showEmpty()
                         showLoading(false)
-                        if (hasCheckedBilling) {
+                        if (!isUserSubscribed) {
 //                            billingManager.launchBillingFlowForPremium()
-                            Log.d("THIS_IS", it.value.toString())
+                            Log.d("THIS_IS", hasCheckedBilling.toString())
                             showBilling()
                         }
                     }
@@ -331,16 +345,24 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             }
         }
 
-        viewModel._updatePaymentResponse.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Success -> {
-                    showToast("Payment success!")
-                    viewModel.getSubscriptionStatus()
+        if (!isUserSubscribed) {
+            viewModel._updatePaymentResponse.observe(viewLifecycleOwner) {
+                when (it) {
+                    is Resource.Success -> {
+//                    isSubscribed = true
+                        sharedPrefHelper.saveBoolean(IS_SUBSCRIBED, true)
+                        if (displayToast){
+                            showToast("Payment success!")
+                        }else{
+                            //
+                        }
+                        viewModel.getSubscriptionStatus()
+                        Log.d("OK_SUB", isSubscribed.toString())
+                    }
 
-                }
-
-                is Resource.Failure -> {
-                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
+                    is Resource.Failure -> {
+                        showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
+                    }
                 }
             }
         }
@@ -430,27 +452,32 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 
     private fun showBilling() {
         Log.d("show billing", "show billing")
-        val t = productDetails.subscriptionOfferDetails?.get(0)?.offerToken
+        if (!isUserSubscribed){
+            val t = productDetails.subscriptionOfferDetails?.get(0)?.offerToken
 
-        Log.d("PRODUCT_DETAILS", "${productDetails}")
-        val productDetailsParamsList = listOf(
-            BillingFlowParams.ProductDetailsParams.newBuilder()
-                // retrieve a value for "productDetails" by calling queryProductDetailsAsync()
-                .setProductDetails(productDetails)
-                // For One-time product, "setOfferToken" method shouldn't be called.
-                // For subscriptions, to get an offer token, call ProductDetails.subscriptionOfferDetails()
-                // for a list of offers that are available to the user
-                .setOfferToken(t!!).build()
-        )
+            Log.d("PRODUCT_DETAILS", "${productDetails}")
+            val productDetailsParamsList = listOf(
+                BillingFlowParams.ProductDetailsParams.newBuilder()
+                    // retrieve a value for "productDetails" by calling queryProductDetailsAsync()
+                    .setProductDetails(productDetails)
+                    // For One-time product, "setOfferToken" method shouldn't be called.
+                    // For subscriptions, to get an offer token, call ProductDetails.subscriptionOfferDetails()
+                    // for a list of offers that are available to the user
+                    .setOfferToken(t!!).build()
+            )
 
-        val billingFlowParams =
-            BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParamsList)
-                .build()
+            val billingFlowParams =
+                BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParamsList)
+                    .build()
 
-        // Launch the billing flow
-        billingClient.launchBillingFlow(requireActivity(), billingFlowParams)
+            // Launch the billing flow
+            billingClient.launchBillingFlow(requireActivity(), billingFlowParams)
 //        val billingResult = billingClient.launchBillingFlow(requireActivity(), billingFlowParams)
 //        Log.d("BILL_RESULT", billingResult.toString())
+
+        }else{
+            //
+        }
     }
 
     override fun onDestroy() {

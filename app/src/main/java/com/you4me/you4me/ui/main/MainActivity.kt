@@ -30,6 +30,7 @@ import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.authentication.AuthenticationViewModel
 import com.you4me.you4me.ui.profile.ProfileViewModel
 import com.you4me.you4me.utils.SharedPrefHelper
+import com.you4me.you4me.utils.UtilityParam
 import com.you4me.you4me.utils.Utils.showAlertDialog
 
 
@@ -108,7 +109,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializePlacesSdk() {
-        val placesSecretKey = BuildConfig.PLACES_SECRET_KEY
+        val placesSecretKey = UtilityParam.GOOGLE_PLACES_SECRET_KEY
         if (placesSecretKey.isEmpty() || placesSecretKey == "DEFAULT_API_KEY") {
             Log.e("Google Places API", "No Api Key")
             return

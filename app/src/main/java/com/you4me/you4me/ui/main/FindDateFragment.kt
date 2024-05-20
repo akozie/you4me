@@ -31,7 +31,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
     private var playWhenReady = true
     private var mediaItemIndex = 0
     private var playbackPosition = 0L
-
+    private lateinit var date: FetchDatesResponseItem
     private var paymentModes: ArrayList<ValueLabelResponse>? = null
 
     //  private lateinit var user: User
@@ -321,7 +321,12 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
 
     private fun setScreen() {
         currentIdx++
-        val date = dates[currentIdx]
+        if (currentIdx < 0 || currentIdx >= dates.size) {
+            // Don't use this index. This is out of bounds (borders, limits, whatever).
+        } else {
+            // Yes, you can safely use this index. The index is present in the array.
+             date = dates[currentIdx]
+        }
 
         binding.userName.text = "${date.name}, ${date.age}"
         binding.location.text = date.place

@@ -26,8 +26,8 @@ android {
         applicationId = "com.you4me.you4me"
         minSdk = 24
         targetSdk = 34
-        versionCode = 12
-        versionName = "1.12"
+        versionCode = 25
+        versionName = "1.25"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -51,6 +51,12 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+    }
+    ndkVersion = "21.3.6528147"
+    externalNativeBuild {
+        ndkBuild {
+            path(file("src/main/jni/Android.mk"))
+        }
     }
 }
 
