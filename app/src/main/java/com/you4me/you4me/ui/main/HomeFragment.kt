@@ -62,7 +62,6 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
         user = gson.fromJson(userProfile, User::class.java)
 //         viewModel.getNewUser(requireContext())
         viewModel.getUserDetails(user.userId)
-        viewModel.fetchPaymentModes()
         addObservers()
         binding.notificationIcon.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment) }
     }
@@ -210,12 +209,6 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
             binding.approvedDatesLyt.visibility = View.GONE
         } else {
             binding.approvedDatesLyt.visibility = View.VISIBLE
-//            val dummyData = InviteeDatesRequiringApproval().apply {
-//                add(InviteeDatesRequiringApprovalItem("Meeting", "2024-03-05", "1", "Team Meeting", "Man1", "2024-04-05", "09:00", "1:00", "hhhuu"))
-//                add(InviteeDatesRequiringApprovalItem("Meeting", "2024-03-06", "1", "Team Meeting", "Man2", "2024-04-05", "08:00", "2:00", "hhhuu"))
-//                add(InviteeDatesRequiringApprovalItem("Meeting", "2024-03-07", "1", "Team Meeting", "Man3", "2024-04-05", "07:00", "3:00", "hhhuu"))
-//            }
-//            val adapter = InviteeDateForApprovalRecyclerAdapter(dummyData, viewModel, ctx)
             val adapter = InviteeDateForApprovalRecyclerAdapter(dates, viewModel, ctx)
             binding.inviteeDatesRecycler.adapter = adapter
         }
@@ -234,10 +227,10 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
     override fun onCalendarEventAdded(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             // The user successfully added the event to the calendar
-            Log.d("OKKKKK", "Event added to calendar")
+//            Log.d("OKKKKK", "Event added to calendar")
         } else if (resultCode == Activity.RESULT_CANCELED) {
             // The user canceled the operation
-            Log.d("NNNNOKKKKK","Event addition canceled")
+//            Log.d("NNNNOKKKKK","Event addition canceled")
         }
     }
 
@@ -245,30 +238,6 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
         Log.d("RESULTCODEK", "$resultCode")
         startActivityForResult(intent, ADD_EVENT_REQUEST_CODE)
 
-//        if (resultCode == ADD_EVENT_REQUEST_CODE) {
-//            if (resultCode == Activity.RESULT_OK) {
-//                // The user successfully added the event to the calendar
-//                Log.d("OKKKKK", "Event added to calendar")
-//            } else if (resultCode == Activity.RESULT_CANCELED) {
-//                // The user canceled the operation
-//                Log.d("NNNNOKKKKK", "Event addition canceled")
-//            }
-//        }
     }
 
-//    private fun closeApp() {
-//        AlertDialog.Builder(requireContext()).setMessage(
-//            "Are you sure you want to close the app?"
-//        ).setPositiveButton(
-//            "Cancel"
-//        ) { dialog, _ ->
-//            dialog.dismiss()
-//        }.setNegativeButton(
-//            "Close App"
-//        ) { dialog, _ ->
-//            dialog.dismiss()
-//            startActivity(Intent(requireActivity(), AuthenticationActivity::class.java))
-//            if (activity != null) requireActivity().finish()
-//        }.setCancelable(true).create().show()
-//    }
 }

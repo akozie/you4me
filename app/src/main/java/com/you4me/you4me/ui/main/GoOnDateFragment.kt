@@ -93,7 +93,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
         }
 
         binding.saveBtn.setOnClickListener {
-            if (binding.searchDateLocations.text != null && binding.searchDateLocations.text.toString().length > 3) {
+            if (binding.searchDateLocations.text != null && binding.searchDateLocations.text.toString().length > 3 && binding.whoPaysSpinner.selectedItemPosition != -1) {
                 viewModel.submitDate(
                     binding.date.text.toString(),
                     paymentModes[binding.whoPaysSpinner.selectedItemPosition].value,
@@ -101,8 +101,8 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                     binding.time.text.toString()
                 )
                 showLoader(true)
-            } else if (binding.whoPaysText.text.isEmpty()){
-                showToast("Please choose ")
+            } else if (binding.whoPaysSpinner.selectedItemPosition == -1){
+                showToast("Please choose who will be paying for the date.")
             }else {
                 showToast("Please select a location for your date")
             }
@@ -110,6 +110,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
     }
 
     private fun setupObservers() {
+        viewModel.fetchPaymentModes()
         viewModel.paymentModes.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {

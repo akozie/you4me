@@ -3,6 +3,7 @@ package com.you4me.you4me.adapter
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,10 +70,10 @@ class InviteeDateForApprovalRecyclerAdapter(
                 notifyItemRemoved(position)
             }
 
-            val time = TimePickerDialog.OnTimeSetListener { timePicker, i, i2 ->
-                val hour = i.toString().padStart(2, '0')
-                val minute = i.toString().padStart(2, '0')
-                newTime.text = "$hour:$minute"
+            val time = TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
+                val hour = hourOfDay.toString().padStart(2, '0')
+                val minutePadded = minute.toString().padStart(2, '0')
+                newTime.text = "$hour:$minutePadded"
             }
 
             newTime.setOnClickListener {

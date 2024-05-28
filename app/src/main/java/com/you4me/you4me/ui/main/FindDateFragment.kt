@@ -195,6 +195,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
     }
 
     private fun setupObservers() {
+        viewModel.fetchPaymentModes()
         viewModel.paymentModes.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
