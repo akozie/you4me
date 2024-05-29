@@ -1,3 +1,71 @@
 <resources>
-    <string name="app_name">you4me</string>
+    <string name="app_name">You4me</string>
+    <string name="default_web_id">264358783975-1e9bshanasnnhig1v8puo6l8u9k83ku7.apps.googleusercontent.com</string>
+
+
+    <string name="add_video">Add a video</string>
+    <string name="age_preference">Age Preference</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="country">Country</string>
+    <string name="create_video">Create a compelling 30-second video introducing yourself</string>
+    <string name="date_hint">yyyy-mm-dd</string>
+    <string name="dob">Date of Birth</string>
+    <string name="edit">Edit</string>
+    <string name="email_address">Email Address</string>
+    <string name="existing_user">Existing user? <font fgcolor="#ff0052">Sign in here</font></string>
+    <string name="find_date">Find Dates</string>
+    <string name="gender">Gender</string>
+    <string name="go_on_date">Go on date</string>
+    <string name="home">Home</string>
+    <string name="likes">Likes</string>
+    <string name="login">Login</string>
+    <string name="name">Enter your name</string>
+    <string name="new_user">New user? <font fgcolor="#ff0052">Sign up here</font></string>
+    <string name="onboarding_txt1">Start your love story with a date, not endless messages.</string>
+    <string name="onboarding_txt2">There is something truly special about connecting with someone face to face.</string>
+    <string name="onboarding_txt3">No chats, plan outings, find love.</string>
+    <string name="password">Password</string>
+    <string name="profile">Profile</string>
+    <string name="register">Register</string>
+    <string name="registration_success_login">Registration Successful. Please login</string>
+    <string name="religion_preference">Religion Preference</string>
+    <string name="sexual_orientation">Sexual Orientation</string>
+    <string name="state">State</string>
+    <string name="update_video">Update video</string>
+    <string name="update">Update</string>
+    <string name="upload">Upload</string>
+    <string name="upload_video">Upload video</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="date">Date</string>
+    <string name="visible_to_date_only">This will only be visible to the person you agree to go on a date with.</string>
+    <string name="who_is_paying">Who is paying?</string>
+    <string name="save">Save</string>
+    <string name="religion">Religion</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="no_date_interests">No date interests</string>
+    <string name="date_interests">Date Interests</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="sign_up_with_google">Sign up with Google</string>
+    <string name="circle">Circle</string>
+    <string name="next">Next</string>
+    <string name="delete_your_account">Delete your account</string>
+    <string name="click_to_delete_your_account">Click here if you wish to delete your account</string>
+    <string name="log_out">Log out</string>
+    <string name="notifications">Notifications</string>
+    <string name="mark_as_read">Mark as read</string>
+    <string name="no_notifications_available">No notifications available</string>
+    <string name="interested_in_you">Interested in your dates</string>
+    <string name="interest_in_date">Check out people who are interested in going on a date with you</string>
+    <string name="dates_requiring_approval">Dates requiring approval</string>
+    <string name="approved_date_interests">Approved Date Interests</string>
+    <string name="you_have_no_upcoming_dates">You have no upcoming dates</string>
+    <string name="add_to_calendar">Add to Calendar</string>
+    <string name="skip">Skip</string>
+    <string name="request_date">Request Date</string>
+    <string name="venue">Venue</string>
+    <string name="view_existing_video">View existing video</string>
+    <string name="video_regulations">Share intriguing insights about yourself, including captivating facts and reasons why you would make a great date.\n\nPlease not that videos containing any form of nudity will not be accepted.\n\nKindly be aware that videos unrelated to dating content will be declined, and repeated violations may result in permanent account suspension</string>
+    <string name="upcoming_dates">Upcoming Dates</string>
+
 </resources>

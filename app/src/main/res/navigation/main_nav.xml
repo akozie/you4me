@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.you4me.you4me.ui.main.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_notificationsFragment"
+            app:destination="@id/notificationsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/findDateFragment"
+        android:name="com.you4me.you4me.ui.main.FindDateFragment"
+        android:label="fragment_find_date"
+        tools:layout="@layout/fragment_find_date" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.you4me.you4me.ui.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/goOnDateFragment"
+        android:name="com.you4me.you4me.ui.main.GoOnDateFragment"
+        android:label="fragment_go_on_date"
+        tools:layout="@layout/fragment_go_on_date" />
+    <fragment
+        android:id="@+id/likesFragment"
+        android:name="com.you4me.you4me.ui.main.LikesFragment"
+        android:label="fragment_likes"
+        tools:layout="@layout/fragment_likes" />
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.you4me.you4me.ui.main.NotificationsFragment"
+        android:label="fragment_notifications"
+        tools:layout="@layout/fragment_notifications" />
+</navigation>

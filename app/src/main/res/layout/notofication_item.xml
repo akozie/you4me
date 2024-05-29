@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="@dimen/margin_10dp"
+    android:padding="@dimen/padding_20dp"
+    app:cardCornerRadius="@dimen/margin_10dp"
+    android:elevation="8dp">
+
+    <LinearLayout
+        android:id="@+id/notification_lyt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/notification_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textSize="16sp"
+            android:textColor="#4F64F1"
+            tools:text="lorem rtgrt rtr trt rtr"
+            android:drawablePadding="6dp"
+            app:drawableStartCompat="@drawable/baseline_circle_24"
+            app:drawableTint="@color/primary_pink" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            tools:text="7:30pm"
+            android:paddingTop="@dimen/padding_5dp"
+            android:layout_marginEnd="4dp"
+            android:layout_gravity="end"
+            android:id="@+id/date_time"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

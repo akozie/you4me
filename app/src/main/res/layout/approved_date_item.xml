@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_15dp">
+
+<!--        <VideoView-->
+<!--            android:id="@+id/video"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="100dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_20sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Jane Doe" />
+
+        <TextView
+            android:id="@+id/date_o_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="4dp"
+            android:textSize="@dimen/text_size_17sp"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/margin_5dp"
+            app:drawableStartCompat="@drawable/baseline_access_time_24"
+            app:layout_constraintStart_toStartOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/name"
+            tools:text="12/02/2023 : 3:00pm" />
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawablePadding="4dp"
+            android:text="ffvhgvhhb ghvhvbh hvbhjjb jbgvtg hjbhbjbn,j hjbhk,b hbhbhb hjbhbhb hbhbhb "
+            android:textSize="@dimen/text_size_17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/name"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/accept_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_20dp"
+            android:background="@drawable/rounded_bg"
+            android:padding="@dimen/padding_15dp"
+            android:layout_marginEnd="@dimen/margin_15dp"
+            android:layout_marginBottom="@dimen/margin_5dp"
+            android:text="Yes, Perfect!"
+            android:visibility="visible"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/new_time_btn"
+            app:layout_constraintStart_toStartOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/location" />
+
+        <TextView
+            android:id="@+id/new_time_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_15dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#EC2525"
+            android:visibility="visible"
+            android:padding="@dimen/padding_15dp"
+            android:text="No, Propose another time"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/accept_btn"
+            app:layout_constraintEnd_toEndOf="@+id/location"
+            app:layout_constraintStart_toEndOf="@id/accept_btn"
+            app:layout_constraintTop_toTopOf="@id/accept_btn" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/new_date_time_lyt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/margin_10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/location">
+
+            <TextView
+                android:id="@+id/new_date"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:textSize="@dimen/text_size_17sp"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="24/07/07" />
+            <!-- switch to underline text -->
+
+            <TextView
+                android:id="@+id/new_time"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:textSize="@dimen/text_size_17sp"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="@+id/new_date"
+                app:layout_constraintEnd_toStartOf="@+id/update_time_btn"
+                app:layout_constraintStart_toEndOf="@+id/new_date"
+                app:layout_constraintTop_toTopOf="@+id/new_date"
+                tools:text="07:07" />
+
+
+            <TextView
+                android:id="@+id/update_time_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_bg"
+                android:padding="@dimen/padding_15dp"
+                android:text="Save"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

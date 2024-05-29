@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        tools:text="You have a date with jane doe at so so and so. Add to calendar" />
+
+
+    <TextView
+        android:id="@+id/add_to_calender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/rounded_bg"
+        android:padding="6dp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:backgroundTint="@color/primary_pink"
+        android:text="@string/add_to_calendar" />
+
+</LinearLayout>
