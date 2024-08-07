@@ -15,6 +15,7 @@ object Utils {
     const val ADD_EVENT_REQUEST_CODE = 1001 // Any unique request code
     const val GOOGLE_SIGN_IN_RQ_CODE = 100
     const val TAG_TOUCH_START_X = 1000
+    const val BANNER_TIMEOUT = 5000L
 
     fun getDateFormat() = SimpleDateFormat("yyyy/MM/dd", Locale.UK)
     fun isInternetConnected() : Boolean {
