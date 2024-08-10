@@ -26,8 +26,8 @@ android {
         applicationId = "com.you4me.you4me"
         minSdk = 24
         targetSdk = 34
-        versionCode = 26
-        versionName = "1.26"
+        versionCode = 27
+        versionName = "1.27"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
