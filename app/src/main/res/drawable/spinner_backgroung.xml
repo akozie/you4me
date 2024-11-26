@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background shape -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <stroke
+                android:width="1dp"
+                android:color="@color/profile_grey" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+
+    <!-- Up arrow -->
+    <item
+        android:gravity="right|center_vertical"
+        android:right="18dp"
+        android:top="-8dp">
+        <vector
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:fillColor="@color/profile_grey"
+                android:pathData="M8,14L12,10L16,14" />
+        </vector>
+    </item>
+
+    <!-- Down arrow -->
+    <item
+        android:gravity="right|center_vertical"
+        android:right="18dp"
+        android:bottom="-8dp">
+        <vector
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:fillColor="@color/profile_grey"
+                android:pathData="M8,10L12,14L16,10" />
+        </vector>
+    </item>
+</layer-list>

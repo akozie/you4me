@@ -6,5 +6,6 @@
     <color name="blue">#1F3BF4</color>
     <color name="grey_circle">#59656F</color>
     <color name="grey">#F2F2F2</color>
+    <color name="profile_grey">#C5CED5</color>
 
 </resources>
