@@ -43,10 +43,8 @@ import com.you4me.you4me.utils.Utils
 import com.you4me.you4me.utils.Utils.BANNER_TIMEOUT
 import java.util.*
 
-
 class ProfileFragment :
     BaseFragment<ProfileViewModel, FragmentProfileBinding, ProfileRepository>() {
-
     private lateinit var name: String
     private lateinit var agePreferred: String
     private lateinit var dob: String
@@ -72,7 +70,10 @@ class ProfileFragment :
     private lateinit var updateBody: UpdateUserBody
     private val handler = Handler(Looper.getMainLooper())
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         Log.d("PROFILEID", userProfile)
@@ -92,14 +93,13 @@ class ProfileFragment :
     override fun getViewModel() = ProfileViewModel::class.java
 
     override fun getFragmentBinding(
-        inflater: LayoutInflater, container: ViewGroup?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
     ) = FragmentProfileBinding.inflate(inflater, container, false)
 
     override fun getRepository() = ProfileRepository(dataSource.buildApi(ApiCollector::class.java))
 
     private fun addObservers() {
-
-
         viewModel.getUserDetails(user.userId)
         viewModel.user.observe(viewLifecycleOwner) {
             Log.d("USER_MINE", it.toString())
@@ -112,17 +112,24 @@ class ProfileFragment :
                         setupVideo()
                     }
                     binding.editBtn.text =
-                        if (it.value.status.contains("incomplete")) getString(R.string.upload) else getString(
-                            R.string.update
-                        )
+                        if (it.value.status.contains("incomplete")) {
+                            getString(R.string.upload)
+                        } else {
+                            getString(
+                                R.string.update,
+                            )
+                        }
                     binding.addVideoLyt.text =
-                        if (it.value.status.contains("incomplete")) getString(R.string.upload_video) else getString(
-                            R.string.update_video
-                        )
+                        if (it.value.status.contains("incomplete")) {
+                            getString(R.string.upload_video)
+                        } else {
+                            getString(
+                                R.string.update_video,
+                            )
+                        }
                 }
 
                 is Resource.Failure -> {
-
                 }
             }
         }
@@ -135,7 +142,6 @@ class ProfileFragment :
                 }
 
                 is Resource.Failure -> {
-
                 }
             }
         }
@@ -147,7 +153,6 @@ class ProfileFragment :
                 }
 
                 is Resource.Failure -> {
-
                 }
             }
         }
@@ -159,7 +164,6 @@ class ProfileFragment :
                 }
 
                 is Resource.Failure -> {
-
                 }
             }
         }
@@ -175,11 +179,9 @@ class ProfileFragment :
                         if (it.value[0].value == "4") View.VISIBLE else View.GONE
                     binding.divider8.visibility =
                         if (it.value[0].value == "4") View.VISIBLE else View.GONE
-
                 }
 
                 is Resource.Failure -> {
-
                 }
             }
         }
@@ -191,7 +193,6 @@ class ProfileFragment :
                 }
 
                 is Resource.Failure -> {
-
                 }
             }
         }
@@ -203,7 +204,6 @@ class ProfileFragment :
                 }
 
                 is Resource.Failure -> {
-
                 }
             }
         }
@@ -269,18 +269,19 @@ class ProfileFragment :
     private fun addListeners() {
         binding.editBtn.setOnClickListener {
             showLoader(true)
-            updateBody = UpdateUserBody(
-                agePreferred,
-                country,
-                dob,
-                gender,
-                binding.name.text.toString(),
-                religionPreferred,
-                sexualOrientation,
-                state
-            )
+            updateBody =
+                UpdateUserBody(
+                    agePreferred,
+                    country,
+                    dob,
+                    gender,
+                    binding.name.text.toString(),
+                    religionPreferred,
+                    sexualOrientation,
+                    state,
+                )
             viewModel.updateUserInfo(
-                updateBody
+                updateBody,
             )
         }
 
@@ -295,36 +296,49 @@ class ProfileFragment :
 
         binding.stateSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                override fun onItemSelected(
+                    p0: AdapterView<*>?,
+                    p1: View?,
+                    p2: Int,
+                    p3: Long,
+                ) {
                     if (p2 == 0) return
                     state = states[p2 - 1].value
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
-
                 }
             }
 
         binding.countrySpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                override fun onItemSelected(
+                    p0: AdapterView<*>?,
+                    p1: View?,
+                    p2: Int,
+                    p3: Long,
+                ) {
                     if (p2 == 0) return
                     if (countries[p2 - 1].value != country) viewModel.getStates(countries[p2 - 1].value)
                     country = countries[p2 - 1].value
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
-
                 }
             }
 
         binding.sexualOrientationSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                override fun onItemSelected(
+                    p0: AdapterView<*>?,
+                    p1: View?,
+                    p2: Int,
+                    p3: Long,
+                ) {
                     if (p2 == 0) return
                     sexualOrientation = sexualOrientations[p2 - 1].value
                     Log.d("GENDER", sexualOrientation.toString())
-                    //binding.genderLyt.visibility = if (sexualOrientation == "4") View.VISIBLE else View.GONE
+                    // binding.genderLyt.visibility = if (sexualOrientation == "4") View.VISIBLE else View.GONE
                     binding.genderLabel.visibility =
                         if (sexualOrientation == "4") View.VISIBLE else View.GONE
                     binding.genderSpinner.visibility =
@@ -334,56 +348,72 @@ class ProfileFragment :
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
-
                 }
             }
 
         binding.religionPreferenceSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                override fun onItemSelected(
+                    p0: AdapterView<*>?,
+                    p1: View?,
+                    p2: Int,
+                    p3: Long,
+                ) {
                     if (p2 == 0) return
                     religionPreferred = religions[p2 - 1].value
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
-
                 }
             }
 
         binding.agePreferenceSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                override fun onItemSelected(
+                    p0: AdapterView<*>?,
+                    p1: View?,
+                    p2: Int,
+                    p3: Long,
+                ) {
                     if (p2 == 0) return
                     agePreferred = agePreferences[p2 - 1].value
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
-
                 }
             }
 
         binding.genderSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                override fun onItemSelected(
+                    p0: AdapterView<*>?,
+                    p1: View?,
+                    p2: Int,
+                    p3: Long,
+                ) {
                     if (p2 == 0) return
                     gender = genders[p2 - 1].value
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
-
                 }
             }
     }
 
-
-    private fun setupSpinner(values: ArrayList<ValueLabelResponse>, spinner: Int) {
-        val names = values.map {
-            it.label
-        }.toMutableList()
+    private fun setupSpinner(
+        values: ArrayList<ValueLabelResponse>,
+        spinner: Int,
+    ) {
+        val names =
+            values.map {
+                it.label
+            }.toMutableList()
         names.add(0, "Select")
 
         ArrayAdapter(
-            requireContext(), R.layout.spinner_item_layout, names
+            requireContext(),
+            R.layout.spinner_item_layout,
+            names,
         ).also { adapter ->
             when (spinner) {
                 SEXUAL_ORIENTATION_SPINNER -> {
@@ -427,12 +457,13 @@ class ProfileFragment :
         binding.divider7.visibility = View.GONE
         calendar = Calendar.getInstance()
         binding.dob.inputType = InputType.TYPE_NULL
-        val date = OnDateSetListener { _, year, month, day ->
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.MONTH, month)
-            calendar.set(Calendar.DAY_OF_MONTH, day)
-            updateDateOfBirth()
-        }
+        val date =
+            OnDateSetListener { _, year, month, day ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, day)
+                updateDateOfBirth()
+            }
 
         binding.dob.setOnClickListener {
             DatePickerDialog(
@@ -440,7 +471,7 @@ class ProfileFragment :
                 date,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                calendar.get(Calendar.DAY_OF_MONTH),
             ).show()
         }
 
@@ -463,10 +494,10 @@ class ProfileFragment :
 
                         viewModel.registerVideoUpload(
                             RegisterVideoUploadBody(
-                                "",
+                                "$videoUri",
                                 user.userId,
-                                videoId
-                            )
+                                videoId,
+                            ),
                         )
                     } else {
                         showDialog("Video duration must not be longer than 30 seconds")
@@ -474,26 +505,27 @@ class ProfileFragment :
                 }
             }
 
-         recordVideoLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                // Handle the recorded video URI (e.g., upload it to your server or save it locally)
-                videoUri = result.data?.data ?: return@registerForActivityResult
-                if (checkVideoDuration(videoUri!!)) {
-                    videoId = UUID.randomUUID().toString()
-                    showLoader(true)
+        recordVideoLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    // Handle the recorded video URI (e.g., upload it to your server or save it locally)
+                    videoUri = result.data?.data ?: return@registerForActivityResult
+                    if (checkVideoDuration(videoUri!!)) {
+                        videoId = UUID.randomUUID().toString()
+                        showLoader(true)
 
-                    viewModel.registerVideoUpload(
-                        RegisterVideoUploadBody(
-                            "",
-                            user.userId,
-                            videoId
+                        viewModel.registerVideoUpload(
+                            RegisterVideoUploadBody(
+                                "$videoUri",
+                                user.userId,
+                                videoId,
+                            ),
                         )
-                    )
-                } else {
-                    showDialog("Video duration must not be longer than 30 seconds")
+                    } else {
+                        showDialog("Video duration must not be longer than 30 seconds")
+                    }
                 }
             }
-        }
 
         binding.logout.setOnClickListener {
             val alertDialog = AlertDialog.Builder(ctx)
@@ -508,7 +540,7 @@ class ProfileFragment :
                         is Resource.Success -> {
                             showToast("Account logged out successfully!")
                             sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, false)
-                            //change shared pref to is logged out
+                            // change shared pref to is logged out
                             val intent =
                                 Intent(requireContext(), AuthenticationActivity::class.java)
                             startActivity(intent)
@@ -519,7 +551,7 @@ class ProfileFragment :
                             showAlertDialog(
                                 requireContext(),
                                 it.message ?: it.errorBody ?: "",
-                                "OK"
+                                "OK",
                             ) {}
                         }
                     }
@@ -553,7 +585,7 @@ class ProfileFragment :
                             showAlertDialog(
                                 requireContext(),
                                 it.message ?: it.errorBody ?: "",
-                                "OK"
+                                "OK",
                             ) {}
                         }
                     }
@@ -670,12 +702,13 @@ class ProfileFragment :
     private fun initializePlayer() {
         if (videoUri == null) return
         if (player != null) player = null
-        player = ExoPlayer.Builder(ctx).build().also {
-            videoViewBinding.videoView.player = it
-            val mediaItem = MediaItem.fromUri(videoUri!!)
-            it.setMediaItem(mediaItem)
-            it.prepare()
-        }
+        player =
+            ExoPlayer.Builder(ctx).build().also {
+                videoViewBinding.videoView.player = it
+                val mediaItem = MediaItem.fromUri(videoUri!!)
+                it.setMediaItem(mediaItem)
+                it.prepare()
+            }
     }
 
     override fun onDestroy() {
@@ -692,5 +725,4 @@ class ProfileFragment :
         const val GENDER_SPINNER = 6
         const val RELIGION_PREFERENCE_SPINNER = 7
     }
-
 }
