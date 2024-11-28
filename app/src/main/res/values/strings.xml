@@ -20,6 +20,7 @@
     <string name="likes">Likes</string>
     <string name="login">Login</string>
     <string name="name">Enter your name</string>
+    <string name="bio">Enter your bio</string>
     <string name="new_user">New user? <font fgcolor="#ff0052">Sign up here</font></string>
     <string name="onboarding_txt1">Start your love story with a date, not endless messages.</string>
     <string name="onboarding_txt2">There is something truly special about connecting with someone face to face.</string>

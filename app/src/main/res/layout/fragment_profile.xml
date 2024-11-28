@@ -74,14 +74,13 @@
             <TextView
                 android:id="@+id/logout"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/log_out"
                 android:padding="8dp"
                 android:src="@drawable/baseline_logout_24"
                 android:text="@string/log_out"
-                android:textColor="@color/primary_pink"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline5"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -104,8 +103,8 @@
 
                 <ImageView
                     android:id="@+id/profilePicture"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_gravity="start"
                     android:layout_marginTop="@dimen/margin_10dp"
                     android:background="@drawable/circle_background"
@@ -115,27 +114,52 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-                <TextView
-                    android:id="@+id/tvName"
+                <EditText
+                    android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_10dp"
                     android:gravity="center"
-                    android:text="Enter Your Name"
-                    android:textSize="@dimen/text_size_22sp"
+                    android:hint="@string/name"
+                    android:textSize="@dimen/text_size_18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/profilePicture"
                     app:layout_constraintTop_toTopOf="@+id/profilePicture" />
 
-                <TextView
+                <LinearLayout
                     android:id="@+id/tvProgress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Profile 0% Completed"
-                    android:textSize="14sp"
+                    android:layout_marginTop="@dimen/margin_5dp"
+                    android:padding="@dimen/padding_10dp"
+                    android:background="@drawable/text_bg"
+                    android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="@+id/profilePicture"
-                    app:layout_constraintStart_toStartOf="@+id/tvName"
-                    app:layout_constraintTop_toBottomOf="@+id/tvName" />
+                    app:layout_constraintStart_toStartOf="@+id/name"
+                    app:layout_constraintTop_toBottomOf="@+id/name" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:text="Profile"
+                        />
+                    <TextView
+                        android:id="@+id/completionPercentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:text="0%"
+                        android:layout_marginStart="@dimen/margin_5dp"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:text="Completed"
+                        android:layout_marginStart="@dimen/margin_5dp"
+                        />
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -174,10 +198,10 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
                 <EditText
-                    android:id="@+id/name"
+                    android:id="@+id/bio"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="@string/name"
+                    android:hint="@string/bio"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView5" />

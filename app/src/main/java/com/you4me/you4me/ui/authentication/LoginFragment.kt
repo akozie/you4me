@@ -16,7 +16,6 @@ import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentLoginBinding
-import com.you4me.you4me.models.User
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.AuthenticationRepository
@@ -29,10 +28,12 @@ import com.you4me.you4me.utils.validatePassword
 
 class LoginFragment :
     BaseFragment<AuthenticationViewModel, FragmentLoginBinding, AuthenticationRepository>() {
-
     private lateinit var you4meSignInClient: GoogleSignInClient
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         //  if (!isOnBoardingDone()) findNavController().navigate(R.id.action_loginFragment_to_onboardingFragment)
         if (sharedPrefHelper.getBoolean(SharedPrefHelper.IS_LOGGED_IN)) {
@@ -46,13 +47,14 @@ class LoginFragment :
         }
     }
 
-    /*create the googleSignIn client*/
+    // create the googleSignIn client
     private fun googleSignInClient() {
         val serverClientId = getString(R.string.default_web_id) // get the client id
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(serverClientId)
-            .requestEmail()
-            .build()
+        val googleSignInOptions =
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(serverClientId)
+                .requestEmail()
+                .build()
 
         you4meSignInClient = GoogleSignIn.getClient(requireContext(), googleSignInOptions)
     }
@@ -63,8 +65,12 @@ class LoginFragment :
         startActivityForResult(signInIntent, GOOGLE_SIGN_IN_RQ_CODE)
     }
 
-    /*gets the selected google account from the intent*/
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    // gets the selected google account from the intent
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?,
+    ) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == GOOGLE_SIGN_IN_RQ_CODE) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -80,7 +86,7 @@ class LoginFragment :
             val account = completedTask.getResult(ApiException::class.java)
             startDashboard(account)
         } catch (e: ApiException) {
-            //showToast(e.localizedMessage)
+            // showToast(e.localizedMessage)
         }
     }
 
@@ -95,7 +101,7 @@ class LoginFragment :
             viewModel.signWithGoogleLoginResponse.observe(viewLifecycleOwner) {
                 when (it) {
                     is Resource.Success -> {
-                        //viewModel.clearUser()
+                        // viewModel.clearUser()
                         Log.d("NOT_TOKEN", it.value.userId)
                         viewModel.getUserDetails(it.value.userId)
                         viewModel.user.observe(viewLifecycleOwner) { user ->
@@ -111,24 +117,23 @@ class LoginFragment :
                                     sharedPrefHelper.saveString(SharedPrefHelper.USER_PROFILE, userProfileJsonString)
                                     sharedPrefHelper.saveString(
                                         SharedPrefHelper.USER_ID,
-                                        user.value.userId
+                                        user.value.userId,
                                     )
                                     sharedPrefHelper.saveBoolean(
                                         SharedPrefHelper.IS_LOGGED_IN,
-                                        true
+                                        true,
                                     )
                                     dialog.dismiss()
                                     startActivity(
                                         Intent(
                                             requireActivity(),
-                                            MainActivity::class.java
-                                        )
+                                            MainActivity::class.java,
+                                        ),
                                     )
                                     requireActivity().finish()
                                 }
 
                                 is Resource.Failure -> {
-
                                 }
                             }
                         }
@@ -136,8 +141,12 @@ class LoginFragment :
 
                     is Resource.Failure -> {
                         val message =
-                            if (it.isNetworkError) "Please check your internet" else it.message
-                                ?: it.errorBody
+                            if (it.isNetworkError) {
+                                "Please check your internet"
+                            } else {
+                                it.message
+                                    ?: it.errorBody
+                            }
                         showAlertDialog(requireContext(), message ?: "Please try again", "OK") {
                             findNavController().popBackStack()
                         }
@@ -155,19 +164,18 @@ class LoginFragment :
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?
+        container: ViewGroup?,
     ) = FragmentLoginBinding.inflate(inflater, container, false)
 
-    override fun getRepository() =
-        AuthenticationRepository(dataSource.buildApi(ApiCollector::class.java))
+    override fun getRepository() = AuthenticationRepository(dataSource.buildApi(ApiCollector::class.java))
 
     private fun setupViews() {
-       // viewModel.clearUser()
+        // viewModel.clearUser()
         viewModel.loginResponse.observe(viewLifecycleOwner) {
             showLoader(false)
             when (it) {
                 is Resource.Success -> {
-                    //Store data and navigate
+                    // Store data and navigate
                     viewModel.clearUser()
                     val dialog = showDialog("Login Successful", true)
                     viewModel.saveUser(it.value)
@@ -190,7 +198,7 @@ class LoginFragment :
                     showAlertDialog(
                         requireContext(),
                         message ?: it.errorBody ?: "Please try again",
-                        "OK"
+                        "OK",
                     ) {}
                 }
             }
@@ -220,12 +228,19 @@ class LoginFragment :
         binding.password.isEnabled = !show
     }
 
-    private fun validate(email: CharSequence?, password: CharSequence?): Boolean {
+    private fun validate(
+        email: CharSequence?,
+        password: CharSequence?,
+    ): Boolean {
         if (email.validateEmail()) {
             if (password.validatePassword()) {
                 return true
-            } else binding.passwordLyt.error = "Enter a valid password with at least 3 characters"
-        } else binding.emailLyt.error = "Enter a valid email"
+            } else {
+                binding.passwordLyt.error = "Enter a valid password with at least 3 characters"
+            }
+        } else {
+            binding.emailLyt.error = "Enter a valid email"
+        }
         return false
     }
 }

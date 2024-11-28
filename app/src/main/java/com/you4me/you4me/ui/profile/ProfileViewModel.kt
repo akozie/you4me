@@ -21,12 +21,10 @@ import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.base.SingleLiveEvent
 import kotlinx.coroutines.launch
 
-
 class ProfileViewModel(
     private val repository: ProfileRepository,
-    private val dbRepository: DbRepository
+    private val dbRepository: DbRepository,
 ) : ViewModel() {
-
     private val _genders: MutableLiveData<Resource<ArrayList<ValueLabelResponse>>> =
         MutableLiveData()
     val genders: LiveData<Resource<ArrayList<ValueLabelResponse>>>
@@ -78,20 +76,20 @@ class ProfileViewModel(
     val registerVideoUploadResponse: LiveData<Resource<Unit>>
         get() = _registerVideoUploadResponse
 
-    private val _validateVideoUploadResponse : MutableLiveData<Resource<Unit>> = SingleLiveEvent()
-    val validateVideoUpload : LiveData<Resource<Unit>>
+    private val _validateVideoUploadResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val validateVideoUpload: LiveData<Resource<Unit>>
         get() = _validateVideoUploadResponse
 
-    private val _updateVideoUrlResponse : MutableLiveData<Resource<Unit>> = SingleLiveEvent()
-    val updateVideoUrlResponse  : LiveData<Resource<Unit>>
+    private val _updateVideoUrlResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val updateVideoUrlResponse: LiveData<Resource<Unit>>
         get() = _updateVideoUrlResponse
 
-    private val _deleteUserResponse : MutableLiveData<Resource<Unit>> = SingleLiveEvent()
-    val deleteUserResponse  : LiveData<Resource<Unit>>
+    private val _deleteUserResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val deleteUserResponse: LiveData<Resource<Unit>>
         get() = _deleteUserResponse
 
-    private val _logoutResponse : MutableLiveData<Resource<Unit>> = SingleLiveEvent()
-    val logoutResponse  : LiveData<Resource<Unit>>
+    private val _logoutResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val logoutResponse: LiveData<Resource<Unit>>
         get() = _logoutResponse
 
     init {
@@ -115,7 +113,7 @@ class ProfileViewModel(
         }
     }
 
-    fun saveUser(user : User) {
+    fun saveUser(user: User) {
         viewModelScope.launch {
             dbRepository.clear()
             dbRepository.insertUser(user)
@@ -129,7 +127,7 @@ class ProfileViewModel(
         }
     }
 
-    fun getUserDetails(userId : String) {
+    fun getUserDetails(userId: String) {
         viewModelScope.launch {
             _user.value = repository.getUser(userId)
         }
@@ -173,27 +171,30 @@ class ProfileViewModel(
 
     fun updateUser(userBody: UpdateUserBody) {
         val u = dbUser.value!!
-        val uUser = User(
-            u.userId,
-            u.agePreferred,
-            u.convertedDate,
-            userBody.country,
-            userBody.dob,
-            u.email,
-            userBody.gender,
-            u.isVideoBeingReviewed,
-            userBody.name,
-            u.password,
-            "",
-            "",
-            userBody.religion_preferred,
-            userBody.sexual_orientation,
-            userBody.state,
-            u.status,
-            u.token,
-            u.videoStatus,
-            u.videoURL
-        )
+        val uUser =
+            User(
+                u.userId,
+                u.agePreferred,
+                u.convertedDate,
+                userBody.country,
+                userBody.dob,
+                u.email,
+                userBody.gender,
+                u.isVideoBeingReviewed,
+                userBody.name,
+                userBody.bio,
+                u.completionPercentage,
+                u.password,
+                "",
+                "",
+                userBody.religion_preferred,
+                userBody.sexual_orientation,
+                userBody.state,
+                u.status,
+                u.token,
+                u.videoStatus,
+                u.videoURL,
+            )
         saveUser(uUser)
     }
 
@@ -201,6 +202,7 @@ class ProfileViewModel(
         viewModelScope.launch {
             val obj = JsonObject()
             userBody.apply {
+                obj.addProperty("bio", bio)
                 obj.addProperty("name", name)
                 obj.addProperty("country", country)
                 obj.addProperty("state", state)
@@ -216,41 +218,52 @@ class ProfileViewModel(
         }
     }
 
-    fun uploadVideo(videoUri: Uri, videoId : String) {
+    fun uploadVideo(
+        videoUri: Uri,
+        videoId: String,
+    ) {
         viewModelScope.launch {
             MediaManager.get()
                 .upload(videoUri)
                 .option("resource_type", "auto")
                 .option("public_id", videoId)
-                .callback(object : UploadCallback {
-                    override fun onStart(requestId: String?) {
-
-                    }
-
-                    override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
-
-                    }
-
-                    override fun onSuccess(
-                        requestId: String?,
-                        resultData: MutableMap<Any?, Any?>?
-                    ) {
-                        _uploadVideoCloudinaryResponse.value = resultData?.let {
-                            CloudinaryVideoUploadResponse.from(
-                                it
-                            )
+                .callback(
+                    object : UploadCallback {
+                        override fun onStart(requestId: String?) {
                         }
-                    }
 
-                    override fun onError(requestId: String?, error: ErrorInfo?) {
+                        override fun onProgress(
+                            requestId: String?,
+                            bytes: Long,
+                            totalBytes: Long,
+                        ) {
+                        }
 
-                    }
+                        override fun onSuccess(
+                            requestId: String?,
+                            resultData: MutableMap<Any?, Any?>?,
+                        ) {
+                            _uploadVideoCloudinaryResponse.value =
+                                resultData?.let {
+                                    CloudinaryVideoUploadResponse.from(
+                                        it,
+                                    )
+                                }
+                        }
 
-                    override fun onReschedule(requestId: String?, error: ErrorInfo?) {
+                        override fun onError(
+                            requestId: String?,
+                            error: ErrorInfo?,
+                        ) {
+                        }
 
-                    }
-
-                }).dispatch()
+                        override fun onReschedule(
+                            requestId: String?,
+                            error: ErrorInfo?,
+                        ) {
+                        }
+                    },
+                ).dispatch()
         }
     }
 
@@ -267,7 +280,10 @@ class ProfileViewModel(
         }
     }
 
-    fun updateVideoUrl(videoId: String, videoUrl: String) {
+    fun updateVideoUrl(
+        videoId: String,
+        videoUrl: String,
+    ) {
         val obj = JsonObject()
         obj.addProperty("video_url", videoUrl)
         viewModelScope.launch {

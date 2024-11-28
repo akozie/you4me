@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.Dialog
+import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
@@ -276,6 +278,7 @@ class ProfileFragment :
                     dob,
                     gender,
                     binding.name.text.toString(),
+                    binding.bio.text.toString(),
                     religionPreferred,
                     sexualOrientation,
                     state,
@@ -497,6 +500,7 @@ class ProfileFragment :
                                 "$videoUri",
                                 user.userId,
                                 videoId,
+                                getCategoryFromUri(requireContext(), videoUri!!),
                             ),
                         )
                     } else {
@@ -519,6 +523,7 @@ class ProfileFragment :
                                 "$videoUri",
                                 user.userId,
                                 videoId,
+                                getCategoryFromUri(requireContext(), videoUri!!),
                             ),
                         )
                     } else {
@@ -602,6 +607,12 @@ class ProfileFragment :
 
     private fun populateViews(user: User) {
         binding.name.setText(user.name)
+        if (user.bio.isEmpty()) {
+            //
+        } else {
+            binding.bio.setText(user.bio)
+        }
+        binding.completionPercentage.text = "${user.completionPercentage}%"
 
         binding.dob.setText(user.dob)
 
@@ -667,7 +678,7 @@ class ProfileFragment :
         builder.setItems(options) { dialog, which ->
             when (which) {
                 0 -> recordVideo()
-                1 -> openGallery()
+                1 -> openGallery(1)
             }
         }
         builder.show()
@@ -678,7 +689,7 @@ class ProfileFragment :
         recordVideoLauncher.launch(intent)
     }
 
-    private fun openGallery() {
+    private fun openGallery(requestCode: Int) {
         val intent =
             Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
         activityResultLauncher.launch(intent)
@@ -709,6 +720,22 @@ class ProfileFragment :
                 it.setMediaItem(mediaItem)
                 it.prepare()
             }
+    }
+
+    fun getCategoryFromUri(
+        context: Context,
+        fileUri: Uri,
+    ): String {
+        val contentResolver: ContentResolver = context.contentResolver
+        val mimeType = contentResolver.getType(fileUri) // Get the MIME type of the file
+
+        return if (mimeType?.startsWith("image") == true) {
+            "image"
+        } else if (mimeType?.startsWith("video") == true) {
+            "video"
+        } else {
+            "unknown" // Fallback if it's neither image nor video
+        }
     }
 
     override fun onDestroy() {

@@ -7,5 +7,6 @@
     <color name="grey_circle">#59656F</color>
     <color name="grey">#F2F2F2</color>
     <color name="profile_grey">#C5CED5</color>
+    <color name="text_grey">#C3CFD9</color>
 
 </resources>
