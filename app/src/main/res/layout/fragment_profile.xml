@@ -649,26 +649,36 @@
 
                     <!-- Placeholder buttons for images -->
                     <FrameLayout
+                        android:id="@+id/frame1"
                         android:layout_width="0dp"
                         android:layout_height="100dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="@drawable/photos_bg"
                         android:layout_rowWeight="1"
                         android:layout_columnWeight="1"
                         android:layout_gravity="fill">
 
-                        <ImageButton
+                        <ImageView
                             android:id="@+id/addPhotoButton1"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/photos_bg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone"
+                            android:src="@drawable/baseline_add_24"
                             android:contentDescription="Add Photo"
                             android:scaleType="centerInside" />
                     </FrameLayout>
 
                     <!-- Placeholder buttons for images -->
                     <FrameLayout
+                        android:id="@+id/frame2"
                         android:layout_width="0dp"
                         android:layout_height="100dp"
                         android:layout_rowWeight="1"
+                        android:clickable="true"
+                        android:background="@drawable/photos_bg"
+                        android:focusable="true"
                         android:layout_columnWeight="1"
                         android:layout_gravity="fill">
 
@@ -676,16 +686,20 @@
                             android:id="@+id/addPhotoButton2"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/photos_bg"
+                            android:visibility="gone"
                             android:contentDescription="Add Photo"
                             android:scaleType="centerInside" />
                     </FrameLayout>
 
                     <!-- Placeholder buttons for images -->
                     <FrameLayout
+                        android:id="@+id/frame3"
                         android:layout_width="0dp"
                         android:layout_height="100dp"
                         android:layout_rowWeight="1"
+                        android:clickable="true"
+                        android:background="@drawable/photos_bg"
+                        android:focusable="true"
                         android:layout_columnWeight="1"
                         android:layout_gravity="fill">
 
@@ -693,6 +707,7 @@
                             android:id="@+id/addPhotoButton3"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:visibility="gone"
                             android:background="@drawable/photos_bg"
                             android:contentDescription="Add Photo"
                             android:scaleType="centerInside" />
@@ -700,9 +715,13 @@
 
                     <!-- Placeholder buttons for images -->
                     <FrameLayout
+                        android:id="@+id/frame4"
                         android:layout_width="0dp"
                         android:layout_height="100dp"
                         android:layout_rowWeight="1"
+                        android:clickable="true"
+                        android:background="@drawable/photos_bg"
+                        android:focusable="true"
                         android:layout_columnWeight="1"
                         android:layout_gravity="fill">
 
@@ -710,6 +729,7 @@
                             android:id="@+id/addPhotoButton4"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:visibility="gone"
                             android:background="@drawable/photos_bg"
                             android:contentDescription="Add Photo"
                             android:scaleType="centerInside" />
@@ -717,9 +737,13 @@
 
                     <!-- Placeholder buttons for images -->
                     <FrameLayout
+                        android:id="@+id/frame5"
                         android:layout_width="0dp"
                         android:layout_height="100dp"
                         android:layout_rowWeight="1"
+                        android:background="@drawable/photos_bg"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:layout_columnWeight="1"
                         android:layout_gravity="fill">
 
@@ -727,6 +751,7 @@
                             android:id="@+id/addPhotoButton5"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:visibility="gone"
                             android:background="@drawable/photos_bg"
                             android:contentDescription="Add Photo"
                             android:scaleType="centerInside" />
@@ -734,9 +759,13 @@
 
                     <!-- Placeholder buttons for images -->
                     <FrameLayout
+                        android:id="@+id/frame6"
                         android:layout_width="0dp"
                         android:layout_height="100dp"
                         android:layout_rowWeight="1"
+                        android:background="@drawable/photos_bg"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:layout_columnWeight="1"
                         android:layout_gravity="fill">
 
@@ -745,6 +774,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@drawable/photos_bg"
+                            android:visibility="gone"
                             android:contentDescription="Add Photo"
                             android:scaleType="centerInside" />
                     </FrameLayout>

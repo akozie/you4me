@@ -9,6 +9,8 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("com.google.gms.google-services")
+    id("kotlin-parcelize")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -37,7 +39,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -69,64 +71,65 @@ dependencies {
 
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-    //firebase
+    // firebase
     implementation(platform("com.google.firebase:firebase-bom:30.4.1"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx:23.0.8")
 
-    //cloudinary
+    // cloudinary
     implementation("com.cloudinary:cloudinary-android-core:2.5.0")
 
-    //navigation
+    // navigation
     val navigationVersion = "2.5.3"
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 
-    //retrofit
+    // retrofit
     val retrofitVersion = "2.9.0"
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
     implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
 
-    //Logging Interceptor
+    // Logging Interceptor
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
-    //room
+    // room
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
 
-    //google places api
+    // google places api
     implementation("com.google.android.libraries.places:places:3.3.0")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.10"))
 
-    //google play billing
+    // google play billing
     implementation("com.android.billingclient:billing:6.2.0")
 //    implementation("com.android.billingclient:billing:6.2.0")
 
-    //google auth
+    // google auth
     implementation("com.google.android.gms:play-services-auth:21.0.0")
 
-    //lottie
+    // lottie
     implementation("com.airbnb.android:lottie:4.2.0")
 
-
-    //videoview
+    // videoview
     val mediaVersion = "1.3.0"
     implementation("androidx.media3:media3-exoplayer:$mediaVersion")
     implementation("androidx.media3:media3-ui:$mediaVersion")
     implementation("androidx.media3:media3-exoplayer-dash:$mediaVersion")
 
-    //workmanager
+    // workmanager
     val workVersion = "2.7.0-alpha05"
     implementation("androidx.work:work-runtime-ktx:$workVersion")
 
+    // Glide
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
 }
 
 apply(plugin = "com.google.gms.google-services")

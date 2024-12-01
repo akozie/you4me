@@ -10,11 +10,7 @@ import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.google.gson.JsonObject
-import com.you4me.you4me.models.CloudinaryVideoUploadResponse
-import com.you4me.you4me.models.RegisterVideoUploadBody
-import com.you4me.you4me.models.UpdateUserBody
-import com.you4me.you4me.models.User
-import com.you4me.you4me.models.ValueLabelResponse
+import com.you4me.you4me.models.*
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.ProfileRepository
@@ -54,6 +50,11 @@ class ProfileViewModel(
         MutableLiveData()
     val states: LiveData<Resource<ArrayList<ValueLabelResponse>>>
         get() = _states
+
+    private val _getImagesAndVideos: MutableLiveData<Resource<ImagesVideosResponse>> =
+        MutableLiveData()
+    val getImagesAndVideos: LiveData<Resource<ImagesVideosResponse>>
+        get() = _getImagesAndVideos
 
     private val _dbUser: MutableLiveData<User> = MutableLiveData()
     val dbUser: LiveData<User>
@@ -166,6 +167,12 @@ class ProfileViewModel(
     fun getStates(countryId: String) {
         viewModelScope.launch {
             _states.value = repository.getStates(countryId)
+        }
+    }
+
+    fun getImagesAndVideos(userId: String) {
+        viewModelScope.launch {
+            _getImagesAndVideos.value = repository.getImageVideoUpload(userId)
         }
     }
 

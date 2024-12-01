@@ -1,5 +1,6 @@
 package com.you4me.you4me.ui.profile
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -8,8 +9,12 @@ import android.app.Dialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,22 +24,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
+import android.webkit.MimeTypeMap
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentProfileBinding
 import com.you4me.you4me.databinding.VideoDialogBinding
-import com.you4me.you4me.models.RegisterVideoUploadBody
-import com.you4me.you4me.models.UpdateUserBody
-import com.you4me.you4me.models.User
-import com.you4me.you4me.models.ValueLabelResponse
+import com.you4me.you4me.models.*
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.ProfileRepository
@@ -43,6 +48,10 @@ import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils
 import com.you4me.you4me.utils.Utils.BANNER_TIMEOUT
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class ProfileFragment :
@@ -90,6 +99,11 @@ class ProfileFragment :
         addListeners()
         addObservers()
         setupView()
+        checkAndRequestPermissions()
+
+//        binding.frame1.setOnClickListener {
+//            Log.d("ITSHERE", "HERE")
+//        }
     }
 
     override fun getViewModel() = ProfileViewModel::class.java
@@ -103,8 +117,24 @@ class ProfileFragment :
 
     private fun addObservers() {
         viewModel.getUserDetails(user.userId)
+        viewModel.getImagesAndVideos(user.userId)
+        viewModel.getImagesAndVideos.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    val listOfImagesAndVideos = it.value
+                    try {
+                        // Your potentially crashing code (e.g., loading images, videos, etc.)
+                        loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                    } catch (e: Exception) {
+                        Log.e("MyApp", "Error loading data", e)
+                    }
+                }
+
+                is Resource.Failure -> {
+                }
+            }
+        }
         viewModel.user.observe(viewLifecycleOwner) {
-            Log.d("USER_MINE", it.toString())
             when (it) {
                 is Resource.Success -> {
                     user = it.value
@@ -227,7 +257,8 @@ class ProfileFragment :
                 is Resource.Success -> {
                     binding.videoBannerLayout.isVisible = true
                     binding.profileLayout.isVisible = false
-                    showVideoRegulationsDialog()
+//                    showVideoRegulationsDialog()
+                    openGallery()
                 }
 
                 is Resource.Failure -> {
@@ -491,7 +522,7 @@ class ProfileFragment :
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
                     videoUri = it.data?.data ?: return@registerForActivityResult
-                    if (checkVideoDuration(videoUri!!)) {
+                    if (validateMedia(videoUri!!)) {
                         videoId = UUID.randomUUID().toString()
                         showLoader(true)
 
@@ -514,7 +545,7 @@ class ProfileFragment :
                 if (result.resultCode == Activity.RESULT_OK) {
                     // Handle the recorded video URI (e.g., upload it to your server or save it locally)
                     videoUri = result.data?.data ?: return@registerForActivityResult
-                    if (checkVideoDuration(videoUri!!)) {
+                    if (validateMedia(videoUri!!)) {
                         videoId = UUID.randomUUID().toString()
                         showLoader(true)
 
@@ -600,6 +631,118 @@ class ProfileFragment :
         }
     }
 
+    // Call this function from the UI thread, like in your `onViewCreated` or `onStart`
+
+    // Suspend function to generate video thumbnail in background
+// Call this function from the UI thread, like in your onViewCreated or onStart
+    private fun loadImagesAndVideosInBackground(listOfImagesAndVideos: ImagesVideosResponse) {
+        val imageViews =
+            listOf(
+                binding.frame1,
+                binding.frame2,
+                binding.frame3,
+                binding.frame4,
+                binding.frame5,
+                binding.frame6,
+            ) // Predefined ImageViews
+
+        CoroutineScope(Dispatchers.Main).launch {
+            // Run the heavy task on the IO thread
+            withContext(Dispatchers.Main) {
+                listOfImagesAndVideos.take(imageViews.size).forEachIndexed { index, fileData ->
+                    val frame = imageViews[index]
+                    frame.isClickable = true
+                    frame.isFocusable = true
+
+                    // Replace 'http' with 'https' for secure URLs
+                    val secureUrl = fileData.fileURL.replace("http://", "https://")
+
+                    if (getCategoryFromString(fileData.fileURL) == "image") {
+                        // Load image into FrameLayout
+                        val imageView = ImageView(requireContext())
+                        imageView.layoutParams =
+                            FrameLayout.LayoutParams(
+                                FrameLayout.LayoutParams.MATCH_PARENT,
+                                FrameLayout.LayoutParams.MATCH_PARENT,
+                            )
+                        imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+
+                        // Load image using Glide (this is still safe on the main thread since Glide handles threading internally)
+                        Glide.with(requireActivity())
+                            .load(secureUrl)
+                            .into(imageView)
+
+                        // Add to FrameLayout in the main thread
+                        withContext(Dispatchers.Main) {
+                            frame.addView(imageView)
+                        }
+                    } else if (getCategoryFromString(fileData.fileURL) == "video") {
+                        // Load video thumbnail into FrameLayout
+                        val thumbnailView = ImageView(requireContext())
+                        thumbnailView.layoutParams =
+                            FrameLayout.LayoutParams(
+                                FrameLayout.LayoutParams.MATCH_PARENT,
+                                FrameLayout.LayoutParams.MATCH_PARENT,
+                            )
+                        thumbnailView.scaleType = ImageView.ScaleType.CENTER_CROP
+
+                        // Generate thumbnail using MediaMetadataRetriever in the background
+                        val bitmap = generateVideoThumbnail(secureUrl)
+
+                        // Add thumbnail to FrameLayout in the main thread
+                        withContext(Dispatchers.Main) {
+                            if (bitmap != null) {
+                                thumbnailView.setImageBitmap(bitmap)
+                            }
+                            frame.addView(thumbnailView)
+                        }
+                    }
+
+                    // Add a click listener to the frame
+                    withContext(Dispatchers.Main) {
+                        frame.setOnClickListener {
+                            openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun openDetailScreen(
+        fileUrl: String,
+        category: String,
+    ) {
+        val imagesVideosResponseItem =
+            ImagesVideosResponseItem(
+                category,
+                fileUrl,
+                "",
+                "",
+                "",
+                "",
+            )
+        val action = ProfileFragmentDirections.actionProfileFragmentToImageAndVideoDetailsFragment(imagesVideosResponseItem)
+        findNavController().navigate(action)
+    }
+
+    // Suspend function to generate video thumbnail in background
+    private suspend fun generateVideoThumbnail(videoUrl: String): Bitmap? {
+        return withContext(Dispatchers.IO) {
+            val retriever = MediaMetadataRetriever()
+            return@withContext try {
+                retriever.setDataSource(videoUrl, HashMap()) // Use secureUrl here
+                val bitmap = retriever.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+                retriever.release()
+                bitmap
+            } catch (e: Exception) {
+                e.printStackTrace()
+                retriever.release()
+                null
+            }
+        }
+    }
+
     private fun updateDateOfBirth() {
         binding.dob.setText(Utils.getDateFormat().format(calendar.time))
         dob = binding.dob.text.toString()
@@ -641,6 +784,24 @@ class ProfileFragment :
         return duration <= 30000
     }
 
+    private fun validateMedia(uri: Uri): Boolean {
+        val contentResolver = ctx.contentResolver
+        val mimeType = contentResolver.getType(uri)
+
+        return if (mimeType?.startsWith("video/") == true) {
+            // Check video duration
+            val mediaPlayer = MediaPlayer.create(ctx, uri)
+            val duration = mediaPlayer?.duration?.toLong() ?: 0
+            mediaPlayer?.release()
+            duration <= 30000 // Validate that video duration is <= 30 seconds
+        } else if (mimeType?.startsWith("image/") == true) {
+            // Example validation for images (optional, can customize based on your requirements)
+            true // Allow all images
+        } else {
+            false // Unsupported type
+        }
+    }
+
     private fun setupVideo() {
         videoUri = Uri.parse(user.videoURL.replace("http:", "https:"))
         initializePlayer()
@@ -656,7 +817,8 @@ class ProfileFragment :
         builder.setTitle("Upload Requirements and Regulations")
         builder.setMessage(getString(R.string.video_regulations))
         builder.setPositiveButton("Select Video") { d, i ->
-            showVideoOptionsDialog()
+//            showVideoOptionsDialog()
+            openGallery()
             showLoader(false)
         }
         builder.setNegativeButton("Cancel") { d, i ->
@@ -678,7 +840,7 @@ class ProfileFragment :
         builder.setItems(options) { dialog, which ->
             when (which) {
                 0 -> recordVideo()
-                1 -> openGallery(1)
+                1 -> openGalleryy(1)
             }
         }
         builder.show()
@@ -689,9 +851,18 @@ class ProfileFragment :
         recordVideoLauncher.launch(intent)
     }
 
-    private fun openGallery(requestCode: Int) {
+    private fun openGalleryy(requestCode: Int) {
         val intent =
             Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+        activityResultLauncher.launch(intent)
+    }
+
+    private fun openGallery() {
+        val intent =
+            Intent(Intent.ACTION_PICK, MediaStore.Files.getContentUri("external")).apply {
+                type = "*/*" // Allow all media types
+                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*")) // Filter for images and videos
+            }
         activityResultLauncher.launch(intent)
     }
 
@@ -722,6 +893,46 @@ class ProfileFragment :
             }
     }
 
+    private val permissions =
+        arrayOf(
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VIDEO,
+        )
+
+    private fun checkAndRequestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (permissions.any { ContextCompat.checkSelfPermission(requireContext(), it) != PackageManager.PERMISSION_GRANTED }) {
+                ActivityCompat.requestPermissions(requireActivity(), permissions, PERMISSION_REQUEST_CODE)
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    PERMISSION_REQUEST_CODE,
+                )
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                // Permissions granted
+            } else {
+                Toast.makeText(requireContext(), "Permissions are required to access media files.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     fun getCategoryFromUri(
         context: Context,
         fileUri: Uri,
@@ -738,6 +949,19 @@ class ProfileFragment :
         }
     }
 
+    fun getCategoryFromString(fileUrl: String): String {
+        val mimeTypeMap = MimeTypeMap.getSingleton()
+        val extension = fileUrl.substringAfterLast('.', "").lowercase()
+
+        val mimeType = mimeTypeMap.getMimeTypeFromExtension(extension)
+
+        return when {
+            mimeType?.startsWith("image") == true -> "image"
+            mimeType?.startsWith("video") == true -> "video"
+            else -> "unknown"
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         // Remove callbacks to prevent memory leaks
@@ -751,5 +975,6 @@ class ProfileFragment :
         const val STATE_SPINNER = 5
         const val GENDER_SPINNER = 6
         const val RELIGION_PREFERENCE_SPINNER = 7
+        const val PERMISSION_REQUEST_CODE = 1001
     }
 }

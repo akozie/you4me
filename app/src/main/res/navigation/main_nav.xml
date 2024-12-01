@@ -23,7 +23,11 @@
         android:id="@+id/profileFragment"
         android:name="com.you4me.you4me.ui.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_imageAndVideoDetailsFragment"
+            app:destination="@id/imageAndVideoDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/goOnDateFragment"
         android:name="com.you4me.you4me.ui.main.GoOnDateFragment"
@@ -39,4 +43,13 @@
         android:name="com.you4me.you4me.ui.main.NotificationsFragment"
         android:label="fragment_notifications"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/imageAndVideoDetailsFragment"
+        android:name="com.you4me.you4me.ui.profileDetails.ImageAndVideoDetailsFragment"
+        android:label="fragment_image_and_video_details"
+        tools:layout="@layout/fragment_image_and_video_details" >
+        <argument
+            android:name="IMAGES"
+            app:argType="com.you4me.you4me.models.ImagesVideosResponseItem" />
+    </fragment>
 </navigation>
