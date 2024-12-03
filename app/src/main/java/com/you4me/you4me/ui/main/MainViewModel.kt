@@ -1,14 +1,11 @@
 package com.you4me.you4me.ui.main
 
-import android.content.Context
-import android.util.JsonToken
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
-import com.you4me.you4me.models.UpdateDateInterestBody
 import com.you4me.you4me.models.AddDateInterestBody
 import com.you4me.you4me.models.AddSwipeBody
 import com.you4me.you4me.models.DateInterestsRequiringApproval
@@ -22,6 +19,7 @@ import com.you4me.you4me.models.ProposeNewDateTimeBody
 import com.you4me.you4me.models.RejectDateInterestBody
 import com.you4me.you4me.models.SubmitDateBody
 import com.you4me.you4me.models.UpcomingDates
+import com.you4me.you4me.models.UpdateDateInterestBody
 import com.you4me.you4me.models.User
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.Resource
@@ -33,9 +31,8 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     val repository: MainRepository,
-    private val dbRepository: DbRepository
+    private val dbRepository: DbRepository,
 ) : ViewModel() {
-
     val _user: MutableLiveData<User> = MutableLiveData()
     val user: LiveData<User>
         get() = _user
@@ -43,7 +40,6 @@ class MainViewModel(
     private val _existingUser: MutableLiveData<Resource<User>> = MutableLiveData()
     val existingUser: LiveData<Resource<User>>
         get() = _existingUser
-
 
     private val _paymentModes = MutableLiveData<Resource<ArrayList<ValueLabelResponse>>>()
     val paymentModes: LiveData<Resource<ArrayList<ValueLabelResponse>>>
@@ -72,6 +68,10 @@ class MainViewModel(
     private val _getSubscriptionStatus = SingleLiveEvent<Resource<GetSubscriptionStatus>>()
     val getSubscriptionStatus: LiveData<Resource<GetSubscriptionStatus>>
         get() = _getSubscriptionStatus
+
+    private val _getSubscriptionStatusForHome = SingleLiveEvent<Resource<GetSubscriptionStatus>>()
+    val getSubscriptionStatusForHome: LiveData<Resource<GetSubscriptionStatus>>
+        get() = _getSubscriptionStatusForHome
 
     private val _rejectDateInterest = SingleLiveEvent<Resource<Unit>>()
     val rejectDateInterest: LiveData<Resource<Unit>>
@@ -113,7 +113,7 @@ class MainViewModel(
 
     init {
         getUser()
-        //fetchPaymentModes()
+        // fetchPaymentModes()
     }
 
     private fun getUser() {
@@ -135,7 +135,11 @@ class MainViewModel(
             _updateFirebaseTokenResponse.value = repository.updatePushToken(_user.value!!.userId, token)
         }
     }
-    fun pushToken(token: JsonObject, userId: String) {
+
+    fun pushToken(
+        token: JsonObject,
+        userId: String,
+    ) {
         viewModelScope.launch {
             Log.d("NEW_FIREBASE", _user.value.toString())
             _updateFirebaseTokenResponse.value = repository.updatePushToken(userId, token)
@@ -148,21 +152,27 @@ class MainViewModel(
         }
     }
 
-     fun fetchPaymentModes() {
-         Log.d("ME--me", "ME")
+    fun fetchPaymentModes() {
+        Log.d("ME--me", "ME")
         viewModelScope.launch {
             _paymentModes.value = repository.getPaymentModes()
         }
     }
 
-    fun submitDate(date: String, paymentMode: String, place: String, time: String) {
-        val submitDateBody = SubmitDateBody(
-            date,
-            paymentMode,
-            Place(place),
-            time,
-            user.value!!.userId
-        )
+    fun submitDate(
+        date: String,
+        paymentMode: String,
+        place: String,
+        time: String,
+    ) {
+        val submitDateBody =
+            SubmitDateBody(
+                date,
+                paymentMode,
+                Place(place),
+                time,
+                user.value!!.userId,
+            )
         viewModelScope.launch {
             _submitDateResponse.value = repository.submitDate(submitDateBody)
         }
@@ -174,30 +184,41 @@ class MainViewModel(
         }
     }
 
-    fun addDateInterest(dateId: String, date: String, time: String, proposer: String) {
+    fun addDateInterest(
+        dateId: String,
+        date: String,
+        time: String,
+        proposer: String,
+    ) {
         viewModelScope.launch {
-            _addDateInterest.value = repository.addDateInterest(
-                dateId,
-                AddDateInterestBody(
-                    date,
-                    time,
-                    _user.value!!.userId,
-                    proposer
+            _addDateInterest.value =
+                repository.addDateInterest(
+                    dateId,
+                    AddDateInterestBody(
+                        date,
+                        time,
+                        _user.value!!.userId,
+                        proposer,
+                    ),
                 )
-            )
         }
     }
 
-    fun addSwipe(dateId: String, personId: String, like: Boolean) {
+    fun addSwipe(
+        dateId: String,
+        personId: String,
+        like: Boolean,
+    ) {
         viewModelScope.launch {
-            _addSwipe.value = repository.addSwipe(
-                AddSwipeBody(
-                    if (like) "like" else "dislike",
-                    dateId,
-                    personId,
-                    _user.value!!.userId
+            _addSwipe.value =
+                repository.addSwipe(
+                    AddSwipeBody(
+                        if (like) "like" else "dislike",
+                        dateId,
+                        personId,
+                        _user.value!!.userId,
+                    ),
                 )
-            )
         }
     }
 
@@ -213,22 +234,40 @@ class MainViewModel(
         }
     }
 
-    fun rejectDateInterest(interestId: String, dateId: String, status: String) {
+    fun getSubscriptionStatusForHome(userId: String) {
         viewModelScope.launch {
-            _rejectDateInterest.value = repository.rejectDateInterest(
-                interestId, RejectDateInterestBody(
-                    dateId, status
-                )
-            )
+            _getSubscriptionStatusForHome.value = repository.getSubscriptionStatus(userId)
         }
     }
 
-    fun updateDateInterest(interestId: String, dateId: String, status: String) {
+    fun rejectDateInterest(
+        interestId: String,
+        dateId: String,
+        status: String,
+    ) {
         viewModelScope.launch {
-            _updateDateInterest.value = repository.acceptDateInterest(
-                interestId,
-                UpdateDateInterestBody(dateId, status, _user.value!!.userId)
-            )
+            _rejectDateInterest.value =
+                repository.rejectDateInterest(
+                    interestId,
+                    RejectDateInterestBody(
+                        dateId,
+                        status,
+                    ),
+                )
+        }
+    }
+
+    fun updateDateInterest(
+        interestId: String,
+        dateId: String,
+        status: String,
+    ) {
+        viewModelScope.launch {
+            _updateDateInterest.value =
+                repository.acceptDateInterest(
+                    interestId,
+                    UpdateDateInterestBody(dateId, status, _user.value!!.userId),
+                )
         }
     }
 
@@ -238,10 +277,10 @@ class MainViewModel(
         }
     }
 
-    fun getUserDetails(userId : String) {
+    fun getUserDetails(userId: String) {
         viewModelScope.launch {
             _existingUser.value = repository.getExistingUser(userId)
-           // _user.value = existingUser.value
+            // _user.value = existingUser.value
         }
     }
 
@@ -263,14 +302,15 @@ class MainViewModel(
         dateId: String,
         interestId: String,
         proposedDate: String,
-        proposedTime: String
+        proposedTime: String,
     ) {
         viewModelScope.launch {
-            _proposeNewDateTime.value = repository.proposeNewDateTime(
-                user.value!!.userId,
-                interestId,
-                ProposeNewDateTimeBody(dateId, interestId, proposedDate, proposedTime)
-            )
+            _proposeNewDateTime.value =
+                repository.proposeNewDateTime(
+                    user.value!!.userId,
+                    interestId,
+                    ProposeNewDateTimeBody(dateId, interestId, proposedDate, proposedTime),
+                )
         }
     }
 
