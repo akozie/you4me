@@ -77,6 +77,10 @@ class ProfileViewModel(
     val registerVideoUploadResponse: LiveData<Resource<Unit>>
         get() = _registerVideoUploadResponse
 
+    private val _deleteVideoUploadResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val deleteVideoUploadResponse: LiveData<Resource<Unit>>
+        get() = _deleteVideoUploadResponse
+
     private val _validateVideoUploadResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
     val validateVideoUpload: LiveData<Resource<Unit>>
         get() = _validateVideoUploadResponse
@@ -284,6 +288,13 @@ class ProfileViewModel(
         viewModelScope.launch {
             _registerVideoUploadResponse.value =
                 repository.registerVideoUpload(_dbUser.value!!.userId, registerVideoUploadBody)
+        }
+    }
+
+    fun deleteVideoUpload(videoId: String) {
+        viewModelScope.launch {
+            _deleteVideoUploadResponse.value =
+                repository.deleteVideoUpload(_dbUser.value!!.userId, videoId)
         }
     }
 

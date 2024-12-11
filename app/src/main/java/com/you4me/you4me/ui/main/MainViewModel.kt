@@ -124,7 +124,7 @@ class MainViewModel(
 
     fun getNotifications() {
         viewModelScope.launch {
-            _getNotificationsResponse.value = repository.getNotifications(_user.value!!.userId)
+            _getNotificationsResponse.value = repository.getNotifications(_user.value?.userId ?: "")
 //            Log.d("NOTIFICATION", user.value.toString())
         }
     }
@@ -132,7 +132,7 @@ class MainViewModel(
     fun updatePushToken(token: JsonObject) {
         viewModelScope.launch {
             Log.d("FIREBASE", _user.value.toString())
-            _updateFirebaseTokenResponse.value = repository.updatePushToken(_user.value!!.userId, token)
+            _updateFirebaseTokenResponse.value = repository.updatePushToken(_user.value?.userId ?: "", token)
         }
     }
 
@@ -171,7 +171,7 @@ class MainViewModel(
                 paymentMode,
                 Place(place),
                 time,
-                user.value!!.userId,
+                user.value?.userId ?: "",
             )
         viewModelScope.launch {
             _submitDateResponse.value = repository.submitDate(submitDateBody)
@@ -180,7 +180,7 @@ class MainViewModel(
 
     fun fetchDates() {
         viewModelScope.launch(Dispatchers.IO) {
-            _fetchDates.postValue(repository.fetchDates(_user.value!!.userId))
+            _fetchDates.postValue(repository.fetchDates(_user.value?.userId ?: ""))
         }
     }
 
@@ -197,7 +197,7 @@ class MainViewModel(
                     AddDateInterestBody(
                         date,
                         time,
-                        _user.value!!.userId,
+                        _user.value?.userId ?: "",
                         proposer,
                     ),
                 )
@@ -216,7 +216,7 @@ class MainViewModel(
                         if (like) "like" else "dislike",
                         dateId,
                         personId,
-                        _user.value!!.userId,
+                        _user.value?.userId ?: "",
                     ),
                 )
         }
@@ -224,13 +224,13 @@ class MainViewModel(
 
     fun fetchDateInterests() {
         viewModelScope.launch {
-            _fetchDateInterests.value = repository.fetchDateInterest(_user.value!!.userId)
+            _fetchDateInterests.value = repository.fetchDateInterest(_user.value?.userId ?: "")
         }
     }
 
     fun getSubscriptionStatus() {
         viewModelScope.launch {
-            _getSubscriptionStatus.value = repository.getSubscriptionStatus(_user.value!!.userId)
+            _getSubscriptionStatus.value = repository.getSubscriptionStatus(_user.value?.userId ?: "")
         }
     }
 
@@ -266,14 +266,14 @@ class MainViewModel(
             _updateDateInterest.value =
                 repository.acceptDateInterest(
                     interestId,
-                    UpdateDateInterestBody(dateId, status, _user.value!!.userId),
+                    UpdateDateInterestBody(dateId, status, _user.value?.userId ?: ""),
                 )
         }
     }
 
     fun getUpcomingDates() {
         viewModelScope.launch {
-            _upcomingDates.value = repository.getUpcomingDates(_user.value!!.userId)
+            _upcomingDates.value = repository.getUpcomingDates(_user.value?.userId ?: "")
         }
     }
 
@@ -287,14 +287,14 @@ class MainViewModel(
     fun getInviteeDatesRequiringApproval() {
         viewModelScope.launch {
             _inviteeDatesRequiringApproval.value =
-                repository.inviteeDatesRequiringApproval(_user.value!!.userId)
+                repository.inviteeDatesRequiringApproval(_user.value?.userId ?: "")
         }
     }
 
     fun getDateInterestsRequiringApproval() {
         viewModelScope.launch {
             _dateInterestsRequiringApproval.value =
-                repository.getDateInterestsRequiringApproval(_user.value!!.userId)
+                repository.getDateInterestsRequiringApproval(_user.value?.userId ?: "")
         }
     }
 
@@ -307,7 +307,7 @@ class MainViewModel(
         viewModelScope.launch {
             _proposeNewDateTime.value =
                 repository.proposeNewDateTime(
-                    user.value!!.userId,
+                    user.value?.userId ?: "",
                     interestId,
                     ProposeNewDateTimeBody(dateId, interestId, proposedDate, proposedTime),
                 )

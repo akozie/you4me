@@ -2,13 +2,7 @@ package com.you4me.you4me.network
 
 import com.google.gson.JsonObject
 import com.you4me.you4me.models.*
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.PATCH
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ApiCollector {
     @POST("login")
@@ -87,6 +81,12 @@ interface ApiCollector {
     suspend fun registerVideoUpload(
         @Path("userId") userId: String,
         @Body registerVideoUploadBody: RegisterVideoUploadBody,
+    )
+
+    @DELETE("users/{userId}/uploads/{videoId}")
+    suspend fun deleteVideoUpload(
+        @Path("userId") userId: String,
+        @Path("videoId") videoId: String,
     )
 
     @GET("users/{userId}/uploads")

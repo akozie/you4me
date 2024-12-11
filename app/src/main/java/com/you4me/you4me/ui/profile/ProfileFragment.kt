@@ -251,8 +251,8 @@ class ProfileFragment :
         viewModel.validateVideoUpload.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    binding.videoBannerLayout.isVisible = true
-                    binding.profileLayout.isVisible = false
+//                    binding.videoBannerLayout.isVisible = true
+//                    binding.profileLayout.isVisible = false
 //                    showVideoRegulationsDialog()
                     openGallery()
                 }
@@ -284,10 +284,13 @@ class ProfileFragment :
         viewModel.updateVideoUrlResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    showLoader(false)
-                    showToast("Video Upload Successful!")
+                    showToast("Uploaded Successfully")
 //                    videoViewBinding.videoView.setVideoURI(videoUri)
-                    initializePlayer()
+//                    initializePlayer()
+                    showLoader(true)
+                    binding.root.isVisible = true
+                    binding.profileLayout.isVisible = true
+                    getImages()
                 }
 
                 is Resource.Failure -> {}
@@ -315,11 +318,31 @@ class ProfileFragment :
             )
         }
 
-        binding.skipBanner.setOnClickListener {
-            binding.videoBannerLayout.isVisible = false
-        }
+//        binding.skipBanner.setOnClickListener {
+//            binding.videoBannerLayout.isVisible = false
+//        }
 
-        binding.addVideoLyt.setOnClickListener {
+        binding.frame1.setOnClickListener {
+            showLoader(true)
+            viewModel.validateVideoUpload()
+        }
+        binding.frame2.setOnClickListener {
+            showLoader(true)
+            viewModel.validateVideoUpload()
+        }
+        binding.frame3.setOnClickListener {
+            showLoader(true)
+            viewModel.validateVideoUpload()
+        }
+        binding.frame4.setOnClickListener {
+            showLoader(true)
+            viewModel.validateVideoUpload()
+        }
+        binding.frame5.setOnClickListener {
+            showLoader(true)
+            viewModel.validateVideoUpload()
+        }
+        binding.frame6.setOnClickListener {
             showLoader(true)
             viewModel.validateVideoUpload()
         }
@@ -671,6 +694,10 @@ class ProfileFragment :
                         // Add to FrameLayout in the main thread
                         withContext(Dispatchers.Main) {
                             frame.addView(imageView)
+                            Glide.with(requireActivity())
+                                .load(fileData.fileURL) // URL of the image
+                                .circleCrop()
+                                .into(binding.profilePicture)
                         }
                     } else if (getCategoryFromString(fileData.fileURL) == "video") {
                         // Load video thumbnail into FrameLayout
@@ -701,7 +728,7 @@ class ProfileFragment :
                                 showLoader(true)
                                 viewModel.validateVideoUpload()
                             }
-                            openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL))
+                            openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
                         }
                     }
                 }
@@ -712,6 +739,7 @@ class ProfileFragment :
     private fun openDetailScreen(
         fileUrl: String,
         category: String,
+        videoId: String,
     ) {
         val imagesVideosResponseItem =
             ImagesVideosResponseItem(
@@ -720,7 +748,7 @@ class ProfileFragment :
                 "",
                 "",
                 "",
-                "",
+                videoId,
             )
         val action = ProfileFragmentDirections.actionProfileFragmentToImageAndVideoDetailsFragment(imagesVideosResponseItem)
         findNavController().navigate(action)
@@ -749,6 +777,7 @@ class ProfileFragment :
     }
 
     private fun populateViews(user: User) {
+        showLoader(false)
         binding.name.setText(user.name)
         if (user.bio.isEmpty()) {
             //
@@ -827,7 +856,7 @@ class ProfileFragment :
         }
 
         handler.postDelayed({
-            binding.videoBannerLayout.isVisible = false
+//            binding.videoBannerLayout.isVisible = false
             binding.profileLayout.isVisible = true
             builder.show()
         }, BANNER_TIMEOUT) // 5000 milliseconds = 5 seconds
@@ -874,6 +903,33 @@ class ProfileFragment :
         dialog.setContentView(videoViewBinding.root)
         dialog.show()
         player?.play()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getImages()
+    }
+
+    private fun getImages() {
+        showLoader(true)
+        viewModel.getImagesAndVideos(user.userId)
+        viewModel.getImagesAndVideos.observe(viewLifecycleOwner) { images ->
+            when (images) {
+                is Resource.Success -> {
+                    val listOfImagesAndVideos = images.value
+                    try {
+                        showLoader(false)
+                        // Your potentially crashing code (e.g., loading images, videos, etc.)
+                        loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                    } catch (e: Exception) {
+                        Log.e("MyApp", "Error loading data", e)
+                    }
+                }
+
+                is Resource.Failure -> {
+                }
+            }
+        }
     }
 
     private fun releasePlayer() {

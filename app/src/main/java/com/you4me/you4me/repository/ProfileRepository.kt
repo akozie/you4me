@@ -64,6 +64,11 @@ class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository
         registerVideoUploadBody: RegisterVideoUploadBody,
     ) = safeApiCall { apiCollector.registerVideoUpload(userId, registerVideoUploadBody) }
 
+    suspend fun deleteVideoUpload(
+        userId: String,
+        videoId: String,
+    ) = safeApiCall { apiCollector.deleteVideoUpload(userId, videoId) }
+
     suspend fun updateVideoUrl(
         videoId: String,
         obj: JsonObject,

@@ -1,5 +1,6 @@
 package com.you4me.you4me.ui.profileDetails
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -8,22 +9,38 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.VideoView
-import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.you4me.you4me.R
+import com.you4me.you4me.databinding.FragmentImageAndVideoDetailsBinding
+import com.you4me.you4me.network.ApiCollector
+import com.you4me.you4me.network.Resource
+import com.you4me.you4me.repository.ProfileRepository
+import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.ui.profile.ProfileViewModel
 
-class ImageAndVideoDetailsFragment : Fragment() {
-    private val args: ImageAndVideoDetailsFragmentArgs by navArgs()
+class ImageAndVideoDetailsFragment : BaseFragment<ProfileViewModel, FragmentImageAndVideoDetailsBinding, ProfileRepository>() {
+    //    override fun onCreateView(
+//        inflater: LayoutInflater,
+//        container: ViewGroup?,
+//        savedInstanceState: Bundle?,
+//    ): View? {
+//        // Inflate the layout for this fragment
+//        return inflater.inflate(R.layout.fragment_image_and_video_details, container, false)
+//    }
+    val args: ImageAndVideoDetailsFragmentArgs by navArgs()
 
-    override fun onCreateView(
+    override fun getViewModel() = ProfileViewModel::class.java
+
+    override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_image_and_video_details, container, false)
+    ): FragmentImageAndVideoDetailsBinding {
+        return FragmentImageAndVideoDetailsBinding.inflate(layoutInflater)
     }
+
+    override fun getRepository() = ProfileRepository(dataSource.buildApi(ApiCollector::class.java))
 
     override fun onViewCreated(
         view: View,
@@ -33,35 +50,24 @@ class ImageAndVideoDetailsFragment : Fragment() {
 
         val fileUrl = args.IMAGES.fileURL
         val category = args.IMAGES.category
+        val videoId = args.IMAGES.videoId
 
         val frame = view.findViewById<FrameLayout>(R.id.frame)
-
-//        if (category == "image") {
-//            val imageView = ImageView(requireContext())
-//            imageView.layoutParams =
-//                FrameLayout.LayoutParams(
-//                    FrameLayout.LayoutParams.MATCH_PARENT,
-//                    FrameLayout.LayoutParams.MATCH_PARENT,
-//                )
-//            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-//
-//            Glide.with(requireContext())
-//                .load(fileUrl)
-//                .into(imageView)
-//            view.findViewById<MaterialButton>(R.id.deleteBtn).text = "Delete Photo"
-//            frame.addView(imageView)
-//        } else if (category == "video") {
-//            view.findViewById<MaterialButton>(R.id.deleteBtn).text = "Delete Video"
-//            val videoView = VideoView(requireContext())
-//            videoView.layoutParams =
-//                FrameLayout.LayoutParams(
-//                    FrameLayout.LayoutParams.MATCH_PARENT,
-//                    FrameLayout.LayoutParams.MATCH_PARENT,
-//                )
-//            videoView.setVideoPath(fileUrl)
-//            frame.addView(videoView)
-//            videoView.start()
-//        }
+        showLoader(false)
+        binding.deleteBtn.setOnClickListener {
+            showLoader(true)
+            val alertDialog = AlertDialog.Builder(ctx)
+            alertDialog.setMessage("Do you want to delete this $category")
+            alertDialog.setNegativeButton("Cancel") { dialog, int ->
+                dialog.dismiss()
+            }
+            alertDialog.setPositiveButton("Delete") { dialog, int ->
+                viewModel.deleteVideoUpload(videoId)
+                observeDeleteVideo()
+            }
+            alertDialog.setCancelable(false)
+            alertDialog.show()
+        }
 
         if (category == "image") {
             val imageView = ImageView(requireContext())
@@ -125,5 +131,26 @@ class ImageAndVideoDetailsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun observeDeleteVideo() {
+        viewModel.deleteVideoUploadResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    showLoader(false)
+                    showToast("Deleted Successfully")
+                    viewModel.getImagesAndVideos(args.IMAGES.userId)
+                    findNavController().popBackStack()
+                }
+
+                is Resource.Failure -> {
+                    showLoader(false)
+                }
+            }
+        }
+    }
+
+    private fun showLoader(show: Boolean) {
+        binding.progressCircular.visibility = if (show) View.VISIBLE else View.GONE
     }
 }
