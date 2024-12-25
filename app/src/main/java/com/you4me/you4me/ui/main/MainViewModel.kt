@@ -116,7 +116,7 @@ class MainViewModel(
         // fetchPaymentModes()
     }
 
-    private fun getUser() {
+    fun getUser() {
         viewModelScope.launch {
             _user.value = dbRepository.getUser()
         }

@@ -197,7 +197,7 @@ class ProfileViewModel(
                 u.completionPercentage,
                 u.password,
                 "",
-                "",
+                u.religionPreferred,
                 userBody.religion_preferred,
                 userBody.sexual_orientation,
                 userBody.state,

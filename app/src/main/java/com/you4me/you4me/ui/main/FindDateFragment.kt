@@ -9,8 +9,10 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
+import android.widget.TextView
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentFindDateBinding
@@ -21,9 +23,7 @@ import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.SharedPrefHelper
 
-
 class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, MainRepository>() {
-
     private var dates = ArrayList<FetchDatesResponseItem>()
     private var currentIdx = -1
 
@@ -39,20 +39,24 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?
+        container: ViewGroup?,
     ): FragmentFindDateBinding {
         return FragmentFindDateBinding.inflate(layoutInflater)
     }
 
     override fun getRepository() = MainRepository(dataSource.buildApi(ApiCollector::class.java))
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         val gson = Gson()
         //  user = gson.fromJson(userProfile, User::class.java)
         setupView()
         setupObservers()
+        showBottomSheetDialog()
     }
 
     override fun onResume() {
@@ -90,7 +94,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
             viewModel.addSwipe(
                 d.dateId,
                 d.userId,
-                false
+                false,
             )
         }
 
@@ -111,20 +115,20 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                     if (swipeDistance > 0) {
                         startTiltAnimation(true)
                         if (currentIdx < 0) {
-                            //do nothing
+                            // do nothing
                         } else {
                             showLoading(true)
                             val d = dates[currentIdx]
                             viewModel.addSwipe(
                                 d.dateId,
                                 d.userId,
-                                false
+                                false,
                             )
                         }
                     } else {
                         startSecondTiltAnimation(true)
                         if (currentIdx < 0) {
-                            //do nothing
+                            // do nothing
                         } else {
                             showLoading(true)
                             val d = dates[currentIdx]
@@ -141,7 +145,6 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 else -> false
             }
         }
-
 
 //        binding.mainLyt.setOnTouchListener(object : OnSwipeTouchListener(ctx) {
 //            override fun onSwipeLeft() {
@@ -210,56 +213,58 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         viewModel.fetchDates.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    if (it.value.isEmpty()) showEmpty()
-                    else {
+                    if (it.value.isEmpty()) {
+                        showEmpty()
+                    } else {
                         dates = it.value
-                        val dummyData = FetchDatesResponse().apply {
-                            add(
-                                FetchDatesResponseItem(
-                                    "19",
-                                    "2024-03-05",
-                                    "1",
-                                    "1",
-                                    "Conference Room",
-                                    "2024-04-05",
-                                    "09:00",
-                                    "1",
-                                    "19:00",
-                                    "12345",
-                                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                        val dummyData =
+                            FetchDatesResponse().apply {
+                                add(
+                                    FetchDatesResponseItem(
+                                        "19",
+                                        "2024-03-05",
+                                        "1",
+                                        "1",
+                                        "Conference Room",
+                                        "2024-04-05",
+                                        "09:00",
+                                        "1",
+                                        "19:00",
+                                        "12345",
+                                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                                    ),
                                 )
-                            )
-                            add(
-                                FetchDatesResponseItem(
-                                    "19",
-                                    "2024-03-05",
-                                    "1",
-                                    "1",
-                                    "Conference Room",
-                                    "2024-04-05",
-                                    "09:00",
-                                    "1",
-                                    "19:00",
-                                    "12345",
-                                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                                add(
+                                    FetchDatesResponseItem(
+                                        "19",
+                                        "2024-03-05",
+                                        "1",
+                                        "1",
+                                        "Conference Room",
+                                        "2024-04-05",
+                                        "09:00",
+                                        "1",
+                                        "19:00",
+                                        "12345",
+                                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                                    ),
                                 )
-                            )
-                            add(
-                                FetchDatesResponseItem(
-                                    "19",
-                                    "2024-03-05",
-                                    "1",
-                                    "1",
-                                    "Conference Room",
-                                    "2024-04-05",
-                                    "09:00",
-                                    "1",
-                                    "19:00",
-                                    "12345",
-                                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                                add(
+                                    FetchDatesResponseItem(
+                                        "19",
+                                        "2024-03-05",
+                                        "1",
+                                        "1",
+                                        "Conference Room",
+                                        "2024-04-05",
+                                        "09:00",
+                                        "1",
+                                        "19:00",
+                                        "12345",
+                                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                                    ),
                                 )
-                            )
-                        }
+                            }
 //                        dates = dummyData
                         setScreen()
                         binding.mainLyt.visibility = View.VISIBLE
@@ -290,7 +295,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                     viewModel.addSwipe(
                         d.dateId,
                         d.userId,
-                        true
+                        true,
                     )
                 }
 
@@ -326,7 +331,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
             // Don't use this index. This is out of bounds (borders, limits, whatever).
         } else {
             // Yes, you can safely use this index. The index is present in the array.
-             date = dates[currentIdx]
+            date = dates[currentIdx]
         }
 
         binding.userName.text = "${date.name}, ${date.age}"
@@ -351,16 +356,17 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
     }
 
     private fun initializePlayer() {
-        player = ExoPlayer.Builder(ctx).build().also {
-            binding.userVideo.player = it
-            if (currentIdx != -1) {
-                val mediaItem =
-                    MediaItem.fromUri(dates[currentIdx].videoURL.replace("http:", "https:"))
-                it.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
-                it.playWhenReady = playWhenReady
-                it.prepare()
+        player =
+            ExoPlayer.Builder(ctx).build().also {
+                binding.userVideo.player = it
+                if (currentIdx != -1) {
+                    val mediaItem =
+                        MediaItem.fromUri(dates[currentIdx].videoURL.replace("http:", "https:"))
+                    it.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
+                    it.playWhenReady = playWhenReady
+                    it.prepare()
+                }
             }
-        }
     }
 
     private fun showEmpty() {
@@ -372,8 +378,25 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
 
     private fun showLoading(loading: Boolean) {
         binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
-        //binding.constraintLayout2.visibility = if (loading) View.GONE else View.VISIBLE
+        // binding.constraintLayout2.visibility = if (loading) View.GONE else View.VISIBLE
         binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
 
+    private fun showBottomSheetDialog() {
+        // Create the BottomSheetDialog
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+
+        // Inflate the layout for the dialog
+        val view = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout, null)
+
+        // Set up click listeners for actions inside the BottomSheetDialog
+        view.findViewById<TextView>(R.id.okButton).setOnClickListener {
+            // Perform some action
+            bottomSheetDialog.dismiss()
+        }
+
+        // Set the content view and show the dialog
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.show()
+    }
 }

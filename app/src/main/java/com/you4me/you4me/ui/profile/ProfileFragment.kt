@@ -93,13 +93,14 @@ class ProfileFragment :
         Log.d("OKKPROFILEID", newUser.toString())
         if (newUser != null) {
             user = newUser
-            populateViews(user)
+//            populateViews(user)
         }
-
+        observeUserDetails()
         addListeners()
-        addObservers()
         setupView()
         checkAndRequestPermissions()
+        observeImagesAndVideos()
+//        addObservers()
     }
 
     override fun getViewModel() = ProfileViewModel::class.java
@@ -111,29 +112,14 @@ class ProfileFragment :
 
     override fun getRepository() = ProfileRepository(dataSource.buildApi(ApiCollector::class.java))
 
-    private fun addObservers() {
+    private fun observeUserDetails() {
         viewModel.getUserDetails(user.userId)
-        viewModel.getImagesAndVideos(user.userId)
-        viewModel.getImagesAndVideos.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Success -> {
-                    val listOfImagesAndVideos = it.value
-                    try {
-                        // Your potentially crashing code (e.g., loading images, videos, etc.)
-                        loadImagesAndVideosInBackground(listOfImagesAndVideos)
-                    } catch (e: Exception) {
-                        Log.e("MyApp", "Error loading data", e)
-                    }
-                }
-
-                is Resource.Failure -> {
-                }
-            }
-        }
         viewModel.user.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
                     user = it.value
+                    Log.d("CHECKING_USER", "$user")
+                    populateViews(user)
                     if (it.value.videoURL.isNotBlank()) {
                         binding.btnPlay.visibility = View.VISIBLE
                         binding.divider7.visibility = View.VISIBLE
@@ -161,7 +147,29 @@ class ProfileFragment :
                 }
             }
         }
+    }
 
+    private fun observeImagesAndVideos() {
+        viewModel.getImagesAndVideos(user.userId)
+        viewModel.getImagesAndVideos.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    val listOfImagesAndVideos = it.value
+                    try {
+                        // Your potentially crashing code (e.g., loading images, videos, etc.)
+                        loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                    } catch (e: Exception) {
+                        Log.e("MyApp", "Error loading data", e)
+                    }
+                }
+
+                is Resource.Failure -> {
+                }
+            }
+        }
+    }
+
+    private fun addObservers() {
         viewModel.ageGroups.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -270,6 +278,7 @@ class ProfileFragment :
         viewModel.registerVideoUploadResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
+                    showLoader(true)
                     viewModel.uploadVideo(videoUri!!, videoId)
                 }
 
@@ -279,6 +288,7 @@ class ProfileFragment :
             }
         }
         viewModel.uploadVideoCloudinaryResponse.observe(viewLifecycleOwner) {
+            showLoader(true)
             viewModel.updateVideoUrl(it.public_id, it.url)
         }
         viewModel.updateVideoUrlResponse.observe(viewLifecycleOwner) {
@@ -309,6 +319,7 @@ class ProfileFragment :
                     gender,
                     binding.name.text.toString(),
                     binding.bio.text.toString(),
+                    binding.completionPercentage.text.toString(),
                     religionPreferred,
                     sexualOrientation,
                     state,
@@ -664,6 +675,7 @@ class ProfileFragment :
                 binding.frame5,
                 binding.frame6,
             ) // Predefined ImageViews
+        var isProfilePictureSet = false // Flag to check if profile picture is already set
 
         CoroutineScope(Dispatchers.Main).launch {
             // Run the heavy task on the IO thread
@@ -678,7 +690,7 @@ class ProfileFragment :
 
                     if (getCategoryFromString(fileData.fileURL) == "image") {
                         // Load image into FrameLayout
-                        val imageView = ImageView(requireContext())
+                        val imageView = ImageView(requireActivity())
                         imageView.layoutParams =
                             FrameLayout.LayoutParams(
                                 FrameLayout.LayoutParams.MATCH_PARENT,
@@ -694,10 +706,13 @@ class ProfileFragment :
                         // Add to FrameLayout in the main thread
                         withContext(Dispatchers.Main) {
                             frame.addView(imageView)
-                            Glide.with(requireActivity())
-                                .load(fileData.fileURL) // URL of the image
-                                .circleCrop()
-                                .into(binding.profilePicture)
+                            if (!isProfilePictureSet) {
+                                isProfilePictureSet = true // Mark profile picture as set
+                                Glide.with(requireActivity())
+                                    .load(fileData.fileURL) // URL of the first image
+                                    .circleCrop()
+                                    .into(binding.profilePicture)
+                            }
                         }
                     } else if (getCategoryFromString(fileData.fileURL) == "video") {
                         // Load video thumbnail into FrameLayout
@@ -777,6 +792,7 @@ class ProfileFragment :
     }
 
     private fun populateViews(user: User) {
+        Log.d("JUST_CHECKING", "$user")
         showLoader(false)
         binding.name.setText(user.name)
         if (user.bio.isEmpty()) {
@@ -799,6 +815,7 @@ class ProfileFragment :
         agePreferred = user.agePreferred
         sexualOrientation = user.sexualOrientation
         dob = user.dob
+        addObservers()
     }
 
     private fun showLoader(show: Boolean) {
