@@ -924,6 +924,7 @@ class ProfileFragment :
 
     override fun onResume() {
         super.onResume()
+        showLoader(true)
         getImages()
     }
 
