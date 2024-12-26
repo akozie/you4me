@@ -680,7 +680,7 @@ class ProfileFragment :
         CoroutineScope(Dispatchers.Main).launch {
             // Run the heavy task on the IO thread
             withContext(Dispatchers.Main) {
-                listOfImagesAndVideos.take(imageViews.size).forEachIndexed { index, fileData ->
+                listOfImagesAndVideos.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
                     val frame = imageViews[index]
                     frame.isClickable = true
                     frame.isFocusable = true
