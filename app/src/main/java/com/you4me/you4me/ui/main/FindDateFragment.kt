@@ -2,6 +2,7 @@ package com.you4me.you4me.ui.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -213,61 +214,96 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         viewModel.fetchDates.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    if (it.value.isEmpty()) {
+                    if (!it.value.isEmpty()) {
                         showEmpty()
                     } else {
                         dates = it.value
+                        Log.d("FETCH_DATES", "$dates")
+//                        val dummyData =
+//                            FetchDatesResponse().apply {
+//                                add(
+//                                    FetchDatesResponseItem(
+//                                        "19",
+//                                        "2024-03-05",
+//                                        "1",
+//                                        "1",
+//                                        "Conference Room",
+//                                        "2024-04-05",
+//                                        "09:00",
+//                                        "1",
+//                                        "19:00",
+//                                        "12345",
+//                                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+//                                    ),
+//                                )
+//                                add(
+//                                    FetchDatesResponseItem(
+//                                        "19",
+//                                        "2024-03-05",
+//                                        "1",
+//                                        "1",
+//                                        "Conference Room",
+//                                        "2024-04-05",
+//                                        "09:00",
+//                                        "1",
+//                                        "19:00",
+//                                        "12345",
+//                                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+//                                    ),
+//                                )
+//                                add(
+//                                    FetchDatesResponseItem(
+//                                        "19",
+//                                        "2024-03-05",
+//                                        "1",
+//                                        "1",
+//                                        "Conference Room",
+//                                        "2024-04-05",
+//                                        "09:00",
+//                                        "1",
+//                                        "19:00",
+//                                        "12345",
+//                                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+//                                    ),
+//                                )
+//                            }
                         val dummyData =
                             FetchDatesResponse().apply {
                                 add(
                                     FetchDatesResponseItem(
-                                        "19",
-                                        "2024-03-05",
-                                        "1",
-                                        "1",
-                                        "Conference Room",
-                                        "2024-04-05",
-                                        "09:00",
-                                        "1",
-                                        "19:00",
-                                        "12345",
-                                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                                        age = "23",
+                                        createdAt = "",
+                                        date = "January30, 2025",
+                                        dateId = "60be36ed-3cdb-4ea2-bd52-8d7f0eab0d05",
+                                        name = "Emmanuel ",
+                                        payment = "2",
+                                        place = "Lekki Lekki, Lagos Lekki, Lagos",
+                                        rawTime = "2025/01/30 18:45",
+                                        time = "18:45",
+                                        userId = "255e21fe-0407-40f3-8331-9a4bcda4ebae",
+                                        videoURL = "http://res.cloudinary.com/mmuodev/video/upload/v1720882670/kd8opas6u6czkgivnsh4.mp4",
                                     ),
                                 )
                                 add(
                                     FetchDatesResponseItem(
-                                        "19",
-                                        "2024-03-05",
-                                        "1",
-                                        "1",
-                                        "Conference Room",
-                                        "2024-04-05",
-                                        "09:00",
-                                        "1",
-                                        "19:00",
-                                        "12345",
-                                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                                    ),
-                                )
-                                add(
-                                    FetchDatesResponseItem(
-                                        "19",
-                                        "2024-03-05",
-                                        "1",
-                                        "1",
-                                        "Conference Room",
-                                        "2024-04-05",
-                                        "09:00",
-                                        "1",
-                                        "19:00",
-                                        "12345",
-                                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                                        age = "26",
+                                        createdAt = "",
+                                        date = "January 11, 2025",
+                                        dateId = "643c9444-b387-45a3-ade9-a0d10e066449",
+                                        name = "New name",
+                                        payment = "2",
+                                        place = "Lekki Lekki, Lagos Lekki, Lagos",
+                                        rawTime = "2025/01/11 20:15",
+                                        time = "20:15",
+                                        userId = "9bbea5f7-f0c6-4c81-9855-795c73fd1338",
+                                        videoURL = "",
                                     ),
                                 )
                             }
-//                        dates = dummyData
+                        dates = dummyData
                         setScreen()
                         binding.mainLyt.visibility = View.VISIBLE
+                        binding.mainLytBtn.visibility = View.VISIBLE
                     }
                 }
 
@@ -334,7 +370,8 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
             date = dates[currentIdx]
         }
 
-        binding.userName.text = "${date.name}, ${date.age}"
+        binding.userName.text = "${date.name.trim()}, ${date.age}"
+        binding.nameGallery.text = "${date.name.trim()}'s Gallery"
         binding.location.text = date.place
         binding.payment.text =
             paymentModes?.firstOrNull { it.value == date.payment }?.label ?: date.payment
@@ -356,28 +393,30 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
     }
 
     private fun initializePlayer() {
-        player =
-            ExoPlayer.Builder(ctx).build().also {
-                binding.userVideo.player = it
-                if (currentIdx != -1) {
-                    val mediaItem =
-                        MediaItem.fromUri(dates[currentIdx].videoURL.replace("http:", "https:"))
-                    it.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
-                    it.playWhenReady = playWhenReady
-                    it.prepare()
-                }
-            }
+//        player =
+//            ExoPlayer.Builder(ctx).build().also {
+//                binding.userVideo.player = it
+//                if (currentIdx != -1) {
+//                    val mediaItem =
+//                        MediaItem.fromUri(dates[currentIdx].videoURL.replace("http:", "https:"))
+//                    it.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
+//                    it.playWhenReady = playWhenReady
+//                    it.prepare()
+//                }
+//            }
     }
 
     private fun showEmpty() {
         binding.lottieAnimationView.setAnimation("dating.json")
         binding.lottieAnimationView.playAnimation()
         binding.mainLyt.visibility = View.GONE
+        binding.mainLytBtn.visibility = View.GONE
         binding.constraintLayout2.visibility = View.VISIBLE
     }
 
     private fun showLoading(loading: Boolean) {
         binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
+        binding.mainLytBtn.visibility = if (loading) View.GONE else View.VISIBLE
         // binding.constraintLayout2.visibility = if (loading) View.GONE else View.VISIBLE
         binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }

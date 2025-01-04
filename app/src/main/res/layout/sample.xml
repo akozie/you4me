@@ -55,7 +55,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/find_date_sub_text" />
 
             <TextView
-                android:id="@+id/name"
+                android:id="@+id/user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_10dp"
@@ -67,14 +67,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
             <TextView
-                android:id="@+id/location"
+                android:id="@+id/my_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_20dp"
                 android:text="Lagos"
                 android:textSize="@dimen/text_size_15sp"
                 android:textStyle="italic"
-                app:layout_constraintBottom_toBottomOf="@+id/name"
+                app:layout_constraintBottom_toBottomOf="@+id/user_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
@@ -87,7 +87,7 @@
                 android:textSize="@dimen/text_size_15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/name" />
+                app:layout_constraintTop_toBottomOf="@+id/user_name" />
 
             <LinearLayout
                 android:id="@+id/location_layout"
@@ -108,6 +108,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Blackbell" />
@@ -133,6 +134,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/payment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Mary will pay" />
@@ -277,7 +279,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/notInterestedBtn"
+            android:id="@+id/reject_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Not Interested"
@@ -298,7 +300,7 @@
             app:layout_constraintGuide_percent="0.5" />
 
         <TextView
-            android:id="@+id/goOnDateBtn"
+            android:id="@+id/accept_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Go on date"
@@ -306,10 +308,10 @@
             android:textColor="@color/white"
             android:paddingHorizontal="32dp"
             android:paddingVertical="14dp"
-            app:layout_constraintBottom_toBottomOf="@+id/notInterestedBtn"
+            app:layout_constraintBottom_toBottomOf="@+id/reject_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline6"
-            app:layout_constraintTop_toTopOf="@+id/notInterestedBtn" />
+            app:layout_constraintTop_toTopOf="@+id/reject_btn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
