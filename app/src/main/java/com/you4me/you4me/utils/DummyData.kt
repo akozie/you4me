@@ -2,8 +2,9 @@ package com.you4me.you4me.utils
 
 import com.you4me.you4me.models.FetchDatesResponseItem
 
-//object DummyData {
-    val fetchDates = arrayListOf(
+// object DummyData {
+val fetchDates =
+    arrayListOf(
         FetchDatesResponseItem(
             "22",
             "2-03-2022",
@@ -13,9 +14,10 @@ import com.you4me.you4me.models.FetchDatesResponseItem
             "Seperately",
             "Icm",
             "232323",
+            "232323",
             "12:00",
             "212",
-            "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
         ),
         FetchDatesResponseItem(
             "22",
@@ -26,9 +28,10 @@ import com.you4me.you4me.models.FetchDatesResponseItem
             "Seperately",
             "Movies",
             "232323",
+            "232323",
             "12:00",
             "212",
-            "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+            "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
         ),
         FetchDatesResponseItem(
             "22",
@@ -39,9 +42,10 @@ import com.you4me.you4me.models.FetchDatesResponseItem
             "You pay",
             "Maldives",
             "232323",
+            "232323",
             "12:00",
             "212",
-            "https://storage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg"
+            "https://storage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg",
         ),
     )
-//}
+// }

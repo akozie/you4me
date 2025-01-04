@@ -18,7 +18,11 @@
         android:id="@+id/findDateFragment"
         android:name="com.you4me.you4me.ui.main.FindDateFragment"
         android:label="fragment_find_date"
-        tools:layout="@layout/fragment_find_date" />
+        tools:layout="@layout/fragment_find_date" >
+        <action
+            android:id="@+id/action_findDateFragment_to_imageAndVideoDetailsFragment"
+            app:destination="@id/imageAndVideoDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.you4me.you4me.ui.profile.ProfileFragment"

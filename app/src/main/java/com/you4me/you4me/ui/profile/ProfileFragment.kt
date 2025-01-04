@@ -10,8 +10,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -24,7 +22,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.MimeTypeMap
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -48,6 +45,8 @@ import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils
 import com.you4me.you4me.utils.Utils.BANNER_TIMEOUT
+import com.you4me.you4me.utils.Utils.generateVideoThumbnail
+import com.you4me.you4me.utils.Utils.getCategoryFromString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -770,21 +769,6 @@ class ProfileFragment :
     }
 
     // Suspend function to generate video thumbnail in background
-    private suspend fun generateVideoThumbnail(videoUrl: String): Bitmap? {
-        return withContext(Dispatchers.IO) {
-            val retriever = MediaMetadataRetriever()
-            return@withContext try {
-                retriever.setDataSource(videoUrl, HashMap()) // Use secureUrl here
-                val bitmap = retriever.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
-                retriever.release()
-                bitmap
-            } catch (e: Exception) {
-                e.printStackTrace()
-                retriever.release()
-                null
-            }
-        }
-    }
 
     private fun updateDateOfBirth() {
         binding.dob.setText(Utils.getDateFormat().format(calendar.time))
@@ -1020,19 +1004,6 @@ class ProfileFragment :
             "video"
         } else {
             "unknown" // Fallback if it's neither image nor video
-        }
-    }
-
-    fun getCategoryFromString(fileUrl: String): String {
-        val mimeTypeMap = MimeTypeMap.getSingleton()
-        val extension = fileUrl.substringAfterLast('.', "").lowercase()
-
-        val mimeType = mimeTypeMap.getMimeTypeFromExtension(extension)
-
-        return when {
-            mimeType?.startsWith("image") == true -> "image"
-            mimeType?.startsWith("video") == true -> "video"
-            else -> "unknown"
         }
     }
 

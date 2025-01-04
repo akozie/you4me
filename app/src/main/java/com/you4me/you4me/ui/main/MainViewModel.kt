@@ -6,22 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
-import com.you4me.you4me.models.AddDateInterestBody
-import com.you4me.you4me.models.AddSwipeBody
-import com.you4me.you4me.models.DateInterestsRequiringApproval
-import com.you4me.you4me.models.FetchDateInterest
-import com.you4me.you4me.models.FetchDatesResponse
-import com.you4me.you4me.models.GetSubscriptionStatus
-import com.you4me.you4me.models.InviteeDatesRequiringApproval
-import com.you4me.you4me.models.Notification
-import com.you4me.you4me.models.Place
-import com.you4me.you4me.models.ProposeNewDateTimeBody
-import com.you4me.you4me.models.RejectDateInterestBody
-import com.you4me.you4me.models.SubmitDateBody
-import com.you4me.you4me.models.UpcomingDates
-import com.you4me.you4me.models.UpdateDateInterestBody
-import com.you4me.you4me.models.User
-import com.you4me.you4me.models.ValueLabelResponse
+import com.you4me.you4me.models.*
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.MainRepository
@@ -316,5 +301,16 @@ class MainViewModel(
 
     fun registerPayment(obj: JsonObject) {
         viewModelScope.launch { _updatePaymentResponse.value = repository.registerPayment(obj) }
+    }
+
+    private val _getImagesAndVideos: MutableLiveData<Resource<ImagesVideosResponse>> =
+        MutableLiveData()
+    val getImagesAndVideos: LiveData<Resource<ImagesVideosResponse>>
+        get() = _getImagesAndVideos
+
+    fun getImagesAndVideos(userId: String) {
+        viewModelScope.launch {
+            _getImagesAndVideos.value = repository.getImageVideoUpload(userId)
+        }
     }
 }

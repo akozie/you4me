@@ -52,7 +52,7 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             android:layout_marginTop="@dimen/margin_10dp"
             android:src="@drawable/find_date_placeholder"
             app:layout_constraintEnd_toEndOf="parent"
@@ -88,6 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_10dp"
+            android:gravity="start"
             android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
             android:textSize="@dimen/text_size_15sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -219,7 +220,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:contentDescription="Add Photo"
-                    android:scaleType="centerInside"
+                    android:scaleType="fitXY"
                     android:visibility="gone" />
             </FrameLayout>
 
@@ -241,7 +242,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/photos_bg"
                     android:contentDescription="Add Photo"
-                    android:scaleType="centerInside"
+                    android:scaleType="fitXY"
                     android:visibility="gone" />
             </FrameLayout>
 
@@ -263,7 +264,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/photos_bg"
                     android:contentDescription="Add Photo"
-                    android:scaleType="centerInside"
+                    android:scaleType="fitXY"
                     android:visibility="gone" />
             </FrameLayout>
 
