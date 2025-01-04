@@ -1,23 +1,25 @@
 package com.you4me.you4me.utils
 
-import android.app.Activity
-import android.app.Dialog
 import android.content.Context
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.util.Log
-import android.util.Patterns
-import android.widget.TextView
-import com.you4me.you4me.R
+import android.webkit.MimeTypeMap
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
+import java.util.HashMap
 import java.util.Locale
 
 object Utils {
-
     const val ADD_EVENT_REQUEST_CODE = 1001 // Any unique request code
     const val GOOGLE_SIGN_IN_RQ_CODE = 100
     const val TAG_TOUCH_START_X = 1000
+    const val BANNER_TIMEOUT = 5000L
 
     fun getDateFormat() = SimpleDateFormat("yyyy/MM/dd", Locale.UK)
-    fun isInternetConnected() : Boolean {
+
+    fun isInternetConnected(): Boolean {
         return try {
             val command = "ping -c 1 google.com"
             Runtime.getRuntime().exec(command).waitFor() == 0
@@ -26,7 +28,10 @@ object Utils {
         }
     }
 
-    fun formatDate(dateString: String, timeString: String): String {
+    fun formatDate(
+        dateString: String,
+        timeString: String,
+    ): String {
         // Combine date and time strings
         val combinedString = "$dateString $timeString"
 
@@ -52,17 +57,46 @@ object Utils {
         onPositiveButtonClick: () -> Unit,
         onNegativeButtonClick: () -> Unit,
     ) {
-        val alertDialog = android.app.AlertDialog.Builder(context).setMessage(message)
-            .setPositiveButton(positiveButtonTitle) { _, _ ->
-                onPositiveButtonClick()
-                // Set action here
-            }
-            .setNegativeButton(negativeButtonTitle) { _, _ ->
-                onNegativeButtonClick()
-                // set action here
-            }.setCancelable(false).create()
+        val alertDialog =
+            android.app.AlertDialog.Builder(context).setMessage(message)
+                .setPositiveButton(positiveButtonTitle) { _, _ ->
+                    onPositiveButtonClick()
+                    // Set action here
+                }
+                .setNegativeButton(negativeButtonTitle) { _, _ ->
+                    onNegativeButtonClick()
+                    // set action here
+                }.setCancelable(false).create()
 
         alertDialog.show()
     }
 
+    fun getCategoryFromString(fileUrl: String): String {
+        val mimeTypeMap = MimeTypeMap.getSingleton()
+        val extension = fileUrl.substringAfterLast('.', "").lowercase()
+
+        val mimeType = mimeTypeMap.getMimeTypeFromExtension(extension)
+
+        return when {
+            mimeType?.startsWith("image") == true -> "image"
+            mimeType?.startsWith("video") == true -> "video"
+            else -> "unknown"
+        }
+    }
+
+    suspend fun generateVideoThumbnail(videoUrl: String): Bitmap? {
+        return withContext(Dispatchers.IO) {
+            val retriever = MediaMetadataRetriever()
+            return@withContext try {
+                retriever.setDataSource(videoUrl, HashMap()) // Use secureUrl here
+                val bitmap = retriever.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+                retriever.release()
+                bitmap
+            } catch (e: Exception) {
+                e.printStackTrace()
+                retriever.release()
+                null
+            }
+        }
+    }
 }

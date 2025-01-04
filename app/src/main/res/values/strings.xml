@@ -20,6 +20,7 @@
     <string name="likes">Likes</string>
     <string name="login">Login</string>
     <string name="name">Enter your name</string>
+    <string name="bio">Enter your bio</string>
     <string name="new_user">New user? <font fgcolor="#ff0052">Sign up here</font></string>
     <string name="onboarding_txt1">Start your love story with a date, not endless messages.</string>
     <string name="onboarding_txt2">There is something truly special about connecting with someone face to face.</string>
@@ -62,10 +63,12 @@
     <string name="you_have_no_upcoming_dates">You have no upcoming dates</string>
     <string name="add_to_calendar">Add to Calendar</string>
     <string name="skip">Skip</string>
-    <string name="request_date">Request Date</string>
+    <string name="request_date">Create a Date</string>
     <string name="venue">Venue</string>
     <string name="view_existing_video">View existing video</string>
     <string name="video_regulations">Share intriguing insights about yourself, including captivating facts and reasons why you would make a great date.\n\nPlease not that videos containing any form of nudity will not be accepted.\n\nKindly be aware that videos unrelated to dating content will be declined, and repeated violations may result in permanent account suspension</string>
     <string name="upcoming_dates">Upcoming Dates</string>
+    <string name="let_people_know_you_are_available_to_go_on_a_date">Let people know you are available to go on a date</string>
+    <string name="where_would_you_like_the_date_to_happen">Where would you like the date to happen?</string>
 
 </resources>

@@ -4,7 +4,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary_pink">#ffff0052</color>
     <color name="blue">#1F3BF4</color>
+    <color name="purple">#605FEC</color>
     <color name="grey_circle">#59656F</color>
     <color name="grey">#F2F2F2</color>
+    <color name="profile_grey">#C5CED5</color>
+    <color name="text_grey">#C3CFD9</color>
 
 </resources>

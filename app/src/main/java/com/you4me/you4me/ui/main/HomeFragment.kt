@@ -7,12 +7,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.you4me.you4me.R
-import com.you4me.you4me.You4MeApp
 import com.you4me.you4me.adapter.DateInterestsRequiringApprovalRecyclerAdapter
 import com.you4me.you4me.adapter.InviteeDateForApprovalRecyclerAdapter
 import com.you4me.you4me.adapter.UpcomingDatesRecyclerAdapter
@@ -23,22 +21,20 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.SharedPrefHelper
+import com.you4me.you4me.utils.SharedPrefHelper.Companion.IS_FREE_PLAN
 import com.you4me.you4me.utils.Utils.ADD_EVENT_REQUEST_CODE
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 
-
-class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>(),
+class HomeFragment :
+    BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>(),
     UpcomingDatesRecyclerAdapter.CalendarResultListener {
-
     private lateinit var user: User
 
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?
+        container: ViewGroup?,
     ): FragmentHomeBinding {
         return FragmentHomeBinding.inflate(layoutInflater)
     }
@@ -47,14 +43,20 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                activity?.finishAffinity()
-            }
-        })
+        activity?.onBackPressedDispatcher?.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    activity?.finishAffinity()
+                }
+            },
+        )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         Log.d("PROFILEID", userProfile)
@@ -63,6 +65,7 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
 //         viewModel.getNewUser(requireContext())
         viewModel.getUserDetails(user.userId)
         addObservers()
+        viewModel.getSubscriptionStatusForHome(user.userId)
         binding.notificationIcon.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment) }
     }
 
@@ -70,7 +73,7 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
         viewModel.existingUser.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                 Log.d("OK_DONR", it.value.toString())
+                    Log.d("OK_DONR", it.value.toString())
 //                    viewModel._user.value = it.value
                     viewModel.getUpcomingDates()
                     viewModel.getInviteeDatesRequiringApproval()
@@ -83,8 +86,6 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
                 }
             }
         }
-
-
 
         viewModel.upcomingDates.observe(viewLifecycleOwner) {
             when (it) {
@@ -124,7 +125,7 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
             when (it) {
                 is Resource.Success -> {
                     showToast("Date status updated")
-                    //switch ui
+                    // switch ui
                 }
 
                 is Resource.Failure -> {
@@ -137,7 +138,7 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
             when (it) {
                 is Resource.Success -> {
                     showToast("Date status updated")
-                    //switch ui
+                    // switch ui
                 }
 
                 is Resource.Failure -> {
@@ -151,7 +152,7 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
                 is Resource.Success -> {
                     showToast("Date status updated")
                     Log.d("REQUEST_PROCESSED", "REQUEST_PROCESSED")
-                    //switch ui
+                    // switch ui
                 }
 
                 is Resource.Failure -> {
@@ -161,11 +162,12 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
         }
 
         viewModel.getNotificationsResponse.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is Resource.Success -> {
-                    val unseenCount = it.value.mapNotNull { n->
-                        if (n.seen.lowercase() == "false") n else null
-                    }.size
+                    val unseenCount =
+                        it.value.mapNotNull { n ->
+                            if (n.seen.lowercase() == "false") n else null
+                        }.size
                     if (it.value.isEmpty() || unseenCount < 1) {
                         binding.unreadNotificationsDot.visibility = View.GONE
                     } else {
@@ -174,14 +176,29 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
                     }
                 }
                 is Resource.Failure -> {
+                }
+            }
+        }
 
+        viewModel.getSubscriptionStatusForHome.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    sharedPrefHelper.saveBoolean(IS_FREE_PLAN, it.value.isFreeTrial)
+                }
+
+                is Resource.Failure -> {
+                    //
                 }
             }
         }
     }
 
     // Override onActivityResult to handle the result of the calendar activity
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?,
+    ) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("RESULTCODEK", "$requestCode")
         if (requestCode == ADD_EVENT_REQUEST_CODE) {
@@ -190,10 +207,11 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
                 Log.d("OKKKKK", "Event added to calendar")
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // The user canceled the operation
-                Log.d("NNNNOKKKKK","Event addition canceled")
+                Log.d("NNNNOKKKKK", "Event addition canceled")
             }
         }
     }
+
     private fun setupDateInterests(dates: DateInterestsRequiringApproval) {
         if (dates.isEmpty()) {
             binding.datesRequiringAppLyt.visibility = View.GONE
@@ -224,7 +242,10 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
         }
     }
 
-    override fun onCalendarEventAdded(resultCode: Int, data: Intent?) {
+    override fun onCalendarEventAdded(
+        resultCode: Int,
+        data: Intent?,
+    ) {
         if (resultCode == Activity.RESULT_OK) {
             // The user successfully added the event to the calendar
 //            Log.d("OKKKKK", "Event added to calendar")
@@ -234,10 +255,11 @@ class HomeFragment : BaseFragment<MainViewModel, FragmentHomeBinding, MainReposi
         }
     }
 
-    override fun startActivityForCalendarEvent(intent: Intent, resultCode: Int) {
+    override fun startActivityForCalendarEvent(
+        intent: Intent,
+        resultCode: Int,
+    ) {
         Log.d("RESULTCODEK", "$resultCode")
         startActivityForResult(intent, ADD_EVENT_REQUEST_CODE)
-
     }
-
 }

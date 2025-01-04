@@ -6,6 +6,8 @@ data class UpdateUserBody(
     val dob: String,
     val gender: String,
     val name: String,
+    val bio: String,
+    val completionPercentage: String? = null,
     val religion_preferred: String,
     val sexual_orientation: String,
     val state: String,
