@@ -1,6 +1,7 @@
 package com.you4me.you4me.ui.main
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -64,10 +65,11 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         super.onViewCreated(view, savedInstanceState)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         val gson = Gson()
-        //  user = gson.fromJson(userProfile, User::class.java)
+        val user = gson.fromJson(userProfile, User::class.java)
         setupView()
         setupObservers()
         showBottomSheetDialog()
+        viewModel.getUserDetails(user.userId)
     }
 
     override fun onResume() {
@@ -448,16 +450,24 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 }
             }
         }
-        viewModel.user.observe(viewLifecycleOwner) {
-            // Log.d("OK_FUNNY_GIRL", user.userId)
-            if (it.status == "incomplete") {
-                binding.completeProfileLayout.visibility = View.VISIBLE
-                binding.constraintLayout2.visibility = View.GONE
-                return@observe
-            } else {
-                binding.completeProfileLayout.visibility = View.GONE
-                //  Log.d("FUNNY_GIRL", user.userId)
-                viewModel.fetchDates()
+        viewModel.existingUser.observe(viewLifecycleOwner) {
+            Log.d("OK_FUNNY_GIRL", "$it")
+            when (it) {
+                is Resource.Success -> {
+                    if (it.value.status == "incomplete") {
+                        binding.completeProfileLayout.visibility = View.VISIBLE
+                        binding.constraintLayout2.visibility = View.GONE
+                        return@observe
+                    } else {
+                        binding.completeProfileLayout.visibility = View.GONE
+                        //  Log.d("FUNNY_GIRL", user.userId)
+                        viewModel.fetchDates()
+                    }
+                }
+
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
             }
         }
         viewModel.addDateInterest.observe(viewLifecycleOwner) {
@@ -560,20 +570,34 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
     }
 
     private fun showBottomSheetDialog() {
-        // Create the BottomSheetDialog
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val sharedPreferences = requireContext().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val hasDialogBeenShown = sharedPreferences.getBoolean("bottom_sheet_shown", false)
 
-        // Inflate the layout for the dialog
-        val view = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout, null)
+        if (!hasDialogBeenShown) {
+            // Create the BottomSheetDialog
+            val bottomSheetDialog = BottomSheetDialog(requireContext())
 
-        // Set up click listeners for actions inside the BottomSheetDialog
-        view.findViewById<TextView>(R.id.okButton).setOnClickListener {
-            // Perform some action
-            bottomSheetDialog.dismiss()
+            // Inflate the layout for the dialog
+            val view = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout, null)
+
+            // Set up click listeners for actions inside the BottomSheetDialog
+            view.findViewById<TextView>(R.id.okButton).setOnClickListener {
+                // Perform some action
+                bottomSheetDialog.dismiss()
+            }
+
+            // Dismiss dialog when clicking outside
+            bottomSheetDialog.setOnDismissListener {
+                // Update the flag in SharedPreferences
+                with(sharedPreferences.edit()) {
+                    putBoolean("bottom_sheet_shown", true)
+                    apply()
+                }
+            }
+
+            // Set the content view and show the dialog
+            bottomSheetDialog.setContentView(view)
+            bottomSheetDialog.show()
         }
-
-        // Set the content view and show the dialog
-        bottomSheetDialog.setContentView(view)
-        bottomSheetDialog.show()
     }
 }
