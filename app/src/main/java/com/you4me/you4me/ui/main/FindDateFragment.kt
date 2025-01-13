@@ -2,6 +2,8 @@ package com.you4me.you4me.ui.main
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +16,7 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
@@ -30,7 +33,6 @@ import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils.generateVideoThumbnail
 import com.you4me.you4me.utils.Utils.getCategoryFromString
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -90,7 +92,10 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                     val listOfImagesAndVideos = it.value
                     try {
                         // Your potentially crashing code (e.g., loading images, videos, etc.)
-                        loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                        if (isAdded() && getActivity() != null) {
+                            // Perform operations safely
+                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                        }
                     } catch (e: Exception) {
                         Log.e("MyApp", "Error loading data", e)
                     }
@@ -110,11 +115,13 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 binding.frame3,
                 binding.frame4,
             ) // Predefined ImageViews
+
         var isProfilePictureSet = false // Flag to check if profile picture is already set
 
-        CoroutineScope(Dispatchers.Main).launch {
+        // Use viewLifecycleOwner.lifecycleScope to tie coroutine lifecycle to the fragment's view
+        viewLifecycleOwner.lifecycleScope.launch {
             // Run the heavy task on the IO thread
-            withContext(Dispatchers.Main) {
+            withContext(Dispatchers.IO) {
                 listOfImagesAndVideos.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
                     val frame = imageViews[index]
                     frame.isClickable = true
@@ -125,65 +132,81 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
 
                     if (getCategoryFromString(fileData.fileURL) == "image") {
                         // Load image into FrameLayout
-                        val imageView = ImageView(requireActivity())
-                        imageView.layoutParams =
-                            FrameLayout.LayoutParams(
-                                FrameLayout.LayoutParams.MATCH_PARENT,
-                                FrameLayout.LayoutParams.MATCH_PARENT,
-                            )
-                        imageView.scaleType = ImageView.ScaleType.FIT_XY
+                        val imageView =
+                            ImageView(requireActivity()).apply {
+                                layoutParams =
+                                    FrameLayout.LayoutParams(
+                                        FrameLayout.LayoutParams.MATCH_PARENT,
+                                        FrameLayout.LayoutParams.MATCH_PARENT,
+                                    )
+                                scaleType = ImageView.ScaleType.FIT_XY
+                            }
 
-                        // Load image using Glide (this is still safe on the main thread since Glide handles threading internally)
-                        Glide.with(requireActivity())
-                            .load(secureUrl)
-                            .into(imageView)
-
-                        // Add to FrameLayout in the main thread
+                        // Load image using Glide
                         withContext(Dispatchers.Main) {
-                            frame.addView(imageView)
-                            if (!isProfilePictureSet) {
-                                isProfilePictureSet = true // Mark profile picture as set
+                            if (isAdded) {
                                 Glide.with(requireActivity())
-                                    .load(fileData.fileURL) // URL of the first image
-                                    .circleCrop()
-                                    .into(binding.imageView)
-                                binding.imageView.scaleType = ImageView.ScaleType.FIT_XY
+                                    .load(secureUrl)
+                                    .into(imageView)
+                                frame.addView(imageView)
+
+                                if (!isProfilePictureSet) {
+                                    isProfilePictureSet = true // Mark profile picture as set
+                                    Glide.with(requireActivity())
+                                        .load(fileData.fileURL)
+                                        .circleCrop()
+                                        .into(binding.imageView)
+                                    binding.imageView.scaleType = ImageView.ScaleType.FIT_XY
+                                }
                             }
                         }
                     } else if (getCategoryFromString(fileData.fileURL) == "video") {
-                        // Load video thumbnail into FrameLayout
-                        val thumbnailView = ImageView(requireContext())
-                        thumbnailView.layoutParams =
-                            FrameLayout.LayoutParams(
-                                FrameLayout.LayoutParams.MATCH_PARENT,
-                                FrameLayout.LayoutParams.MATCH_PARENT,
-                            )
-                        thumbnailView.scaleType = ImageView.ScaleType.FIT_XY
+                        val thumbnailView =
+                            ImageView(requireContext()).apply {
+                                layoutParams =
+                                    FrameLayout.LayoutParams(
+                                        FrameLayout.LayoutParams.MATCH_PARENT,
+                                        FrameLayout.LayoutParams.MATCH_PARENT,
+                                    )
+                                scaleType = ImageView.ScaleType.FIT_XY
+                            }
 
-                        // Generate thumbnail using MediaMetadataRetriever in the background
+                        // Generate thumbnail using MediaMetadataRetriever
                         val bitmap = generateVideoThumbnail(secureUrl)
 
-                        // Add thumbnail to FrameLayout in the main thread
                         withContext(Dispatchers.Main) {
-                            if (bitmap != null) {
+                            if (isAdded && bitmap != null) {
                                 thumbnailView.setImageBitmap(bitmap)
+                                frame.addView(thumbnailView)
                             }
-                            frame.addView(thumbnailView)
                         }
                     }
 
                     // Add a click listener to the frame
                     withContext(Dispatchers.Main) {
-                        frame.setOnClickListener {
-                            if (fileData.fileURL.isEmpty()) {
-//                                showLoading(true)
-                                return@setOnClickListener
+                        if (isAdded) {
+                            frame.setOnClickListener {
+                                if (fileData.fileURL.isEmpty()) {
+                                    // showLoading(true)
+                                    return@setOnClickListener
+                                }
+                                openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
                             }
-                            openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun generateVideoThumbnail(videoUrl: String): Bitmap? {
+        return try {
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(videoUrl, HashMap())
+            retriever.frameAtTime
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 
@@ -599,5 +622,10 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
             bottomSheetDialog.setContentView(view)
             bottomSheetDialog.show()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Cancel any ongoing tasks
     }
 }
