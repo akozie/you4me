@@ -7,19 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.you4me.you4me.database.AppDatabase
 import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.repository.BaseRepository
 import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.utils.SharedPrefHelper
-import kotlinx.coroutines.flow.toList
 
 abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository> : Fragment() {
 
