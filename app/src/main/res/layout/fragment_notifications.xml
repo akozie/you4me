@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:paddingTop="16dp"
     android:background="@color/white"
     tools:context=".ui.main.NotificationsFragment">
 
@@ -24,12 +24,13 @@
         android:id="@+id/notifications_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:orientation="vertical"
-        android:layout_marginTop="10dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        tools:layout_editor_absoluteX="16dp"
-        tools:listitem="@layout/notofication_item" />
+        tools:listitem="@layout/notification_item" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -59,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5" />
+            app:layout_constraintGuide_begin="0dp" />
 
         <TextView
             android:id="@+id/empty_lyt"

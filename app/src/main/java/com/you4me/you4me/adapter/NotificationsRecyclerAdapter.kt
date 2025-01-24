@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.you4me.you4me.utils.Utils.formatDate
 import com.you4me.you4me.R
-import com.you4me.you4me.databinding.NotoficationItemBinding
+import com.you4me.you4me.databinding.NotificationItemBinding
 import com.you4me.you4me.models.Notification
 import com.you4me.you4me.ui.main.MainViewModel
 
@@ -32,9 +32,9 @@ class NotificationsRecyclerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val binding = NotoficationItemBinding.inflate(context.layoutInflater, parent, false)
+        val binding = NotificationItemBinding.inflate(context.layoutInflater, parent, false)
         return MyViewHolder(binding)
     }
 
-    class MyViewHolder(val binding: NotoficationItemBinding) : RecyclerView.ViewHolder(binding.root)
+    class MyViewHolder(val binding: NotificationItemBinding) : RecyclerView.ViewHolder(binding.root)
 }

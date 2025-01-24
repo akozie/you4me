@@ -680,7 +680,7 @@ class ProfileFragment :
     // Suspend function to generate video thumbnail in background
 // Call this function from the UI thread, like in your onViewCreated or onStart
     private fun loadImagesAndVideosInBackground(listOfImagesAndVideos: ImagesVideosResponse) {
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+
             val imageViews =
                 listOf(
                     binding.frame1,
@@ -695,83 +695,85 @@ class ProfileFragment :
             CoroutineScope(Dispatchers.Main).launch {
                 // Run the heavy task on the IO thread
                 withContext(Dispatchers.Main) {
-                    listOfImagesAndVideos.take(imageViews.size).asReversed()
-                        .forEachIndexed { index, fileData ->
-                            val frame = imageViews[index]
-                            frame.isClickable = true
-                            frame.isFocusable = true
+                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                        listOfImagesAndVideos.take(imageViews.size).asReversed()
+                            .forEachIndexed { index, fileData ->
+                                val frame = imageViews[index]
+                                frame.isClickable = true
+                                frame.isFocusable = true
 
-                            // Replace 'http' with 'https' for secure URLs
-                            val secureUrl = fileData.fileURL.replace("http://", "https://")
+                                // Replace 'http' with 'https' for secure URLs
+                                val secureUrl = fileData.fileURL.replace("http://", "https://")
 
-                            if (getCategoryFromString(fileData.fileURL) == "image") {
-                                // Load image into FrameLayout
-                                val imageView = ImageView(requireActivity())
+                                if (getCategoryFromString(fileData.fileURL) == "image") {
+                                    // Load image into FrameLayout
+                                    val imageView = ImageView(requireActivity())
 
-                                imageView.layoutParams =
-                                    FrameLayout.LayoutParams(
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                    )
-                                imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                                    imageView.layoutParams =
+                                        FrameLayout.LayoutParams(
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                        )
+                                    imageView.scaleType = ImageView.ScaleType.CENTER_CROP
 
-                                // Load image using Glide (this is still safe on the main thread since Glide handles threading internally)
+                                    // Load image using Glide (this is still safe on the main thread since Glide handles threading internally)
 
-                                Glide.with(requireActivity())
-                                    .load(secureUrl)
-                                    .into(imageView)
+                                    Glide.with(requireActivity())
+                                        .load(secureUrl)
+                                        .into(imageView)
 
-                                // Add to FrameLayout in the main thread
-                                withContext(Dispatchers.Main) {
-                                    frame.addView(imageView)
-                                    if (!isProfilePictureSet) {
-                                        isProfilePictureSet = true // Mark profile picture as set
-                                        Glide.with(requireActivity())
-                                            .load(fileData.fileURL) // URL of the first image
-                                            .circleCrop()
-                                            .into(binding.profilePicture)
+                                    // Add to FrameLayout in the main thread
+                                    withContext(Dispatchers.Main) {
+                                        frame.addView(imageView)
+                                        if (!isProfilePictureSet) {
+                                            isProfilePictureSet =
+                                                true // Mark profile picture as set
+                                            Glide.with(requireActivity())
+                                                .load(fileData.fileURL) // URL of the first image
+                                                .circleCrop()
+                                                .into(binding.profilePicture)
+                                        }
+                                    }
+                                } else if (getCategoryFromString(fileData.fileURL) == "video") {
+                                    // Load video thumbnail into FrameLayout
+                                    val thumbnailView = ImageView(requireContext())
+                                    thumbnailView.layoutParams =
+                                        FrameLayout.LayoutParams(
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                        )
+                                    thumbnailView.scaleType = ImageView.ScaleType.CENTER_CROP
+
+                                    // Generate thumbnail using MediaMetadataRetriever in the background
+                                    val bitmap = generateVideoThumbnail(secureUrl)
+
+                                    // Add thumbnail to FrameLayout in the main thread
+                                    withContext(Dispatchers.Main) {
+                                        if (bitmap != null) {
+                                            thumbnailView.setImageBitmap(bitmap)
+                                        }
+                                        frame.addView(thumbnailView)
                                     }
                                 }
-                            } else if (getCategoryFromString(fileData.fileURL) == "video") {
-                                // Load video thumbnail into FrameLayout
-                                val thumbnailView = ImageView(requireContext())
-                                thumbnailView.layoutParams =
-                                    FrameLayout.LayoutParams(
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                    )
-                                thumbnailView.scaleType = ImageView.ScaleType.CENTER_CROP
 
-                                // Generate thumbnail using MediaMetadataRetriever in the background
-                                val bitmap = generateVideoThumbnail(secureUrl)
-
-                                // Add thumbnail to FrameLayout in the main thread
+                                // Add a click listener to the frame
                                 withContext(Dispatchers.Main) {
-                                    if (bitmap != null) {
-                                        thumbnailView.setImageBitmap(bitmap)
+                                    frame.setOnClickListener {
+                                        if (fileData.fileURL.isEmpty()) {
+                                            showLoader(true)
+                                            viewModel.validateVideoUpload()
+                                        }
+                                        openDetailScreen(
+                                            secureUrl,
+                                            getCategoryFromString(fileData.fileURL),
+                                            fileData.videoId
+                                        )
                                     }
-                                    frame.addView(thumbnailView)
                                 }
                             }
-
-                            // Add a click listener to the frame
-                            withContext(Dispatchers.Main) {
-                                frame.setOnClickListener {
-                                    if (fileData.fileURL.isEmpty()) {
-                                        showLoader(true)
-                                        viewModel.validateVideoUpload()
-                                    }
-                                    openDetailScreen(
-                                        secureUrl,
-                                        getCategoryFromString(fileData.fileURL),
-                                        fileData.videoId
-                                    )
-                                }
-                            }
-                        }
+                    }
                 }
             }
-        }
     }
 
     private fun openDetailScreen(
