@@ -46,7 +46,14 @@
         android:id="@+id/notificationsFragment"
         android:name="com.you4me.you4me.ui.main.NotificationsFragment"
         android:label="fragment_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_notifications" >
+        <action
+            android:id="@+id/action_notificationsFragment_to_likesFragment"
+            app:destination="@id/likesFragment" />
+        <action
+            android:id="@+id/action_notificationsFragment_to_notificationViewFragment"
+            app:destination="@id/notificationViewFragment" />
+    </fragment>
     <fragment
         android:id="@+id/imageAndVideoDetailsFragment"
         android:name="com.you4me.you4me.ui.profileDetails.ImageAndVideoDetailsFragment"
@@ -55,5 +62,17 @@
         <argument
             android:name="IMAGES"
             app:argType="com.you4me.you4me.models.ImagesVideosResponseItem" />
+    </fragment>
+    <fragment
+        android:id="@+id/notificationViewFragment"
+        android:name="com.you4me.you4me.ui.main.NotificationViewFragment"
+        android:label="fragment_notification_view"
+        tools:layout="@layout/fragment_notification_view">
+        <argument
+            android:name="timestamp"
+            app:argType="string" />
+        <argument
+            android:name="notificationText"
+            app:argType="string" />
     </fragment>
 </navigation>
