@@ -5,13 +5,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.you4me.you4me.R
 import com.you4me.you4me.adapter.NotificationsRecyclerAdapter
 import com.you4me.you4me.databinding.FragmentNotificationsBinding
+import com.you4me.you4me.`interface`.OnNotificationClickListener
 import com.you4me.you4me.models.Notification
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.Constants
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -27,7 +30,11 @@ class NotificationsFragment :
         return FragmentNotificationsBinding.inflate(layoutInflater)
     }
 
-    override fun getRepository() = MainRepository(dataSource.buildApi(ApiCollector::class.java))
+    override fun getRepository() = MainRepository(
+        dataSource.buildApi(
+            ApiCollector::class.java
+        )
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,27 +47,64 @@ class NotificationsFragment :
             when (it) {
                 is Resource.Success -> {
                     binding.loader.hide()
-                    if (it.value.isEmpty()) showEmpty()
+                    if (it.value.isEmpty) showEmpty()
                     else {
                         setupRecycler(it.value)
                     }
                 }
+
                 is Resource.Failure -> {
-                    showToast(it.message ?: it.errorBody ?: "Error: ${it.errorCode ?: ""}")
+                    showToast(
+                        it.message ?: it.errorBody ?: "Error: ${it.errorCode ?: ""}"
+                    )
                 }
             }
         }
     }
 
-    private fun setupRecycler(notifications : ArrayList<Notification>) {
+    private fun setupRecycler(notifications: ArrayList<Notification>) {
         val dateFormat = SimpleDateFormat("yyyy/MM/ddhh:mm")
 
-        val n = notifications.
-        sortedByDescending {
+        val n = notifications.sortedByDescending {
             dateFormat.parse("${it.date}${it.time}")
-          //  formatDate("${it.date}", "${it.time}")
+            //  formatDate("${it.date}", "${it.time}")
         }
-        val adapter = NotificationsRecyclerAdapter(n, this, viewModel)
+        val adapter = NotificationsRecyclerAdapter(n, this,
+            object : OnNotificationClickListener {
+                override fun onNotificationClick(notification: Notification) {
+                    if (notification.seen == "false") {
+                        viewModel.markNotificationAsRead(notification.notify_id)
+
+                        when (notification.category) {
+                            Constants.NotificationConstants.Categories.DATE_REQUEST -> {
+                                // Handle DATE_REQUEST
+                            }
+
+                            Constants.NotificationConstants.Categories.DATE_PROPOSAL -> {
+                                // Handle DATE_PROPOSAL
+                            }
+
+                            Constants.NotificationConstants.Categories.DATE_MEETUP -> {
+                                // Handle DATE_MEETUP
+                            }
+
+                            Constants.NotificationConstants.Categories
+                                .DATE_CREATOR_ACCEPTED_INTEREST -> {
+                                // Handle DATE_CREATOR_ACCEPTED_INTEREST
+                            }
+
+                            Constants.NotificationConstants.Categories.NEW_DATE_INTEREST -> {
+                                // Handle NEW_DATE_INTEREST
+                            }
+
+                            else -> {
+                                // Handle unknown or unspecified categories
+                            }
+                        }
+
+                    }
+                }
+            })
         binding.notificationsRecyclerView.adapter = adapter
     }
 
