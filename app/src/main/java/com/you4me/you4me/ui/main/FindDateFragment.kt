@@ -118,20 +118,18 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
 
         var isProfilePictureSet = false // Flag to check if profile picture is already set
 
-        // Use viewLifecycleOwner.lifecycleScope to tie coroutine lifecycle to the fragment's view
         viewLifecycleOwner.lifecycleScope.launch {
-            // Run the heavy task on the IO thread
             withContext(Dispatchers.IO) {
-                listOfImagesAndVideos.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
+                val validMedia = listOfImagesAndVideos.filter { it.fileURL.isNotEmpty() } // Remove empty URLs
+
+                validMedia.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
                     val frame = imageViews[index]
                     frame.isClickable = true
                     frame.isFocusable = true
 
-                    // Replace 'http' with 'https' for secure URLs
                     val secureUrl = fileData.fileURL.replace("http://", "https://")
 
                     if (getCategoryFromString(fileData.fileURL) == "image") {
-                        // Load image into FrameLayout
                         val imageView =
                             ImageView(requireActivity()).apply {
                                 layoutParams =
@@ -139,10 +137,9 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                                         FrameLayout.LayoutParams.MATCH_PARENT,
                                         FrameLayout.LayoutParams.MATCH_PARENT,
                                     )
-                                scaleType = ImageView.ScaleType.FIT_XY
+                                scaleType = ImageView.ScaleType.CENTER_CROP
                             }
 
-                        // Load image using Glide
                         withContext(Dispatchers.Main) {
                             if (isAdded) {
                                 Glide.with(requireActivity())
@@ -151,12 +148,15 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                                 frame.addView(imageView)
 
                                 if (!isProfilePictureSet) {
-                                    isProfilePictureSet = true // Mark profile picture as set
+                                    isProfilePictureSet = true
                                     Glide.with(requireActivity())
                                         .load(fileData.fileURL)
-                                        .circleCrop()
+                                        .override(
+                                            com.bumptech.glide.request.target.Target.SIZE_ORIGINAL,
+                                            com.bumptech.glide.request.target.Target.SIZE_ORIGINAL,
+                                        )
                                         .into(binding.imageView)
-                                    binding.imageView.scaleType = ImageView.ScaleType.FIT_XY
+                                    binding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
                                 }
                             }
                         }
@@ -168,10 +168,9 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                                         FrameLayout.LayoutParams.MATCH_PARENT,
                                         FrameLayout.LayoutParams.MATCH_PARENT,
                                     )
-                                scaleType = ImageView.ScaleType.FIT_XY
+                                scaleType = ImageView.ScaleType.CENTER_CROP
                             }
 
-                        // Generate thumbnail using MediaMetadataRetriever
                         val bitmap = generateVideoThumbnail(secureUrl)
 
                         withContext(Dispatchers.Main) {
@@ -182,17 +181,21 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                         }
                     }
 
-                    // Add a click listener to the frame
                     withContext(Dispatchers.Main) {
                         if (isAdded) {
                             frame.setOnClickListener {
-                                if (fileData.fileURL.isEmpty()) {
-                                    // showLoading(true)
-                                    return@setOnClickListener
-                                }
+                                if (fileData.fileURL.isEmpty()) return@setOnClickListener
                                 openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
                             }
                         }
+                    }
+                }
+
+                // Remove unused frames on the Main thread
+                withContext(Dispatchers.Main) {
+                    imageViews.drop(validMedia.size).forEach { frame ->
+                        frame.removeAllViews()
+                        frame.visibility = View.GONE
                     }
                 }
             }

@@ -14,7 +14,7 @@
         android:icon="@drawable/outline_calendar_month_24"
         android:title="@string/go_on_date" />
     <item
-        android:id="@+id/likesFragment"
+        android:id="@+id/datesInterestFragment"
         android:icon="@drawable/baseline_favorite_24"
         android:tooltipText="@string/date_interests"
         android:title="@string/date_interests" />

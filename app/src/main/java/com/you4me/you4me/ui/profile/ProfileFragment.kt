@@ -701,7 +701,7 @@ class ProfileFragment :
                                         FrameLayout.LayoutParams.MATCH_PARENT,
                                         FrameLayout.LayoutParams.MATCH_PARENT,
                                     )
-                                scaleType = ImageView.ScaleType.FIT_XY
+                                scaleType = ImageView.ScaleType.CENTER_CROP
                             }
 
                         // Load image using Glide
@@ -718,7 +718,7 @@ class ProfileFragment :
                                         .load(fileData.fileURL)
                                         .circleCrop()
                                         .into(binding.profilePicture)
-                                    binding.profilePicture.scaleType = ImageView.ScaleType.FIT_XY
+                                    binding.profilePicture.scaleType = ImageView.ScaleType.CENTER_CROP
                                 }
                             }
                         }
@@ -730,7 +730,7 @@ class ProfileFragment :
                                         FrameLayout.LayoutParams.MATCH_PARENT,
                                         FrameLayout.LayoutParams.MATCH_PARENT,
                                     )
-                                scaleType = ImageView.ScaleType.FIT_XY
+                                scaleType = ImageView.ScaleType.CENTER_CROP
                             }
 
                         // Generate thumbnail using MediaMetadataRetriever

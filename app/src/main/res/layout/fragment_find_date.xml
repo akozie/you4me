@@ -16,11 +16,13 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:fitsSystemWindows="true">
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+        <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_lyt"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
+        tools:visibility="visible"
         android:layout_marginBottom="@dimen/margin_70dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,7 +54,7 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:layout_marginTop="@dimen/margin_10dp"
             android:src="@drawable/find_date_placeholder"
             app:layout_constraintEnd_toEndOf="parent"
@@ -83,17 +85,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-        <TextView
-            android:id="@+id/bio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10dp"
-            android:gravity="start"
-            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-            android:textSize="@dimen/text_size_15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_name" />
+            <TextView
+                android:id="@+id/bio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:gravity="start"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                android:textSize="@dimen/text_size_15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_name" />
 
         <LinearLayout
             android:id="@+id/location_layout"
@@ -199,7 +200,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:contentDescription="Add Photo"
-                    android:scaleType="centerInside"
+                    android:scaleType="centerCrop"
                     android:visibility="gone" />
             </FrameLayout>
 
@@ -220,7 +221,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:contentDescription="Add Photo"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:visibility="gone" />
             </FrameLayout>
 
@@ -242,7 +243,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/photos_bg"
                     android:contentDescription="Add Photo"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:visibility="gone" />
             </FrameLayout>
 
@@ -264,7 +265,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/photos_bg"
                     android:contentDescription="Add Photo"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:visibility="gone" />
             </FrameLayout>
 
@@ -395,7 +396,7 @@
                 android:layout_height="wrap_content"
                 android:text="Not Interested"
                 android:gravity="center"
-                android:background="@drawable/btn_not_interested"
+                android:background="@drawable/btn_not_interested_stroke_color"
                 android:textColor="@color/purple"
                 android:paddingVertical="15dp" />
 

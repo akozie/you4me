@@ -39,6 +39,8 @@ import kotlinx.coroutines.withContext
 
 class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepository>() {
     private var dateInterests = FetchDateInterest()
+
+//    private var dateInterests = ArrayList<FetchDateInterestItem>()
     private var currentIdx = -1
 
     private var player: ExoPlayer? = null
@@ -162,11 +164,31 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             when (it) {
                 is Resource.Success -> {
                     val listOfImagesAndVideos = it.value
+//                    val listOfImagesAndVideos =
+//                        arrayListOf(
+//                            ImagesVideosResponseItem(
+//                                category = "image",
+//                                fileURL = "http://res.cloudinary.com/mmuodev/image/upload/v1737619001/3f105f1a-197c-4922-851a-8ae824e5c525.jpg",
+//                                reason = "",
+//                                status = "APPROVED",
+//                                userId = "1e2b6e50-3be1-48ea-bf22-adfb2a4fa5b3",
+//                                videoId = "3f105f1a-197c-4922-851a-8ae824e5c525",
+//                            ),
+//                            ImagesVideosResponseItem(
+//                                category = "image",
+//                                fileURL = "http://res.cloudinary.com/mmuodev/image/upload/v1737618945/7293588b-4537-4164-941f-1117729e579a.jpg",
+//                                reason = "",
+//                                status = "APPROVED",
+//                                userId = "1e2b6e50-3be1-48ea-bf22-adfb2a4fa5b3",
+//                                videoId = "7293588b-4537-4164-941f-1117729e579a",
+//                            ),
+//                        )
                     try {
                         // Your potentially crashing code (e.g., loading images, videos, etc.)
                         if (isAdded() && getActivity() != null) {
                             // Perform operations safely
                             loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                            Log.d("JUST_CHECKING", "$listOfImagesAndVideos")
                         }
                     } catch (e: Exception) {
                         Log.e("MyApp", "Error loading data", e)
@@ -180,91 +202,89 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     }
 
     private fun loadImagesAndVideosInBackground(listOfImagesAndVideos: ImagesVideosResponse) {
-        val imageViews =
-            listOf(
-                binding.frame1,
-                binding.frame2,
-                binding.frame3,
-                binding.frame4,
-            ) // Predefined ImageViews
+        val imageViews = listOf(binding.frame1, binding.frame2, binding.frame3, binding.frame4)
 
-        var isProfilePictureSet = false // Flag to check if profile picture is already set
+        var isProfilePictureSet = false
 
-        // Use viewLifecycleOwner.lifecycleScope to tie coroutine lifecycle to the fragment's view
         viewLifecycleOwner.lifecycleScope.launch {
-            // Run the heavy task on the IO thread
             withContext(Dispatchers.IO) {
                 listOfImagesAndVideos.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
                     val frame = imageViews[index]
-                    frame.isClickable = true
-                    frame.isFocusable = true
 
-                    // Replace 'http' with 'https' for secure URLs
-                    val secureUrl = fileData.fileURL.replace("http://", "https://")
+                    withContext(Dispatchers.Main) {
+                        if (!isAdded) return@withContext
 
-                    if (getCategoryFromString(fileData.fileURL) == "image") {
-                        // Load image into FrameLayout
-                        val imageView =
-                            ImageView(requireActivity()).apply {
-                                layoutParams =
-                                    FrameLayout.LayoutParams(
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                    )
-                                scaleType = ImageView.ScaleType.FIT_XY
-                            }
+                        if (fileData.fileURL.isEmpty()) {
+                            frame.visibility = View.GONE // Hide empty frames
+                            return@withContext
+                        } else {
+                            frame.visibility = View.VISIBLE // Show frames with content
+                        }
 
-                        // Load image using Glide
-                        withContext(Dispatchers.Main) {
-                            if (isAdded) {
+                        frame.removeAllViews() // Clear previous views
+                        frame.isClickable = true
+                        frame.isFocusable = true
+
+                        val secureUrl = fileData.fileURL.replace("http://", "https://")
+
+                        if (getCategoryFromString(fileData.fileURL) == "image") {
+                            val imageView =
+                                ImageView(requireActivity()).apply {
+                                    layoutParams =
+                                        FrameLayout.LayoutParams(
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                        )
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                }
+
+                            Glide.with(requireActivity())
+                                .load(secureUrl)
+                                .into(imageView)
+
+                            frame.addView(imageView)
+                            Log.d("IMAGES_RESSS", "Added image: $secureUrl to frame: ${frame.id}")
+
+                            if (!isProfilePictureSet) {
+                                isProfilePictureSet = true
                                 Glide.with(requireActivity())
                                     .load(secureUrl)
-                                    .into(imageView)
-                                frame.addView(imageView)
-
-                                if (!isProfilePictureSet) {
-                                    isProfilePictureSet = true // Mark profile picture as set
-                                    Glide.with(requireActivity())
-                                        .load(fileData.fileURL)
-                                        .circleCrop()
-                                        .into(binding.imageView)
-                                    binding.imageView.scaleType = ImageView.ScaleType.FIT_XY
+                                    .into(binding.imageView)
+                                binding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                            }
+                        } else if (getCategoryFromString(fileData.fileURL) == "video") {
+                            val thumbnailView =
+                                ImageView(requireContext()).apply {
+                                    layoutParams =
+                                        FrameLayout.LayoutParams(
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                        )
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
                                 }
-                            }
-                        }
-                    } else if (getCategoryFromString(fileData.fileURL) == "video") {
-                        val thumbnailView =
-                            ImageView(requireContext()).apply {
-                                layoutParams =
-                                    FrameLayout.LayoutParams(
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                    )
-                                scaleType = ImageView.ScaleType.FIT_XY
-                            }
 
-                        // Generate thumbnail using MediaMetadataRetriever
-                        val bitmap = generateVideoThumbnail(secureUrl)
+                            val bitmap = generateVideoThumbnail(secureUrl)
 
-                        withContext(Dispatchers.Main) {
-                            if (isAdded && bitmap != null) {
+                            if (bitmap != null) {
                                 thumbnailView.setImageBitmap(bitmap)
                                 frame.addView(thumbnailView)
+                                Log.d("IMAGES_RESSS", "Added video thumbnail for: $secureUrl")
+                            } else {
+                                Log.e("IMAGES_RESSS", "Failed to generate thumbnail for: $secureUrl")
                             }
+                        }
+
+                        frame.setOnClickListener {
+                            if (fileData.fileURL.isEmpty()) return@setOnClickListener
+                            openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
                         }
                     }
+                }
 
-                    // Add a click listener to the frame
-                    withContext(Dispatchers.Main) {
-                        if (isAdded) {
-                            frame.setOnClickListener {
-                                if (fileData.fileURL.isEmpty()) {
-                                    // showLoading(true)
-                                    return@setOnClickListener
-                                }
-                                openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
-                            }
-                        }
+                // Hide remaining frames that didn't get used
+                withContext(Dispatchers.Main) {
+                    for (i in listOfImagesAndVideos.size until imageViews.size) {
+                        imageViews[i].visibility = View.GONE
                     }
                 }
             }
@@ -305,11 +325,14 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         viewModel.fetchDateInterests()
 
         binding.acceptBtn.setOnClickListener {
-            if (currentIdx < 0) return@setOnClickListener
+            if (currentIdx < 0 || currentIdx >= dateInterests.size) {
+                return@setOnClickListener // Prevents out-of-bounds access
+            }
             showLoading(true)
             val d = dateInterests[currentIdx]
             viewModel.updateDateInterest(d.interestID, d.dateID, "PENDING_TIME_APPROVAL")
         }
+
         binding.rejectBtn.setOnClickListener {
             if (currentIdx < 0) return@setOnClickListener
             showLoading(true)
@@ -466,6 +489,26 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                         showEmpty()
                     } else {
                         dateInterests = it.value
+//                        dateInterests =
+//                            arrayListOf(
+//                                FetchDateInterestItem(
+//                                    userID = "a108fc4e-81e5-415b-b1a1-3874711c0be4",
+//                                    submittedBy = "1e2b6e50-3be1-48ea-bf22-adfb2a4fa5b3",
+//                                    proposedDate = "February 20, 2025",
+//                                    proposedTime = "",
+//                                    status = "PENDING",
+//                                    createdAt = "2025-01-28 20:42:55",
+//                                    age = "24",
+//                                    name = "Eniola Moses",
+//                                    dateID = "b44389e5-2931-43f0-929a-2d5335e92e6f",
+//                                    videoURL = "",
+//                                    interestID = "eca40530-4a22-46bc-b66b-6687ee33aa3a",
+//                                    venue = "Lekki Conservation Center Lekki Conservation Center, Eti-Osa, Lagos Lekki Conservation Center, Eti-Osa, Lagos",
+//                                    originalDate = "2025/02/20",
+//                                    originalTime = "08:44",
+//                                    state = "Lagos",
+//                                ),
+//                            )
                         setScreen()
                     }
                 }
@@ -550,7 +593,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             // Yes, you can safely use this index. The index is present in the array.
             date = dateInterests[currentIdx]
         }
-        observeImagesAndVideos(date.userID)
+        observeImagesAndVideos(date.submittedBy)
 
         val mediaItem = MediaItem.fromUri(date.videoURL.replace("http:", "https:"))
         player?.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
@@ -558,6 +601,15 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         player?.prepare()
 
         binding.userName.text = "${date.name}, ${date.age}"
+        binding.nameGallery.text = "${date.name}'s Gallery"
+        binding.location.text = "${date.venue} Gallery"
+        binding.nameGallery.text = "${date.name}'s Gallery"
+
+//        if (date.bio.isNotEmpty()) {
+//            binding.bio.visibility = View.GONE
+//        } else {
+//            binding.bio.visibility = View.VISIBLE
+//        }
     }
 
     private fun releasePlayer() {
@@ -571,17 +623,17 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     }
 
     private fun initializePlayer() {
-        player =
-            ExoPlayer.Builder(ctx).build().also {
-                binding.userVideo.player = it
-                if (currentIdx != -1) {
-                    val mediaItem =
-                        MediaItem.fromUri(dateInterests[currentIdx].videoURL.replace("http:", "https:"))
-                    it.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
-                    it.playWhenReady = playWhenReady
-                    it.prepare()
-                }
-            }
+//        player =
+//            ExoPlayer.Builder(ctx).build().also {
+//                binding.userVideo.player = it
+//                if (currentIdx != -1) {
+//                    val mediaItem =
+//                        MediaItem.fromUri(dateInterests[currentIdx].videoURL.replace("http:", "https:"))
+//                    it.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
+//                    it.playWhenReady = playWhenReady
+//                    it.prepare()
+//                }
+//            }
     }
 
     private fun showEmpty() {
