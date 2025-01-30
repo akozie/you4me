@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_lyt"
@@ -17,69 +17,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/find_date_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Find Date"
-            android:layout_marginTop="@dimen/margin_20dp"
-            android:textColor="@color/black"
-            android:visibility="gone"
-            android:textSize="@dimen/text_size_25sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/find_date_sub_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="Find people who are available to go on a date"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/find_date_text" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:scaleType="centerCrop"
-            android:layout_marginTop="@dimen/margin_10dp"
             android:src="@drawable/find_date_placeholder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/find_date_sub_text" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_10dp"
-            android:text="Mary, 25"
+            android:text="Mary"
             android:textColor="@color/black"
             android:textSize="@dimen/text_size_20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-        <TextView
-            android:id="@+id/my_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_20dp"
-            android:text="Lagos"
-            android:textSize="@dimen/text_size_15sp"
-            android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="@+id/user_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
         <TextView
             android:id="@+id/bio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_10dp"
+            android:visibility="gone"
             android:gravity="start"
             android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
             android:textSize="@dimen/text_size_15sp"
@@ -105,7 +72,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/date"
+                android:id="@+id/available_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="13 Dec, 2024" />
@@ -179,11 +146,11 @@
             android:id="@+id/main_lyt_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10dp"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/location_layout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toTopOf="@+id/available_layout">
+            app:layout_constraintStart_toStartOf="@+id/location_layout"
+            app:layout_constraintTop_toBottomOf="@+id/location_layout">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/suggest_a_new_date_cardview"
@@ -197,14 +164,15 @@
                 <TextView
                     android:id="@+id/suggest_a_new_date"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/margin_45dp"
                     android:autoSizeMaxTextSize="20sp"
                     android:autoSizeMinTextSize="12sp"
-                    android:padding="@dimen/padding_5dp"
                     android:autoSizeStepGranularity="2sp"
                     android:autoSizeTextType="uniform"
-                    android:background="@drawable/btn_not_interested"
+                    android:background="@drawable/btn_not_interested_stroke_color"
                     android:gravity="center"
+                    android:textSize="@dimen/text_size_13sp"
+                    android:padding="@dimen/padding_5dp"
                     android:paddingVertical="15dp"
                     android:text="Suggest a new time for the date"
                     android:textColor="@color/purple" />
@@ -222,18 +190,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/suggest_a_new_date_cardview">
 
                 <TextView
-                    android:id="@+id/no_longer_available"
+                    android:id="@+id/accept_date"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_10dp"
+                    android:layout_height="@dimen/margin_45dp"
                     android:autoSizeMaxTextSize="20sp"
                     android:autoSizeMinTextSize="12sp"
                     android:autoSizeStepGranularity="2sp"
                     android:autoSizeTextType="uniform"
+                    android:textSize="@dimen/text_size_13sp"
                     android:background="@drawable/btn_go_on_date"
                     android:gravity="center"
+                    android:padding="@dimen/padding_10dp"
                     android:paddingVertical="15dp"
-                    android:text="No longer available? Cancel"
+                    android:text="Accept Date"
                     android:textColor="@color/white" />
             </androidx.cardview.widget.CardView>
 
@@ -242,4 +211,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.google.android.material.card.MaterialCardView>
+</androidx.cardview.widget.CardView>

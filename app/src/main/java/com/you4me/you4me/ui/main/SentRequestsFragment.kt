@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.AnimationUtils
-import android.view.animation.DecelerateInterpolator
-import com.you4me.you4me.R
+import com.google.gson.Gson
 import com.you4me.you4me.adapter.SentRequestsRecyclerAdapter
 import com.you4me.you4me.databinding.FragmentSentRequestsBinding
 import com.you4me.you4me.models.*
@@ -15,6 +12,7 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.SharedPrefHelper
 
 class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBinding, MainRepository>() {
     override fun getViewModel() = MainViewModel::class.java
@@ -36,28 +34,13 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
         setupObservers()
     }
 
-    private fun startTiltAnimation(isRightSwipe: Boolean) {
-        val tiltAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.tilt_animation)
-        if (isRightSwipe) {
-            tiltAnimation.interpolator = AccelerateDecelerateInterpolator()
-        } else {
-            tiltAnimation.interpolator = DecelerateInterpolator()
-        }
-    }
-
-    private fun startSecondTiltAnimation(isRightSwipe: Boolean) {
-        val tiltAnimation =
-            AnimationUtils.loadAnimation(requireContext(), R.anim.second_tilt_animation)
-        if (isRightSwipe) {
-            tiltAnimation.interpolator = AccelerateDecelerateInterpolator()
-        } else {
-            tiltAnimation.interpolator = DecelerateInterpolator()
-        }
-    }
-
     private fun setupObservers() {
         showLoading(true)
-        viewModel.getInviteeDatesRequiringApproval()
+        val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
+        val gson = Gson()
+        val user = gson.fromJson(userProfile, User::class.java)
+
+        viewModel.getInviteeDatesRequiringApproval(user.userId)
 
         viewModel.inviteeDatesRequiringApproval.observe(viewLifecycleOwner) {
             showLoading(false)
@@ -77,32 +60,19 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
         if (dates.isEmpty()) {
             showEmpty()
         } else {
-            val adapter = SentRequestsRecyclerAdapter(dates, viewModel, ctx, requireActivity().supportFragmentManager)
+            val adapter = SentRequestsRecyclerAdapter(dates, viewModel, ctx, requireActivity().supportFragmentManager, viewLifecycleOwner)
             binding.upcomingDatesRecycler.adapter = adapter
         }
     }
 
     private fun showEmpty() {
-        binding.cardView.visibility = View.GONE
-//        binding.mainLytBtn.visibility = View.GONE
-
-        // Get the current layout parameters
-        val layoutParams = binding.cardView.layoutParams as? ViewGroup.MarginLayoutParams
-
-        // Check if the cast was successful
-        layoutParams?.let {
-            it.bottomMargin = 0
-            binding.cardView.layoutParams = it
-        }
-
         binding.constraintLayout2.visibility = View.VISIBLE
-//        binding.emptyLyt.visibility = View.VISIBLE
         binding.loader.visibility = View.GONE
     }
 
     private fun showLoading(loading: Boolean) {
         binding.cardView.visibility = if (loading) View.GONE else View.VISIBLE
-//        binding.mainLytBtn.visibility = if (loading) View.GONE else View.VISIBLE
+        binding.view.visibility = if (loading) View.GONE else View.VISIBLE
         binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
 

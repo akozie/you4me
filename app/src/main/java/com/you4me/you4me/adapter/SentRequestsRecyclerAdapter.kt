@@ -1,12 +1,17 @@
 package com.you4me.you4me.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.you4me.you4me.databinding.SentRequestsItemBinding
 import com.you4me.you4me.models.InviteeDatesRequiringApproval
+import com.you4me.you4me.network.Resource
 import com.you4me.you4me.ui.main.MainViewModel
 import com.you4me.you4me.ui.main.SuggestNewDateDialog
 
@@ -15,7 +20,11 @@ class SentRequestsRecyclerAdapter(
     private val viewModel: MainViewModel,
     private val context: Context,
     private val fragmentManager: FragmentManager,
+    private val lifecycleOwner: LifecycleOwner,
 ) : RecyclerView.Adapter<SentRequestsRecyclerAdapter.MyViewHolder>() {
+    // Store fetched images locally to persist between screen changes
+    private val imageCache = mutableMapOf<String, String>()
+
     class MyViewHolder(val binding: SentRequestsItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(
@@ -28,13 +37,7 @@ class SentRequestsRecyclerAdapter(
 
     override fun getItemCount(): Int {
         // Check if the dates array is not empty
-        return if (dates.isNotEmpty()) {
-            // Always return 1 (the count of the first element)
-            1
-        } else {
-            // If the array is empty, return 0 or handle accordingly
-            0
-        }
+        return dates.size
     }
 
     override fun onBindViewHolder(
@@ -43,74 +46,77 @@ class SentRequestsRecyclerAdapter(
     ) {
         val date = dates[position]
         holder.binding.apply {
-            // name.text = date.name
-            location.text = "Cheers! Your date with ${date.name} is scheduled for ${date.date} at ${date.time}. Does this date and time work for you?"
-            // dateODate.text = "${date.date} : ${date.time}"
+            userName.text = date.name
+            location.text = date.place
+            availableDate.text = "${date.date} : ${date.time}"
 
-//            acceptBtn.setOnClickListener {
-//                // accept
-//                // update list and ui
-//                viewModel.updateDateInterest(date.interestId, date.dateId, "APPROVED")
-//                dates.clear()
-// //                dates.removeAt(position)
-//                notifyItemRemoved(position)
-//            }
+            // Clear previous image before loading
+            Glide.with(context).clear(imageView)
 
+            // Load image from cache or fetch if not available
+            if (imageCache.containsKey(date.userId)) {
+                loadImage(imageCache[date.userId] ?: "", this)
+            } else {
+                getImagesResponse(date.userId, this)
+            }
+
+//            getImagesResponse(date.userId, this)
             suggestANewDate.setOnClickListener {
-//                acceptBtn.visibility = View.GONE
-//                suggestANewDate.visibility = View.GONE
-//                newDateTimeLyt.visibility = View.VISIBLE
                 val dialog =
-                    SuggestNewDateDialog { date, time ->
-                        println("New date selected: $date at $time")
+                    SuggestNewDateDialog(date.date, date.time) { newDate, newTime ->
+                        println("New date selected: $newDate at $newTime")
+                        viewModel.proposeNewDateTime(
+                            date.dateId,
+                            date.interestId,
+                            newDate,
+                            newTime,
+                        )
+                        dates.clear()
+                        notifyItemRemoved(position)
                     }
                 dialog.show(fragmentManager, "SuggestNewDateDialog")
             }
-//            updateTimeBtn.setOnClickListener {
-//                // propose new time
-//                // update list and ui
-//                viewModel.proposeNewDateTime(
-//                    date.dateId,
-//                    date.interestId,
-//                    newDate.text.toString(),
-//                    newTime.text.toString(),
-//                )
-//                dates.clear()
-// //                dates.removeAt(position)
-//                notifyItemRemoved(position)
-//            }
 
-//            val time =
-//                TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
-//                    val hour = hourOfDay.toString().padStart(2, '0')
-//                    val minutePadded = minute.toString().padStart(2, '0')
-//                    newTime.text = "$hour:$minutePadded"
-//                }
-//
-//            newTime.setOnClickListener {
-//                TimePickerDialog(context, time, 12, 0, true).show()
-//            }
-//
-//            val calendar = Calendar.getInstance()
-//            newDate.text = Utils.getDateFormat().format(calendar.time)
-//            newTime.text = "12:00"
-//            val datee =
-//                DatePickerDialog.OnDateSetListener { _, year, month, day ->
-//                    calendar.set(Calendar.YEAR, year)
-//                    calendar.set(Calendar.MONTH, month)
-//                    calendar.set(Calendar.DAY_OF_MONTH, day)
-//                    newDate.text = Utils.getDateFormat().format(calendar.time)
-//                }
-//
-//            newDate.setOnClickListener {
-//                DatePickerDialog(
-//                    context,
-//                    datee,
-//                    calendar.get(Calendar.YEAR),
-//                    calendar.get(Calendar.MONTH),
-//                    calendar.get(Calendar.DAY_OF_MONTH),
-//                ).show()
-//            }
+            acceptDate.setOnClickListener {
+                // accept
+                viewModel.updateDateInterest(date.interestId, date.dateId, "APPROVED")
+                dates.clear()
+                notifyItemRemoved(position)
+            }
         }
+    }
+
+    private fun getImagesResponse(
+        userId: String,
+        holder: SentRequestsItemBinding,
+    ) {
+        viewModel.getImagesAndVideos(userId)
+        viewModel.getImagesAndVideos.observeForever { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    val listOfImagesAndVideos = resource.value
+                    val firstImageUrl = listOfImagesAndVideos.firstOrNull { it.category == "image" }?.fileURL
+                    if (!firstImageUrl.isNullOrEmpty()) {
+                        val secureUrl = firstImageUrl.replace("http://", "https://")
+                        imageCache[userId] = secureUrl // Store URL in cache
+                        loadImage(secureUrl, holder)
+                    }
+                }
+
+                is Resource.Failure -> {
+                    Log.e("Adapter", "Failed to load images")
+                }
+            }
+        }
+    }
+
+    private fun loadImage(
+        url: String,
+        holder: SentRequestsItemBinding,
+    ) {
+        Glide.with(context)
+            .load(url)
+            .diskCacheStrategy(DiskCacheStrategy.ALL) // Ensures caching
+            .into(holder.imageView)
     }
 }

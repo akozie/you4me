@@ -6,7 +6,6 @@ import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -164,25 +163,6 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             when (it) {
                 is Resource.Success -> {
                     val listOfImagesAndVideos = it.value
-//                    val listOfImagesAndVideos =
-//                        arrayListOf(
-//                            ImagesVideosResponseItem(
-//                                category = "image",
-//                                fileURL = "http://res.cloudinary.com/mmuodev/image/upload/v1737619001/3f105f1a-197c-4922-851a-8ae824e5c525.jpg",
-//                                reason = "",
-//                                status = "APPROVED",
-//                                userId = "1e2b6e50-3be1-48ea-bf22-adfb2a4fa5b3",
-//                                videoId = "3f105f1a-197c-4922-851a-8ae824e5c525",
-//                            ),
-//                            ImagesVideosResponseItem(
-//                                category = "image",
-//                                fileURL = "http://res.cloudinary.com/mmuodev/image/upload/v1737618945/7293588b-4537-4164-941f-1117729e579a.jpg",
-//                                reason = "",
-//                                status = "APPROVED",
-//                                userId = "1e2b6e50-3be1-48ea-bf22-adfb2a4fa5b3",
-//                                videoId = "7293588b-4537-4164-941f-1117729e579a",
-//                            ),
-//                        )
                     try {
                         // Your potentially crashing code (e.g., loading images, videos, etc.)
                         if (isAdded() && getActivity() != null) {
@@ -280,7 +260,6 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                         }
                     }
                 }
-
                 // Hide remaining frames that didn't get used
                 withContext(Dispatchers.Main) {
                     for (i in listOfImagesAndVideos.size until imageViews.size) {
@@ -344,77 +323,53 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             )
         }
 
-        binding.mainLyt.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    // Save the initial touch position
-                    binding.mainLyt.setTag(R.id.tag_touch_start_x, event.x)
-                    true
-                }
-                MotionEvent.ACTION_UP -> {
-                    // Calculate the swipe distance
-                    val startX = binding.mainLyt.getTag(R.id.tag_touch_start_x) as Float
-                    val endX = event.x
-                    val swipeDistance = endX - startX
-
-                    // Apply the tilt animation based on the swipe direction
-                    if (swipeDistance > 0) {
-                        startTiltAnimation(true)
-                        if (currentIdx < 0) {
-                            // do nothing
-                        } else {
-                            showLoading(true)
-                            val d = dateInterests[currentIdx]
-                            viewModel.updateDateInterest(
-                                d.interestID,
-                                d.dateID,
-                                "PENDING_TIME_APPROVAL",
-                            )
-                        }
-                    } else {
-                        startSecondTiltAnimation(true)
-                        if (currentIdx < 0) {
-                            // do nothing
-                        } else {
-                            val d = dateInterests[currentIdx]
-                            showLoading(true)
-                            viewModel.rejectDateInterest(
-                                d.interestID,
-                                d.dateID,
-                                "REJECTED",
-                            )
-                        }
-                    }
-                    true
-                }
-                else -> false
-            }
-        }
+//        binding.mainLyt.setOnTouchListener { _, event ->
+//            when (event.action) {
+//                MotionEvent.ACTION_DOWN -> {
+//                    // Save the initial touch position
+//                    binding.mainLyt.setTag(R.id.tag_touch_start_x, event.x)
+//                    true
+//                }
+//                MotionEvent.ACTION_UP -> {
+//                    // Calculate the swipe distance
+//                    val startX = binding.mainLyt.getTag(R.id.tag_touch_start_x) as Float
+//                    val endX = event.x
+//                    val swipeDistance = endX - startX
+//
+//                    // Apply the tilt animation based on the swipe direction
+//                    if (swipeDistance > 0) {
+//                        startTiltAnimation(true)
+//                        if (currentIdx < 0) {
+//                            // do nothing
+//                        } else {
+//                            showLoading(true)
+//                            val d = dateInterests[currentIdx]
+//                            viewModel.updateDateInterest(
+//                                d.interestID,
+//                                d.dateID,
+//                                "PENDING_TIME_APPROVAL",
+//                            )
+//                        }
+//                    } else {
+//                        startSecondTiltAnimation(true)
+//                        if (currentIdx < 0) {
+//                            // do nothing
+//                        } else {
+//                            val d = dateInterests[currentIdx]
+//                            showLoading(true)
+//                            viewModel.rejectDateInterest(
+//                                d.interestID,
+//                                d.dateID,
+//                                "REJECTED",
+//                            )
+//                        }
+//                    }
+//                    true
+//                }
+//                else -> false
+//            }
+//        }
     }
-
-//        binding.mainLyt.setOnTouchListener(object : OnSwipeTouchListener(ctx) {
-//            override fun onSwipeLeft() {
-//                view?.performClick()
-//                super.onSwipeLeft()
-//                if (currentIdx < 0) return
-//                val d = dateInterests[currentIdx]
-//                showLoading(true)
-//                viewModel.rejectDateInterest(
-//                    d.interestID, d.dateID, "REJECTED"
-//                )
-//            }
-//
-//
-//            override fun onSwipeRight() {
-//                view?.performClick()
-//                super.onSwipeRight()
-//                if (currentIdx < 0) return
-//                showLoading(true)
-//                val d = dateInterests[currentIdx]
-//                viewModel.updateDateInterest(d.interestID, d.dateID, "PENDING_TIME_APPROVAL")
-//            }
-//        })
-    // }
 
     private fun startTiltAnimation(isRightSwipe: Boolean) {
         val tiltAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.tilt_animation)
