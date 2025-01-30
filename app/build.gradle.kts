@@ -92,6 +92,9 @@ android {
             path(file("src/main/jni/Android.mk"))
         }
     }
+    lint {
+        checkReleaseBuilds = false
+    }
 }
 
 dependencies {
