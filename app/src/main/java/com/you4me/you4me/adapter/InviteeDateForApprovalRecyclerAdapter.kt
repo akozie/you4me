@@ -8,20 +8,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.you4me.you4me.utils.Utils
 import com.you4me.you4me.databinding.ApprovedDateItemBinding
 import com.you4me.you4me.models.InviteeDatesRequiringApproval
 import com.you4me.you4me.ui.main.MainViewModel
+import com.you4me.you4me.utils.Utils
 import java.util.Calendar
 
 class InviteeDateForApprovalRecyclerAdapter(
     private val dates: InviteeDatesRequiringApproval,
     private val viewModel: MainViewModel,
-    private val context: Context
+    private val context: Context,
 ) : RecyclerView.Adapter<InviteeDateForApprovalRecyclerAdapter.MyViewHolder>() {
     class MyViewHolder(val binding: ApprovedDateItemBinding) : RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): MyViewHolder {
         val v = ApprovedDateItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
         return MyViewHolder(v)
     }
@@ -36,16 +39,20 @@ class InviteeDateForApprovalRecyclerAdapter(
             0
         }
     }
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+
+    override fun onBindViewHolder(
+        holder: MyViewHolder,
+        position: Int,
+    ) {
         val date = dates[position]
         holder.binding.apply {
-           // name.text = date.name
+            // name.text = date.name
             location.text = "Cheers! Your date with ${date.name} is scheduled for ${date.date} at ${date.time}. Does this date and time work for you?"
-           // dateODate.text = "${date.date} : ${date.time}"
+            // dateODate.text = "${date.date} : ${date.time}"
 
             acceptBtn.setOnClickListener {
-                //accept
-                //update list and ui
+                // accept
+                // update list and ui
                 viewModel.updateDateInterest(date.interestId, date.dateId, "APPROVED")
                 dates.clear()
 //                dates.removeAt(position)
@@ -57,24 +64,26 @@ class InviteeDateForApprovalRecyclerAdapter(
                 newDateTimeLyt.visibility = View.VISIBLE
             }
             updateTimeBtn.setOnClickListener {
-                //propose new time
-                //update list and ui
+                // propose new time
+                // update list and ui
                 viewModel.proposeNewDateTime(
                     date.dateId,
                     date.interestId,
                     newDate.text.toString(),
-                    newTime.text.toString()
+                    newTime.text.toString(),
                 )
+                Log.d("DATE_TIME", "${newDate.text}===${newTime.text}")
                 dates.clear()
 //                dates.removeAt(position)
                 notifyItemRemoved(position)
             }
 
-            val time = TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
-                val hour = hourOfDay.toString().padStart(2, '0')
-                val minutePadded = minute.toString().padStart(2, '0')
-                newTime.text = "$hour:$minutePadded"
-            }
+            val time =
+                TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
+                    val hour = hourOfDay.toString().padStart(2, '0')
+                    val minutePadded = minute.toString().padStart(2, '0')
+                    newTime.text = "$hour:$minutePadded"
+                }
 
             newTime.setOnClickListener {
                 TimePickerDialog(context, time, 12, 0, true).show()
@@ -83,12 +92,13 @@ class InviteeDateForApprovalRecyclerAdapter(
             val calendar = Calendar.getInstance()
             newDate.text = Utils.getDateFormat().format(calendar.time)
             newTime.text = "12:00"
-            val datee = DatePickerDialog.OnDateSetListener { _, year, month, day ->
-                calendar.set(Calendar.YEAR, year)
-                calendar.set(Calendar.MONTH, month)
-                calendar.set(Calendar.DAY_OF_MONTH, day)
-                newDate.text = Utils.getDateFormat().format(calendar.time)
-            }
+            val datee =
+                DatePickerDialog.OnDateSetListener { _, year, month, day ->
+                    calendar.set(Calendar.YEAR, year)
+                    calendar.set(Calendar.MONTH, month)
+                    calendar.set(Calendar.DAY_OF_MONTH, day)
+                    newDate.text = Utils.getDateFormat().format(calendar.time)
+                }
 
             newDate.setOnClickListener {
                 DatePickerDialog(
@@ -96,7 +106,7 @@ class InviteeDateForApprovalRecyclerAdapter(
                     datee,
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
+                    calendar.get(Calendar.DAY_OF_MONTH),
                 ).show()
             }
         }

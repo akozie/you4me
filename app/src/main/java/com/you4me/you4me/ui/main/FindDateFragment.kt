@@ -1,6 +1,9 @@
 package com.you4me.you4me.ui.main
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +16,7 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
@@ -29,7 +33,6 @@ import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils.generateVideoThumbnail
 import com.you4me.you4me.utils.Utils.getCategoryFromString
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -64,10 +67,11 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         super.onViewCreated(view, savedInstanceState)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         val gson = Gson()
-        //  user = gson.fromJson(userProfile, User::class.java)
+        val user = gson.fromJson(userProfile, User::class.java)
         setupView()
         setupObservers()
         showBottomSheetDialog()
+        viewModel.getUserDetails(user.userId)
     }
 
     override fun onResume() {
@@ -88,7 +92,10 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                     val listOfImagesAndVideos = it.value
                     try {
                         // Your potentially crashing code (e.g., loading images, videos, etc.)
-                        loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                        if (isAdded() && getActivity() != null) {
+                            // Perform operations safely
+                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                        }
                     } catch (e: Exception) {
                         Log.e("MyApp", "Error loading data", e)
                     }
@@ -108,80 +115,101 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 binding.frame3,
                 binding.frame4,
             ) // Predefined ImageViews
+
         var isProfilePictureSet = false // Flag to check if profile picture is already set
 
-        CoroutineScope(Dispatchers.Main).launch {
-            // Run the heavy task on the IO thread
-            withContext(Dispatchers.Main) {
-                listOfImagesAndVideos.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
+        viewLifecycleOwner.lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                val validMedia = listOfImagesAndVideos.filter { it.fileURL.isNotEmpty() } // Remove empty URLs
+
+                validMedia.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
                     val frame = imageViews[index]
                     frame.isClickable = true
                     frame.isFocusable = true
 
-                    // Replace 'http' with 'https' for secure URLs
                     val secureUrl = fileData.fileURL.replace("http://", "https://")
 
                     if (getCategoryFromString(fileData.fileURL) == "image") {
-                        // Load image into FrameLayout
-                        val imageView = ImageView(requireActivity())
-                        imageView.layoutParams =
-                            FrameLayout.LayoutParams(
-                                FrameLayout.LayoutParams.MATCH_PARENT,
-                                FrameLayout.LayoutParams.MATCH_PARENT,
-                            )
-                        imageView.scaleType = ImageView.ScaleType.FIT_XY
+                        val imageView =
+                            ImageView(requireActivity()).apply {
+                                layoutParams =
+                                    FrameLayout.LayoutParams(
+                                        FrameLayout.LayoutParams.MATCH_PARENT,
+                                        FrameLayout.LayoutParams.MATCH_PARENT,
+                                    )
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                            }
 
-                        // Load image using Glide (this is still safe on the main thread since Glide handles threading internally)
-                        Glide.with(requireActivity())
-                            .load(secureUrl)
-                            .into(imageView)
-
-                        // Add to FrameLayout in the main thread
                         withContext(Dispatchers.Main) {
-                            frame.addView(imageView)
-                            if (!isProfilePictureSet) {
-                                isProfilePictureSet = true // Mark profile picture as set
+                            if (isAdded) {
                                 Glide.with(requireActivity())
-                                    .load(fileData.fileURL) // URL of the first image
-                                    .circleCrop()
-                                    .into(binding.imageView)
-                                binding.imageView.scaleType = ImageView.ScaleType.FIT_XY
+                                    .load(secureUrl)
+                                    .into(imageView)
+                                frame.addView(imageView)
+
+                                if (!isProfilePictureSet) {
+                                    isProfilePictureSet = true
+                                    Glide.with(requireActivity())
+                                        .load(fileData.fileURL)
+                                        .override(
+                                            com.bumptech.glide.request.target.Target.SIZE_ORIGINAL,
+                                            com.bumptech.glide.request.target.Target.SIZE_ORIGINAL,
+                                        )
+                                        .into(binding.imageView)
+                                    binding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                                }
                             }
                         }
                     } else if (getCategoryFromString(fileData.fileURL) == "video") {
-                        // Load video thumbnail into FrameLayout
-                        val thumbnailView = ImageView(requireContext())
-                        thumbnailView.layoutParams =
-                            FrameLayout.LayoutParams(
-                                FrameLayout.LayoutParams.MATCH_PARENT,
-                                FrameLayout.LayoutParams.MATCH_PARENT,
-                            )
-                        thumbnailView.scaleType = ImageView.ScaleType.FIT_XY
+                        val thumbnailView =
+                            ImageView(requireContext()).apply {
+                                layoutParams =
+                                    FrameLayout.LayoutParams(
+                                        FrameLayout.LayoutParams.MATCH_PARENT,
+                                        FrameLayout.LayoutParams.MATCH_PARENT,
+                                    )
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                            }
 
-                        // Generate thumbnail using MediaMetadataRetriever in the background
                         val bitmap = generateVideoThumbnail(secureUrl)
 
-                        // Add thumbnail to FrameLayout in the main thread
                         withContext(Dispatchers.Main) {
-                            if (bitmap != null) {
+                            if (isAdded && bitmap != null) {
                                 thumbnailView.setImageBitmap(bitmap)
+                                frame.addView(thumbnailView)
                             }
-                            frame.addView(thumbnailView)
                         }
                     }
 
-                    // Add a click listener to the frame
                     withContext(Dispatchers.Main) {
-                        frame.setOnClickListener {
-                            if (fileData.fileURL.isEmpty()) {
-//                                showLoading(true)
-                                return@setOnClickListener
+                        if (isAdded) {
+                            frame.setOnClickListener {
+                                if (fileData.fileURL.isEmpty()) return@setOnClickListener
+                                openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
                             }
-                            openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
                         }
                     }
                 }
+
+                // Remove unused frames on the Main thread
+                withContext(Dispatchers.Main) {
+                    imageViews.drop(validMedia.size).forEach { frame ->
+                        frame.removeAllViews()
+                        frame.visibility = View.GONE
+                    }
+                }
             }
+        }
+    }
+
+    private fun generateVideoThumbnail(videoUrl: String): Bitmap? {
+        return try {
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(videoUrl, HashMap())
+            retriever.frameAtTime
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 
@@ -448,16 +476,24 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 }
             }
         }
-        viewModel.user.observe(viewLifecycleOwner) {
-            // Log.d("OK_FUNNY_GIRL", user.userId)
-            if (it.status == "incomplete") {
-                binding.completeProfileLayout.visibility = View.VISIBLE
-                binding.constraintLayout2.visibility = View.GONE
-                return@observe
-            } else {
-                binding.completeProfileLayout.visibility = View.GONE
-                //  Log.d("FUNNY_GIRL", user.userId)
-                viewModel.fetchDates()
+        viewModel.existingUser.observe(viewLifecycleOwner) {
+            Log.d("OK_FUNNY_GIRL", "$it")
+            when (it) {
+                is Resource.Success -> {
+                    if (it.value.status == "incomplete") {
+                        binding.completeProfileLayout.visibility = View.VISIBLE
+                        binding.constraintLayout2.visibility = View.GONE
+                        return@observe
+                    } else {
+                        binding.completeProfileLayout.visibility = View.GONE
+                        //  Log.d("FUNNY_GIRL", user.userId)
+                        viewModel.fetchDates()
+                    }
+                }
+
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
             }
         }
         viewModel.addDateInterest.observe(viewLifecycleOwner) {
@@ -560,20 +596,39 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
     }
 
     private fun showBottomSheetDialog() {
-        // Create the BottomSheetDialog
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val sharedPreferences = requireContext().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val hasDialogBeenShown = sharedPreferences.getBoolean("bottom_sheet_shown", false)
 
-        // Inflate the layout for the dialog
-        val view = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout, null)
+        if (!hasDialogBeenShown) {
+            // Create the BottomSheetDialog
+            val bottomSheetDialog = BottomSheetDialog(requireContext())
 
-        // Set up click listeners for actions inside the BottomSheetDialog
-        view.findViewById<TextView>(R.id.okButton).setOnClickListener {
-            // Perform some action
-            bottomSheetDialog.dismiss()
+            // Inflate the layout for the dialog
+            val view = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout, null)
+
+            // Set up click listeners for actions inside the BottomSheetDialog
+            view.findViewById<TextView>(R.id.okButton).setOnClickListener {
+                // Perform some action
+                bottomSheetDialog.dismiss()
+            }
+
+            // Dismiss dialog when clicking outside
+            bottomSheetDialog.setOnDismissListener {
+                // Update the flag in SharedPreferences
+                with(sharedPreferences.edit()) {
+                    putBoolean("bottom_sheet_shown", true)
+                    apply()
+                }
+            }
+
+            // Set the content view and show the dialog
+            bottomSheetDialog.setContentView(view)
+            bottomSheetDialog.show()
         }
+    }
 
-        // Set the content view and show the dialog
-        bottomSheetDialog.setContentView(view)
-        bottomSheetDialog.show()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Cancel any ongoing tasks
     }
 }

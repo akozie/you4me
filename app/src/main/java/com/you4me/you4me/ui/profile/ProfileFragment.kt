@@ -10,6 +10,8 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -28,7 +30,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
@@ -48,7 +50,6 @@ import com.you4me.you4me.utils.Utils
 import com.you4me.you4me.utils.Utils.BANNER_TIMEOUT
 import com.you4me.you4me.utils.Utils.generateVideoThumbnail
 import com.you4me.you4me.utils.Utils.getCategoryFromString
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -157,7 +158,10 @@ class ProfileFragment :
                     val listOfImagesAndVideos = it.value
                     try {
                         // Your potentially crashing code (e.g., loading images, videos, etc.)
-                        loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                        if (isAdded() && getActivity() != null) {
+                            // Perform operations safely
+                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                        }
                     } catch (e: Exception) {
                         Log.e("MyApp", "Error loading data", e)
                     }
@@ -170,148 +174,140 @@ class ProfileFragment :
     }
 
     private fun addObservers() {
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            viewModel.ageGroups.observe(viewLifecycleOwner) {
-                when (it) {
-                    is Resource.Success -> {
-                        agePreferences = it.value
-                        setupSpinner(it.value, AGE_GROUP_SPINNER)
-                    }
+        viewModel.ageGroups.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    agePreferences = it.value
+                    setupSpinner(it.value, AGE_GROUP_SPINNER)
+                }
 
-                    is Resource.Failure -> {
-                    }
+                is Resource.Failure -> {
                 }
             }
-            viewModel.religions.observe(viewLifecycleOwner) {
-                when (it) {
-                    is Resource.Success -> {
-                        religions = it.value
-                        setupSpinner(it.value, RELIGION_PREFERENCE_SPINNER)
-                    }
+        }
+        viewModel.religions.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    religions = it.value
+                    setupSpinner(it.value, RELIGION_PREFERENCE_SPINNER)
+                }
 
-                    is Resource.Failure -> {
-                    }
+                is Resource.Failure -> {
                 }
             }
-            viewModel.countries.observe(viewLifecycleOwner) {
-                when (it) {
-                    is Resource.Success -> {
-                        countries = it.value
-                        setupSpinner(it.value, COUNTRY_SPINNER)
-                    }
+        }
+        viewModel.countries.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    countries = it.value
+                    setupSpinner(it.value, COUNTRY_SPINNER)
+                }
 
-                    is Resource.Failure -> {
-                    }
+                is Resource.Failure -> {
                 }
             }
-            viewModel.sexualOrientations.observe(viewLifecycleOwner) {
-                when (it) {
-                    is Resource.Success -> {
-                        sexualOrientations = it.value
-                        setupSpinner(it.value, SEXUAL_ORIENTATION_SPINNER)
-                        Log.d("GENDERRRR", "${it.value[0].value}")
-                        binding.genderLabel.visibility =
-                            if (it.value[0].value == "4") View.VISIBLE else View.GONE
-                        binding.genderSpinner.visibility =
-                            if (it.value[0].value == "4") View.VISIBLE else View.GONE
-                        binding.divider8.visibility =
-                            if (it.value[0].value == "4") View.VISIBLE else View.GONE
-                    }
+        }
+        viewModel.sexualOrientations.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    sexualOrientations = it.value
+                    setupSpinner(it.value, SEXUAL_ORIENTATION_SPINNER)
+                    Log.d("GENDERRRR", "${it.value[0].value}")
+                    binding.genderLabel.visibility =
+                        if (it.value[0].value == "4") View.VISIBLE else View.GONE
+                    binding.genderSpinner.visibility =
+                        if (it.value[0].value == "4") View.VISIBLE else View.GONE
+                    binding.divider8.visibility =
+                        if (it.value[0].value == "4") View.VISIBLE else View.GONE
+                }
 
-                    is Resource.Failure -> {
-                    }
+                is Resource.Failure -> {
                 }
             }
-            viewModel.states.observe(viewLifecycleOwner) {
-                when (it) {
-                    is Resource.Success -> {
-                        states = it.value
-                        if (it.value.isNotEmpty()) setupSpinner(it.value, STATE_SPINNER)
-                    }
+        }
+        viewModel.states.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    states = it.value
+                    if (it.value.isNotEmpty()) setupSpinner(it.value, STATE_SPINNER)
+                }
 
-                    is Resource.Failure -> {
-                    }
+                is Resource.Failure -> {
                 }
             }
-            viewModel.genders.observe(viewLifecycleOwner) {
-                when (it) {
-                    is Resource.Success -> {
-                        genders = it.value
-                        setupSpinner(it.value, GENDER_SPINNER)
-                    }
+        }
+        viewModel.genders.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    genders = it.value
+                    setupSpinner(it.value, GENDER_SPINNER)
+                }
 
-                    is Resource.Failure -> {
-                    }
+                is Resource.Failure -> {
                 }
             }
-            viewModel.updateUserResponse.observe(viewLifecycleOwner) {
-                showLoader(false)
-                when (it) {
-                    is Resource.Success -> {
-                        showToast("Profile Update Successful")
-                        viewModel.updateUser(updateBody)
-                    }
+        }
+        viewModel.updateUserResponse.observe(viewLifecycleOwner) {
+            showLoader(false)
+            when (it) {
+                is Resource.Success -> {
+                    showToast("Profile Update Successful")
+                    viewModel.updateUser(updateBody)
+                }
 
-                    is Resource.Failure -> {
-                        showAlertDialog(
-                            requireContext(),
-                            it.message ?: it.errorBody ?: "", "OK"
-                        ) {}
-                    }
+                is Resource.Failure -> {
+                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
                 }
             }
-            viewModel.validateVideoUpload.observe(viewLifecycleOwner) {
-                when (it) {
-                    is Resource.Success -> {
+        }
+        viewModel.validateVideoUpload.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
 //                    binding.videoBannerLayout.isVisible = true
 //                    binding.profileLayout.isVisible = false
 //                    showVideoRegulationsDialog()
-                        openGallery()
-                    }
+                    openGallery()
+                }
 
-                    is Resource.Failure -> {
-                        showLoader(false)
-                        if (it.errorCode == 400) {
-                            showToast("You already uploaded a video")
-                        } else {
-                            showAlertDialog(
-                                requireContext(),
-                                it.message ?: it.errorBody ?: "", "OK"
-                            ) {}
-                        }
+                is Resource.Failure -> {
+                    showLoader(false)
+                    if (it.errorCode == 400) {
+                        showToast("You already uploaded a video")
+                    } else {
+                        showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
                     }
                 }
             }
-            viewModel.registerVideoUploadResponse.observe(viewLifecycleOwner) {
-                when (it) {
-                    is Resource.Success -> {
-                        showLoader(true)
-                        viewModel.uploadVideo(videoUri!!, videoId)
-                    }
+        }
+        viewModel.registerVideoUploadResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    showLoader(true)
+                    viewModel.uploadVideo(videoUri!!, videoId)
+                }
 
-                    is Resource.Failure -> {
-                        showLoader(false)
-                    }
+                is Resource.Failure -> {
+                    showLoader(false)
                 }
             }
-            viewModel.uploadVideoCloudinaryResponse.observe(viewLifecycleOwner) {
-                showLoader(true)
-                viewModel.updateVideoUrl(it.public_id, it.url)
-            }
-            viewModel.updateVideoUrlResponse.observe(viewLifecycleOwner) {
-                when (it) {
-                    is Resource.Success -> {
-                        showToast("Uploaded Successfully")
+        }
+        viewModel.uploadVideoCloudinaryResponse.observe(viewLifecycleOwner) {
+            showLoader(true)
+            viewModel.updateVideoUrl(it.public_id, it.url)
+        }
+        viewModel.updateVideoUrlResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    showToast("Uploaded Successfully")
 //                    videoViewBinding.videoView.setVideoURI(videoUri)
 //                    initializePlayer()
-                        showLoader(true)
-                        binding.root.isVisible = true
-                        binding.profileLayout.isVisible = true
-                        getImages()
-                    }
-
-                    is Resource.Failure -> {}
+                    showLoader(true)
+                    binding.root.isVisible = true
+                    binding.profileLayout.isVisible = true
+                    getImages()
                 }
+
+                is Resource.Failure -> {}
             }
         }
     }
@@ -482,196 +478,190 @@ class ProfileFragment :
             }.toMutableList()
         names.add(0, "Select")
 
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            ArrayAdapter(
-                requireContext(),
-                R.layout.spinner_item_layout,
-                names,
-            ).also { adapter ->
-                when (spinner) {
-                    SEXUAL_ORIENTATION_SPINNER -> {
-                        binding.sexualOrientationSpinner.adapter = adapter
-                        binding.sexualOrientationSpinner.setSelection(sexualOrientations.indexOfFirst { it.value == sexualOrientation } + 1)
-                    }
+        ArrayAdapter(
+            requireContext(),
+            R.layout.spinner_item_layout,
+            names,
+        ).also { adapter ->
+            when (spinner) {
+                SEXUAL_ORIENTATION_SPINNER -> {
+                    binding.sexualOrientationSpinner.adapter = adapter
+                    binding.sexualOrientationSpinner.setSelection(sexualOrientations.indexOfFirst { it.value == sexualOrientation } + 1)
+                }
 
-                    AGE_GROUP_SPINNER -> {
-                        binding.agePreferenceSpinner.adapter = adapter
-                        binding.agePreferenceSpinner.setSelection(agePreferences.indexOfFirst { it.value == agePreferred } + 1)
-                    }
+                AGE_GROUP_SPINNER -> {
+                    binding.agePreferenceSpinner.adapter = adapter
+                    binding.agePreferenceSpinner.setSelection(agePreferences.indexOfFirst { it.value == agePreferred } + 1)
+                }
 
-                    COUNTRY_SPINNER -> {
-                        binding.countrySpinner.adapter = adapter
-                        binding.countrySpinner.setSelection(countries.indexOfFirst { it.value == country } + 1)
-                    }
+                COUNTRY_SPINNER -> {
+                    binding.countrySpinner.adapter = adapter
+                    binding.countrySpinner.setSelection(countries.indexOfFirst { it.value == country } + 1)
+                }
 
 //                This comment was left here by SEUN......
 
-                    STATE_SPINNER -> {
-                        binding.stateSpinner.adapter = adapter
-                        binding.stateSpinner.setSelection(states.indexOfFirst { it.value == state } + 1)
-                    }
+                STATE_SPINNER -> {
+                    binding.stateSpinner.adapter = adapter
+                    binding.stateSpinner.setSelection(states.indexOfFirst { it.value == state } + 1)
+                }
 
-                    GENDER_SPINNER -> {
-                        binding.genderSpinner.adapter = adapter
-                        binding.genderSpinner.setSelection(genders.indexOfFirst { it.value == gender } + 1)
-                    }
+                GENDER_SPINNER -> {
+                    binding.genderSpinner.adapter = adapter
+                    binding.genderSpinner.setSelection(genders.indexOfFirst { it.value == gender } + 1)
+                }
 
-                    RELIGION_PREFERENCE_SPINNER -> {
-                        binding.religionPreferenceSpinner.adapter = adapter
-                        binding.religionPreferenceSpinner.setSelection(religions.indexOfFirst { it.value == religionPreferred } + 1)
-                    }
+                RELIGION_PREFERENCE_SPINNER -> {
+                    binding.religionPreferenceSpinner.adapter = adapter
+                    binding.religionPreferenceSpinner.setSelection(religions.indexOfFirst { it.value == religionPreferred } + 1)
                 }
             }
         }
     }
 
     private fun setupView() {
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            videoViewBinding = VideoDialogBinding.inflate(layoutInflater, null, false)
-            binding.btnPlay.visibility = View.GONE
-            binding.divider7.visibility = View.GONE
-            calendar = Calendar.getInstance()
-            binding.dob.inputType = InputType.TYPE_NULL
-            val date =
-                OnDateSetListener { _, year, month, day ->
-                    calendar.set(Calendar.YEAR, year)
-                    calendar.set(Calendar.MONTH, month)
-                    calendar.set(Calendar.DAY_OF_MONTH, day)
-                    updateDateOfBirth()
-                }
-
-            binding.dob.setOnClickListener {
-                DatePickerDialog(
-                    requireContext(),
-                    date,
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH),
-                ).show()
+        videoViewBinding = VideoDialogBinding.inflate(layoutInflater, null, false)
+        binding.btnPlay.visibility = View.GONE
+        binding.divider7.visibility = View.GONE
+        calendar = Calendar.getInstance()
+        binding.dob.inputType = InputType.TYPE_NULL
+        val date =
+            OnDateSetListener { _, year, month, day ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, day)
+                updateDateOfBirth()
             }
 
-            binding.btnPlay.setOnClickListener {
+        binding.dob.setOnClickListener {
+            DatePickerDialog(
+                requireContext(),
+                date,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH),
+            ).show()
+        }
+
+        binding.btnPlay.setOnClickListener {
 //            if (videoUri == null) {
 //                showToast("please upload a video")
 //                return@setOnClickListener
 //            } else {
-                showVideoDialog()
+            showVideoDialog()
 //            }
+        }
+
+        activityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Activity.RESULT_OK) {
+                    videoUri = it.data?.data ?: return@registerForActivityResult
+                    if (validateMedia(videoUri!!)) {
+                        videoId = UUID.randomUUID().toString()
+                        showLoader(true)
+
+                        viewModel.registerVideoUpload(
+                            RegisterVideoUploadBody(
+                                "$videoUri",
+                                user.userId,
+                                videoId,
+                                getCategoryFromUri(requireContext(), videoUri!!),
+                            ),
+                        )
+                    } else {
+                        showDialog("Video duration must not be longer than 30 seconds")
+                    }
+                }
             }
 
-            activityResultLauncher =
-                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                    if (it.resultCode == Activity.RESULT_OK) {
-                        videoUri = it.data?.data ?: return@registerForActivityResult
-                        if (validateMedia(videoUri!!)) {
-                            videoId = UUID.randomUUID().toString()
-                            showLoader(true)
+        recordVideoLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    // Handle the recorded video URI (e.g., upload it to your server or save it locally)
+                    videoUri = result.data?.data ?: return@registerForActivityResult
+                    if (validateMedia(videoUri!!)) {
+                        videoId = UUID.randomUUID().toString()
+                        showLoader(true)
 
-                            viewModel.registerVideoUpload(
-                                RegisterVideoUploadBody(
-                                    "$videoUri",
-                                    user.userId,
-                                    videoId,
-                                    getCategoryFromUri(requireContext(), videoUri!!),
-                                ),
-                            )
-                        } else {
-                            showDialog("Video duration must not be longer than 30 seconds")
-                        }
+                        viewModel.registerVideoUpload(
+                            RegisterVideoUploadBody(
+                                "$videoUri",
+                                user.userId,
+                                videoId,
+                                getCategoryFromUri(requireContext(), videoUri!!),
+                            ),
+                        )
+                    } else {
+                        showDialog("Video duration must not be longer than 30 seconds")
                     }
                 }
-
-            recordVideoLauncher =
-                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                    if (result.resultCode == Activity.RESULT_OK) {
-                        // Handle the recorded video URI (e.g., upload it to your server or save it locally)
-                        videoUri = result.data?.data ?: return@registerForActivityResult
-                        if (validateMedia(videoUri!!)) {
-                            videoId = UUID.randomUUID().toString()
-                            showLoader(true)
-
-                            viewModel.registerVideoUpload(
-                                RegisterVideoUploadBody(
-                                    "$videoUri",
-                                    user.userId,
-                                    videoId,
-                                    getCategoryFromUri(requireContext(), videoUri!!),
-                                ),
-                            )
-                        } else {
-                            showDialog("Video duration must not be longer than 30 seconds")
-                        }
-                    }
-                }
-
-            binding.logout.setOnClickListener {
-                val alertDialog = AlertDialog.Builder(ctx)
-                alertDialog.setTitle("Log out?")
-                alertDialog.setPositiveButton("Cancel") { dialog, int ->
-                    dialog.dismiss()
-                }
-                alertDialog.setNegativeButton("Log out") { dialog, int ->
-                    viewModel.logout(user.userId)
-                    viewModel.logoutResponse.observe(viewLifecycleOwner) {
-                        when (it) {
-                            is Resource.Success -> {
-                                showToast("Account logged out successfully!")
-                                sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, false)
-                                // change shared pref to is logged out
-                                val intent =
-                                    Intent(requireContext(), AuthenticationActivity::class.java)
-                                startActivity(intent)
-                                requireActivity().finish()
-                            }
-
-                            is Resource.Failure -> {
-                                dialog.dismiss()
-                                showAlertDialog(
-                                    requireContext(),
-                                    it.message ?: it.errorBody ?: "",
-                                    "OK",
-                                ) {}
-                            }
-                        }
-                    }
-                }
-                alertDialog.setCancelable(false)
-                alertDialog.show()
             }
-            binding.deleteAccLyt.setOnClickListener {
-                val alertDialog = AlertDialog.Builder(ctx)
-                alertDialog.setTitle("Delete account?")
-                alertDialog.setMessage("Selecting delete will delete your account forever. This action is not reversible")
-                alertDialog.setPositiveButton("Cancel") { dialog, int ->
-                    dialog.dismiss()
-                }
-                alertDialog.setNegativeButton("Delete") { dialog, int ->
-                    dialog.dismiss()
-                    val dialogg = showDialog("Please wait", false)
-                    viewModel.deleteUser(user.userId)
-                    viewModel.deleteUserResponse.observe(viewLifecycleOwner) {
-                        dialogg.dismiss()
-                        when (it) {
-                            is Resource.Success -> {
-                                showToast("Account Deleted Successfully!", Toast.LENGTH_LONG)
-                                sharedPrefHelper.clearTempPreferences()
-                                dialog.dismiss()
-                                requireActivity().finish()
-                            }
 
-                            is Resource.Failure -> {
-                                dialog.dismiss()
-                                showAlertDialog(
-                                    requireContext(),
-                                    it.message ?: it.errorBody ?: "",
-                                    "OK",
-                                ) {}
-                            }
+        binding.logout.setOnClickListener {
+            val alertDialog = AlertDialog.Builder(ctx)
+            alertDialog.setTitle("Log out?")
+            alertDialog.setPositiveButton("Cancel") { dialog, int ->
+                dialog.dismiss()
+            }
+            alertDialog.setNegativeButton("Log out") { dialog, int ->
+                viewModel.logout(user.userId)
+                viewModel.logoutResponse.observe(viewLifecycleOwner) {
+                    when (it) {
+                        is Resource.Success -> {
+                            showToast("Account logged out successfully!")
+                            sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, false)
+                            // change shared pref to is logged out
+                            val intent =
+                                Intent(requireContext(), AuthenticationActivity::class.java)
+                            startActivity(intent)
+                            requireActivity().finish()
+                        }
+                        is Resource.Failure -> {
+                            dialog.dismiss()
+                            showAlertDialog(
+                                requireContext(),
+                                it.message ?: it.errorBody ?: "",
+                                "OK",
+                            ) {}
                         }
                     }
                 }
-                alertDialog.show()
             }
+            alertDialog.setCancelable(false)
+            alertDialog.show()
+        }
+        binding.deleteAccLyt.setOnClickListener {
+            val alertDialog = AlertDialog.Builder(ctx)
+            alertDialog.setTitle("Delete account?")
+            alertDialog.setMessage("Selecting delete will delete your account forever. This action is not reversible")
+            alertDialog.setPositiveButton("Cancel") { dialog, int ->
+                dialog.dismiss()
+            }
+            alertDialog.setNegativeButton("Delete") { dialog, int ->
+                dialog.dismiss()
+                val dialogg = showDialog("Please wait", false)
+                viewModel.deleteUser(user.userId)
+                viewModel.deleteUserResponse.observe(viewLifecycleOwner) {
+                    dialogg.dismiss()
+                    when (it) {
+                        is Resource.Success -> {
+                            showToast("Account Deleted Successfully!", Toast.LENGTH_LONG)
+                            sharedPrefHelper.clearTempPreferences()
+                            dialog.dismiss()
+                            requireActivity().finish()
+                        }
+                        is Resource.Failure -> {
+                            dialog.dismiss()
+                            showAlertDialog(
+                                requireContext(),
+                                it.message ?: it.errorBody ?: "",
+                                "OK",
+                            ) {}
+                        }
+                    }
+                }
+            }
+            alertDialog.show()
         }
     }
 
@@ -680,99 +670,105 @@ class ProfileFragment :
     // Suspend function to generate video thumbnail in background
 // Call this function from the UI thread, like in your onViewCreated or onStart
     private fun loadImagesAndVideosInBackground(listOfImagesAndVideos: ImagesVideosResponse) {
-
         val imageViews =
             listOf(
                 binding.frame1,
                 binding.frame2,
                 binding.frame3,
                 binding.frame4,
-                binding.frame5,
-                binding.frame6,
             ) // Predefined ImageViews
+
         var isProfilePictureSet = false // Flag to check if profile picture is already set
 
-        CoroutineScope(Dispatchers.Main).launch {
+        // Use viewLifecycleOwner.lifecycleScope to tie coroutine lifecycle to the fragment's view
+        viewLifecycleOwner.lifecycleScope.launch {
             // Run the heavy task on the IO thread
-            withContext(Dispatchers.Main) {
-                if (binding != null) {
-                    listOfImagesAndVideos.take(imageViews.size).asReversed()
-                        .forEachIndexed { index, fileData ->
-                            val frame = imageViews[index]
-                            frame.isClickable = true
-                            frame.isFocusable = true
+            withContext(Dispatchers.IO) {
+                listOfImagesAndVideos.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
+                    val frame = imageViews[index]
+                    frame.isClickable = true
+                    frame.isFocusable = true
 
-                            // Replace 'http' with 'https' for secure URLs
-                            val secureUrl = fileData.fileURL.replace("http://", "https://")
+                    // Replace 'http' with 'https' for secure URLs
+                    val secureUrl = fileData.fileURL.replace("http://", "https://")
 
-                            if (getCategoryFromString(fileData.fileURL) == "image") {
-                                // Load image into FrameLayout
-                                val imageView = ImageView(requireActivity())
-
-                                imageView.layoutParams =
+                    if (getCategoryFromString(fileData.fileURL) == "image") {
+                        // Load image into FrameLayout
+                        val imageView =
+                            ImageView(requireActivity()).apply {
+                                layoutParams =
                                     FrameLayout.LayoutParams(
                                         FrameLayout.LayoutParams.MATCH_PARENT,
                                         FrameLayout.LayoutParams.MATCH_PARENT,
                                     )
-                                imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                            }
 
-                                // Load image using Glide (this is still safe on the main thread since Glide handles threading internally)
-
+                        // Load image using Glide
+                        withContext(Dispatchers.Main) {
+                            if (isAdded) {
                                 Glide.with(requireActivity())
                                     .load(secureUrl)
                                     .into(imageView)
+                                frame.addView(imageView)
 
-                                // Add to FrameLayout in the main thread
-                                withContext(Dispatchers.Main) {
-                                    frame.addView(imageView)
-                                    if (!isProfilePictureSet) {
-                                        isProfilePictureSet =
-                                            true // Mark profile picture as set
-                                        Glide.with(requireActivity())
-                                            .load(fileData.fileURL) // URL of the first image
-                                            .circleCrop()
-                                            .into(binding.profilePicture)
-                                    }
+                                if (!isProfilePictureSet) {
+                                    isProfilePictureSet = true // Mark profile picture as set
+                                    Glide.with(requireActivity())
+                                        .load(fileData.fileURL)
+                                        .circleCrop()
+                                        .into(binding.profilePicture)
+                                    binding.profilePicture.scaleType = ImageView.ScaleType.CENTER_CROP
                                 }
-                            } else if (getCategoryFromString(fileData.fileURL) == "video") {
-                                // Load video thumbnail into FrameLayout
-                                val thumbnailView = ImageView(requireContext())
-                                thumbnailView.layoutParams =
+                            }
+                        }
+                    } else if (getCategoryFromString(fileData.fileURL) == "video") {
+                        val thumbnailView =
+                            ImageView(requireContext()).apply {
+                                layoutParams =
                                     FrameLayout.LayoutParams(
                                         FrameLayout.LayoutParams.MATCH_PARENT,
                                         FrameLayout.LayoutParams.MATCH_PARENT,
                                     )
-                                thumbnailView.scaleType = ImageView.ScaleType.CENTER_CROP
-
-                                // Generate thumbnail using MediaMetadataRetriever in the background
-                                val bitmap = generateVideoThumbnail(secureUrl)
-
-                                // Add thumbnail to FrameLayout in the main thread
-                                withContext(Dispatchers.Main) {
-                                    if (bitmap != null) {
-                                        thumbnailView.setImageBitmap(bitmap)
-                                    }
-                                    frame.addView(thumbnailView)
-                                }
+                                scaleType = ImageView.ScaleType.CENTER_CROP
                             }
 
-                            // Add a click listener to the frame
-                            withContext(Dispatchers.Main) {
-                                frame.setOnClickListener {
-                                    if (fileData.fileURL.isEmpty()) {
-                                        showLoader(true)
-                                        viewModel.validateVideoUpload()
-                                    }
-                                    openDetailScreen(
-                                        secureUrl,
-                                        getCategoryFromString(fileData.fileURL),
-                                        fileData.videoId
-                                    )
-                                }
+                        // Generate thumbnail using MediaMetadataRetriever
+                        val bitmap = generateVideoThumbnail(secureUrl)
+
+                        withContext(Dispatchers.Main) {
+                            if (isAdded && bitmap != null) {
+                                thumbnailView.setImageBitmap(bitmap)
+                                frame.addView(thumbnailView)
                             }
                         }
+                    }
+
+                    // Add a click listener to the frame
+                    withContext(Dispatchers.Main) {
+                        if (isAdded) {
+                            frame.setOnClickListener {
+                                if (fileData.fileURL.isEmpty()) {
+                                    // showLoading(true)
+                                    return@setOnClickListener
+                                }
+                                openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
+                            }
+                        }
+                    }
                 }
             }
+        }
+    }
+
+    private fun generateVideoThumbnail(videoUrl: String): Bitmap? {
+        return try {
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(videoUrl, HashMap())
+            retriever.frameAtTime
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 
@@ -790,9 +786,7 @@ class ProfileFragment :
                 "",
                 videoId,
             )
-        val action = ProfileFragmentDirections.actionProfileFragmentToImageAndVideoDetailsFragment(
-            imagesVideosResponseItem
-        )
+        val action = ProfileFragmentDirections.actionProfileFragmentToImageAndVideoDetailsFragment(imagesVideosResponseItem)
         findNavController().navigate(action)
     }
 
@@ -892,18 +886,16 @@ class ProfileFragment :
     }
 
     private fun showVideoOptionsDialog() {
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            val options = arrayOf("Record Video", "Open Gallery")
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle("Add Video")
-            builder.setItems(options) { dialog, which ->
-                when (which) {
-                    0 -> recordVideo()
-                    1 -> openGalleryy(1)
-                }
+        val options = arrayOf("Record Video", "Open Gallery")
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Add Video")
+        builder.setItems(options) { dialog, which ->
+            when (which) {
+                0 -> recordVideo()
+                1 -> openGalleryy(1)
             }
-            builder.show()
         }
+        builder.show()
     }
 
     private fun recordVideo() {
@@ -921,10 +913,7 @@ class ProfileFragment :
         val intent =
             Intent(Intent.ACTION_PICK, MediaStore.Files.getContentUri("external")).apply {
                 type = "*/*" // Allow all media types
-                putExtra(
-                    Intent.EXTRA_MIME_TYPES,
-                    arrayOf("image/*", "video/*")
-                ) // Filter for images and videos
+                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*")) // Filter for images and videos
             }
         activityResultLauncher.launch(intent)
     }
@@ -955,7 +944,10 @@ class ProfileFragment :
                     try {
                         showLoader(false)
                         // Your potentially crashing code (e.g., loading images, videos, etc.)
-                        loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                        if (isAdded() && getActivity() != null) {
+                            // Perform operations safely
+                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                        }
                     } catch (e: Exception) {
                         Log.e("MyApp", "Error loading data", e)
                     }
@@ -991,34 +983,23 @@ class ProfileFragment :
         )
 
     private fun checkAndRequestPermissions() {
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (permissions.any {
-                        ContextCompat.checkSelfPermission(
-                            requireContext(),
-                            it
-                        ) != PackageManager.PERMISSION_GRANTED
-                    }) {
-                    ActivityCompat.requestPermissions(
-                        requireActivity(), permissions,
-                        PERMISSION_REQUEST_CODE
-                    )
-                }
-            } else {
-                if (ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    ActivityCompat.requestPermissions(
-                        requireActivity(),
-                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                        PERMISSION_REQUEST_CODE,
-                    )
-                }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (permissions.any { ContextCompat.checkSelfPermission(requireContext(), it) != PackageManager.PERMISSION_GRANTED }) {
+                ActivityCompat.requestPermissions(requireActivity(), permissions, PERMISSION_REQUEST_CODE)
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    PERMISSION_REQUEST_CODE,
+                )
             }
         }
-
     }
 
     override fun onRequestPermissionsResult(
@@ -1026,17 +1007,11 @@ class ProfileFragment :
         permissions: Array<out String>,
         grantResults: IntArray,
     ) {
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            if (requestCode == PERMISSION_REQUEST_CODE) {
-                if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                    // Permissions granted
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Permissions are required to access media files.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                // Permissions granted
+            } else {
+                Toast.makeText(requireContext(), "Permissions are required to access media files.", Toast.LENGTH_SHORT).show()
             }
         }
     }

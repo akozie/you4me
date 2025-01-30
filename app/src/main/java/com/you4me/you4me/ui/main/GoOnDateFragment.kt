@@ -14,7 +14,6 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.you4me.you4me.utils.Utils
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentGoOnDateBinding
 import com.you4me.you4me.models.ValueLabelResponse
@@ -22,13 +21,13 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.Utils
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
 class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, MainRepository>() {
-
     private lateinit var calendar: Calendar
     private lateinit var dateFormat: SimpleDateFormat
 
@@ -36,7 +35,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
 
     private val startAutoComplete =
         registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
+            ActivityResultContracts.StartActivityForResult(),
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent = result.data
@@ -51,7 +50,10 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
             }
         }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setupObservers()
@@ -65,12 +67,13 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
         calendar = Calendar.getInstance()
         updateProposedDate()
         binding.time.text = "12:00"
-        val date = DatePickerDialog.OnDateSetListener { _, year, month, day ->
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.MONTH, month)
-            calendar.set(Calendar.DAY_OF_MONTH, day)
-            updateProposedDate()
-        }
+        val date =
+            DatePickerDialog.OnDateSetListener { _, year, month, day ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, day)
+                updateProposedDate()
+            }
 
         binding.date.setOnClickListener {
             DatePickerDialog(
@@ -78,15 +81,16 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                 date,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                calendar.get(Calendar.DAY_OF_MONTH),
             ).show()
         }
 
-        val time = TimePickerDialog.OnTimeSetListener { timePicker, i, i2 ->
-            val hour = i.toString().padStart(2, '0')
-            val minute = i2.toString().padStart(2, '0')
-            binding.time.text = "$hour:$minute"
-        }
+        val time =
+            TimePickerDialog.OnTimeSetListener { timePicker, i, i2 ->
+                val hour = i.toString().padStart(2, '0')
+                val minute = i2.toString().padStart(2, '0')
+                binding.time.text = "$hour:$minute"
+            }
 
         binding.time.setOnClickListener {
             TimePickerDialog(ctx, time, 12, 0, true).show()
@@ -98,12 +102,12 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                     binding.date.text.toString(),
                     paymentModes[binding.whoPaysSpinner.selectedItemPosition].value,
                     binding.searchDateLocations.text.toString(),
-                    binding.time.text.toString()
+                    binding.time.text.toString(),
                 )
                 showLoader(true)
-            } else if (binding.whoPaysSpinner.selectedItemPosition == -1){
+            } else if (binding.whoPaysSpinner.selectedItemPosition == -1) {
                 showToast("Please choose who will be paying for the date.")
-            }else {
+            } else {
                 showToast("Please select a location for your date")
             }
         }
@@ -119,7 +123,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                 }
 
                 is Resource.Failure -> {
-                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK"){}
+                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
                 }
             }
         }
@@ -127,17 +131,21 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
             showLoader(false)
             when (it) {
                 is Resource.Success -> {
-                    showDialog("Date submission successful!!")
+                    showAlertDialog(requireContext(), "Date submission successful!!", "OK") {
+                        binding.date.text = "2025/01/06"
+                        binding.searchDateLocations.text = ""
+                        binding.time.text = "12:00"
+                    }
                 }
 
                 is Resource.Failure -> {
                     try {
                         val jsonObject = JSONObject(it.errorBody)
                         val error = jsonObject.getString("error")
-                        showAlertDialog(requireContext(),  error ?: it.message?: "", "OK"){}
+                        showAlertDialog(requireContext(), error ?: it.message ?: "", "OK") {}
                     } catch (e: JSONException) {
                         e.printStackTrace()
-                        showAlertDialog(requireContext(),  it.message?: "", "OK"){}
+                        showAlertDialog(requireContext(), it.message ?: "", "OK") {}
                     }
                 }
             }
@@ -147,7 +155,9 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
     private fun setupSpinner(values: ArrayList<ValueLabelResponse>) {
         val labels = values.map { it.label }
         ArrayAdapter(
-            requireContext(), R.layout.spinner_item_layout, labels
+            requireContext(),
+            R.layout.spinner_item_layout,
+            labels,
         ).also { adapter -> binding.whoPaysSpinner.adapter = adapter }
     }
 
@@ -172,7 +182,8 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
-        inflater: LayoutInflater, container: ViewGroup?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
     ) = FragmentGoOnDateBinding.inflate(layoutInflater)
 
     override fun getRepository() = MainRepository(dataSource.buildApi(ApiCollector::class.java))

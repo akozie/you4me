@@ -75,4 +75,9 @@
             android:name="notificationText"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/datesInterestFragment"
+        android:name="com.you4me.you4me.ui.main.DatesInterestFragment"
+        android:label="fragment_dates_interest"
+        tools:layout="@layout/fragment_dates_interest" />
 </navigation>

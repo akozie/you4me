@@ -70,5 +70,7 @@
     <string name="upcoming_dates">Upcoming Dates</string>
     <string name="let_people_know_you_are_available_to_go_on_a_date">Let people know you are available to go on a date</string>
     <string name="where_would_you_like_the_date_to_happen">Where would you like the date to happen?</string>
+    <string name="received_requests">Received Interests</string>
+    <string name="sent_requests">Sent Interests</string>
 
 </resources>

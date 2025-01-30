@@ -14,5 +14,6 @@ data class FetchDateInterestItem(
     val submittedBy: String,
     val userID: String,
     val venue: String,
-    val videoURL: String
+    val state: String,
+    val videoURL: String,
 )

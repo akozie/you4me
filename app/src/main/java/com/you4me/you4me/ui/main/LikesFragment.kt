@@ -1,19 +1,24 @@
 package com.you4me.you4me.ui.main
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
+import android.widget.ImageView
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
 import com.android.billingclient.api.*
+import com.bumptech.glide.Glide
 import com.google.common.collect.ImmutableList
 import com.google.gson.JsonObject
 import com.you4me.you4me.R
@@ -26,9 +31,15 @@ import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.BillingManager
 import com.you4me.you4me.utils.SharedPrefHelper.Companion.IS_FREE_PLAN
 import com.you4me.you4me.utils.SharedPrefHelper.Companion.IS_SUBSCRIBED
+import com.you4me.you4me.utils.Utils.getCategoryFromString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepository>() {
     private var dateInterests = FetchDateInterest()
+
+//    private var dateInterests = ArrayList<FetchDateInterestItem>()
     private var currentIdx = -1
 
     private var player: ExoPlayer? = null
@@ -47,6 +58,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     private var isUserSubscribed = false
     private var isFreeTrial = false
     private lateinit var obj: JsonObject
+    private lateinit var date: FetchDateInterestItem
 
     private val purchasesUpdatedListener =
         PurchasesUpdatedListener { billingResult, purchases ->
@@ -145,16 +157,161 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         releasePlayer()
     }
 
+    private fun observeImagesAndVideos(userId: String) {
+        viewModel.getImagesAndVideos(userId)
+        viewModel.getImagesAndVideos.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    val listOfImagesAndVideos = it.value
+                    try {
+                        // Your potentially crashing code (e.g., loading images, videos, etc.)
+                        if (isAdded() && getActivity() != null) {
+                            // Perform operations safely
+                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                            Log.d("JUST_CHECKING", "$listOfImagesAndVideos")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("MyApp", "Error loading data", e)
+                    }
+                }
+
+                is Resource.Failure -> {
+                }
+            }
+        }
+    }
+
+    private fun loadImagesAndVideosInBackground(listOfImagesAndVideos: ImagesVideosResponse) {
+        val imageViews = listOf(binding.frame1, binding.frame2, binding.frame3, binding.frame4)
+
+        var isProfilePictureSet = false
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                listOfImagesAndVideos.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
+                    val frame = imageViews[index]
+
+                    withContext(Dispatchers.Main) {
+                        if (!isAdded) return@withContext
+
+                        if (fileData.fileURL.isEmpty()) {
+                            frame.visibility = View.GONE // Hide empty frames
+                            return@withContext
+                        } else {
+                            frame.visibility = View.VISIBLE // Show frames with content
+                        }
+
+                        frame.removeAllViews() // Clear previous views
+                        frame.isClickable = true
+                        frame.isFocusable = true
+
+                        val secureUrl = fileData.fileURL.replace("http://", "https://")
+
+                        if (getCategoryFromString(fileData.fileURL) == "image") {
+                            val imageView =
+                                ImageView(requireActivity()).apply {
+                                    layoutParams =
+                                        FrameLayout.LayoutParams(
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                        )
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                }
+
+                            Glide.with(requireActivity())
+                                .load(secureUrl)
+                                .into(imageView)
+
+                            frame.addView(imageView)
+                            Log.d("IMAGES_RESSS", "Added image: $secureUrl to frame: ${frame.id}")
+
+                            if (!isProfilePictureSet) {
+                                isProfilePictureSet = true
+                                Glide.with(requireActivity())
+                                    .load(secureUrl)
+                                    .into(binding.imageView)
+                                binding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                            }
+                        } else if (getCategoryFromString(fileData.fileURL) == "video") {
+                            val thumbnailView =
+                                ImageView(requireContext()).apply {
+                                    layoutParams =
+                                        FrameLayout.LayoutParams(
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                        )
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                }
+
+                            val bitmap = generateVideoThumbnail(secureUrl)
+
+                            if (bitmap != null) {
+                                thumbnailView.setImageBitmap(bitmap)
+                                frame.addView(thumbnailView)
+                                Log.d("IMAGES_RESSS", "Added video thumbnail for: $secureUrl")
+                            } else {
+                                Log.e("IMAGES_RESSS", "Failed to generate thumbnail for: $secureUrl")
+                            }
+                        }
+
+                        frame.setOnClickListener {
+                            if (fileData.fileURL.isEmpty()) return@setOnClickListener
+                            openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
+                        }
+                    }
+                }
+                // Hide remaining frames that didn't get used
+                withContext(Dispatchers.Main) {
+                    for (i in listOfImagesAndVideos.size until imageViews.size) {
+                        imageViews[i].visibility = View.GONE
+                    }
+                }
+            }
+        }
+    }
+
+    private fun generateVideoThumbnail(videoUrl: String): Bitmap? {
+        return try {
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(videoUrl, HashMap())
+            retriever.frameAtTime
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun openDetailScreen(
+        fileUrl: String,
+        category: String,
+        videoId: String,
+    ) {
+        val imagesVideosResponseItem =
+            ImagesVideosResponseItem(
+                category,
+                fileUrl,
+                "",
+                "",
+                "",
+                videoId,
+            )
+        val action = FindDateFragmentDirections.actionFindDateFragmentToImageAndVideoDetailsFragment(imagesVideosResponseItem)
+        findNavController().navigate(action)
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun setupView() {
         viewModel.fetchDateInterests()
 
         binding.acceptBtn.setOnClickListener {
-            if (currentIdx < 0) return@setOnClickListener
+            if (currentIdx < 0 || currentIdx >= dateInterests.size) {
+                return@setOnClickListener // Prevents out-of-bounds access
+            }
             showLoading(true)
             val d = dateInterests[currentIdx]
             viewModel.updateDateInterest(d.interestID, d.dateID, "PENDING_TIME_APPROVAL")
         }
+
         binding.rejectBtn.setOnClickListener {
             if (currentIdx < 0) return@setOnClickListener
             showLoading(true)
@@ -166,77 +323,53 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             )
         }
 
-        binding.mainLyt.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    // Save the initial touch position
-                    binding.mainLyt.setTag(R.id.tag_touch_start_x, event.x)
-                    true
-                }
-                MotionEvent.ACTION_UP -> {
-                    // Calculate the swipe distance
-                    val startX = binding.mainLyt.getTag(R.id.tag_touch_start_x) as Float
-                    val endX = event.x
-                    val swipeDistance = endX - startX
-
-                    // Apply the tilt animation based on the swipe direction
-                    if (swipeDistance > 0) {
-                        startTiltAnimation(true)
-                        if (currentIdx < 0) {
-                            // do nothing
-                        } else {
-                            showLoading(true)
-                            val d = dateInterests[currentIdx]
-                            viewModel.updateDateInterest(
-                                d.interestID,
-                                d.dateID,
-                                "PENDING_TIME_APPROVAL",
-                            )
-                        }
-                    } else {
-                        startSecondTiltAnimation(true)
-                        if (currentIdx < 0) {
-                            // do nothing
-                        } else {
-                            val d = dateInterests[currentIdx]
-                            showLoading(true)
-                            viewModel.rejectDateInterest(
-                                d.interestID,
-                                d.dateID,
-                                "REJECTED",
-                            )
-                        }
-                    }
-                    true
-                }
-                else -> false
-            }
-        }
+//        binding.mainLyt.setOnTouchListener { _, event ->
+//            when (event.action) {
+//                MotionEvent.ACTION_DOWN -> {
+//                    // Save the initial touch position
+//                    binding.mainLyt.setTag(R.id.tag_touch_start_x, event.x)
+//                    true
+//                }
+//                MotionEvent.ACTION_UP -> {
+//                    // Calculate the swipe distance
+//                    val startX = binding.mainLyt.getTag(R.id.tag_touch_start_x) as Float
+//                    val endX = event.x
+//                    val swipeDistance = endX - startX
+//
+//                    // Apply the tilt animation based on the swipe direction
+//                    if (swipeDistance > 0) {
+//                        startTiltAnimation(true)
+//                        if (currentIdx < 0) {
+//                            // do nothing
+//                        } else {
+//                            showLoading(true)
+//                            val d = dateInterests[currentIdx]
+//                            viewModel.updateDateInterest(
+//                                d.interestID,
+//                                d.dateID,
+//                                "PENDING_TIME_APPROVAL",
+//                            )
+//                        }
+//                    } else {
+//                        startSecondTiltAnimation(true)
+//                        if (currentIdx < 0) {
+//                            // do nothing
+//                        } else {
+//                            val d = dateInterests[currentIdx]
+//                            showLoading(true)
+//                            viewModel.rejectDateInterest(
+//                                d.interestID,
+//                                d.dateID,
+//                                "REJECTED",
+//                            )
+//                        }
+//                    }
+//                    true
+//                }
+//                else -> false
+//            }
+//        }
     }
-
-//        binding.mainLyt.setOnTouchListener(object : OnSwipeTouchListener(ctx) {
-//            override fun onSwipeLeft() {
-//                view?.performClick()
-//                super.onSwipeLeft()
-//                if (currentIdx < 0) return
-//                val d = dateInterests[currentIdx]
-//                showLoading(true)
-//                viewModel.rejectDateInterest(
-//                    d.interestID, d.dateID, "REJECTED"
-//                )
-//            }
-//
-//
-//            override fun onSwipeRight() {
-//                view?.performClick()
-//                super.onSwipeRight()
-//                if (currentIdx < 0) return
-//                showLoading(true)
-//                val d = dateInterests[currentIdx]
-//                viewModel.updateDateInterest(d.interestID, d.dateID, "PENDING_TIME_APPROVAL")
-//            }
-//        })
-    // }
 
     private fun startTiltAnimation(isRightSwipe: Boolean) {
         val tiltAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.tilt_animation)
@@ -311,6 +444,26 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                         showEmpty()
                     } else {
                         dateInterests = it.value
+//                        dateInterests =
+//                            arrayListOf(
+//                                FetchDateInterestItem(
+//                                    userID = "a108fc4e-81e5-415b-b1a1-3874711c0be4",
+//                                    submittedBy = "1e2b6e50-3be1-48ea-bf22-adfb2a4fa5b3",
+//                                    proposedDate = "February 20, 2025",
+//                                    proposedTime = "",
+//                                    status = "PENDING",
+//                                    createdAt = "2025-01-28 20:42:55",
+//                                    age = "24",
+//                                    name = "Eniola Moses",
+//                                    dateID = "b44389e5-2931-43f0-929a-2d5335e92e6f",
+//                                    videoURL = "",
+//                                    interestID = "eca40530-4a22-46bc-b66b-6687ee33aa3a",
+//                                    venue = "Lekki Conservation Center Lekki Conservation Center, Eti-Osa, Lagos Lekki Conservation Center, Eti-Osa, Lagos",
+//                                    originalDate = "2025/02/20",
+//                                    originalTime = "08:44",
+//                                    state = "Lagos",
+//                                ),
+//                            )
                         setScreen()
                     }
                 }
@@ -318,6 +471,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 is Resource.Failure -> {
                     binding.constraintLayout2.visibility = View.VISIBLE
                     binding.mainLyt.visibility = View.GONE
+                    binding.mainLytBtn.visibility = View.GONE
                 }
             }
         }
@@ -386,7 +540,15 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     private fun setScreen() {
         showLoading(false)
         currentIdx++
-        val date = dateInterests[currentIdx]
+//        val date = dateInterests[currentIdx]
+
+        if (currentIdx < 0 || currentIdx >= dateInterests.size) {
+            // Don't use this index. This is out of bounds (borders, limits, whatever).
+        } else {
+            // Yes, you can safely use this index. The index is present in the array.
+            date = dateInterests[currentIdx]
+        }
+        observeImagesAndVideos(date.submittedBy)
 
         val mediaItem = MediaItem.fromUri(date.videoURL.replace("http:", "https:"))
         player?.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
@@ -394,6 +556,15 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         player?.prepare()
 
         binding.userName.text = "${date.name}, ${date.age}"
+        binding.nameGallery.text = "${date.name}'s Gallery"
+        binding.location.text = "${date.venue} Gallery"
+        binding.nameGallery.text = "${date.name}'s Gallery"
+
+//        if (date.bio.isNotEmpty()) {
+//            binding.bio.visibility = View.GONE
+//        } else {
+//            binding.bio.visibility = View.VISIBLE
+//        }
     }
 
     private fun releasePlayer() {
@@ -407,21 +578,32 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     }
 
     private fun initializePlayer() {
-        player =
-            ExoPlayer.Builder(ctx).build().also {
-                binding.userVideo.player = it
-                if (currentIdx != -1) {
-                    val mediaItem =
-                        MediaItem.fromUri(dateInterests[currentIdx].videoURL.replace("http:", "https:"))
-                    it.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
-                    it.playWhenReady = playWhenReady
-                    it.prepare()
-                }
-            }
+//        player =
+//            ExoPlayer.Builder(ctx).build().also {
+//                binding.userVideo.player = it
+//                if (currentIdx != -1) {
+//                    val mediaItem =
+//                        MediaItem.fromUri(dateInterests[currentIdx].videoURL.replace("http:", "https:"))
+//                    it.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
+//                    it.playWhenReady = playWhenReady
+//                    it.prepare()
+//                }
+//            }
     }
 
     private fun showEmpty() {
         binding.mainLyt.visibility = View.GONE
+        binding.mainLytBtn.visibility = View.GONE
+
+        // Get the current layout parameters
+        val layoutParams = binding.cardView.layoutParams as? ViewGroup.MarginLayoutParams
+
+        // Check if the cast was successful
+        layoutParams?.let {
+            it.bottomMargin = 0
+            binding.cardView.layoutParams = it
+        }
+
         binding.constraintLayout2.visibility = View.VISIBLE
 //        binding.emptyLyt.visibility = View.VISIBLE
         binding.loader.visibility = View.GONE
@@ -429,6 +611,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 
     private fun showLoading(loading: Boolean) {
         binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
+        binding.mainLytBtn.visibility = if (loading) View.GONE else View.VISIBLE
         binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
 

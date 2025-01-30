@@ -5,8 +5,9 @@ data class UpcomingDatesItem(
     val date: String,
     val dateId: String,
     val name: String,
+    val state: String,
     val place: String,
     val rawDate: String,
     val time: String,
-    val userId: String
+    val userId: String,
 )
