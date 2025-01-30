@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@android:color/white">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvDialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Suggest New Date"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingBottom="8dp"/>
+
+    <!-- Info Message -->
+    <TextView
+        android:id="@+id/tvInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="If your suggested time change is not accepted, the date will be cancelled."
+        android:textSize="14sp"
+        android:paddingBottom="16dp"/>
+
+    <!-- Previous Date -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/previousDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Previous Date:"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingBottom="16dp"/>
+    <TextView
+        android:id="@+id/tvPreviousDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_10dp"
+        android:text="13 Dec, 2024.  7PM"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingBottom="16dp"/>
+
+    </LinearLayout>
+    <!-- Suggest New Date -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvSuggestNewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Suggest New Date:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/btnDatePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_17sp"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/margin_10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="01/01/25" />
+        <TextView
+            android:id="@+id/btnTimePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_17sp"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/new_date"
+            app:layout_constraintEnd_toStartOf="@+id/update_time_btn"
+            app:layout_constraintStart_toEndOf="@+id/new_date"
+            app:layout_constraintTop_toTopOf="@+id/new_date"
+            tools:text="07:07" />
+
+    </LinearLayout>
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:paddingTop="16dp">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"/>
+
+        <Button
+            android:id="@+id/btnDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Done"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+</LinearLayout>

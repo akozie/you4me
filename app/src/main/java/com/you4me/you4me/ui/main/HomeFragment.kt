@@ -76,7 +76,7 @@ class HomeFragment :
                     Log.d("OK_DONR", it.value.toString())
 //                    viewModel._user.value = it.value
                     viewModel.getUpcomingDates()
-                    viewModel.getInviteeDatesRequiringApproval()
+                    viewModel.getInviteeDatesRequiringApproval(user.userId)
                     viewModel.getDateInterestsRequiringApproval()
                     viewModel.getNotifications()
                 }

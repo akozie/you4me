@@ -269,10 +269,10 @@ class MainViewModel(
         }
     }
 
-    fun getInviteeDatesRequiringApproval() {
+    fun getInviteeDatesRequiringApproval(userId: String) {
         viewModelScope.launch {
             _inviteeDatesRequiringApproval.value =
-                repository.inviteeDatesRequiringApproval(_user.value?.userId ?: "")
+                repository.inviteeDatesRequiringApproval(userId)
         }
     }
 
