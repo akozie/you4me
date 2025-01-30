@@ -7,4 +7,5 @@ data class Notification(
     val user_id: String,
     val date: String,
     val time: String,
+    var category: String
 )

@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         navHostFragment.findNavController()
             .addOnDestinationChangedListener { _, destination, _ ->
                 when (destination.id) {
-                    R.id.notificationsFragment -> {
+                    R.id.notificationsFragment, R.id.notificationViewFragment -> {
                         binding.bottomNavBar.visibility = View.GONE
                     }
 

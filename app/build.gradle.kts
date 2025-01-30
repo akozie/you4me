@@ -1,6 +1,14 @@
+import java.io.FileInputStream
+import java.util.Properties
+import kotlin.apply
+
 secrets {
     propertiesFileName = "secrets.properties"
     defaultPropertiesFileName = "local.defaults.properties"
+}
+
+val localProperties = Properties().apply {
+    load(FileInputStream(rootProject.file("local.properties")))
 }
 
 plugins {
@@ -14,6 +22,21 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file(localProperties["storeFile"].toString())
+            keyAlias = localProperties["keyAlias"].toString()
+            storePassword = localProperties["storePassword"].toString()
+            keyPassword = localProperties["keyPassword"].toString()
+        }
+        create("release") {
+            storeFile = file(localProperties["storeFile"].toString())
+            keyAlias = localProperties["keyAlias"].toString()
+            storePassword = localProperties["storePassword"].toString()
+            keyPassword = localProperties["keyPassword"].toString()
+        }
+    }
+
     namespace = "com.you4me.you4me"
     compileSdk = 34
 
@@ -28,18 +51,27 @@ android {
         applicationId = "com.you4me.you4me"
         minSdk = 24
         targetSdk = 34
-        versionCode = 29
-        versionName = "1.29"
+        versionCode = 32
+        versionName = "1.32"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
+            )
+        }
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
     }
@@ -59,6 +91,9 @@ android {
         ndkBuild {
             path(file("src/main/jni/Android.mk"))
         }
+    }
+    lint {
+        checkReleaseBuilds = false
     }
 }
 
