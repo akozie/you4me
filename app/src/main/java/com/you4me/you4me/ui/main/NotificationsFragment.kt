@@ -110,7 +110,7 @@ class NotificationsFragment :
             Constants.NotificationConstants.Categories.DATE_PROPOSAL,
             Constants.NotificationConstants.Categories.DATE_CREATOR_ACCEPTED_INTEREST,
             Constants.NotificationConstants.Categories.NEW_DATE_INTEREST -> {
-                NotificationsFragmentDirections.actionNotificationsFragmentToLikesFragment()
+                NotificationsFragmentDirections.actionNotificationsFragmentToDatesInterestFragment()
             }
 
             else -> {

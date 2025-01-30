@@ -48,11 +48,11 @@
         android:label="fragment_notifications"
         tools:layout="@layout/fragment_notifications" >
         <action
-            android:id="@+id/action_notificationsFragment_to_likesFragment"
-            app:destination="@id/likesFragment" />
-        <action
             android:id="@+id/action_notificationsFragment_to_notificationViewFragment"
             app:destination="@id/notificationViewFragment" />
+        <action
+            android:id="@+id/action_notificationsFragment_to_datesInterestFragment"
+            app:destination="@id/datesInterestFragment" />
     </fragment>
     <fragment
         android:id="@+id/imageAndVideoDetailsFragment"
