@@ -70,6 +70,6 @@ class NotificationViewFragment : BaseFragment<MainViewModel, FragmentNotificatio
 
     companion object {
         private const val ARG_TIMESTAMP = "timestamp"
-        private const val ARG_NOTIFICATION_TEXT = "notification_text"
+        private const val ARG_NOTIFICATION_TEXT = "notificationText"
     }
 }
