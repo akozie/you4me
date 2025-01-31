@@ -12,6 +12,7 @@
         android:visibility="visible"
         android:layout_marginStart="@dimen/margin_10dp"
         android:layout_marginEnd="@dimen/margin_10dp"
+        android:layout_marginTop="@dimen/margin_5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

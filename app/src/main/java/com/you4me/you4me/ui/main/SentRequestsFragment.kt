@@ -36,6 +36,11 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
         binding.emptyLyt.visibility = View.VISIBLE
     }
 
+    override fun onResume() {
+        super.onResume()
+        setupObservers()
+    }
+
     private fun setupObservers() {
         showLoading(true)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
