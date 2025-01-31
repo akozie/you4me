@@ -147,20 +147,6 @@ class HomeFragment :
             }
         }
 
-        viewModel.proposeNewDateTime.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Success -> {
-                    showToast("Date status updated")
-                    Log.d("REQUEST_PROCESSED", "REQUEST_PROCESSED")
-                    // switch ui
-                }
-
-                is Resource.Failure -> {
-                    showToast(it.message ?: it.errorBody ?: "")
-                }
-            }
-        }
-
         viewModel.getNotificationsResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
