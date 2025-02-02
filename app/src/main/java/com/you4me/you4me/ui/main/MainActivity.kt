@@ -29,7 +29,7 @@ import com.you4me.you4me.utils.UtilityParam
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-//    private val viewModel by viewModels<MainViewModel>()
+    //    private val viewModel by viewModels<MainViewModel>()
     private lateinit var viewModel: MainViewModel
     private lateinit var repository: MainRepository
     private lateinit var user: User
@@ -40,8 +40,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        repository = MainRepository(RemoteDataSource().buildApi(ApiCollector::class.java))
-        viewModel = MainViewModel(repository, DbRepository(AppDatabase.invoke(this)))
+        repository = MainRepository(
+            RemoteDataSource().buildApi(
+                ApiCollector::class.java
+            )
+        )
+        viewModel = MainViewModel(
+            repository, DbRepository(
+                AppDatabase.invoke(this)
+            )
+        )
         sharedPrefHelper = SharedPrefHelper(this)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         val gson = Gson()
@@ -84,13 +92,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViews() {
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
-        binding.bottomNavBar.setupWithNavController(navHostFragment.findNavController())
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as
+                    NavHostFragment
+        binding.bottomNavBar.setupWithNavController(
+            navHostFragment
+                .findNavController()
+        )
 
         navHostFragment.findNavController()
             .addOnDestinationChangedListener { _, destination, _ ->
                 when (destination.id) {
-                    R.id.notificationsFragment, R.id.notificationViewFragment -> {
+                    R.id.notificationsFragment, R.id.notificationViewFragment,
+                    R.id.datesFragment -> {
                         binding.bottomNavBar.visibility = View.GONE
                     }
 
@@ -118,7 +131,9 @@ class MainActivity : AppCompatActivity() {
             val channel = NotificationChannel("YOU_4_ME_CHANNEL_ID", name, importance)
             channel.description = description
 
-            val notificationManager = getSystemService(NotificationManager::class.java)
+            val notificationManager = getSystemService(
+                NotificationManager::class.java
+            )
             notificationManager.createNotificationChannel(channel)
         }
     }

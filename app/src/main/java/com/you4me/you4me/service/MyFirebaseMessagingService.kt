@@ -63,10 +63,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         incomingMessage?.let {
             //You need to convert the string to your notification object
 
-//            showNotification(
-//                remoteMessage.notification?.title.toString(),
-//                remoteMessage.notification?.body.toString()
-//            )
+            showNotification(
+                remoteMessage.notification?.title.toString(),
+                remoteMessage.notification?.body.toString()
+            )
 
         }
     }
@@ -76,7 +76,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent: PendingIntent =
-            PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.getActivity(applicationContext, 0, intent,
+                PendingIntent.FLAG_IMMUTABLE)
 
         val builder = NotificationCompat.Builder(this, "YOU_4_ME_CHANNEL_ID")
             .setSmallIcon(R.drawable.icon)
@@ -102,7 +103,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private fun updateToken(userId: String, token: String) {
         val obj = JsonObject()
         obj.addProperty("pushToken", token)
-        val repo = MainRepository(RemoteDataSource().buildApi(ApiCollector::class.java))
+        val repo = MainRepository(RemoteDataSource().buildApi(
+            ApiCollector::class.java))
         scope.launch { repo.updatePushToken(userId, obj) }
     }
 
