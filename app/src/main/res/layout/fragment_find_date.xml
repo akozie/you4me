@@ -397,7 +397,7 @@
                 android:text="Not Interested"
                 android:gravity="center"
                 android:background="@drawable/btn_not_interested_stroke_color"
-                android:textColor="@color/purple"
+                android:textColor="@color/primary_pink"
                 android:paddingVertical="15dp" />
 
         </androidx.cardview.widget.CardView>

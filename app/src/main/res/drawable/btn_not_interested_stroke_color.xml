@@ -11,5 +11,5 @@
     <!-- Stroke (border) color and width -->
     <stroke
         android:width="2dp"
-        android:color="@color/purple"/>
+        android:color="@color/primary_pink"/>
 </shape>

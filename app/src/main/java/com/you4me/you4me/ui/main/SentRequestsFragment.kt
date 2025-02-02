@@ -1,6 +1,7 @@
 package com.you4me.you4me.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,12 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
     ) {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
+        binding.emptyLyt.visibility = View.VISIBLE
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupObservers()
     }
 
     private fun setupObservers() {
@@ -41,12 +48,27 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
         val user = gson.fromJson(userProfile, User::class.java)
 
         viewModel.getInviteeDatesRequiringApproval(user.userId)
-
         viewModel.inviteeDatesRequiringApproval.observe(viewLifecycleOwner) {
             showLoading(false)
             when (it) {
                 is Resource.Success -> {
                     setupInviteeDates(it.value)
+                }
+
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
+            }
+        }
+
+        viewModel.proposeNewDateTime.observe(viewLifecycleOwner) {
+            showLoading(false)
+            when (it) {
+                is Resource.Success -> {
+                    showToast("Date status updated")
+                    Log.d("REQUEST_PROCESSED", "REQUEST_PROCESSED")
+                    // switch ui
+                    viewModel.getInviteeDatesRequiringApproval(user.userId)
                 }
 
                 is Resource.Failure -> {
@@ -60,6 +82,7 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
         if (dates.isEmpty()) {
             showEmpty()
         } else {
+            binding.emptyLyt.visibility = View.GONE
             val adapter = SentRequestsRecyclerAdapter(dates, viewModel, ctx, requireActivity().supportFragmentManager, viewLifecycleOwner)
             binding.upcomingDatesRecycler.adapter = adapter
         }
