@@ -74,4 +74,10 @@ class NotificationsFragment :
         binding.constraintLayout2.visibility = ViewGroup.VISIBLE
         binding.notificationsRecyclerView.visibility = View.GONE
     }
+
+    override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
+        super.onDestroy()
+    }
 }

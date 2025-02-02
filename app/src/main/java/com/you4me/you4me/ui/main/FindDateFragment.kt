@@ -72,6 +72,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         setupObservers()
         showBottomSheetDialog()
         viewModel.getUserDetails(user.userId)
+        mixpanel?.track("Android_Find_Date_Viewed")
     }
 
     override fun onResume() {
@@ -627,8 +628,9 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // Cancel any ongoing tasks
+    override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
+        super.onDestroy()
     }
 }

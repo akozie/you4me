@@ -187,4 +187,10 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
     ) = FragmentGoOnDateBinding.inflate(layoutInflater)
 
     override fun getRepository() = MainRepository(dataSource.buildApi(ApiCollector::class.java))
+
+    override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
+        super.onDestroy()
+    }
 }

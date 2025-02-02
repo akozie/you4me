@@ -102,6 +102,9 @@ class ProfileFragment :
         checkAndRequestPermissions()
         observeImagesAndVideos()
         trackProfileViewed()
+
+        mixpanel?.track("Android_Profile_Viewed")
+
 //        addObservers()
     }
 
@@ -317,6 +320,7 @@ class ProfileFragment :
         viewModel.updateVideoUrlResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
+                    mixpanel?.track("Android_Profile_Uploaded_Media")
                     showToast("Uploaded Successfully")
 //                    videoViewBinding.videoView.setVideoURI(videoUri)
 //                    initializePlayer()
@@ -651,6 +655,7 @@ class ProfileFragment :
                 viewModel.logoutResponse.observe(viewLifecycleOwner) {
                     when (it) {
                         is Resource.Success -> {
+                            trackProfileLogout()
                             showToast("Account logged out successfully!")
                             sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, false)
                             // change shared pref to is logged out
@@ -1086,6 +1091,10 @@ class ProfileFragment :
 
     private fun trackProfileDeleted() {
         mixpanel?.track("Android_Profile_Delete_Button_Clicked")
+    }
+
+    private fun trackProfileLogout() {
+        mixpanel?.track("Android_Profile_Logout_Button_Clicked")
     }
 
     override fun onDestroy() {

@@ -34,11 +34,7 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
         binding.emptyLyt.visibility = View.VISIBLE
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setupObservers()
+        mixpanel?.track("Android_Sent_Interest_Viewed")
     }
 
     private fun setupObservers() {
@@ -100,7 +96,8 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
     }
 
     override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
         super.onDestroy()
-//        billingManager.endConnection()
     }
 }

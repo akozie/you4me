@@ -233,8 +233,7 @@ class HomeFragment :
         data: Intent?,
     ) {
         if (resultCode == Activity.RESULT_OK) {
-            // The user successfully added the event to the calendar
-//            Log.d("OKKKKK", "Event added to calendar")
+            mixpanel?.track("Android_Home_Added_Date_to_Google_Calendar")
         } else if (resultCode == Activity.RESULT_CANCELED) {
             // The user canceled the operation
 //            Log.d("NNNNOKKKKK","Event addition canceled")
@@ -247,5 +246,11 @@ class HomeFragment :
     ) {
         Log.d("RESULTCODEK", "$resultCode")
         startActivityForResult(intent, ADD_EVENT_REQUEST_CODE)
+    }
+
+    override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
+        super.onDestroy()
     }
 }

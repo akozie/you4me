@@ -145,6 +145,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         if (!isFreeTrial) {
             setupBilling()
         }
+        mixpanel?.track("Android_Received_Interest_Viewed")
     }
 
     override fun onResume() {
@@ -682,7 +683,8 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     }
 
     override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
         super.onDestroy()
-//        billingManager.endConnection()
     }
 }

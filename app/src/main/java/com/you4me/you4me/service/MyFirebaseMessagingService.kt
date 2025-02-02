@@ -37,14 +37,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // Handle FCM messages here
-        Log.d("TOKEN_PRO", "${remoteMessage.notification?.title}")
-        Log.d("TOKEN_PRO", "NouserProfile")
         handleNotificationMessage(remoteMessage)
-
-        if (remoteMessage.data.isNotEmpty()) {
-            handleNotificationMessage(remoteMessage)
-            Log.d("TOKEN_PRO", "userProfile")
-        }
     }
 
     private fun sendToken(token: String) {
@@ -64,8 +57,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 //        val incomingMessage = remoteMessage.data["MessageBody"]
         val incomingMessage = remoteMessage.notification
         incomingMessage?.let {
-            // You need to convert the string to your notification object
-
             showNotification(
                 remoteMessage.notification?.title.toString(),
                 remoteMessage.notification?.body.toString(),
