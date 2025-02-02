@@ -23,7 +23,6 @@ import com.bumptech.glide.Glide
 import com.google.common.collect.ImmutableList
 import com.google.gson.JsonObject
 import com.you4me.you4me.R
-import com.you4me.you4me.databinding.ActivityMainBinding
 import com.you4me.you4me.databinding.FragmentDatesBinding
 import com.you4me.you4me.models.*
 import com.you4me.you4me.network.ApiCollector
@@ -63,7 +62,8 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
 
     private val purchasesUpdatedListener =
         PurchasesUpdatedListener { billingResult, purchases ->
-            if (!purchases.isNullOrEmpty() && purchases[0].purchaseState == Purchase.PurchaseState.PURCHASED) {
+            if (!purchases.isNullOrEmpty() && purchases[0].purchaseState ==
+                Purchase.PurchaseState.PURCHASED) {
                 val p = purchases[0]
                 val obj = JsonObject()
                 obj.addProperty("purchase_token", p.purchaseToken)
@@ -79,7 +79,8 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
 
     private val purchasesResponseListener =
         PurchasesResponseListener { billingResult, purchases ->
-            if (purchases.isNotEmpty() && purchases[0].purchaseState == Purchase.PurchaseState.PURCHASED) {
+            if (purchases.isNotEmpty() && purchases[0].purchaseState ==
+                Purchase.PurchaseState.PURCHASED) {
                 hasCheckedBilling = true
                 // continue
                 isUserSubscribed = sharedPrefHelper.getBoolean(IS_SUBSCRIBED)
@@ -103,7 +104,8 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
 //            viewModel.registerPayment(obj)
             } else {
                 hasCheckedBilling = true
-                billingClient.queryProductDetailsAsync(queryProductDetailsParams) { billingResult, productDetailsList ->
+                billingClient.queryProductDetailsAsync(queryProductDetailsParams)
+                { billingResult, productDetailsList ->
                     // check billingResult
                     // process returned productDetailsList
                     println("billing result code ${billingResult.responseCode}")
@@ -421,7 +423,6 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
                 }
             }
         }
-
         viewModel.fetchDateInterests.observe(viewLifecycleOwner) {
             showLoading(false)
             when (it) {
@@ -430,26 +431,6 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
                         showEmpty()
                     } else {
                         dateInterests = it.value
-//                        dateInterests =
-//                            arrayListOf(
-//                                FetchDateInterestItem(
-//                                    userID = "a108fc4e-81e5-415b-b1a1-3874711c0be4",
-//                                    submittedBy = "1e2b6e50-3be1-48ea-bf22-adfb2a4fa5b3",
-//                                    proposedDate = "February 20, 2025",
-//                                    proposedTime = "",
-//                                    status = "PENDING",
-//                                    createdAt = "2025-01-28 20:42:55",
-//                                    age = "24",
-//                                    name = "Eniola Moses",
-//                                    dateID = "b44389e5-2931-43f0-929a-2d5335e92e6f",
-//                                    videoURL = "",
-//                                    interestID = "eca40530-4a22-46bc-b66b-6687ee33aa3a",
-//                                    venue = "Lekki Conservation Center Lekki Conservation Center, Eti-Osa, Lagos Lekki Conservation Center, Eti-Osa, Lagos",
-//                                    originalDate = "2025/02/20",
-//                                    originalTime = "08:44",
-//                                    state = "Lagos",
-//                                ),
-//                            )
                         setScreen()
                     }
                 }
@@ -461,19 +442,12 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
                 }
             }
         }
-
         viewModel.rejectDateInterest.observe(viewLifecycleOwner) {
             showLoading(false)
             when (it) {
                 is Resource.Success -> {
                     showToast("Success")
                     findNavController().safeNavigateUp()
-//                    if (currentIdx < dateInterests.lastIndex) {
-//                        setScreen()
-//                    } else {
-//                        showToast("No more dates available")
-//                        showEmpty()
-//                    }
                 }
 
                 is Resource.Failure -> {
@@ -484,7 +458,6 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
                 }
             }
         }
-
         viewModel.updateDateInterest.observe(viewLifecycleOwner) {
             showLoading(false)
             when (it) {
@@ -501,7 +474,6 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
                 }
             }
         }
-
         if (!isUserSubscribed) {
             viewModel._updatePaymentResponse.observe(viewLifecycleOwner) {
                 when (it) {
@@ -538,7 +510,7 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
             return
         }
 
-        observeImagesAndVideos(date.submittedBy)
+        observeImagesAndVideos(date.userID)
 
         val mediaItem = MediaItem.fromUri(date.videoURL.replace("http:",
             "https:"))
