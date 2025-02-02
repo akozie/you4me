@@ -529,9 +529,6 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
     }
 
     private fun setScreen() {
-
-        if(b)
-
         showLoading(false)
 
         date = dateInterests.firstOrNull { it.userID == userId } ?: run {
