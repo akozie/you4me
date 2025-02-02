@@ -14,7 +14,7 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 
-class DatesInterestFragment : BaseFragment<MainViewModel, FragmentDatesInterestBinding, MainRepository>() {
+class DatesInterestFragment : BaseFragment<MainViewModel, FragmentDatesInterestBinding, MainRepository>("PROPOSE_DATE_TIME") {
     private lateinit var viewPager2: ViewPager2
     private lateinit var tabLayout: TabLayout
 

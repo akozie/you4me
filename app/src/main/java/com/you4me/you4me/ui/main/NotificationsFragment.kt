@@ -1,7 +1,6 @@
 package com.you4me.you4me.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,19 +16,22 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class NotificationsFragment :
-    BaseFragment<MainViewModel, FragmentNotificationsBinding, MainRepository>() {
+    BaseFragment<MainViewModel, FragmentNotificationsBinding, MainRepository>("NOTIFICATION") {
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?
+        container: ViewGroup?,
     ): FragmentNotificationsBinding {
         return FragmentNotificationsBinding.inflate(layoutInflater)
     }
 
     override fun getRepository() = MainRepository(dataSource.buildApi(ApiCollector::class.java))
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         binding.loader.show()
         viewModel.user.observe(viewLifecycleOwner) {
@@ -40,8 +42,9 @@ class NotificationsFragment :
             when (it) {
                 is Resource.Success -> {
                     binding.loader.hide()
-                    if (it.value.isEmpty()) showEmpty()
-                    else {
+                    if (it.value.isEmpty()) {
+                        showEmpty()
+                    } else {
                         setupRecycler(it.value)
                     }
                 }
@@ -52,14 +55,15 @@ class NotificationsFragment :
         }
     }
 
-    private fun setupRecycler(notifications : ArrayList<Notification>) {
+    private fun setupRecycler(notifications: ArrayList<Notification>) {
         val dateFormat = SimpleDateFormat("yyyy/MM/ddhh:mm")
 
-        val n = notifications.
-        sortedByDescending {
-            dateFormat.parse("${it.date}${it.time}")
-          //  formatDate("${it.date}", "${it.time}")
-        }
+        val n =
+            notifications
+                .sortedByDescending {
+                    dateFormat.parse("${it.date}${it.time}")
+                    //  formatDate("${it.date}", "${it.time}")
+                }
         val adapter = NotificationsRecyclerAdapter(n, this, viewModel)
         binding.notificationsRecyclerView.adapter = adapter
     }
@@ -70,5 +74,4 @@ class NotificationsFragment :
         binding.constraintLayout2.visibility = ViewGroup.VISIBLE
         binding.notificationsRecyclerView.visibility = View.GONE
     }
-
 }

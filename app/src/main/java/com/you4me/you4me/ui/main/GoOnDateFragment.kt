@@ -27,7 +27,7 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
-class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, MainRepository>() {
+class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, MainRepository>("GO_ON_DATE") {
     private lateinit var calendar: Calendar
     private lateinit var dateFormat: SimpleDateFormat
 

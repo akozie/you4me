@@ -14,6 +14,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            keyAlias = "key0"
+            storePassword = "you4mekey"
+            keyPassword = "you4mekey"
+            storeFile = file("/Users/admin/Downloads/you4me-android/you4meKeyStore")
+        }
+    }
     namespace = "com.you4me.you4me"
     compileSdk = 34
 
@@ -130,6 +138,9 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    // mixpanel
+    implementation("com.mixpanel.android:mixpanel-android:5.9.6")
 }
 
 apply(plugin = "com.google.gms.google-services")

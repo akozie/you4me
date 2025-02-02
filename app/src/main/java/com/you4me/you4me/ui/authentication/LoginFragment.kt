@@ -27,7 +27,7 @@ import com.you4me.you4me.utils.validateEmail
 import com.you4me.you4me.utils.validatePassword
 
 class LoginFragment :
-    BaseFragment<AuthenticationViewModel, FragmentLoginBinding, AuthenticationRepository>() {
+    BaseFragment<AuthenticationViewModel, FragmentLoginBinding, AuthenticationRepository>("LOGIN") {
     private lateinit var you4meSignInClient: GoogleSignInClient
 
     override fun onViewCreated(

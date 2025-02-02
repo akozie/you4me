@@ -1,14 +1,13 @@
 package com.you4me.you4me
 
 import android.app.Application
-import android.util.Log
 import com.cloudinary.android.MediaManager
-import com.google.android.libraries.places.api.Places
+import com.google.firebase.FirebaseApp
 
 class You4MeApp : Application() {
-
     override fun onCreate() {
         super.onCreate()
+        FirebaseApp.initializeApp(this)
         configureCloudinary()
     }
 

@@ -126,7 +126,7 @@ class MainViewModel(
         userId: String,
     ) {
         viewModelScope.launch {
-            Log.d("NEW_FIREBASE", _user.value.toString())
+            Log.d("NEW_FIREBASE", "$token")
             _updateFirebaseTokenResponse.value = repository.updatePushToken(userId, token)
         }
     }

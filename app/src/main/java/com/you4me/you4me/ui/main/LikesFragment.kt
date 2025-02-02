@@ -36,7 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepository>() {
+class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepository>("DATE_INTEREST_RECEIVED") {
     private var dateInterests = FetchDateInterest()
 
 //    private var dateInterests = ArrayList<FetchDateInterestItem>()

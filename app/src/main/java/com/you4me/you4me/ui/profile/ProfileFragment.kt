@@ -56,7 +56,7 @@ import kotlinx.coroutines.withContext
 import java.util.*
 
 class ProfileFragment :
-    BaseFragment<ProfileViewModel, FragmentProfileBinding, ProfileRepository>() {
+    BaseFragment<ProfileViewModel, FragmentProfileBinding, ProfileRepository>("PROFILE") {
     private lateinit var name: String
     private lateinit var agePreferred: String
     private lateinit var dob: String

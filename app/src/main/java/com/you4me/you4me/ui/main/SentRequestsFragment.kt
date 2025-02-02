@@ -15,7 +15,7 @@ import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.SharedPrefHelper
 
-class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBinding, MainRepository>() {
+class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBinding, MainRepository>("DATE_INTEREST_SENT") {
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(

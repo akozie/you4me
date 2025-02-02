@@ -1,12 +1,18 @@
 package com.you4me.you4me.ui.main
 
+import android.Manifest
+import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -36,6 +42,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPrefHelper: SharedPrefHelper
     private lateinit var firebaseInstance: FirebaseMessaging
 
+    // 1️⃣ Register the permission launcher
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Log.d("FCM", "Notification permission granted")
+            } else {
+                Log.e("FCM", "Notification permission denied")
+                Toast.makeText(this, "Notifications are disabled", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -47,10 +66,11 @@ class MainActivity : AppCompatActivity() {
         val gson = Gson()
         user = gson.fromJson(userProfile, User::class.java)
         // viewModel.getNewUser(this, user.userId)
+
+        askNotificationPermission()
         setupViews()
         initializePlacesSdk()
         createNotificationChannel()
-
         firebaseInstance = FirebaseMessaging.getInstance()
         getFireBaseToken(firebaseInstance) {
             val obj = JsonObject()
@@ -70,9 +90,41 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val token = task.result
+                Log.d("CHECKING_VHEK", "$token")
                 actionToPerformWithTheReceivedToken(token)
             },
         )
+    }
+
+    private fun askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.d("FCM", "Notification permission already granted")
+                getFireBaseToken(firebaseInstance) {
+                    val obj = JsonObject()
+                    obj.addProperty("pushToken", it)
+                    sendTokenToBackend(obj, user.userId)
+                }
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                showPermissionExplanationDialog()
+            } else {
+                // 3️⃣ Request permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+    private fun showPermissionExplanationDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Notification Permission Required")
+            .setMessage("This app needs notification permissions to send you important updates.")
+            .setPositiveButton("OK") { _, _ ->
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+            .setNegativeButton("No Thanks", null)
+            .show()
     }
 
     private fun sendTokenToBackend(

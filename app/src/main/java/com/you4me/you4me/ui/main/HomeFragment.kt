@@ -26,7 +26,7 @@ import com.you4me.you4me.utils.Utils.ADD_EVENT_REQUEST_CODE
 import java.util.*
 
 class HomeFragment :
-    BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>(),
+    BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>("HOME"),
     UpcomingDatesRecyclerAdapter.CalendarResultListener {
     private lateinit var user: User
 

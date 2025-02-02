@@ -37,7 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, MainRepository>() {
+class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, MainRepository>("FIND_DATE") {
     private var dates = ArrayList<FetchDatesResponseItem>()
     private var currentIdx = -1
 
