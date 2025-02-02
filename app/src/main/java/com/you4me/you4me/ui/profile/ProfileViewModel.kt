@@ -138,31 +138,31 @@ class ProfileViewModel(
         }
     }
 
-    private fun getGenders() {
+    fun getGenders() {
         viewModelScope.launch {
             _genders.value = repository.getGenders()
         }
     }
 
-    private fun getCountries() {
+    fun getCountries() {
         viewModelScope.launch {
             _countries.value = repository.getCountries()
         }
     }
 
-    private fun getSexualOrientations() {
+    fun getSexualOrientations() {
         viewModelScope.launch {
             _sexualOrientations.value = repository.getSexualOrientations()
         }
     }
 
-    private fun getAgeGroups() {
+    fun getAgeGroups() {
         viewModelScope.launch {
             _ageGroups.value = repository.getAgeGroups()
         }
     }
 
-    private fun getReligions() {
+    fun getReligions() {
         viewModelScope.launch {
             _religions.value = repository.getReligions()
         }

@@ -548,7 +548,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             // Yes, you can safely use this index. The index is present in the array.
             date = dateInterests[currentIdx]
         }
-        observeImagesAndVideos(date.submittedBy)
+        observeImagesAndVideos(date.userID)
 
         val mediaItem = MediaItem.fromUri(date.videoURL.replace("http:", "https:"))
         player?.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)

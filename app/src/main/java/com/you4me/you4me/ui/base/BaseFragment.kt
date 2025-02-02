@@ -25,7 +25,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
     protected lateinit var viewModel: VM
     protected lateinit var ctx: Context
     protected lateinit var sharedPrefHelper: SharedPrefHelper
-    private var mixpanel: MixpanelAPI? = null
+    var mixpanel: MixpanelAPI? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,

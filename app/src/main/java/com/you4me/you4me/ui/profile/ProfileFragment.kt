@@ -101,6 +101,7 @@ class ProfileFragment :
         setupView()
         checkAndRequestPermissions()
         observeImagesAndVideos()
+        trackProfileViewed()
 //        addObservers()
     }
 
@@ -142,6 +143,21 @@ class ProfileFragment :
                                 R.string.update_video,
                             )
                         }
+                }
+
+                is Resource.Failure -> {
+                }
+            }
+        }
+    }
+
+    private fun observeUsersDetails() {
+        viewModel.getUserDetails(user.userId)
+        viewModel.user.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    user = it.value
+                    binding.completionPercentage.text = "${user.completionPercentage}%"
                 }
 
                 is Resource.Failure -> {
@@ -247,12 +263,15 @@ class ProfileFragment :
                 }
             }
         }
+
         viewModel.updateUserResponse.observe(viewLifecycleOwner) {
             showLoader(false)
             when (it) {
                 is Resource.Success -> {
                     showToast("Profile Update Successful")
                     viewModel.updateUser(updateBody)
+                    observeUsersDetails()
+                    trackProfileUpdate()
                 }
 
                 is Resource.Failure -> {
@@ -371,7 +390,11 @@ class ProfileFragment :
                     p3: Long,
                 ) {
                     if (p2 == 0) return
-                    state = states[p2 - 1].value
+                    try {
+                        state = states[p2 - 1].value
+                    } catch (e: IndexOutOfBoundsException) {
+                        Log.e("SpinnerDebug", "Index out of bounds: ${e.message}")
+                    }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -387,8 +410,12 @@ class ProfileFragment :
                     p3: Long,
                 ) {
                     if (p2 == 0) return
-                    if (countries[p2 - 1].value != country) viewModel.getStates(countries[p2 - 1].value)
-                    country = countries[p2 - 1].value
+                    try {
+                        if (countries[p2 - 1].value != country) viewModel.getStates(countries[p2 - 1].value)
+                        country = countries[p2 - 1].value
+                    } catch (e: IndexOutOfBoundsException) {
+                        Log.e("SpinnerDebug", "Index out of bounds: ${e.message}")
+                    }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -404,15 +431,19 @@ class ProfileFragment :
                     p3: Long,
                 ) {
                     if (p2 == 0) return
-                    sexualOrientation = sexualOrientations[p2 - 1].value
-                    Log.d("GENDER", sexualOrientation.toString())
-                    // binding.genderLyt.visibility = if (sexualOrientation == "4") View.VISIBLE else View.GONE
-                    binding.genderLabel.visibility =
-                        if (sexualOrientation == "4") View.VISIBLE else View.GONE
-                    binding.genderSpinner.visibility =
-                        if (sexualOrientation == "4") View.VISIBLE else View.GONE
-                    binding.divider8.visibility =
-                        if (sexualOrientation == "4") View.VISIBLE else View.GONE
+                    try {
+                        sexualOrientation = sexualOrientations[p2 - 1].value
+                        Log.d("GENDER", sexualOrientation.toString())
+                        // binding.genderLyt.visibility = if (sexualOrientation == "4") View.VISIBLE else View.GONE
+                        binding.genderLabel.visibility =
+                            if (sexualOrientation == "4") View.VISIBLE else View.GONE
+                        binding.genderSpinner.visibility =
+                            if (sexualOrientation == "4") View.VISIBLE else View.GONE
+                        binding.divider8.visibility =
+                            if (sexualOrientation == "4") View.VISIBLE else View.GONE
+                    } catch (e: IndexOutOfBoundsException) {
+                        Log.e("SpinnerDebug", "Index out of bounds: ${e.message}")
+                    }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -428,7 +459,11 @@ class ProfileFragment :
                     p3: Long,
                 ) {
                     if (p2 == 0) return
-                    religionPreferred = religions[p2 - 1].value
+                    try {
+                        religionPreferred = religions[p2 - 1].value
+                    } catch (e: IndexOutOfBoundsException) {
+                        Log.e("SpinnerDebug", "Index out of bounds: ${e.message}")
+                    }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -444,7 +479,11 @@ class ProfileFragment :
                     p3: Long,
                 ) {
                     if (p2 == 0) return
-                    agePreferred = agePreferences[p2 - 1].value
+                    try {
+                        agePreferred = agePreferences[p2 - 1].value
+                    } catch (e: IndexOutOfBoundsException) {
+                        Log.e("SpinnerDebug", "Index out of bounds: ${e.message}")
+                    }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -460,7 +499,11 @@ class ProfileFragment :
                     p3: Long,
                 ) {
                     if (p2 == 0) return
-                    gender = genders[p2 - 1].value
+                    try {
+                        gender = genders[p2 - 1].value
+                    } catch (e: IndexOutOfBoundsException) {
+                        Log.e("SpinnerDebug", "Index out of bounds: ${e.message}")
+                    }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -645,6 +688,7 @@ class ProfileFragment :
                     dialogg.dismiss()
                     when (it) {
                         is Resource.Success -> {
+                            trackProfileDeleted()
                             showToast("Account Deleted Successfully!", Toast.LENGTH_LONG)
                             sharedPrefHelper.clearTempPreferences()
                             dialog.dismiss()
@@ -1030,6 +1074,18 @@ class ProfileFragment :
         } else {
             "unknown" // Fallback if it's neither image nor video
         }
+    }
+
+    private fun trackProfileViewed() {
+        mixpanel?.track("Android_Profile_Viewed")
+    }
+
+    private fun trackProfileUpdate() {
+        mixpanel?.track("Android_Profile_Update_Button_Clicked")
+    }
+
+    private fun trackProfileDeleted() {
+        mixpanel?.track("Android_Profile_Delete_Button_Clicked")
     }
 
     override fun onDestroy() {
