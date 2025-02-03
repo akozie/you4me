@@ -1,3 +1,7 @@
+import java.io.FileInputStream
+import java.util.Properties
+import kotlin.apply
+
 secrets {
     propertiesFileName = "secrets.properties"
     defaultPropertiesFileName = "local.defaults.properties"

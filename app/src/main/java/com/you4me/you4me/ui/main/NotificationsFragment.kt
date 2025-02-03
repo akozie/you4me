@@ -15,13 +15,14 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.Constants
 import com.you4me.you4me.utils.safeNavigate
+import com.you4me.you4me.utils.safeNavigateUp
 import java.text.SimpleDateFormat
 import java.util.*
 
 class NotificationsFragment :
-    BaseFragment<MainViewModel, FragmentNotificationsBinding, MainRepository>() {
-
+    BaseFragment<MainViewModel, FragmentNotificationsBinding, MainRepository>("NOTIFICATION") {
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
