@@ -211,8 +211,12 @@ class HomeFragment :
     private fun setupInviteeDates(dates: InviteeDatesRequiringApproval) {
         if (dates.isEmpty()) {
             binding.approvedDatesLyt.visibility = View.GONE
+            binding.approvedDatesLytTxt.visibility = View.GONE
+            binding.approvedDatesLytView.visibility = View.GONE
         } else {
             binding.approvedDatesLyt.visibility = View.VISIBLE
+            binding.approvedDatesLytTxt.visibility = View.VISIBLE
+            binding.approvedDatesLytView.visibility = View.VISIBLE
             val adapter = InviteeDateForApprovalRecyclerAdapter(dates, viewModel, ctx)
             binding.inviteeDatesRecycler.adapter = adapter
         }
