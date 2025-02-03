@@ -1,12 +1,18 @@
 package com.you4me.you4me.ui.main
 
+import android.Manifest
+import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -29,34 +35,57 @@ import com.you4me.you4me.utils.UtilityParam
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-//    private val viewModel by viewModels<MainViewModel>()
+    //    private val viewModel by viewModels<MainViewModel>()
     private lateinit var viewModel: MainViewModel
     private lateinit var repository: MainRepository
     private lateinit var user: User
     private lateinit var sharedPrefHelper: SharedPrefHelper
     private lateinit var firebaseInstance: FirebaseMessaging
 
+    // 1️⃣ Register the permission launcher
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Log.d("FCM", "Notification permission granted")
+            } else {
+                Log.e("FCM", "Notification permission denied")
+                Toast.makeText(this, "Notifications are disabled", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        repository = MainRepository(RemoteDataSource().buildApi(ApiCollector::class.java))
-        viewModel = MainViewModel(repository, DbRepository(AppDatabase.invoke(this)))
+        repository = MainRepository(
+            RemoteDataSource().buildApi(
+                ApiCollector::class.java
+            )
+        )
+        viewModel = MainViewModel(
+            repository, DbRepository(
+                AppDatabase.invoke(this)
+            )
+        )
         sharedPrefHelper = SharedPrefHelper(this)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         val gson = Gson()
         user = gson.fromJson(userProfile, User::class.java)
         // viewModel.getNewUser(this, user.userId)
-        setupViews()
-        initializePlacesSdk()
-        createNotificationChannel()
-
         firebaseInstance = FirebaseMessaging.getInstance()
         getFireBaseToken(firebaseInstance) {
             val obj = JsonObject()
             obj.addProperty("pushToken", it)
             sendTokenToBackend(obj, user.userId)
         }
+
+        askNotificationPermission()
+        setupViews()
+        initializePlacesSdk()
+        createNotificationChannel()
+
     }
 
     private fun getFireBaseToken(
@@ -70,9 +99,41 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val token = task.result
+                Log.d("CHECKING_VHEK", "$token")
                 actionToPerformWithTheReceivedToken(token)
             },
         )
+    }
+
+    private fun askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.d("FCM", "Notification permission already granted")
+                getFireBaseToken(firebaseInstance) {
+                    val obj = JsonObject()
+                    obj.addProperty("pushToken", it)
+                    sendTokenToBackend(obj, user.userId)
+                }
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                showPermissionExplanationDialog()
+            } else {
+                // 3️⃣ Request permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+    private fun showPermissionExplanationDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Notification Permission Required")
+            .setMessage("This app needs notification permissions to send you important updates.")
+            .setPositiveButton("OK") { _, _ ->
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+            .setNegativeButton("No Thanks", null)
+            .show()
     }
 
     private fun sendTokenToBackend(
@@ -84,13 +145,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViews() {
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
-        binding.bottomNavBar.setupWithNavController(navHostFragment.findNavController())
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as
+                    NavHostFragment
+        binding.bottomNavBar.setupWithNavController(
+            navHostFragment
+                .findNavController()
+        )
 
         navHostFragment.findNavController()
             .addOnDestinationChangedListener { _, destination, _ ->
                 when (destination.id) {
-                    R.id.notificationsFragment, R.id.notificationViewFragment -> {
+                    R.id.notificationsFragment, R.id.notificationViewFragment,
+                    R.id.datesFragment -> {
                         binding.bottomNavBar.visibility = View.GONE
                     }
 
@@ -118,7 +184,9 @@ class MainActivity : AppCompatActivity() {
             val channel = NotificationChannel("YOU_4_ME_CHANNEL_ID", name, importance)
             channel.description = description
 
-            val notificationManager = getSystemService(NotificationManager::class.java)
+            val notificationManager = getSystemService(
+                NotificationManager::class.java
+            )
             notificationManager.createNotificationChannel(channel)
         }
     }

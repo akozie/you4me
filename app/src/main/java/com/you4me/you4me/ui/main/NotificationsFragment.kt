@@ -3,7 +3,6 @@ package com.you4me.you4me.ui.main
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -23,8 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class NotificationsFragment :
-    BaseFragment<MainViewModel, FragmentNotificationsBinding, MainRepository>() {
-
+    BaseFragment<MainViewModel, FragmentNotificationsBinding, MainRepository>("NOTIFICATION") {
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
@@ -39,6 +37,8 @@ class NotificationsFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mixpanel?.track("Android_Notification_Viewed")
 
         binding.loader.show()
 
@@ -110,9 +110,9 @@ class NotificationsFragment :
             Constants.NotificationConstants.Categories.DATE_PROPOSAL,
             Constants.NotificationConstants.Categories.DATE_CREATOR_ACCEPTED_INTEREST,
             Constants.NotificationConstants.Categories.NEW_DATE_INTEREST -> {
-                NotificationsFragmentDirections.actionNotificationsFragmentToDatesInterestFragment()
+                NotificationsFragmentDirections
+                    .actionNotificationsFragmentToDatesFragment(notification.user_id)
             }
-
             else -> {
                 Log.e(
                     "NotificationHandler", "Unknown category:" +
@@ -131,5 +131,11 @@ class NotificationsFragment :
             constraintLayout2.visibility = ViewGroup.VISIBLE
             notificationsRecyclerView.visibility = View.GONE
         }
+    }
+
+    override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
+        super.onDestroy()
     }
 }

@@ -1,11 +1,11 @@
 package com.you4me.you4me.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.you4me.you4me.R
 import com.you4me.you4me.adapter.DatesInterestPagerAdapter
@@ -14,10 +14,7 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 
-class DatesInterestFragment : BaseFragment<MainViewModel, FragmentDatesInterestBinding, MainRepository>() {
-    private lateinit var viewPager2: ViewPager2
-    private lateinit var tabLayout: TabLayout
-
+class DatesInterestFragment : BaseFragment<MainViewModel, FragmentDatesInterestBinding, MainRepository>("PROPOSE_DATE_TIME") {
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
@@ -38,16 +35,32 @@ class DatesInterestFragment : BaseFragment<MainViewModel, FragmentDatesInterestB
     }
 
     private fun setUpViewPager() {
-        viewPager2 = binding.pager
-        tabLayout = binding.tabs
-        val adapter = DatesInterestPagerAdapter(childFragmentManager, lifecycle, 2)
-        viewPager2.adapter = adapter
+        val adapter = DatesInterestPagerAdapter(this, 2) // ✅ Pass `this` (fragment)
+        binding.pager.adapter = adapter
+        binding.pager.isUserInputEnabled = true // ✅ Ensure swiping is enabled
 
-        TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-            when (position) {
-                0 -> tab.text = getString(R.string.received_requests)
-                1 -> tab.text = getString(R.string.sent_requests)
-            }
+        TabLayoutMediator(binding.tabs, binding.pager) { tab, position ->
+            tab.text =
+                when (position) {
+                    0 -> getString(R.string.received_requests)
+                    1 -> getString(R.string.sent_requests)
+                    else -> getString(R.string.received_requests)
+                }
         }.attach()
+
+        // ✅ Debugging Log
+        binding.pager.registerOnPageChangeCallback(
+            object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    Log.d("ViewPagerDebug", "Page changed to: $position")
+                }
+            },
+        )
+    }
+
+    override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
+        super.onDestroy()
     }
 }

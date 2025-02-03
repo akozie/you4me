@@ -19,6 +19,7 @@ plugins {
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -51,8 +52,8 @@ android {
         applicationId = "com.you4me.you4me"
         minSdk = 24
         targetSdk = 34
-        versionCode = 32
-        versionName = "1.32"
+        versionCode = 33
+        versionName = "1.33"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -108,7 +109,8 @@ dependencies {
 
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:30.4.1"))
-    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-messaging-ktx:23.0.8")
 
     // cloudinary
@@ -165,6 +167,9 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    // mixpanel
+    implementation("com.mixpanel.android:mixpanel-android:5.9.6")
 }
 
 apply(plugin = "com.google.gms.google-services")

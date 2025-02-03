@@ -36,7 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepository>() {
+class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepository>("DATE_INTEREST_RECEIVED") {
     private var dateInterests = FetchDateInterest()
 
 //    private var dateInterests = ArrayList<FetchDateInterestItem>()
@@ -145,6 +145,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         if (!isFreeTrial) {
             setupBilling()
         }
+        mixpanel?.track("Android_Received_Interest_Viewed")
     }
 
     override fun onResume() {
@@ -310,6 +311,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             showLoading(true)
             val d = dateInterests[currentIdx]
             viewModel.updateDateInterest(d.interestID, d.dateID, "PENDING_TIME_APPROVAL")
+            mixpanel?.track("Android_Received_Request_Like_Date_Button_Clicked")
         }
 
         binding.rejectBtn.setOnClickListener {
@@ -321,6 +323,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 d.dateID,
                 "REJECTED",
             )
+            mixpanel?.track("Android_Received_Request_Dislike_Date_Button_Clicked")
         }
 
 //        binding.mainLyt.setOnTouchListener { _, event ->
@@ -548,7 +551,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             // Yes, you can safely use this index. The index is present in the array.
             date = dateInterests[currentIdx]
         }
-        observeImagesAndVideos(date.submittedBy)
+        observeImagesAndVideos(date.userID)
 
         val mediaItem = MediaItem.fromUri(date.videoURL.replace("http:", "https:"))
         player?.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
@@ -682,7 +685,8 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     }
 
     override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
         super.onDestroy()
-//        billingManager.endConnection()
     }
 }

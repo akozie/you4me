@@ -53,6 +53,9 @@
         <action
             android:id="@+id/action_notificationsFragment_to_datesInterestFragment"
             app:destination="@id/datesInterestFragment" />
+        <action
+            android:id="@+id/action_notificationsFragment_to_datesFragment"
+            app:destination="@id/datesFragment" />
     </fragment>
     <fragment
         android:id="@+id/imageAndVideoDetailsFragment"
@@ -80,4 +83,16 @@
         android:name="com.you4me.you4me.ui.main.DatesInterestFragment"
         android:label="fragment_dates_interest"
         tools:layout="@layout/fragment_dates_interest" />
+    <fragment
+        android:id="@+id/datesFragment"
+        android:name="com.you4me.you4me.ui.main.DatesFragment"
+        android:label="fragment_dates"
+        tools:layout="@layout/fragment_dates">
+        <argument
+            android:name="user_id"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_datesFragment_to_imageAndVideoDetailsFragment"
+            app:destination="@id/imageAndVideoDetailsFragment" />
+    </fragment>
 </navigation>

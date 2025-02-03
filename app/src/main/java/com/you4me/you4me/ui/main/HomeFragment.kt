@@ -26,7 +26,7 @@ import com.you4me.you4me.utils.Utils.ADD_EVENT_REQUEST_CODE
 import java.util.*
 
 class HomeFragment :
-    BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>(),
+    BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>("HOME"),
     UpcomingDatesRecyclerAdapter.CalendarResultListener {
     private lateinit var user: User
 
@@ -67,6 +67,7 @@ class HomeFragment :
         addObservers()
         viewModel.getSubscriptionStatusForHome(user.userId)
         binding.notificationIcon.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment) }
+        mixpanel?.track("Android_Home_Viewed")
     }
 
     private fun addObservers() {
@@ -147,20 +148,6 @@ class HomeFragment :
             }
         }
 
-        viewModel.proposeNewDateTime.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Success -> {
-                    showToast("Date status updated")
-                    Log.d("REQUEST_PROCESSED", "REQUEST_PROCESSED")
-                    // switch ui
-                }
-
-                is Resource.Failure -> {
-                    showToast(it.message ?: it.errorBody ?: "")
-                }
-            }
-        }
-
         viewModel.getNotificationsResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -217,7 +204,14 @@ class HomeFragment :
             binding.datesRequiringAppLyt.visibility = View.GONE
         } else {
             binding.datesRequiringAppLyt.visibility = View.VISIBLE
-            val adapter = DateInterestsRequiringApprovalRecyclerAdapter(dates, viewModel)
+            val adapter =
+                mixpanel?.let {
+                    DateInterestsRequiringApprovalRecyclerAdapter(
+                        dates,
+                        viewModel,
+                        it,
+                    )
+                }
             binding.dateInterestRecycler.adapter = adapter
         }
     }
@@ -225,9 +219,14 @@ class HomeFragment :
     private fun setupInviteeDates(dates: InviteeDatesRequiringApproval) {
         if (dates.isEmpty()) {
             binding.approvedDatesLyt.visibility = View.GONE
+            binding.approvedDatesLytTxt.visibility = View.GONE
+            binding.approvedDatesLytView.visibility = View.GONE
         } else {
             binding.approvedDatesLyt.visibility = View.VISIBLE
-            val adapter = InviteeDateForApprovalRecyclerAdapter(dates, viewModel, ctx)
+            binding.approvedDatesLytTxt.visibility = View.VISIBLE
+            binding.approvedDatesLytView.visibility = View.VISIBLE
+            val adapter =
+                mixpanel?.let { InviteeDateForApprovalRecyclerAdapter(dates, viewModel, ctx, it) }
             binding.inviteeDatesRecycler.adapter = adapter
         }
     }
@@ -247,8 +246,7 @@ class HomeFragment :
         data: Intent?,
     ) {
         if (resultCode == Activity.RESULT_OK) {
-            // The user successfully added the event to the calendar
-//            Log.d("OKKKKK", "Event added to calendar")
+            mixpanel?.track("Android_Home_Added_Date_to_Google_Calendar")
         } else if (resultCode == Activity.RESULT_CANCELED) {
             // The user canceled the operation
 //            Log.d("NNNNOKKKKK","Event addition canceled")
@@ -261,5 +259,11 @@ class HomeFragment :
     ) {
         Log.d("RESULTCODEK", "$resultCode")
         startActivityForResult(intent, ADD_EVENT_REQUEST_CODE)
+    }
+
+    override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
+        super.onDestroy()
     }
 }

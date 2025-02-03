@@ -1,6 +1,7 @@
 package com.you4me.you4me.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,7 @@ import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.SharedPrefHelper
 
-class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBinding, MainRepository>() {
+class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBinding, MainRepository>("DATE_INTEREST_SENT") {
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
@@ -32,6 +33,8 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
     ) {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
+        binding.emptyLyt.visibility = View.VISIBLE
+        mixpanel?.track("Android_Sent_Interest_Viewed")
     }
 
     private fun setupObservers() {
@@ -41,12 +44,27 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
         val user = gson.fromJson(userProfile, User::class.java)
 
         viewModel.getInviteeDatesRequiringApproval(user.userId)
-
         viewModel.inviteeDatesRequiringApproval.observe(viewLifecycleOwner) {
             showLoading(false)
             when (it) {
                 is Resource.Success -> {
                     setupInviteeDates(it.value)
+                }
+
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
+            }
+        }
+
+        viewModel.proposeNewDateTime.observe(viewLifecycleOwner) {
+            showLoading(false)
+            when (it) {
+                is Resource.Success -> {
+                    showToast("Date status updated")
+                    Log.d("REQUEST_PROCESSED", "REQUEST_PROCESSED")
+                    // switch ui
+                    viewModel.getInviteeDatesRequiringApproval(user.userId)
                 }
 
                 is Resource.Failure -> {
@@ -60,7 +78,18 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
         if (dates.isEmpty()) {
             showEmpty()
         } else {
-            val adapter = SentRequestsRecyclerAdapter(dates, viewModel, ctx, requireActivity().supportFragmentManager, viewLifecycleOwner)
+            binding.emptyLyt.visibility = View.GONE
+            val adapter =
+                mixpanel?.let {
+                    SentRequestsRecyclerAdapter(
+                        dates,
+                        viewModel,
+                        ctx,
+                        it,
+                        requireActivity().supportFragmentManager,
+                        viewLifecycleOwner,
+                    )
+                }
             binding.upcomingDatesRecycler.adapter = adapter
         }
     }
@@ -77,7 +106,8 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
     }
 
     override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
         super.onDestroy()
-//        billingManager.endConnection()
     }
 }

@@ -27,7 +27,7 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
-class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, MainRepository>() {
+class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, MainRepository>("GO_ON_DATE") {
     private lateinit var calendar: Calendar
     private lateinit var dateFormat: SimpleDateFormat
 
@@ -57,6 +57,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setupObservers()
+        mixpanel?.track("Android_Request_Date_Viewed")
     }
 
     private fun setupViews() {
@@ -104,6 +105,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                     binding.searchDateLocations.text.toString(),
                     binding.time.text.toString(),
                 )
+                mixpanel?.track("Android_Request_Date_Button_Pressed")
                 showLoader(true)
             } else if (binding.whoPaysSpinner.selectedItemPosition == -1) {
                 showToast("Please choose who will be paying for the date.")
@@ -187,4 +189,10 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
     ) = FragmentGoOnDateBinding.inflate(layoutInflater)
 
     override fun getRepository() = MainRepository(dataSource.buildApi(ApiCollector::class.java))
+
+    override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
+        super.onDestroy()
+    }
 }

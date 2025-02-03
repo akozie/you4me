@@ -20,7 +20,7 @@ import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.profile.ProfileViewModel
 
-class ImageAndVideoDetailsFragment : BaseFragment<ProfileViewModel, FragmentImageAndVideoDetailsBinding, ProfileRepository>() {
+class ImageAndVideoDetailsFragment : BaseFragment<ProfileViewModel, FragmentImageAndVideoDetailsBinding, ProfileRepository>("") {
     //    override fun onCreateView(
 //        inflater: LayoutInflater,
 //        container: ViewGroup?,

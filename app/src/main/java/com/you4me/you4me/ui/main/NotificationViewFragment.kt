@@ -13,7 +13,7 @@ import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.safeNavigateUp
 
 class NotificationViewFragment : BaseFragment<MainViewModel, FragmentNotificationViewBinding,
-        MainRepository>() {
+    MainRepository>("NOTIFICATION_VIEW") {
 
     // Arguments
     private var timestamp: String? = null

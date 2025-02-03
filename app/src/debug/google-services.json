@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "264358783975",
     "project_id": "you4me-14d09",
-    "storage_bucket": "you4me-14d09.appspot.com"
+    "storage_bucket": "you4me-14d09.firebasestorage.app"
   },
   "client": [
     {
@@ -19,6 +19,14 @@
           "android_info": {
             "package_name": "com.you4me.you4me",
             "certificate_hash": "5a5dec5799d8db308f7784f7e339b3f35cfc794e"
+          }
+        },
+        {
+          "client_id": "264358783975-di8vkekl930gguap4uc8emlaiv662tup.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.you4me.you4me",
+            "certificate_hash": "4532395308146e4470d710aafb2d346f9c4eb42a"
           }
         },
         {
@@ -57,6 +65,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "264358783975-jjta2b0648c7sggn5bbd3pkj61i0965p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.you4me.you4me.debug",
+            "certificate_hash": "b0688f716285b119010465dbbbf2af643a352433"
+          }
+        },
         {
           "client_id": "264358783975-ms0aktkfp2fe434m457av6joov0qjuoj.apps.googleusercontent.com",
           "client_type": 1,

@@ -37,7 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, MainRepository>() {
+class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, MainRepository>("FIND_DATE") {
     private var dates = ArrayList<FetchDatesResponseItem>()
     private var currentIdx = -1
 
@@ -72,6 +72,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         setupObservers()
         showBottomSheetDialog()
         viewModel.getUserDetails(user.userId)
+        mixpanel?.track("Android_Find_Date_Viewed")
     }
 
     override fun onResume() {
@@ -248,6 +249,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 d.time,
                 d.userId,
             )
+            mixpanel?.track("Android_Liked_Find_Date_Button_Pressed")
         }
         binding.rejectBtn.setOnClickListener {
             if (currentIdx < 0) return@setOnClickListener
@@ -258,6 +260,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 d.userId,
                 false,
             )
+            mixpanel?.track("Android_Disliked_Find_Date_Button_Pressed")
         }
 
         binding.mainLyt.setOnTouchListener { _, event ->
@@ -627,8 +630,9 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // Cancel any ongoing tasks
+    override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
+        super.onDestroy()
     }
 }
