@@ -49,6 +49,10 @@ object Utils {
         return outputFormat.format(date!!)
     }
 
+    fun String.toSentenceCase(): String {
+        return this.lowercase().replaceFirstChar { it.uppercase() }
+    }
+
     fun showAlertDialog(
         context: Context,
         message: String,
