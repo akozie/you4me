@@ -218,11 +218,12 @@ class RegistrationFragment :
         binding.signUpBtn.setOnClickListener {
             val email = binding.email.text?.trim()
             val password = binding.password.text?.trim()
+            val referralCode = binding.referralCode.text?.trim()
             val confirmPassword = binding.confirmPassword.text?.trim()
             trackRegisteredButtonClicked(email.toString())
             if (validate(email, password, confirmPassword)) {
                 showLoader(true)
-                viewModel.register(email.toString(), password.toString())
+                viewModel.register(email.toString(), password.toString(), referralCode.toString())
             }
         }
     }
@@ -274,7 +275,7 @@ class RegistrationFragment :
             JSONObject().apply {
                 put("email", email)
             }
-        mixpanel?.track("Android_Registered_Button_Clicked", props)
+        mixpanel?.track("Android_Register_Button_Clicked", props)
     }
 
     override fun onDestroy() {

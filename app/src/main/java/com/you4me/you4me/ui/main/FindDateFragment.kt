@@ -249,6 +249,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 d.time,
                 d.userId,
             )
+            mixpanel?.track("Android_Liked_Find_Date_Button_Pressed")
         }
         binding.rejectBtn.setOnClickListener {
             if (currentIdx < 0) return@setOnClickListener
@@ -259,6 +260,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 d.userId,
                 false,
             )
+            mixpanel?.track("Android_Disliked_Find_Date_Button_Pressed")
         }
 
         binding.mainLyt.setOnTouchListener { _, event ->

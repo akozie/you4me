@@ -4,14 +4,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.you4me.you4me.databinding.DateInterestRequiringApprovalItemBinding
 import com.you4me.you4me.models.DateInterestsRequiringApproval
 import com.you4me.you4me.ui.main.MainViewModel
 
-class DateInterestsRequiringApprovalRecyclerAdapter(private val dates : DateInterestsRequiringApproval, private val viewModel: MainViewModel) : RecyclerView.Adapter<DateInterestsRequiringApprovalRecyclerAdapter.MyViewHolder>() {
-    class MyViewHolder(val binding : DateInterestRequiringApprovalItemBinding) : RecyclerView.ViewHolder(binding.root)
+class DateInterestsRequiringApprovalRecyclerAdapter(
+    private val dates: DateInterestsRequiringApproval,
+    private val viewModel: MainViewModel,
+    private val mixpanelAPI: MixpanelAPI,
+) : RecyclerView.Adapter<DateInterestsRequiringApprovalRecyclerAdapter.MyViewHolder>() {
+    class MyViewHolder(val binding: DateInterestRequiringApprovalItemBinding) : RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): MyViewHolder {
         val v = DateInterestRequiringApprovalItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
         return MyViewHolder(v)
     }
@@ -29,31 +37,35 @@ class DateInterestsRequiringApprovalRecyclerAdapter(private val dates : DateInte
         }
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: MyViewHolder,
+        position: Int,
+    ) {
         val date = dates[position]
         holder.binding.apply {
-            if (date.proposedDate.isNotEmpty() && date.proposedTime.isNotEmpty()){
+            if (date.proposedDate.isNotEmpty() && date.proposedTime.isNotEmpty()) {
                 txt.text = "${date.name} has proposed a new date and time: ${date.proposedDate}, ${date.proposedTime}. Does this work for you?"
-            } else if (date.proposedDate.isNotEmpty()){
+            } else if (date.proposedDate.isNotEmpty()) {
                 txt.text = "${date.name} has proposed a new date: ${date.proposedDate}. Does this work for you?"
-            } else if (date.proposedTime.isNotEmpty()){
+            } else if (date.proposedTime.isNotEmpty()) {
                 txt.text = "${date.name} has proposed a new time: ${date.proposedTime}. Does this work for you?"
             } else {
                 root.visibility = View.GONE
             }
             yesBtn.setOnClickListener {
-                //update list and ui
-                    viewModel.updateDateInterest(date.interestId, date.dateId, "APPROVED")
+                // update list and ui
+                mixpanelAPI.track("Android_Home_Approve_Date_Creator_Button_Pressed")
+                viewModel.updateDateInterest(date.interestId, date.dateId, "APPROVED")
                 dates.removeAt(position)
                 notifyItemRemoved(position)
             }
             noBtn.setOnClickListener {
-                //update list and ui
+                // update list and ui
+                mixpanelAPI.track("Android_Home_Reject_Date_Creator_Button_Pressed")
                 viewModel.rejectDateInterest(date.interestId, date.dateId, "REJECTED")
                 dates.removeAt(position)
                 notifyItemRemoved(position)
             }
         }
     }
-
 }

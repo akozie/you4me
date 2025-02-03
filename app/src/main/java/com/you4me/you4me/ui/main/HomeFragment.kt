@@ -67,6 +67,7 @@ class HomeFragment :
         addObservers()
         viewModel.getSubscriptionStatusForHome(user.userId)
         binding.notificationIcon.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment) }
+        mixpanel?.track("Android_Home_Viewed")
     }
 
     private fun addObservers() {
@@ -203,7 +204,14 @@ class HomeFragment :
             binding.datesRequiringAppLyt.visibility = View.GONE
         } else {
             binding.datesRequiringAppLyt.visibility = View.VISIBLE
-            val adapter = DateInterestsRequiringApprovalRecyclerAdapter(dates, viewModel)
+            val adapter =
+                mixpanel?.let {
+                    DateInterestsRequiringApprovalRecyclerAdapter(
+                        dates,
+                        viewModel,
+                        it,
+                    )
+                }
             binding.dateInterestRecycler.adapter = adapter
         }
     }
@@ -217,7 +225,8 @@ class HomeFragment :
             binding.approvedDatesLyt.visibility = View.VISIBLE
             binding.approvedDatesLytTxt.visibility = View.VISIBLE
             binding.approvedDatesLytView.visibility = View.VISIBLE
-            val adapter = InviteeDateForApprovalRecyclerAdapter(dates, viewModel, ctx)
+            val adapter =
+                mixpanel?.let { InviteeDateForApprovalRecyclerAdapter(dates, viewModel, ctx, it) }
             binding.inviteeDatesRecycler.adapter = adapter
         }
     }

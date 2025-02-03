@@ -311,6 +311,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             showLoading(true)
             val d = dateInterests[currentIdx]
             viewModel.updateDateInterest(d.interestID, d.dateID, "PENDING_TIME_APPROVAL")
+            mixpanel?.track("Android_Received_Request_Like_Date_Button_Clicked")
         }
 
         binding.rejectBtn.setOnClickListener {
@@ -322,6 +323,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 d.dateID,
                 "REJECTED",
             )
+            mixpanel?.track("Android_Received_Request_Dislike_Date_Button_Clicked")
         }
 
 //        binding.mainLyt.setOnTouchListener { _, event ->

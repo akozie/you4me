@@ -37,7 +37,7 @@ class NotificationsFragment :
         viewModel.user.observe(viewLifecycleOwner) {
             viewModel.getNotifications()
         }
-
+        mixpanel?.track("Android_Notification_Viewed")
         viewModel.getNotificationsResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {

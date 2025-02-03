@@ -43,6 +43,7 @@ class LoginFragment :
         setupViews()
         googleSignInClient()
 
+        mixpanel?.track("Android_App_Opened")
         mixpanel?.track("Android_Login_Page_Opened")
 
         binding.googleTv.setOnClickListener {

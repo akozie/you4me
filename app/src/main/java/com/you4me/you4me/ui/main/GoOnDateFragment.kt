@@ -57,6 +57,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setupObservers()
+        mixpanel?.track("Android_Request_Date_Viewed")
     }
 
     private fun setupViews() {
@@ -104,6 +105,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                     binding.searchDateLocations.text.toString(),
                     binding.time.text.toString(),
                 )
+                mixpanel?.track("Android_Request_Date_Button_Pressed")
                 showLoader(true)
             } else if (binding.whoPaysSpinner.selectedItemPosition == -1) {
                 showToast("Please choose who will be paying for the date.")

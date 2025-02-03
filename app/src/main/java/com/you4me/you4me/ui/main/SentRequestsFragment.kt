@@ -79,7 +79,17 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
             showEmpty()
         } else {
             binding.emptyLyt.visibility = View.GONE
-            val adapter = SentRequestsRecyclerAdapter(dates, viewModel, ctx, requireActivity().supportFragmentManager, viewLifecycleOwner)
+            val adapter =
+                mixpanel?.let {
+                    SentRequestsRecyclerAdapter(
+                        dates,
+                        viewModel,
+                        ctx,
+                        it,
+                        requireActivity().supportFragmentManager,
+                        viewLifecycleOwner,
+                    )
+                }
             binding.upcomingDatesRecycler.adapter = adapter
         }
     }
