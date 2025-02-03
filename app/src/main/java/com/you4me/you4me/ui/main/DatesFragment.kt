@@ -45,86 +45,9 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
     private var playWhenReady = true
     private var mediaItemIndex = 0
     private var playbackPosition = 0L
-
-    private lateinit var billingClient: BillingClient
-    private lateinit var productDetails: ProductDetails
-    private lateinit var queryProductDetailsParams: QueryProductDetailsParams
-    private lateinit var billingManager: BillingManager
     private lateinit var user: User
-    private var isSubscribed: Boolean = false
-    private var displayToast: Boolean = false
-    private var hasCheckedBilling = false
-    private var isUserSubscribed = false
-    private var isFreeTrial = false
-    private lateinit var obj: JsonObject
     private lateinit var date: FetchDateInterestItem
     private var userId: String? = null
-
-    private val purchasesUpdatedListener =
-        PurchasesUpdatedListener { billingResult, purchases ->
-            if (!purchases.isNullOrEmpty() && purchases[0].purchaseState ==
-                Purchase.PurchaseState.PURCHASED) {
-                val p = purchases[0]
-                val obj = JsonObject()
-                obj.addProperty("purchase_token", p.purchaseToken)
-                obj.addProperty("order_id", p.orderId)
-                obj.addProperty("purchase_time", p.purchaseTime)
-                obj.addProperty("product_id", p.products[0])
-                obj.addProperty("period", p.quantity)
-                obj.addProperty("user_id", user.userId)
-//            viewModel.registerPayment(obj)
-                Log.d("GGLEOBJ_1", obj.toString())
-            }
-        }
-
-    private val purchasesResponseListener =
-        PurchasesResponseListener { billingResult, purchases ->
-            if (purchases.isNotEmpty() && purchases[0].purchaseState ==
-                Purchase.PurchaseState.PURCHASED) {
-                hasCheckedBilling = true
-                // continue
-                isUserSubscribed = sharedPrefHelper.getBoolean(IS_SUBSCRIBED)
-                Log.d("IS_SUB", isUserSubscribed.toString())
-                if (!isUserSubscribed) {
-                    obj = JsonObject()
-                    purchases[0].apply {
-                        obj.addProperty("purchase_token", this.purchaseToken)
-                        obj.addProperty("order_id", this.orderId)
-                        obj.addProperty("purchase_time", "${this.purchaseTime}")
-                        obj.addProperty("product_id", this.products[0])
-                        obj.addProperty("period", "${this.quantity}")
-                        obj.addProperty("user_id", user.userId)
-                    }
-                    viewModel.registerPayment(obj)
-                    displayToast = true
-                    Log.d("GGLEOBJ", obj.toString())
-                }
-                Log.d("google_play_purchase", purchases[0].toString())
-                Log.d("google_new_purchase", obj.toString())
-//            viewModel.registerPayment(obj)
-            } else {
-                hasCheckedBilling = true
-                billingClient.queryProductDetailsAsync(queryProductDetailsParams)
-                { billingResult, productDetailsList ->
-                    // check billingResult
-                    // process returned productDetailsList
-                    println("billing result code ${billingResult.responseCode}")
-                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                        println(productDetailsList.joinToString(","))
-//                    if (productDetails.toString().isNotEmpty()){
-                        productDetails =
-                            productDetailsList.first { it.productId == "you4me_premium" }
-                        if (!isUserSubscribed) {
-                            Log.d("FIRST_PID", productDetailsList.first().toString())
-                            showBilling()
-                        }
-//                    } else {
-//                        //
-                        // }
-                    }
-                }
-            }
-        }
 
     override fun getViewModel() = MainViewModel::class.java
 
@@ -150,11 +73,7 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
 
         binding.loader.show()
         setupObservers()
-//        billingManager = BillingManager(requireActivity())
-        isFreeTrial = sharedPrefHelper.getBoolean(IS_FREE_PLAN)
-        if (!isFreeTrial) {
-            setupBilling()
-        }
+        setupView()
 
         // Set up the Toolbar using View Binding
         (activity as? AppCompatActivity)?.setSupportActionBar(binding.toolbar)
@@ -357,72 +276,7 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
         }
     }
 
-    private fun startTiltAnimation(isRightSwipe: Boolean) {
-        val tiltAnimation = AnimationUtils.loadAnimation(requireContext(),
-            R.anim.tilt_animation)
-        if (isRightSwipe) {
-            tiltAnimation.interpolator = AccelerateDecelerateInterpolator()
-        } else {
-            tiltAnimation.interpolator = DecelerateInterpolator()
-        }
-        binding.mainLyt.startAnimation(tiltAnimation)
-    }
-
-    private fun startSecondTiltAnimation(isRightSwipe: Boolean) {
-        val tiltAnimation =
-            AnimationUtils.loadAnimation(requireContext(),
-                R.anim.second_tilt_animation)
-        if (isRightSwipe) {
-            tiltAnimation.interpolator = AccelerateDecelerateInterpolator()
-        } else {
-            tiltAnimation.interpolator = DecelerateInterpolator()
-        }
-        binding.mainLyt.startAnimation(tiltAnimation)
-    }
-
     private fun setupObservers() {
-        viewModel.user.observe(viewLifecycleOwner) {
-            user = it
-            viewModel.getSubscriptionStatus()
-        }
-        viewModel.getSubscriptionStatus.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Success -> {
-                    if (it.value.isFreeTrial) {
-                        isSubscribed = true
-                        setupView()
-                    } else {
-                        isSubscribed = false
-                        showAlertDialog(
-                            requireContext(),
-                            "You need to subscribe to access this screen",
-                            "OK",
-                        ) {
-                            findNavController().popBackStack()
-                        }
-                        showEmpty()
-                        showLoading(false)
-//                        if (!isUserSubscribed) {
-// //                            billingManager.launchBillingFlowForPremium()
-//                            Log.d("THIS_IS", hasCheckedBilling.toString())
-//                            showBilling()
-//                        }
-                    }
-                }
-
-                is Resource.Failure -> {
-                    if (it.message == null && it.errorBody == null) {
-                        showEmpty()
-                    } else {
-                        showAlertDialog(
-                            requireContext(),
-                            it.message ?: it.errorBody ?: "",
-                            "OK",
-                        ) {}
-                    }
-                }
-            }
-        }
         viewModel.fetchDateInterests.observe(viewLifecycleOwner) {
             showLoading(false)
             when (it) {
@@ -442,6 +296,7 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
                 }
             }
         }
+
         viewModel.rejectDateInterest.observe(viewLifecycleOwner) {
             showLoading(false)
             when (it) {
@@ -471,30 +326,6 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
                         requireContext(), it.message ?: it.errorBody ?: "",
                         "OK"
                     ) {}
-                }
-            }
-        }
-        if (!isUserSubscribed) {
-            viewModel._updatePaymentResponse.observe(viewLifecycleOwner) {
-                when (it) {
-                    is Resource.Success -> {
-//                    isSubscribed = true
-                        sharedPrefHelper.saveBoolean(IS_SUBSCRIBED, true)
-                        if (displayToast) {
-                            showToast("Payment success!")
-                        } else {
-                            //
-                        }
-                        viewModel.getSubscriptionStatus()
-                        Log.d("OK_SUB", isSubscribed.toString())
-                    }
-
-                    is Resource.Failure -> {
-                        showAlertDialog(
-                            requireContext(), it.message
-                                ?: it.errorBody ?: "", "OK"
-                        ) {}
-                    }
                 }
             }
         }
@@ -552,6 +383,8 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
     }
 
     private fun showEmpty() {
+        findNavController().safeNavigateUp()
+
         binding.mainLyt.visibility = View.GONE
         binding.mainLytBtn.visibility = View.GONE
 
@@ -573,77 +406,6 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
         binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
         binding.mainLytBtn.visibility = if (loading) View.GONE else View.VISIBLE
         binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
-    }
-
-    private fun setupBilling() {
-        billingClient =
-            BillingClient.newBuilder(ctx.applicationContext).setListener(purchasesUpdatedListener)
-                .enablePendingPurchases().build()
-
-        queryProductDetailsParams =
-            QueryProductDetailsParams.newBuilder().setProductList(
-                ImmutableList.of(
-                    QueryProductDetailsParams.Product.newBuilder().setProductId("you4me_premium")
-                        .setProductType(BillingClient.ProductType.SUBS).build(),
-                ),
-            ).build()
-
-        billingClient.startConnection(
-            object : BillingClientStateListener {
-                override fun onBillingSetupFinished(billingResult: BillingResult) {
-                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                        // The BillingClient is ready. You can query purchases here.
-                        val params =
-                            QueryPurchasesParams.newBuilder()
-                                .setProductType(BillingClient.ProductType.SUBS)
-
-                        // uses queryPurchasesAsync Kotlin extension function
-                        println("called query purchases async")
-                        billingClient.queryPurchasesAsync(params.build(), purchasesResponseListener)
-                    }
-                }
-
-                override fun onBillingServiceDisconnected() {
-                    // Try to restart the connection on the next request to
-                    // Google Play by calling the startConnection() method.
-                }
-            },
-        )
-    }
-
-    private fun showBilling() {
-        Log.d("show billing", "show billing")
-        if (!isUserSubscribed) {
-            val t = productDetails.subscriptionOfferDetails?.get(0)?.offerToken
-
-            Log.d("PRODUCT_DETAILS", "$productDetails")
-            val productDetailsParamsList =
-                listOf(
-                    BillingFlowParams.ProductDetailsParams.newBuilder()
-                        // retrieve a value for "productDetails" by calling queryProductDetailsAsync()
-                        .setProductDetails(productDetails)
-                        // For One-time product, "setOfferToken" method shouldn't be called.
-                        // For subscriptions, to get an offer token, call ProductDetails.subscriptionOfferDetails()
-                        // for a list of offers that are available to the user
-                        .setOfferToken(t!!).build(),
-                )
-
-            val billingFlowParams =
-                BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParamsList)
-                    .build()
-
-            // Launch the billing flow
-            billingClient.launchBillingFlow(requireActivity(), billingFlowParams)
-//        val billingResult = billingClient.launchBillingFlow(requireActivity(), billingFlowParams)
-//        Log.d("BILL_RESULT", billingResult.toString())
-        } else {
-            //
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-//        billingManager.endConnection()
     }
 }
 
