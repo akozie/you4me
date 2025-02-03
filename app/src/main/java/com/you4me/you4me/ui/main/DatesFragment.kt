@@ -39,7 +39,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepository>() {
+class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepository>("RECEIVE_DATE_INTEREST") {
     private var dateInterests = FetchDateInterest()
     private var player: ExoPlayer? = null
     private var playWhenReady = true
