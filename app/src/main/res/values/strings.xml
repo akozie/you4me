@@ -60,6 +60,7 @@
     <string name="interested_in_you">Interested in your dates</string>
     <string name="interest_in_date">Check out people who are interested in going on a date with you</string>
     <string name="dates_requiring_approval">Dates requiring approval</string>
+    <string name="completed_dates">Completed Dates</string>
     <string name="approved_date_interests">Approved Date Interests</string>
     <string name="you_have_no_upcoming_dates">You have no upcoming dates</string>
     <string name="add_to_calendar">Add to Calendar</string>

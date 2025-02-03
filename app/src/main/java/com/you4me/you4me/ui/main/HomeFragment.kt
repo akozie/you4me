@@ -11,6 +11,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.you4me.you4me.R
+import com.you4me.you4me.adapter.CompletedDatesRecyclerAdapter
 import com.you4me.you4me.adapter.DateInterestsRequiringApprovalRecyclerAdapter
 import com.you4me.you4me.adapter.InviteeDateForApprovalRecyclerAdapter
 import com.you4me.you4me.adapter.UpcomingDatesRecyclerAdapter
@@ -80,6 +81,7 @@ class HomeFragment :
                     viewModel.getInviteeDatesRequiringApproval(user.userId)
                     viewModel.getDateInterestsRequiringApproval()
                     viewModel.getNotifications()
+                    viewModel.fetchCompletedDates()
                 }
 
                 is Resource.Failure -> {
@@ -92,6 +94,17 @@ class HomeFragment :
             when (it) {
                 is Resource.Success -> {
                     setupUpcomingDates(it.value)
+                }
+
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
+            }
+        }
+        viewModel.completedDates.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    setupCompletedDates(it.value)
                 }
 
                 is Resource.Failure -> {
@@ -228,6 +241,20 @@ class HomeFragment :
             val adapter =
                 mixpanel?.let { InviteeDateForApprovalRecyclerAdapter(dates, viewModel, ctx, it) }
             binding.inviteeDatesRecycler.adapter = adapter
+        }
+    }
+
+    private fun setupCompletedDates(dates: CompletedDateResponse) {
+        if (dates.isEmpty()) {
+            binding.datesCompletedAppLyt.visibility = View.GONE
+            binding.completedDatesTxt.visibility = View.GONE
+            binding.completedDatesDivider.visibility = View.GONE
+        } else {
+            binding.datesCompletedAppLyt.visibility = View.VISIBLE
+            binding.completedDatesTxt.visibility = View.VISIBLE
+            binding.completedDatesDivider.visibility = View.VISIBLE
+            val adapter = CompletedDatesRecyclerAdapter(viewModel, viewLifecycleOwner, requireContext(), dates)
+            binding.completedDatesRecycler.adapter = adapter
         }
     }
 

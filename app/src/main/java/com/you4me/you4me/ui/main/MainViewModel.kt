@@ -80,6 +80,11 @@ class MainViewModel(
     val dateInterestsRequiringApproval: LiveData<Resource<DateInterestsRequiringApproval>>
         get() = _dateInterestsRequiringApproval
 
+    private val _completedDates =
+        SingleLiveEvent<Resource<CompletedDateResponse>>()
+    val completedDates: LiveData<Resource<CompletedDateResponse>>
+        get() = _completedDates
+
     private val _proposeNewDateTime = SingleLiveEvent<Resource<Unit>>()
     val proposeNewDateTime: LiveData<Resource<Unit>>
         get() = _proposeNewDateTime
@@ -286,6 +291,13 @@ class MainViewModel(
         viewModelScope.launch {
             _dateInterestsRequiringApproval.value =
                 repository.getDateInterestsRequiringApproval(_user.value?.userId ?: "")
+        }
+    }
+
+    fun fetchCompletedDates() {
+        viewModelScope.launch {
+            _completedDates.value =
+                repository.fetchCompletedDates(_user.value?.userId ?: "")
         }
     }
 

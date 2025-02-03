@@ -150,6 +150,37 @@
             tools:listitem="@layout/date_interest_requiring_approval_item" />
 
     </LinearLayout>
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/dates_completed_app_lyt">
+
+        <TextView
+            android:id="@+id/completed_dates_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:text="@string/completed_dates"
+            android:textSize="20sp" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/completed_dates_divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/completed_dates_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/completed_dates_item" />
+
+    </LinearLayout>
 
 <!--    <TextView-->
 <!--        android:id="@+id/no_dates_interests"-->
