@@ -240,7 +240,9 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
 //        binding.userVideo.setMediaController(mediaControls)
 
         binding.acceptBtn.setOnClickListener {
-            if (currentIdx < 0) return@setOnClickListener
+            if (currentIdx < 0 || currentIdx >= dates.size) {
+                return@setOnClickListener // Prevents out-of-bounds access
+            }
             val d = dates[currentIdx]
             showLoading(true)
             viewModel.addDateInterest(
@@ -252,7 +254,9 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
             mixpanel?.track("Android_Liked_Find_Date_Button_Pressed")
         }
         binding.rejectBtn.setOnClickListener {
-            if (currentIdx < 0) return@setOnClickListener
+            if (currentIdx < 0 || currentIdx >= dates.size) {
+                return@setOnClickListener // Prevents out-of-bounds access
+            }
             showLoading(true)
             val d = dates[currentIdx]
             viewModel.addSwipe(
@@ -279,7 +283,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                     // Apply the tilt animation based on the swipe direction
                     if (swipeDistance > 0) {
                         startTiltAnimation(true)
-                        if (currentIdx < 0) {
+                        if (currentIdx < 0 || currentIdx >= dates.size) {
                             // do nothing
                         } else {
                             showLoading(true)
@@ -292,7 +296,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                         }
                     } else {
                         startSecondTiltAnimation(true)
-                        if (currentIdx < 0) {
+                        if (currentIdx < 0 || currentIdx >= dates.size) {
                             // do nothing
                         } else {
                             showLoading(true)

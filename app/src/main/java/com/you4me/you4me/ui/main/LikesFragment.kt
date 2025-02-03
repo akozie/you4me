@@ -315,7 +315,9 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         }
 
         binding.rejectBtn.setOnClickListener {
-            if (currentIdx < 0) return@setOnClickListener
+            if (currentIdx < 0 || currentIdx >= dateInterests.size) {
+                return@setOnClickListener // Prevents out-of-bounds access
+            }
             showLoading(true)
             val d = dateInterests[currentIdx]
             viewModel.rejectDateInterest(
