@@ -74,17 +74,18 @@ class MainActivity : AppCompatActivity() {
         val gson = Gson()
         user = gson.fromJson(userProfile, User::class.java)
         // viewModel.getNewUser(this, user.userId)
-
-        askNotificationPermission()
-        setupViews()
-        initializePlacesSdk()
-        createNotificationChannel()
         firebaseInstance = FirebaseMessaging.getInstance()
         getFireBaseToken(firebaseInstance) {
             val obj = JsonObject()
             obj.addProperty("pushToken", it)
             sendTokenToBackend(obj, user.userId)
         }
+
+        askNotificationPermission()
+        setupViews()
+        initializePlacesSdk()
+        createNotificationChannel()
+
     }
 
     private fun getFireBaseToken(
