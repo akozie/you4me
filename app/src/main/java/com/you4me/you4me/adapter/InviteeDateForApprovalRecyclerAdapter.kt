@@ -3,11 +3,11 @@ package com.you4me.you4me.adapter
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.you4me.you4me.databinding.ApprovedDateItemBinding
 import com.you4me.you4me.models.InviteeDatesRequiringApproval
 import com.you4me.you4me.ui.main.MainViewModel
@@ -18,6 +18,7 @@ class InviteeDateForApprovalRecyclerAdapter(
     private val dates: InviteeDatesRequiringApproval,
     private val viewModel: MainViewModel,
     private val context: Context,
+    private val mixpanelAPI: MixpanelAPI,
 ) : RecyclerView.Adapter<InviteeDateForApprovalRecyclerAdapter.MyViewHolder>() {
     class MyViewHolder(val binding: ApprovedDateItemBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -52,6 +53,7 @@ class InviteeDateForApprovalRecyclerAdapter(
 
             acceptBtn.setOnClickListener {
                 // accept
+                mixpanelAPI.track("Android_Home_Approve_Date_Invitee_Button_Pressed")
                 // update list and ui
                 viewModel.updateDateInterest(date.interestId, date.dateId, "APPROVED")
                 dates.clear()
@@ -62,6 +64,7 @@ class InviteeDateForApprovalRecyclerAdapter(
                 acceptBtn.visibility = View.GONE
                 newTimeBtn.visibility = View.GONE
                 newDateTimeLyt.visibility = View.VISIBLE
+                mixpanelAPI.track("Android_Home_Propose_Time_Button_Pressed")
             }
             updateTimeBtn.setOnClickListener {
                 // propose new time
@@ -72,7 +75,6 @@ class InviteeDateForApprovalRecyclerAdapter(
                     newDate.text.toString(),
                     newTime.text.toString(),
                 )
-                Log.d("DATE_TIME", "${newDate.text}===${newTime.text}")
                 dates.clear()
 //                dates.removeAt(position)
                 notifyItemRemoved(position)

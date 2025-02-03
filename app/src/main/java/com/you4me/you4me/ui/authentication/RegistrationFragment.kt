@@ -25,45 +25,46 @@ import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils.GOOGLE_SIGN_IN_RQ_CODE
 import com.you4me.you4me.utils.validateEmail
 import com.you4me.you4me.utils.validatePassword
-
+import org.json.JSONObject
 
 class RegistrationFragment :
-    BaseFragment<AuthenticationViewModel, FragmentRegistrationBinding, AuthenticationRepository>() {
-
+    BaseFragment<AuthenticationViewModel, FragmentRegistrationBinding, AuthenticationRepository>("REGISTER") {
     private lateinit var you4meSignInClient: GoogleSignInClient
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         googleSignInClient()
 
+        mixpanel?.track("Android_Register_Viewed")
+
         binding.googleTv.setOnClickListener {
             signIn()
         }
-
     }
-
 
     override fun getViewModel() = AuthenticationViewModel::class.java
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?
+        container: ViewGroup?,
     ): FragmentRegistrationBinding {
         return FragmentRegistrationBinding.inflate(inflater, container, false)
     }
 
-    override fun getRepository() =
-        AuthenticationRepository(dataSource.buildApi(ApiCollector::class.java))
+    override fun getRepository() = AuthenticationRepository(dataSource.buildApi(ApiCollector::class.java))
 
-
-    /*create the googleSignIn client*/
+    // create the googleSignIn client
     private fun googleSignInClient() {
         val serverClientId = getString(R.string.default_web_id) // get the client id
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(serverClientId)
-            .requestEmail()
-            .build()
+        val googleSignInOptions =
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(serverClientId)
+                .requestEmail()
+                .build()
 
         you4meSignInClient = GoogleSignIn.getClient(requireContext(), googleSignInOptions)
     }
@@ -74,8 +75,12 @@ class RegistrationFragment :
         startActivityForResult(signInIntent, GOOGLE_SIGN_IN_RQ_CODE)
     }
 
-    /*gets the selected google account from the intent*/
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    // gets the selected google account from the intent
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?,
+    ) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == GOOGLE_SIGN_IN_RQ_CODE) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -91,7 +96,7 @@ class RegistrationFragment :
             val account = completedTask.getResult(ApiException::class.java)
             startDashboard(account)
         } catch (e: ApiException) {
-            //showToast(e.localizedMessage)
+            // showToast(e.localizedMessage)
         }
     }
 
@@ -106,7 +111,7 @@ class RegistrationFragment :
             viewModel.signWithGoogleLoginResponse.observe(viewLifecycleOwner) {
                 when (it) {
                     is Resource.Success -> {
-                        //viewModel.clearUser()
+                        // viewModel.clearUser()
                         viewModel.getUserDetails(it.value.userId)
                         viewModel.user.observe(viewLifecycleOwner) { user ->
                             showLoader(false)
@@ -121,24 +126,23 @@ class RegistrationFragment :
                                     sharedPrefHelper.saveString(SharedPrefHelper.USER_PROFILE, userProfileJsonString)
                                     sharedPrefHelper.saveString(
                                         SharedPrefHelper.USER_ID,
-                                        user.value.userId
+                                        user.value.userId,
                                     )
                                     sharedPrefHelper.saveBoolean(
                                         SharedPrefHelper.IS_LOGGED_IN,
-                                        true
+                                        true,
                                     )
                                     dialog.dismiss()
                                     startActivity(
                                         Intent(
                                             requireActivity(),
-                                            MainActivity::class.java
-                                        )
+                                            MainActivity::class.java,
+                                        ),
                                     )
                                     requireActivity().finish()
                                 }
 
                                 is Resource.Failure -> {
-
                                 }
                             }
                         }
@@ -146,8 +150,12 @@ class RegistrationFragment :
 
                     is Resource.Failure -> {
                         val message =
-                            if (it.isNetworkError) "Please check your internet" else it.message
-                                ?: it.errorBody
+                            if (it.isNetworkError) {
+                                "Please check your internet"
+                            } else {
+                                it.message
+                                    ?: it.errorBody
+                            }
                         showAlertDialog(requireContext(), message ?: "Please try again", "OK") {
                             findNavController().popBackStack()
                         }
@@ -157,14 +165,13 @@ class RegistrationFragment :
         }
     }
 
-
     private fun setupViews() {
         binding.login.setOnClickListener { findNavController().popBackStack() }
         viewModel.registerResponse.observe(viewLifecycleOwner) { user ->
             showLoader(false)
             when (user) {
                 is Resource.Success -> {
-                    //viewModel.clearUser()
+                    // viewModel.clearUser()
                     viewModel.getUserDetails(user.value.userId)
                     viewModel.user.observe(viewLifecycleOwner) {
                         when (it) {
@@ -173,12 +180,13 @@ class RegistrationFragment :
                                 val dialog = showDialog("Registration Successful", true)
                                 viewModel.saveUser(it.value)
                                 Log.d("CHECKING", it.value.toString())
+                                trackUserRegisteredIn(it.value.userId, it.value.email)
                                 val gson = Gson()
                                 val userProfileJsonString = gson.toJson(it.value)
                                 sharedPrefHelper.saveString(SharedPrefHelper.USER_PROFILE, userProfileJsonString)
                                 sharedPrefHelper.saveString(
                                     SharedPrefHelper.USER_ID,
-                                    it.value.userId
+                                    it.value.userId,
                                 )
                                 sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, true)
                                 binding.email.text?.clear()
@@ -188,7 +196,6 @@ class RegistrationFragment :
                             }
 
                             is Resource.Failure -> {
-
                             }
                         }
                     }
@@ -196,8 +203,12 @@ class RegistrationFragment :
 
                 is Resource.Failure -> {
                     val message =
-                        if (user.isNetworkError) "Please check your internet" else user.message
-                            ?: user.errorBody
+                        if (user.isNetworkError) {
+                            "Please check your internet"
+                        } else {
+                            user.message
+                                ?: user.errorBody
+                        }
                     showAlertDialog(requireContext(), message ?: "Please try again", "OK") {
                         findNavController().popBackStack()
                     }
@@ -207,10 +218,12 @@ class RegistrationFragment :
         binding.signUpBtn.setOnClickListener {
             val email = binding.email.text?.trim()
             val password = binding.password.text?.trim()
+            val referralCode = binding.referralCode.text?.trim()
             val confirmPassword = binding.confirmPassword.text?.trim()
+            trackRegisteredButtonClicked(email.toString())
             if (validate(email, password, confirmPassword)) {
                 showLoader(true)
-                viewModel.register(email.toString(), password.toString())
+                viewModel.register(email.toString(), password.toString(), referralCode.toString())
             }
         }
     }
@@ -226,17 +239,48 @@ class RegistrationFragment :
     private fun validate(
         email: CharSequence?,
         password: CharSequence?,
-        confirmPassword: CharSequence?
+        confirmPassword: CharSequence?,
     ): Boolean {
         if (email.validateEmail()) {
             if (password.validatePassword()) {
                 if (password?.toString() == confirmPassword?.toString()) {
                     return true
-                } else binding.confirmPasswordLyt.error =
-                    "Confirm password and password must be the same"
-            } else binding.passwordLyt.error = "Enter a valid password with at least 3 characters"
-        } else binding.emailLyt.error = "Enter a valid email"
+                } else {
+                    binding.confirmPasswordLyt.error =
+                        "Confirm password and password must be the same"
+                }
+            } else {
+                binding.passwordLyt.error = "Enter a valid password with at least 3 characters"
+            }
+        } else {
+            binding.emailLyt.error = "Enter a valid email"
+        }
         return false
     }
 
+    private fun trackUserRegisteredIn(
+        userId: String,
+        email: String,
+    ) {
+        val props =
+            JSONObject().apply {
+                put("user_id", userId)
+                put("email", email)
+            }
+        mixpanel?.track("Android_User_Registered", props)
+    }
+
+    private fun trackRegisteredButtonClicked(email: String) {
+        val props =
+            JSONObject().apply {
+                put("email", email)
+            }
+        mixpanel?.track("Android_Register_Button_Clicked", props)
+    }
+
+    override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
+        super.onDestroy()
+    }
 }

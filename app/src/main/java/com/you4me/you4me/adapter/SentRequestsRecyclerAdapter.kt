@@ -11,6 +11,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.you4me.you4me.databinding.SentRequestsItemBinding
 import com.you4me.you4me.models.InviteeDatesRequiringApproval
 import com.you4me.you4me.network.Resource
@@ -21,6 +22,7 @@ class SentRequestsRecyclerAdapter(
     private val dates: InviteeDatesRequiringApproval, // Use MutableList for better handling
     private val viewModel: MainViewModel,
     private val context: Context,
+    private val mixpanelAPI: MixpanelAPI,
     private val fragmentManager: FragmentManager,
     private val lifecycleOwner: LifecycleOwner,
 ) : RecyclerView.Adapter<SentRequestsRecyclerAdapter.MyViewHolder>() {
@@ -76,7 +78,7 @@ class SentRequestsRecyclerAdapter(
                         // Remove item from list and refresh UI
                         dates.removeAt(position)
                         notifyDataSetChanged()
-
+                        mixpanelAPI.track("Android_Sent_Request_Proposed_New_Date_Time")
                         showEmpty(this) // Ensure empty UI updates
                         Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                         fragmentManager.popBackStack()
@@ -85,6 +87,7 @@ class SentRequestsRecyclerAdapter(
             }
 
             acceptDate.setOnClickListener {
+                mixpanelAPI.track("Android_Sent_Request_Accept_Date_Button_Clicked")
                 showLoading(true, this)
 
                 viewModel.updateDateInterest(date.interestId, date.dateId, "APPROVED")

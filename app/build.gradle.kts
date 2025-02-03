@@ -1,7 +1,3 @@
-import java.io.FileInputStream
-import java.util.Properties
-import kotlin.apply
-
 secrets {
     propertiesFileName = "secrets.properties"
     defaultPropertiesFileName = "local.defaults.properties"
@@ -165,6 +161,9 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    // mixpanel
+    implementation("com.mixpanel.android:mixpanel-android:5.9.6")
 }
 
 apply(plugin = "com.google.gms.google-services")

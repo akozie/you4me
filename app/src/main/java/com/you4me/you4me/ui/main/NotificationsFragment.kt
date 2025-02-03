@@ -3,7 +3,6 @@ package com.you4me.you4me.ui.main
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -16,9 +15,7 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
-import com.you4me.you4me.utils.Constants
 import com.you4me.you4me.utils.safeNavigate
-import com.you4me.you4me.utils.safeNavigateUp
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -39,6 +36,8 @@ class NotificationsFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mixpanel?.track("Android_Notification_Viewed")
 
         binding.loader.show()
 
@@ -113,7 +112,6 @@ class NotificationsFragment :
                 NotificationsFragmentDirections
                     .actionNotificationsFragmentToDatesFragment(notification.user_id)
             }
-
             else -> {
                 Log.e(
                     "NotificationHandler", "Unknown category:" +
@@ -132,5 +130,11 @@ class NotificationsFragment :
             constraintLayout2.visibility = ViewGroup.VISIBLE
             notificationsRecyclerView.visibility = View.GONE
         }
+    }
+
+    override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
+        super.onDestroy()
     }
 }

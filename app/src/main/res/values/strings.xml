@@ -6,6 +6,7 @@
     <string name="add_video">Add a video</string>
     <string name="age_preference">Age Preference</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="referral_code">Referral Code</string>
     <string name="country">Country</string>
     <string name="create_video">Create a compelling 30-second video introducing yourself</string>
     <string name="date_hint">yyyy-mm-dd</string>

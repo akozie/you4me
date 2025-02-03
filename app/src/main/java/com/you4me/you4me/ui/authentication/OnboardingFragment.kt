@@ -2,12 +2,12 @@ package com.you4me.you4me.ui.authentication
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,8 +22,9 @@ class OnboardingFragment : Fragment() {
     private lateinit var sharedPrefHelper: SharedPrefHelper
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentOnboardingBinding.inflate(layoutInflater)
         sharedPrefHelper = SharedPrefHelper(requireContext())
@@ -49,22 +50,26 @@ class OnboardingFragment : Fragment() {
 
         binding.onboardingRecycler.addOnScrollListener(
             object : RecyclerView.OnScrollListener() {
-
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                override fun onScrolled(
+                    recyclerView: RecyclerView,
+                    dx: Int,
+                    dy: Int,
+                ) {
                     super.onScrolled(recyclerView, dx, dy)
                     if (dx == 0) return
                     val manager = binding.onboardingRecycler.layoutManager as LinearLayoutManager
 
-                    curPosition = if (dx > 0) {
-                        manager.findLastVisibleItemPosition()
-                    } else {
-                        manager.findFirstVisibleItemPosition()
-                    }
+                    curPosition =
+                        if (dx > 0) {
+                            manager.findLastVisibleItemPosition()
+                        } else {
+                            manager.findFirstVisibleItemPosition()
+                        }
 
                     binding.onboardingRecycler.smoothScrollToPosition(curPosition)
                     setPosition(curPosition)
                 }
-            }
+            },
         )
 
         binding.loginBtn.setOnClickListener {
@@ -72,7 +77,7 @@ class OnboardingFragment : Fragment() {
             onBoardingFinished()
         }
         binding.registerBtn.setOnClickListener {
-         //   findNavController().navigate(R.id.action_onboardingFragment_to_registrationFragment)
+            //   findNavController().navigate(R.id.action_onboardingFragment_to_registrationFragment)
             onBoardingFinished()
         }
         binding.skipBtn.setOnClickListener {

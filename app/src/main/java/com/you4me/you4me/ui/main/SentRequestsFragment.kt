@@ -15,7 +15,7 @@ import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.SharedPrefHelper
 
-class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBinding, MainRepository>() {
+class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBinding, MainRepository>("DATE_INTEREST_SENT") {
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
@@ -34,11 +34,7 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
         binding.emptyLyt.visibility = View.VISIBLE
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setupObservers()
+        mixpanel?.track("Android_Sent_Interest_Viewed")
     }
 
     private fun setupObservers() {
@@ -83,7 +79,17 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
             showEmpty()
         } else {
             binding.emptyLyt.visibility = View.GONE
-            val adapter = SentRequestsRecyclerAdapter(dates, viewModel, ctx, requireActivity().supportFragmentManager, viewLifecycleOwner)
+            val adapter =
+                mixpanel?.let {
+                    SentRequestsRecyclerAdapter(
+                        dates,
+                        viewModel,
+                        ctx,
+                        it,
+                        requireActivity().supportFragmentManager,
+                        viewLifecycleOwner,
+                    )
+                }
             binding.upcomingDatesRecycler.adapter = adapter
         }
     }
@@ -100,7 +106,8 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
     }
 
     override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
         super.onDestroy()
-//        billingManager.endConnection()
     }
 }

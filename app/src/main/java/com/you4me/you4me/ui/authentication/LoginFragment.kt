@@ -25,9 +25,10 @@ import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils.GOOGLE_SIGN_IN_RQ_CODE
 import com.you4me.you4me.utils.validateEmail
 import com.you4me.you4me.utils.validatePassword
+import org.json.JSONObject
 
 class LoginFragment :
-    BaseFragment<AuthenticationViewModel, FragmentLoginBinding, AuthenticationRepository>() {
+    BaseFragment<AuthenticationViewModel, FragmentLoginBinding, AuthenticationRepository>("LOGIN") {
     private lateinit var you4meSignInClient: GoogleSignInClient
 
     override fun onViewCreated(
@@ -42,7 +43,11 @@ class LoginFragment :
         setupViews()
         googleSignInClient()
 
+        mixpanel?.track("Android_App_Opened")
+        mixpanel?.track("Android_Login_Page_Opened")
+
         binding.googleTv.setOnClickListener {
+            mixpanel?.track("Android_GoogleSignin_Button_Clicked")
             signIn()
         }
     }
@@ -103,6 +108,7 @@ class LoginFragment :
                     is Resource.Success -> {
                         // viewModel.clearUser()
                         Log.d("NOT_TOKEN", it.value.userId)
+                        trackGoogleLoginButtonClicked(it.value.userId, it.value.email)
                         viewModel.getUserDetails(it.value.userId)
                         viewModel.user.observe(viewLifecycleOwner) { user ->
                             showLoader(false)
@@ -180,6 +186,7 @@ class LoginFragment :
                     val dialog = showDialog("Login Successful", true)
                     viewModel.saveUser(it.value)
                     Log.d("CHECKING", it.value.toString())
+                    trackUserLoggedIn(it.value.userId, it.value.email)
                     sharedPrefHelper.saveString(SharedPrefHelper.USER_ID, it.value.userId)
                     val gson = Gson()
                     val userProfileJsonString = gson.toJson(it.value)
@@ -208,6 +215,7 @@ class LoginFragment :
             sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, false)
             val email = binding.email.text?.trim()
             val password = binding.password.text?.trim()
+            trackLoginButtonClicked(email.toString())
 
             if (validate(email, password)) {
                 binding.emailLyt.error = null
@@ -219,6 +227,38 @@ class LoginFragment :
         binding.signUp.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
         }
+    }
+
+    private fun trackUserLoggedIn(
+        userId: String,
+        email: String,
+    ) {
+        val props =
+            JSONObject().apply {
+                put("user_id", userId)
+                put("email", email)
+            }
+        mixpanel?.track("Android_User_Logged_In", props)
+    }
+
+    private fun trackLoginButtonClicked(email: String) {
+        val props =
+            JSONObject().apply {
+                put("email", email)
+            }
+        mixpanel?.track("Android_Login_Button_Clicked", props)
+    }
+
+    private fun trackGoogleLoginButtonClicked(
+        userId: String,
+        email: String,
+    ) {
+        val props =
+            JSONObject().apply {
+                put("user_id", userId)
+                put("email", email)
+            }
+        mixpanel?.track("Android_User_Logged_In_With_Google", props)
     }
 
     private fun showLoader(show: Boolean) {
@@ -242,5 +282,11 @@ class LoginFragment :
             binding.emailLyt.error = "Enter a valid email"
         }
         return false
+    }
+
+    override fun onDestroy() {
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
+        super.onDestroy()
     }
 }
