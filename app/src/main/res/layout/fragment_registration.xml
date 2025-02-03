@@ -31,7 +31,7 @@
             android:id="@+id/password_lyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/margin_20dp"
             android:hint="@string/password"
             app:passwordToggleEnabled="true">
 
@@ -46,7 +46,7 @@
             android:id="@+id/confirm_password_lyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/margin_20dp"
             android:hint="@string/confirm_password"
             app:passwordToggleEnabled="true">
 
@@ -61,7 +61,7 @@
             android:id="@+id/referral_code_lyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/margin_20dp"
             android:hint="@string/referral_code">
 
             <com.google.android.material.textfield.TextInputEditText

@@ -20,6 +20,7 @@ import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.main.MainActivity
 import com.you4me.you4me.utils.SharedPrefHelper
+import com.you4me.you4me.utils.Utils.toSentenceCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -58,8 +59,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val incomingMessage = remoteMessage.notification
         incomingMessage?.let {
             showNotification(
-                remoteMessage.notification?.title.toString(),
-                remoteMessage.notification?.body.toString(),
+                remoteMessage.notification?.title.toString().toSentenceCase(),
+                remoteMessage.notification?.body.toString().toSentenceCase(),
             )
         }
     }
