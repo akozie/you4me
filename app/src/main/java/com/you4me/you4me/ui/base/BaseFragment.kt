@@ -18,6 +18,7 @@ import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.repository.BaseRepository
 import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.utils.SharedPrefHelper
+import com.you4me.you4me.utils.UtilityParam.MIXPANEL_SECRET_KEY
 
 abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>(private val screenName: String) : Fragment() {
     protected val dataSource = RemoteDataSource()
@@ -54,7 +55,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        mixpanel = MixpanelAPI.getInstance(context, "d1800cfe7956f69cf896a35dd8653f17")
+        mixpanel = MixpanelAPI.getInstance(context, MIXPANEL_SECRET_KEY)
     }
 
     override fun onResume() {
