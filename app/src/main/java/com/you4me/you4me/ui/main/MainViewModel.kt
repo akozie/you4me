@@ -101,6 +101,10 @@ class MainViewModel(
     val updatePaymentResponse: LiveData<Resource<Unit>>
         get() = _updatePaymentResponse
 
+    val _updateReviewResponse = MutableLiveData<Resource<Unit>>()
+    val updateReviewResponse: LiveData<Resource<Unit>>
+        get() = _updateReviewResponse
+
     init {
         getUser()
         // fetchPaymentModes()
@@ -313,6 +317,10 @@ class MainViewModel(
 
     fun registerPayment(obj: JsonObject) {
         viewModelScope.launch { _updatePaymentResponse.value = repository.registerPayment(obj) }
+    }
+
+    fun updateReview(obj: JsonObject) {
+        viewModelScope.launch { _updateReviewResponse.value = repository.updateReview(obj) }
     }
 
     private val _getImagesAndVideos: MutableLiveData<Resource<ImagesVideosResponse>> =

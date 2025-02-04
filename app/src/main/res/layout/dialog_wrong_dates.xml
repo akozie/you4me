@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tell us what was wrong with the date"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"/>
+
+    <!-- Feedback Input -->
+    <EditText
+        android:id="@+id/et_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:hint="Input feedback here"
+        android:background="@android:drawable/edit_text"
+        android:padding="10dp"
+        android:layout_marginTop="@dimen/margin_10dp"
+        android:gravity="top"
+        android:textSize="14sp"
+        android:minLines="6"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:paddingHorizontal="@dimen/margin_40dp"
+            android:layout_margin="@dimen/margin_10dp"
+            android:backgroundTint="@color/grey"
+            android:textColor="@color/primary_pink"/>
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send Review"
+            android:layout_margin="@dimen/margin_10dp"
+            android:backgroundTint="@color/primary_pink"
+            android:textColor="@android:color/white"/>
+
+    </LinearLayout>
+</LinearLayout>

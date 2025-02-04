@@ -100,7 +100,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="@dimen/margin_10dp"
+        android:layout_marginTop="@dimen/margin_20dp"
         android:orientation="horizontal"
         android:weightSum="2"
         app:layout_constraintStart_toStartOf="parent"
@@ -108,18 +108,20 @@
 
 
         <ImageView
-            android:id="@+id/dislike"
+            android:id="@+id/dislike_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_5dp"
+            android:padding="@dimen/padding_10dp"
             android:src="@drawable/baseline_thumb_down_alt_24"/>
 
 
         <ImageView
-            android:id="@+id/like"
+            android:id="@+id/like_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_5dp"
+            android:padding="@dimen/padding_10dp"
             android:src="@drawable/baseline_thumb_up_24"/>
 
     </LinearLayout>

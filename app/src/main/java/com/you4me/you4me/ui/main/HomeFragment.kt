@@ -215,8 +215,10 @@ class HomeFragment :
     private fun setupDateInterests(dates: DateInterestsRequiringApproval) {
         if (dates.isEmpty()) {
             binding.datesRequiringAppLyt.visibility = View.GONE
+            binding.dateInterestRecycler.visibility = View.GONE
         } else {
             binding.datesRequiringAppLyt.visibility = View.VISIBLE
+            binding.dateInterestRecycler.visibility = View.VISIBLE
             val adapter =
                 mixpanel?.let {
                     DateInterestsRequiringApprovalRecyclerAdapter(
@@ -253,7 +255,16 @@ class HomeFragment :
             binding.datesCompletedAppLyt.visibility = View.VISIBLE
             binding.completedDatesTxt.visibility = View.VISIBLE
             binding.completedDatesDivider.visibility = View.VISIBLE
-            val adapter = CompletedDatesRecyclerAdapter(viewModel, viewLifecycleOwner, requireContext(), dates)
+            val adapter =
+                mixpanel?.let {
+                    CompletedDatesRecyclerAdapter(
+                        viewModel,
+                        viewLifecycleOwner,
+                        requireContext(),
+                        dates,
+                        it,
+                    )
+                }
             binding.completedDatesRecycler.adapter = adapter
         }
     }
@@ -263,6 +274,8 @@ class HomeFragment :
             binding.upcomingDatesRecycler.visibility = View.GONE
             binding.noUpcomingDates.visibility = View.VISIBLE
         } else {
+            binding.upcomingDatesRecycler.visibility = View.VISIBLE
+            binding.noUpcomingDates.visibility = View.GONE
             val adapter = UpcomingDatesRecyclerAdapter(requireActivity(), this, dates, ctx)
             binding.upcomingDatesRecycler.adapter = adapter
         }
