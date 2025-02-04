@@ -1,6 +1,14 @@
+import java.io.FileInputStream
+import java.util.Properties
+import kotlin.apply
+
 secrets {
     propertiesFileName = "secrets.properties"
     defaultPropertiesFileName = "local.defaults.properties"
+}
+
+val localProperties = Properties().apply {
+    load(FileInputStream(rootProject.file("local.properties")))
 }
 
 plugins {
@@ -11,17 +19,25 @@ plugins {
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
     signingConfigs {
         getByName("debug") {
-            keyAlias = "key0"
-            storePassword = "you4mekey"
-            keyPassword = "you4mekey"
-            storeFile = file("/Users/admin/Downloads/you4me-android/you4meKeyStore")
+            storeFile = file(localProperties["storeFile"].toString())
+            keyAlias = localProperties["keyAlias"].toString()
+            storePassword = localProperties["storePassword"].toString()
+            keyPassword = localProperties["keyPassword"].toString()
+        }
+        create("release") {
+            storeFile = file(localProperties["storeFile"].toString())
+            keyAlias = localProperties["keyAlias"].toString()
+            storePassword = localProperties["storePassword"].toString()
+            keyPassword = localProperties["keyPassword"].toString()
         }
     }
+
     namespace = "com.you4me.you4me"
     compileSdk = 34
 
@@ -36,18 +52,27 @@ android {
         applicationId = "com.you4me.you4me"
         minSdk = 24
         targetSdk = 34
-        versionCode = 29
-        versionName = "1.29"
+        versionCode = 33
+        versionName = "1.33"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
+            )
+        }
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
     }
@@ -68,6 +93,9 @@ android {
             path(file("src/main/jni/Android.mk"))
         }
     }
+    lint {
+        checkReleaseBuilds = false
+    }
 }
 
 dependencies {
@@ -81,7 +109,8 @@ dependencies {
 
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:30.4.1"))
-    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-messaging-ktx:23.0.8")
 
     // cloudinary

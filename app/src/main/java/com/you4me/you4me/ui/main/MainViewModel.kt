@@ -216,6 +216,12 @@ class MainViewModel(
         }
     }
 
+    fun fetchDateOneInterest(userId: String) {
+        viewModelScope.launch {
+            _fetchDateInterests.value = repository.fetchDateInterest(userId)
+        }
+    }
+
     fun fetchDateInterests() {
         viewModelScope.launch {
             _fetchDateInterests.value = repository.fetchDateInterest(_user.value?.userId ?: "")
