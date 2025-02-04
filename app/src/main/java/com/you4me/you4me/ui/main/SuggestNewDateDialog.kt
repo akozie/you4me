@@ -82,21 +82,4 @@ class SuggestNewDateDialog(
             .setView(view)
             .create()
     }
-
-    private fun getMonthName(month: Int): String {
-        return arrayOf(
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-        )[month]
-    }
 }

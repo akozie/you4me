@@ -1,6 +1,7 @@
 package com.you4me.you4me.ui.main
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
@@ -13,9 +14,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -23,6 +22,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentFindDateBinding
 import com.you4me.you4me.models.*
@@ -73,6 +73,10 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         showBottomSheetDialog()
         viewModel.getUserDetails(user.userId)
         mixpanel?.track("Android_Find_Date_Viewed")
+
+        binding.reportAbuse.setOnClickListener {
+            showReportAbuseDialog()
+        }
     }
 
     override fun onResume() {
@@ -201,6 +205,62 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 }
             }
         }
+    }
+
+    private fun showReportAbuseDialog() {
+        // Inflate the custom layout
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_report_abuse, null)
+
+        // Initialize UI elements
+        val etFeedback = dialogView.findViewById<EditText>(R.id.et_feedback)
+        val btnSubmit = dialogView.findViewById<Button>(R.id.btn_submit)
+
+        // Create AlertDialog
+        val dialog =
+            AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .setCancelable(true)
+                .create()
+
+        // Handle submit button click
+        btnSubmit.setOnClickListener {
+            val feedback = etFeedback.text.toString().trim()
+
+            if (feedback.isNotEmpty()) {
+                val obj =
+                    JsonObject().apply {
+                        addProperty("date_id", date.dateId)
+                        addProperty("user_id", date.userId)
+                        addProperty("thumb_up", false)
+                        addProperty("comment", feedback)
+                    }
+                viewModel.updateReview(obj)
+                viewModel.updateReviewResponse.observe(viewLifecycleOwner) {
+                    when (it) {
+                        is Resource.Success -> {
+                            mixpanel?.track("Android_Find_Date_Report_Date_Button_Clicked")
+                            val d = dates[currentIdx]
+                            viewModel.addSwipe(
+                                d.dateId,
+                                d.userId,
+                                false,
+                            )
+                            Toast.makeText(requireContext(), "Report Submitted", Toast.LENGTH_SHORT).show()
+                        }
+
+                        is Resource.Failure -> {
+                        }
+                    }
+                }
+
+                dialog.dismiss() // Close the dialog
+            } else {
+                Toast.makeText(requireContext(), "Please enter feedback", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Show the dialog
+        dialog.show()
     }
 
     private fun generateVideoThumbnail(videoUrl: String): Bitmap? {

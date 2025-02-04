@@ -88,6 +88,8 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
 
     suspend fun registerPayment(obj: JsonObject) = safeApiCall { apiCollector.registerPayment(obj) }
 
+    suspend fun updateReview(obj: JsonObject) = safeApiCall { apiCollector.updateReview(obj) }
+
     suspend fun getImageVideoUpload(userId: String) =
         safeApiCall {
             apiCollector.getImageVideoUpload(userId)

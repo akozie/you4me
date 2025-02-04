@@ -188,6 +188,11 @@ interface ApiCollector {
         @Body obj: JsonObject,
     )
 
+    @POST("reviews")
+    suspend fun updateReview(
+        @Body obj: JsonObject,
+    )
+
     @GET("users")
     suspend fun registerPayment(
         @Path("userId") userId: String,

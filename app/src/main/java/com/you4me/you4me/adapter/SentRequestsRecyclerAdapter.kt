@@ -1,17 +1,22 @@
 package com.you4me.you4me.adapter
 
+import android.app.AlertDialog
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.gson.JsonObject
 import com.mixpanel.android.mpmetrics.MixpanelAPI
+import com.you4me.you4me.R
 import com.you4me.you4me.databinding.SentRequestsItemBinding
 import com.you4me.you4me.models.InviteeDatesRequiringApproval
 import com.you4me.you4me.network.Resource
@@ -100,7 +105,60 @@ class SentRequestsRecyclerAdapter(
                 Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                 fragmentManager.popBackStack()
             }
+
+            reportDate.setOnClickListener {
+                showReportAbuseDialog(date.dateId, date.userId, date.interestId, position)
+            }
         }
+    }
+
+    private fun showReportAbuseDialog(
+        dateId: String,
+        userId: String,
+        interestID: String,
+        position: Int,
+    ) {
+        // Inflate the custom layout
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_report_abuse, null)
+
+        // Initialize UI elements
+        val etFeedback = dialogView.findViewById<EditText>(R.id.et_feedback)
+        val btnSubmit = dialogView.findViewById<Button>(R.id.btn_submit)
+
+        // Create AlertDialog
+        val dialog =
+            AlertDialog.Builder(context)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create()
+
+        // Handle submit button click
+        btnSubmit.setOnClickListener {
+            val feedback = etFeedback.text.toString().trim()
+
+            if (feedback.isNotEmpty()) {
+                mixpanelAPI.track("Android_Sent_Request_Report_Date_Button_Clicked")
+                val obj =
+                    JsonObject().apply {
+                        addProperty("date_id", dateId)
+                        addProperty("user_id", userId)
+                        addProperty("thumb_up", false)
+                        addProperty("comment", feedback)
+                    }
+                Toast.makeText(context, "Report Submitted", Toast.LENGTH_SHORT).show()
+                viewModel.updateReview(obj)
+                viewModel.updateDateInterest(interestID, dateId, "ABUSE_REPORTED")
+                // Remove item and refresh UI
+                dates.removeAt(position)
+                notifyDataSetChanged()
+                dialog.dismiss() // Close the dialog
+            } else {
+                Toast.makeText(context, "Please enter feedback", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Show the dialog
+        dialog.show()
     }
 
     private fun getImagesResponse(
