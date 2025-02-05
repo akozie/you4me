@@ -6,9 +6,11 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.Dialog
+import android.content.BroadcastReceiver
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
@@ -31,6 +33,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
@@ -45,11 +48,14 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.authentication.AuthenticationActivity
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.ui.profileDetails.ImageAndVideoDetailsActivity
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils
 import com.you4me.you4me.utils.Utils.BANNER_TIMEOUT
 import com.you4me.you4me.utils.Utils.generateVideoThumbnail
 import com.you4me.you4me.utils.Utils.getCategoryFromString
+import com.you4me.you4me.utils.removeSimpleProgressDialog
+import com.you4me.you4me.utils.showSimpleProgressDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -81,6 +87,7 @@ class ProfileFragment :
     private lateinit var videoViewBinding: VideoDialogBinding
     private lateinit var updateBody: UpdateUserBody
     private val handler = Handler(Looper.getMainLooper())
+    private lateinit var imageDeletedReceiver: BroadcastReceiver
 
     override fun onViewCreated(
         view: View,
@@ -105,6 +112,17 @@ class ProfileFragment :
 
         mixpanel?.track("Android_Profile_Viewed")
 
+
+        imageDeletedReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                fetchImages()
+            }
+        }
+
+        // Register the BroadcastReceiver
+        LocalBroadcastManager.getInstance(requireContext())
+            .registerReceiver(imageDeletedReceiver,
+                IntentFilter("IMAGE_DELETED"))
 //        addObservers()
     }
 
@@ -821,23 +839,39 @@ class ProfileFragment :
         }
     }
 
+//    private fun openDetailScreen(
+//        fileUrl: String,
+//        category: String,
+//        videoId: String,
+//    ) {
+//        val imagesVideosResponseItem =
+//            ImagesVideosResponseItem(
+//                category,
+//                fileUrl,
+//                "",
+//                "",
+//                "",
+//                videoId,
+//            )
+//        val action = ProfileFragmentDirections.actionProfileFragmentToImageAndVideoDetailsFragment(imagesVideosResponseItem)
+//        findNavController().navigate(action)
+//    }
+
     private fun openDetailScreen(
         fileUrl: String,
         category: String,
-        videoId: String,
+        videoId: String
     ) {
-        val imagesVideosResponseItem =
-            ImagesVideosResponseItem(
-                category,
-                fileUrl,
-                "",
-                "",
-                "",
-                videoId,
-            )
-        val action = ProfileFragmentDirections.actionProfileFragmentToImageAndVideoDetailsFragment(imagesVideosResponseItem)
-        findNavController().navigate(action)
+        val intent = Intent(context,
+            ImageAndVideoDetailsActivity::class.java).apply {
+            putExtra("FILE_URL", fileUrl)
+            putExtra("CATEGORY", category)
+            putExtra("VIDEO_ID", videoId)
+            putExtra("USER_ID", user.userId)
+        }
+        context?.startActivity(intent)
     }
+
 
     // Suspend function to generate video thumbnail in background
 
@@ -874,7 +908,7 @@ class ProfileFragment :
     }
 
     private fun showLoader(show: Boolean) {
-        binding.progressCircular.visibility = if (show) View.VISIBLE else View.GONE
+        if (show) activity?.showSimpleProgressDialog() else removeSimpleProgressDialog()
         binding.editBtn.visibility = if (show) View.GONE else View.VISIBLE
     }
 
@@ -979,6 +1013,10 @@ class ProfileFragment :
 
     override fun onResume() {
         super.onResume()
+        fetchImages()
+    }
+
+    private fun fetchImages() {
         showLoader(true)
         getImages()
     }
@@ -1101,6 +1139,10 @@ class ProfileFragment :
         super.onDestroy()
         // Remove callbacks to prevent memory leaks
         handler.removeCallbacksAndMessages(null)
+
+        // Unregister the receiver to avoid memory leaks
+        LocalBroadcastManager.getInstance(requireContext())
+            .unregisterReceiver(imageDeletedReceiver)
     }
 
     companion object {

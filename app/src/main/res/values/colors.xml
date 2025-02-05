@@ -9,5 +9,7 @@
     <color name="grey">#F2F2F2</color>
     <color name="profile_grey">#C5CED5</color>
     <color name="text_grey">#C3CFD9</color>
+    <color name="splash_bg">#3660AD</color>
+    <color name="transparent">#00000000</color>
 
 </resources>
