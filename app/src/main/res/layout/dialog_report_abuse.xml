@@ -17,11 +17,13 @@
 
     <!-- Description -->
     <TextView
+        android:id="@+id/see_policy_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="We frown against child abuse (see policy here). Play your part in reporting a suspected child abuse."
+        android:text="@string/we_frown_against_child_abuse_see_policy_here_play_your_part_in_reporting_a_suspected_child_abuse"
         android:textSize="14sp"
-        android:paddingTop="10dp"/>
+        android:paddingTop="10dp"
+        android:linksClickable="true"/>
 
     <!-- Feedback Input -->
     <EditText
@@ -43,5 +45,14 @@
         android:text="Report and Hide Date"
         android:backgroundTint="@color/primary_pink"
         android:textColor="@android:color/white"
+        android:layout_marginTop="15dp"/>
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:backgroundTint="@color/text_grey"
+        android:textColor="@color/primary_pink"
         android:layout_marginTop="15dp"/>
 </LinearLayout>
