@@ -135,26 +135,21 @@ class SentRequestsRecyclerAdapter(
         // Handle submit button click
         btnSubmit.setOnClickListener {
             val feedback = etFeedback.text.toString().trim()
-
-            if (feedback.isNotEmpty()) {
-                mixpanelAPI.track("Android_Sent_Request_Report_Date_Button_Clicked")
-                val obj =
-                    JsonObject().apply {
-                        addProperty("date_id", dateId)
-                        addProperty("user_id", userId)
-                        addProperty("thumb_up", false)
-                        addProperty("comment", feedback)
-                    }
-                Toast.makeText(context, "Report Submitted", Toast.LENGTH_SHORT).show()
-                viewModel.updateReview(obj)
-                viewModel.updateDateInterest(interestID, dateId, "ABUSE_REPORTED")
-                // Remove item and refresh UI
-                dates.removeAt(position)
-                notifyDataSetChanged()
-                dialog.dismiss() // Close the dialog
-            } else {
-                Toast.makeText(context, "Please enter feedback", Toast.LENGTH_SHORT).show()
-            }
+            mixpanelAPI.track("Android_Sent_Request_Report_Date_Button_Clicked")
+            val obj =
+                JsonObject().apply {
+                    addProperty("date_id", dateId)
+                    addProperty("user_id", userId)
+                    addProperty("thumbs_up", false)
+                    addProperty("comment", feedback)
+                }
+            Toast.makeText(context, "Report Submitted", Toast.LENGTH_SHORT).show()
+            viewModel.updateReview(obj)
+            viewModel.updateDateInterest(interestID, dateId, "ABUSE_REPORTED")
+            // Remove item and refresh UI
+            dates.removeAt(position)
+            notifyDataSetChanged()
+            dialog.dismiss() // Close the dialog
         }
 
         // Show the dialog

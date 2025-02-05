@@ -50,9 +50,14 @@ class CompletedDatesRecyclerAdapter(
         holder.binding.location.text = "${date.venue}"
         getImagesResponse(date.personId, holder.binding)
 
+        if (date.hasReview == "true") {
+            holder.binding.thumbsDownLayout.visibility = View.GONE
+        } else {
+            holder.binding.thumbsDownLayout.visibility = View.VISIBLE
+        }
         holder.binding.apply {
             dislikeBtn.setOnClickListener {
-                showReportAbuseDialog(date.dateId, date.personId)
+                showReportAbuseDialog(date.dateId, date.personId, this)
             }
 
             likeBtn.setOnClickListener {
@@ -60,10 +65,22 @@ class CompletedDatesRecyclerAdapter(
                     JsonObject().apply {
                         addProperty("date_id", date.dateId)
                         addProperty("user_id", date.personId)
-                        addProperty("thumb_up", true)
+                        addProperty("thumbs_up", true)
                         addProperty("comment", "")
                     }
                 viewModel.updateReview(obj)
+                viewModel.updateReviewResponse.observe(lifecycleOwner) {
+                    when (it) {
+                        is Resource.Success -> {
+                            thumbsDownLayout.visibility = View.GONE
+                            Toast.makeText(context, "Report Submitted", Toast.LENGTH_SHORT).show()
+                        }
+
+                        is Resource.Failure -> {
+                        }
+                    }
+                }
+
                 mixpanelAPI.track("Android_Home_Like_Review_Date_Button_Pressed")
             }
         }
@@ -115,6 +132,7 @@ class CompletedDatesRecyclerAdapter(
     private fun showReportAbuseDialog(
         dateId: String,
         userId: String,
+        holder: CompletedDatesItemBinding,
     ) {
         // Inflate the custom layout
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_wrong_dates, null)
@@ -134,23 +152,28 @@ class CompletedDatesRecyclerAdapter(
         // Handle submit button click
         btnSubmit.setOnClickListener {
             val feedback = etFeedback.text.toString().trim()
-
-            if (feedback.isNotEmpty()) {
-                mixpanelAPI.track("Android_Home_Dislike_Review_Date_Button_Pressed")
-                val obj =
-                    JsonObject().apply {
-                        addProperty("date_id", dateId)
-                        addProperty("user_id", userId)
-                        addProperty("thumb_up", false)
-                        addProperty("comment", feedback)
+            mixpanelAPI.track("Android_Home_Dislike_Review_Date_Button_Pressed")
+            val obj =
+                JsonObject().apply {
+                    addProperty("date_id", dateId)
+                    addProperty("user_id", userId)
+                    addProperty("thumbs_up", false)
+                    addProperty("comment", feedback)
+                }
+            viewModel.updateReview(obj)
+            viewModel.updateReviewResponse.observe(lifecycleOwner) {
+                when (it) {
+                    is Resource.Success -> {
+                        holder.thumbsDownLayout.visibility = View.GONE
+                        Toast.makeText(context, "Report Submitted", Toast.LENGTH_SHORT).show()
                     }
-                viewModel.updateReview(obj)
-                Toast.makeText(context, "Report Submitted", Toast.LENGTH_SHORT).show()
 
-                dialog.dismiss() // Close the dialog
-            } else {
-                Toast.makeText(context, "Please enter feedback", Toast.LENGTH_SHORT).show()
+                    is Resource.Failure -> {
+                    }
+                }
             }
+            // Remove item and refresh UI
+            dialog.dismiss() // Close the dialog
         }
         // Handle submit button click
         btnCancel.setOnClickListener {
