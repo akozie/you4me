@@ -3,9 +3,12 @@ package com.you4me.you4me.ui.main
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
+import android.net.Uri
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -15,6 +18,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
 import android.widget.*
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -31,7 +35,6 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.SharedPrefHelper
-import com.you4me.you4me.utils.Utils.generateVideoThumbnail
 import com.you4me.you4me.utils.Utils.getCategoryFromString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -110,6 +113,27 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 is Resource.Failure -> {
                 }
             }
+        }
+    }
+
+    private fun setDefaultImage(frame: FrameLayout) {
+        val defaultImageView = createImageView()
+        Glide.with(requireActivity())
+            .load(R.drawable.find_date_bg) // Replace with your actual default image resource
+            .into(defaultImageView)
+
+        frame.addView(defaultImageView)
+        frame.visibility = View.VISIBLE
+    }
+
+    private fun createImageView(): ImageView {
+        return ImageView(requireActivity()).apply {
+            layoutParams =
+                FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                )
+            scaleType = ImageView.ScaleType.CENTER_CROP
         }
     }
 
@@ -197,11 +221,19 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                     }
                 }
 
-                // Remove unused frames on the Main thread
+                // Remove unused frames on the Main thread, but keep the first frame visible if the list is empty
                 withContext(Dispatchers.Main) {
-                    imageViews.drop(validMedia.size).forEach { frame ->
-                        frame.removeAllViews()
-                        frame.visibility = View.GONE
+                    if (validMedia.isEmpty()) {
+                        imageViews.forEachIndexed { index, frame ->
+                            if (index == 0) return@forEachIndexed // Keep the first frame visible
+                            frame.removeAllViews()
+                            frame.visibility = View.GONE
+                        }
+                    } else {
+                        imageViews.drop(validMedia.size).forEach { frame ->
+                            frame.removeAllViews()
+                            frame.visibility = View.GONE
+                        }
                     }
                 }
             }
@@ -215,12 +247,14 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         // Initialize UI elements
         val etFeedback = dialogView.findViewById<EditText>(R.id.et_feedback)
         val btnSubmit = dialogView.findViewById<Button>(R.id.btn_submit)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btn_cancel)
+        val policy = dialogView.findViewById<TextView>(R.id.see_policy_link)
 
         // Create AlertDialog
         val dialog =
             AlertDialog.Builder(requireContext())
                 .setView(dialogView)
-                .setCancelable(true)
+                .setCancelable(false)
                 .create()
 
         // Handle submit button click
@@ -273,6 +307,20 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
             dialog.dismiss() // Close the dialog
         }
 
+        btnCancel.setOnClickListener {
+            showLoading(false)
+            dialog.dismiss()
+        }
+        policy.setOnClickListener {
+            policy.text =
+                HtmlCompat.fromHtml(
+                    getString(R.string.we_frown_against_child_abuse_see_policy_here_play_your_part_in_reporting_a_suspected_child_abuse),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY,
+                )
+            policy.movementMethod = LinkMovementMethod.getInstance() // Makes the link clickable
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.you4me.social/child-abuse-policy"))
+            it.context.startActivity(intent)
+        }
         // Show the dialog
         dialog.show()
     }

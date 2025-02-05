@@ -74,5 +74,7 @@
     <string name="where_would_you_like_the_date_to_happen">Where would you like the date to happen?</string>
     <string name="received_requests">Received Interests</string>
     <string name="sent_requests">Sent Interests</string>
+    <string name="we_frown_against_child_abuse_see_policy_here_play_your_part_in_reporting_a_suspected_child_abuse">We frown against child abuse <a href="https://www.you4me.social/child-abuse-policy">See policy here</a>. Play your part in reporting a suspected child abuse.</string>
+
 
 </resources>
