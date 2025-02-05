@@ -75,6 +75,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         mixpanel?.track("Android_Find_Date_Viewed")
 
         binding.reportAbuse.setOnClickListener {
+            showLoading(true)
             showReportAbuseDialog()
         }
     }
@@ -225,38 +226,51 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         // Handle submit button click
         btnSubmit.setOnClickListener {
             val feedback = etFeedback.text.toString().trim()
+            val obj =
+                JsonObject().apply {
+                    addProperty("date_id", date.dateId)
+                    addProperty("user_id", date.userId)
+                    addProperty("thumbs_up", false)
+                    addProperty("comment", feedback)
+                }
+            viewModel.updateReview(obj)
+            viewModel.updateReviewResponse.observe(viewLifecycleOwner) {
+                showLoading(false)
+                when (it) {
+                    is Resource.Success -> {
+                        mixpanel?.track("Android_Find_Date_Report_Date_Button_Clicked")
+                        val d = dates[currentIdx]
+                        viewModel.addSwipe(
+                            d.dateId,
+                            d.userId,
+                            false,
+                        )
+                        viewModel.addSwipe.observe(viewLifecycleOwner) {
+                            showLoading(false)
+                            when (it) {
+                                is Resource.Success -> {
+                                    showToast("Report Submitted")
+                                    if (currentIdx < dates.lastIndex) {
+                                        setScreen()
+                                    } else {
+                                        showToast("No more dates available")
+                                        showEmpty()
+                                    }
+                                }
 
-            if (feedback.isNotEmpty()) {
-                val obj =
-                    JsonObject().apply {
-                        addProperty("date_id", date.dateId)
-                        addProperty("user_id", date.userId)
-                        addProperty("thumb_up", false)
-                        addProperty("comment", feedback)
+                                is Resource.Failure -> {
+                                    showToast(it.message ?: it.errorBody ?: "")
+                                }
+                            }
+                        }
                     }
-                viewModel.updateReview(obj)
-                viewModel.updateReviewResponse.observe(viewLifecycleOwner) {
-                    when (it) {
-                        is Resource.Success -> {
-                            mixpanel?.track("Android_Find_Date_Report_Date_Button_Clicked")
-                            val d = dates[currentIdx]
-                            viewModel.addSwipe(
-                                d.dateId,
-                                d.userId,
-                                false,
-                            )
-                            Toast.makeText(requireContext(), "Report Submitted", Toast.LENGTH_SHORT).show()
-                        }
 
-                        is Resource.Failure -> {
-                        }
+                    is Resource.Failure -> {
                     }
                 }
-
-                dialog.dismiss() // Close the dialog
-            } else {
-                Toast.makeText(requireContext(), "Please enter feedback", Toast.LENGTH_SHORT).show()
             }
+
+            dialog.dismiss() // Close the dialog
         }
 
         // Show the dialog

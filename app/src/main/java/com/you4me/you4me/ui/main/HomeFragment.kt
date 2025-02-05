@@ -30,6 +30,7 @@ class HomeFragment :
     BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>("HOME"),
     UpcomingDatesRecyclerAdapter.CalendarResultListener {
     private lateinit var user: User
+    private var isExpanded = false // Track visibility state
 
     override fun getViewModel() = MainViewModel::class.java
 
@@ -69,6 +70,18 @@ class HomeFragment :
         viewModel.getSubscriptionStatusForHome(user.userId)
         binding.notificationIcon.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment) }
         mixpanel?.track("Android_Home_Viewed")
+
+        binding.toggleLayout.setOnClickListener {
+            isExpanded = !isExpanded // Toggle state
+
+            if (isExpanded) {
+                binding.completedDatesRecycler.visibility = View.VISIBLE
+                binding.toggleArrow.setImageResource(R.drawable.baseline_keyboard_arrow_up_24) // Change icon
+            } else {
+                binding.completedDatesRecycler.visibility = View.GONE
+                binding.toggleArrow.setImageResource(R.drawable.baseline_keyboard_arrow_down_24) // Change icon
+            }
+        }
     }
 
     private fun addObservers() {

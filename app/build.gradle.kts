@@ -68,6 +68,11 @@ android {
             path(file("src/main/jni/Android.mk"))
         }
     }
+    packagingOptions {
+        resources {
+            excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+        }
+    }
 }
 
 dependencies {
