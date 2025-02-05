@@ -22,7 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="6dp"
-            android:gravity="center"
             android:padding="5dp"
             app:drawableStartCompat="@drawable/baseline_circle_24"
             app:drawableTint="@color/primary_pink"
