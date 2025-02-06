@@ -17,7 +17,7 @@ buildscript {
     }
     dependencies {
         classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
-        classpath("com.google.gms:google-services:4.4.1")
+        classpath("com.google.gms:google-services:4.4.2")
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3") // Use the correct version
         // classpath("com.android.tools.build:gradle:7.0.4")
     }

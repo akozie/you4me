@@ -6,9 +6,11 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.Dialog
+import android.content.BroadcastReceiver
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
@@ -31,6 +33,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
@@ -45,11 +48,14 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.authentication.AuthenticationActivity
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.ui.profileDetails.ImageAndVideoDetailsActivity
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils
 import com.you4me.you4me.utils.Utils.BANNER_TIMEOUT
 import com.you4me.you4me.utils.Utils.generateVideoThumbnail
 import com.you4me.you4me.utils.Utils.getCategoryFromString
+import com.you4me.you4me.utils.removeSimpleProgressDialog
+import com.you4me.you4me.utils.showSimpleProgressDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -81,6 +87,13 @@ class ProfileFragment :
     private lateinit var videoViewBinding: VideoDialogBinding
     private lateinit var updateBody: UpdateUserBody
     private val handler = Handler(Looper.getMainLooper())
+    private var imageDeletedReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            activity?.runOnUiThread {
+                fetchImages()
+            }
+        }
+    }
 
     override fun onViewCreated(
         view: View,
@@ -105,6 +118,13 @@ class ProfileFragment :
 
         mixpanel?.track("Android_Profile_Viewed")
 
+
+        // Register the BroadcastReceiver
+        LocalBroadcastManager.getInstance(requireContext())
+            .registerReceiver(
+                imageDeletedReceiver,
+                IntentFilter("IMAGE_DELETED")
+            )
 //        addObservers()
     }
 
@@ -664,6 +684,7 @@ class ProfileFragment :
                             startActivity(intent)
                             requireActivity().finish()
                         }
+
                         is Resource.Failure -> {
                             dialog.dismiss()
                             showAlertDialog(
@@ -699,6 +720,7 @@ class ProfileFragment :
                             dialog.dismiss()
                             requireActivity().finish()
                         }
+
                         is Resource.Failure -> {
                             dialog.dismiss()
                             showAlertDialog(
@@ -733,79 +755,85 @@ class ProfileFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             // Run the heavy task on the IO thread
             withContext(Dispatchers.IO) {
-                listOfImagesAndVideos.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
-                    val frame = imageViews[index]
-                    frame.isClickable = true
-                    frame.isFocusable = true
+                listOfImagesAndVideos.take(imageViews.size).asReversed()
+                    .forEachIndexed { index, fileData ->
+                        val frame = imageViews[index]
+                        frame.isClickable = true
+                        frame.isFocusable = true
 
-                    // Replace 'http' with 'https' for secure URLs
-                    val secureUrl = fileData.fileURL.replace("http://", "https://")
+                        // Replace 'http' with 'https' for secure URLs
+                        val secureUrl = fileData.fileURL.replace("http://", "https://")
 
-                    if (getCategoryFromString(fileData.fileURL) == "image") {
-                        // Load image into FrameLayout
-                        val imageView =
-                            ImageView(requireActivity()).apply {
-                                layoutParams =
-                                    FrameLayout.LayoutParams(
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                    )
-                                scaleType = ImageView.ScaleType.CENTER_CROP
+                        if (getCategoryFromString(fileData.fileURL) == "image") {
+                            // Load image into FrameLayout
+                            val imageView =
+                                ImageView(requireActivity()).apply {
+                                    layoutParams =
+                                        FrameLayout.LayoutParams(
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                        )
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                }
+
+                            // Load image using Glide
+                            withContext(Dispatchers.Main) {
+                                if (isAdded) {
+                                    Glide.with(requireActivity())
+                                        .load(secureUrl)
+                                        .into(imageView)
+                                    frame.addView(imageView)
+
+                                    if (!isProfilePictureSet) {
+                                        isProfilePictureSet = true // Mark profile picture as set
+                                        Glide.with(requireActivity())
+                                            .load(fileData.fileURL)
+                                            .circleCrop()
+                                            .into(binding.profilePicture)
+                                        binding.profilePicture.scaleType =
+                                            ImageView.ScaleType.CENTER_CROP
+                                    }
+                                }
                             }
+                        } else if (getCategoryFromString(fileData.fileURL) == "video") {
+                            val thumbnailView =
+                                ImageView(requireContext()).apply {
+                                    layoutParams =
+                                        FrameLayout.LayoutParams(
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                            FrameLayout.LayoutParams.MATCH_PARENT,
+                                        )
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                }
 
-                        // Load image using Glide
+                            // Generate thumbnail using MediaMetadataRetriever
+                            val bitmap = generateVideoThumbnail(secureUrl)
+
+                            withContext(Dispatchers.Main) {
+                                if (isAdded && bitmap != null) {
+                                    thumbnailView.setImageBitmap(bitmap)
+                                    frame.addView(thumbnailView)
+                                }
+                            }
+                        }
+
+                        // Add a click listener to the frame
                         withContext(Dispatchers.Main) {
                             if (isAdded) {
-                                Glide.with(requireActivity())
-                                    .load(secureUrl)
-                                    .into(imageView)
-                                frame.addView(imageView)
-
-                                if (!isProfilePictureSet) {
-                                    isProfilePictureSet = true // Mark profile picture as set
-                                    Glide.with(requireActivity())
-                                        .load(fileData.fileURL)
-                                        .circleCrop()
-                                        .into(binding.profilePicture)
-                                    binding.profilePicture.scaleType = ImageView.ScaleType.CENTER_CROP
-                                }
-                            }
-                        }
-                    } else if (getCategoryFromString(fileData.fileURL) == "video") {
-                        val thumbnailView =
-                            ImageView(requireContext()).apply {
-                                layoutParams =
-                                    FrameLayout.LayoutParams(
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
+                                frame.setOnClickListener {
+                                    if (fileData.fileURL.isEmpty()) {
+                                        // showLoading(true)
+                                        return@setOnClickListener
+                                    }
+                                    openDetailScreen(
+                                        secureUrl,
+                                        getCategoryFromString(fileData.fileURL),
+                                        fileData.videoId
                                     )
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                            }
-
-                        // Generate thumbnail using MediaMetadataRetriever
-                        val bitmap = generateVideoThumbnail(secureUrl)
-
-                        withContext(Dispatchers.Main) {
-                            if (isAdded && bitmap != null) {
-                                thumbnailView.setImageBitmap(bitmap)
-                                frame.addView(thumbnailView)
-                            }
-                        }
-                    }
-
-                    // Add a click listener to the frame
-                    withContext(Dispatchers.Main) {
-                        if (isAdded) {
-                            frame.setOnClickListener {
-                                if (fileData.fileURL.isEmpty()) {
-                                    // showLoading(true)
-                                    return@setOnClickListener
                                 }
-                                openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
                             }
                         }
                     }
-                }
             }
         }
     }
@@ -821,23 +849,41 @@ class ProfileFragment :
         }
     }
 
+//    private fun openDetailScreen(
+//        fileUrl: String,
+//        category: String,
+//        videoId: String,
+//    ) {
+//        val imagesVideosResponseItem =
+//            ImagesVideosResponseItem(
+//                category,
+//                fileUrl,
+//                "",
+//                "",
+//                "",
+//                videoId,
+//            )
+//        val action = ProfileFragmentDirections.actionProfileFragmentToImageAndVideoDetailsFragment(imagesVideosResponseItem)
+//        findNavController().navigate(action)
+//    }
+
     private fun openDetailScreen(
         fileUrl: String,
         category: String,
-        videoId: String,
+        videoId: String
     ) {
-        val imagesVideosResponseItem =
-            ImagesVideosResponseItem(
-                category,
-                fileUrl,
-                "",
-                "",
-                "",
-                videoId,
-            )
-        val action = ProfileFragmentDirections.actionProfileFragmentToImageAndVideoDetailsFragment(imagesVideosResponseItem)
-        findNavController().navigate(action)
+        val intent = Intent(
+            context,
+            ImageAndVideoDetailsActivity::class.java
+        ).apply {
+            putExtra("FILE_URL", fileUrl)
+            putExtra("CATEGORY", category)
+            putExtra("VIDEO_ID", videoId)
+            putExtra("USER_ID", user.userId)
+        }
+        context?.startActivity(intent)
     }
+
 
     // Suspend function to generate video thumbnail in background
 
@@ -874,7 +920,7 @@ class ProfileFragment :
     }
 
     private fun showLoader(show: Boolean) {
-        binding.progressCircular.visibility = if (show) View.VISIBLE else View.GONE
+        if (show) activity?.showSimpleProgressDialog() else removeSimpleProgressDialog()
         binding.editBtn.visibility = if (show) View.GONE else View.VISIBLE
     }
 
@@ -962,7 +1008,10 @@ class ProfileFragment :
         val intent =
             Intent(Intent.ACTION_PICK, MediaStore.Files.getContentUri("external")).apply {
                 type = "*/*" // Allow all media types
-                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*")) // Filter for images and videos
+                putExtra(
+                    Intent.EXTRA_MIME_TYPES,
+                    arrayOf("image/*", "video/*")
+                ) // Filter for images and videos
             }
         activityResultLauncher.launch(intent)
     }
@@ -979,6 +1028,10 @@ class ProfileFragment :
 
     override fun onResume() {
         super.onResume()
+        fetchImages()
+    }
+
+    private fun fetchImages() {
         showLoader(true)
         getImages()
     }
@@ -1033,8 +1086,17 @@ class ProfileFragment :
 
     private fun checkAndRequestPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (permissions.any { ContextCompat.checkSelfPermission(requireContext(), it) != PackageManager.PERMISSION_GRANTED }) {
-                ActivityCompat.requestPermissions(requireActivity(), permissions, PERMISSION_REQUEST_CODE)
+            if (permissions.any {
+                    ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        it
+                    ) != PackageManager.PERMISSION_GRANTED
+                }) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    permissions,
+                    PERMISSION_REQUEST_CODE
+                )
             }
         } else {
             if (ContextCompat.checkSelfPermission(
@@ -1060,7 +1122,11 @@ class ProfileFragment :
             if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
                 // Permissions granted
             } else {
-                Toast.makeText(requireContext(), "Permissions are required to access media files.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Permissions are required to access media files.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -1101,6 +1167,10 @@ class ProfileFragment :
         super.onDestroy()
         // Remove callbacks to prevent memory leaks
         handler.removeCallbacksAndMessages(null)
+
+        // Unregister the receiver to avoid memory leaks
+        LocalBroadcastManager.getInstance(requireContext())
+            .unregisterReceiver(imageDeletedReceiver)
     }
 
     companion object {

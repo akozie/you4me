@@ -161,6 +161,11 @@ interface ApiCollector {
         @Path("userId") userId: String,
     ): DateInterestsRequiringApproval
 
+    @GET("users/{userId}/dates/confirmed")
+    suspend fun fetchCompletedDates(
+        @Path("userId") userId: String,
+    ): CompletedDateResponse
+
     @PUT("users/{userId}/dates/interests/{interestId}/propose-time")
     suspend fun proposeNewDateTime(
         @Path("userId") userId: String,
@@ -180,6 +185,11 @@ interface ApiCollector {
 
     @POST("payments")
     suspend fun registerPayment(
+        @Body obj: JsonObject,
+    )
+
+    @POST("reviews")
+    suspend fun updateReview(
         @Body obj: JsonObject,
     )
 

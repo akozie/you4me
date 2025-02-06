@@ -73,6 +73,11 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
             apiCollector.getDateInterestsRequiringApproval(userId)
         }
 
+    suspend fun fetchCompletedDates(userId: String) =
+        safeApiCall {
+            apiCollector.fetchCompletedDates(userId)
+        }
+
     suspend fun proposeNewDateTime(
         userId: String,
         interestId: String,
@@ -82,6 +87,8 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
     }
 
     suspend fun registerPayment(obj: JsonObject) = safeApiCall { apiCollector.registerPayment(obj) }
+
+    suspend fun updateReview(obj: JsonObject) = safeApiCall { apiCollector.updateReview(obj) }
 
     suspend fun getImageVideoUpload(userId: String) =
         safeApiCall {

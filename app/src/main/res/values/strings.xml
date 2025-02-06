@@ -6,7 +6,7 @@
     <string name="add_video">Add a video</string>
     <string name="age_preference">Age Preference</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="referral_code">Referral Code</string>
+    <string name="referral_code">Referral Code(Optional)</string>
     <string name="country">Country</string>
     <string name="create_video">Create a compelling 30-second video introducing yourself</string>
     <string name="date_hint">yyyy-mm-dd</string>
@@ -60,6 +60,7 @@
     <string name="interested_in_you">Interested in your dates</string>
     <string name="interest_in_date">Check out people who are interested in going on a date with you</string>
     <string name="dates_requiring_approval">Dates requiring approval</string>
+    <string name="completed_dates">Completed Dates</string>
     <string name="approved_date_interests">Approved Date Interests</string>
     <string name="you_have_no_upcoming_dates">You have no upcoming dates</string>
     <string name="add_to_calendar">Add to Calendar</string>
@@ -73,5 +74,7 @@
     <string name="where_would_you_like_the_date_to_happen">Where would you like the date to happen?</string>
     <string name="received_requests">Received Interests</string>
     <string name="sent_requests">Sent Interests</string>
+    <string name="we_frown_against_child_abuse_see_policy_here_play_your_part_in_reporting_a_suspected_child_abuse">We frown against child abuse <a href="https://www.you4me.social/child-abuse-policy">See policy here</a>. Play your part in reporting a suspected child abuse.</string>
+
 
 </resources>

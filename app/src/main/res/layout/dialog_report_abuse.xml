@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Report Abuse"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"/>
+
+    <!-- Description -->
+    <TextView
+        android:id="@+id/see_policy_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/we_frown_against_child_abuse_see_policy_here_play_your_part_in_reporting_a_suspected_child_abuse"
+        android:textSize="14sp"
+        android:paddingTop="10dp"
+        android:linksClickable="true"/>
+
+    <!-- Feedback Input -->
+    <EditText
+        android:id="@+id/et_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:hint="Input feedback here"
+        android:background="@android:drawable/edit_text"
+        android:padding="10dp"
+        android:gravity="top"
+        android:textSize="14sp"
+        android:minLines="4"/>
+
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Report and Hide Date"
+        android:backgroundTint="@color/primary_pink"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="15dp"/>
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:backgroundTint="@color/text_grey"
+        android:textColor="@color/primary_pink"
+        android:layout_marginTop="15dp"/>
+</LinearLayout>

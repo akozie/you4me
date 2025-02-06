@@ -49,5 +49,10 @@
             android:name=".ui.authentication.AuthenticationActivity"
             android:exported="true">
         </activity>
+
+        <activity
+            android:name=".ui.profileDetails.ImageAndVideoDetailsActivity"
+            android:exported="true">
+        </activity>
     </application>
 </manifest>

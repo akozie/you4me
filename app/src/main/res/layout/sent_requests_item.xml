@@ -3,16 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_lyt"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:visibility="visible"
         android:layout_marginStart="@dimen/margin_10dp"
         android:layout_marginEnd="@dimen/margin_10dp"
         android:layout_marginTop="@dimen/margin_5dp"
+        android:paddingBottom="@dimen/padding_20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,6 +42,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
+
+        <TextView
+            android:id="@+id/report_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_10dp"
+            android:layout_marginBottom="@dimen/margin_70dp"
+            android:drawableStart="@drawable/report"
+            android:drawablePadding="@dimen/padding_10dp"
+            android:text="Report Date"
+            android:padding="@dimen/padding_10dp"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:textColor="@color/primary_pink"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/location_layout" />
 
         <TextView
             android:id="@+id/bio"
@@ -136,22 +153,15 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.65" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main_lyt_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10dp"
             android:visibility="visible"
+            android:layout_marginTop="@dimen/margin_10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/location_layout"
-            app:layout_constraintTop_toBottomOf="@+id/location_layout">
+            app:layout_constraintTop_toBottomOf="@+id/report_date">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/suggest_a_new_date_cardview"
@@ -172,11 +182,11 @@
                     android:autoSizeTextType="uniform"
                     android:background="@drawable/btn_not_interested_stroke_color"
                     android:gravity="center"
-                    android:textSize="@dimen/text_size_13sp"
                     android:padding="@dimen/padding_5dp"
                     android:paddingVertical="15dp"
                     android:text="Suggest a new time for the date"
-                    android:textColor="@color/primary_pink" />
+                    android:textColor="@color/primary_pink"
+                    android:textSize="@dimen/text_size_13sp" />
 
             </androidx.cardview.widget.CardView>
 
@@ -185,7 +195,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_5dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/suggest_a_new_date_cardview"
                 app:layout_constraintStart_toStartOf="@+id/suggest_a_new_date_cardview"
                 app:layout_constraintTop_toBottomOf="@+id/suggest_a_new_date_cardview">
@@ -198,13 +207,13 @@
                     android:autoSizeMinTextSize="12sp"
                     android:autoSizeStepGranularity="2sp"
                     android:autoSizeTextType="uniform"
-                    android:textSize="@dimen/text_size_13sp"
                     android:background="@drawable/btn_go_on_date"
                     android:gravity="center"
                     android:padding="@dimen/padding_10dp"
                     android:paddingVertical="15dp"
                     android:text="Accept Date"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_13sp" />
             </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

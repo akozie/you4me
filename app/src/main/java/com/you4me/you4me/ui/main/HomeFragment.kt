@@ -11,6 +11,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.you4me.you4me.R
+import com.you4me.you4me.adapter.CompletedDatesRecyclerAdapter
 import com.you4me.you4me.adapter.DateInterestsRequiringApprovalRecyclerAdapter
 import com.you4me.you4me.adapter.InviteeDateForApprovalRecyclerAdapter
 import com.you4me.you4me.adapter.UpcomingDatesRecyclerAdapter
@@ -29,6 +30,7 @@ class HomeFragment :
     BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>("HOME"),
     UpcomingDatesRecyclerAdapter.CalendarResultListener {
     private lateinit var user: User
+    private var isExpanded = false // Track visibility state
 
     override fun getViewModel() = MainViewModel::class.java
 
@@ -68,6 +70,18 @@ class HomeFragment :
         viewModel.getSubscriptionStatusForHome(user.userId)
         binding.notificationIcon.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment) }
         mixpanel?.track("Android_Home_Viewed")
+
+        binding.toggleLayout.setOnClickListener {
+            isExpanded = !isExpanded // Toggle state
+
+            if (isExpanded) {
+                binding.completedDatesRecycler.visibility = View.VISIBLE
+                binding.toggleArrow.setImageResource(R.drawable.baseline_keyboard_arrow_up_24) // Change icon
+            } else {
+                binding.completedDatesRecycler.visibility = View.GONE
+                binding.toggleArrow.setImageResource(R.drawable.baseline_keyboard_arrow_down_24) // Change icon
+            }
+        }
     }
 
     private fun addObservers() {
@@ -80,6 +94,7 @@ class HomeFragment :
                     viewModel.getInviteeDatesRequiringApproval(user.userId)
                     viewModel.getDateInterestsRequiringApproval()
                     viewModel.getNotifications()
+                    viewModel.fetchCompletedDates()
                 }
 
                 is Resource.Failure -> {
@@ -92,6 +107,17 @@ class HomeFragment :
             when (it) {
                 is Resource.Success -> {
                     setupUpcomingDates(it.value)
+                }
+
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
+            }
+        }
+        viewModel.completedDates.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    setupCompletedDates(it.value)
                 }
 
                 is Resource.Failure -> {
@@ -202,8 +228,10 @@ class HomeFragment :
     private fun setupDateInterests(dates: DateInterestsRequiringApproval) {
         if (dates.isEmpty()) {
             binding.datesRequiringAppLyt.visibility = View.GONE
+            binding.dateInterestRecycler.visibility = View.GONE
         } else {
             binding.datesRequiringAppLyt.visibility = View.VISIBLE
+            binding.dateInterestRecycler.visibility = View.VISIBLE
             val adapter =
                 mixpanel?.let {
                     DateInterestsRequiringApprovalRecyclerAdapter(
@@ -231,11 +259,36 @@ class HomeFragment :
         }
     }
 
+    private fun setupCompletedDates(dates: CompletedDateResponse) {
+        if (dates.isEmpty()) {
+            binding.datesCompletedAppLyt.visibility = View.GONE
+            binding.completedDatesTxt.visibility = View.GONE
+            binding.completedDatesDivider.visibility = View.GONE
+        } else {
+            binding.datesCompletedAppLyt.visibility = View.VISIBLE
+            binding.completedDatesTxt.visibility = View.VISIBLE
+            binding.completedDatesDivider.visibility = View.VISIBLE
+            val adapter =
+                mixpanel?.let {
+                    CompletedDatesRecyclerAdapter(
+                        viewModel,
+                        viewLifecycleOwner,
+                        requireContext(),
+                        dates,
+                        it,
+                    )
+                }
+            binding.completedDatesRecycler.adapter = adapter
+        }
+    }
+
     private fun setupUpcomingDates(dates: UpcomingDates) {
         if (dates.isEmpty()) {
             binding.upcomingDatesRecycler.visibility = View.GONE
             binding.noUpcomingDates.visibility = View.VISIBLE
         } else {
+            binding.upcomingDatesRecycler.visibility = View.VISIBLE
+            binding.noUpcomingDates.visibility = View.GONE
             val adapter = UpcomingDatesRecyclerAdapter(requireActivity(), this, dates, ctx)
             binding.upcomingDatesRecycler.adapter = adapter
         }

@@ -61,7 +61,7 @@
         android:id="@+id/imageAndVideoDetailsFragment"
         android:name="com.you4me.you4me.ui.profileDetails.ImageAndVideoDetailsFragment"
         android:label="fragment_image_and_video_details"
-        tools:layout="@layout/fragment_image_and_video_details" >
+        tools:layout="@layout/activity_image_and_video_details" >
         <argument
             android:name="IMAGES"
             app:argType="com.you4me.you4me.models.ImagesVideosResponseItem" />

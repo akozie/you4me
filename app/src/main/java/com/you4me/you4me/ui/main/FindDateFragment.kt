@@ -1,10 +1,14 @@
 package com.you4me.you4me.ui.main
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
+import android.net.Uri
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -13,9 +17,8 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -23,6 +26,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentFindDateBinding
 import com.you4me.you4me.models.*
@@ -31,7 +35,6 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.SharedPrefHelper
-import com.you4me.you4me.utils.Utils.generateVideoThumbnail
 import com.you4me.you4me.utils.Utils.getCategoryFromString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -73,6 +76,11 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         showBottomSheetDialog()
         viewModel.getUserDetails(user.userId)
         mixpanel?.track("Android_Find_Date_Viewed")
+
+        binding.reportAbuse.setOnClickListener {
+            showLoading(true)
+            showReportAbuseDialog()
+        }
     }
 
     override fun onResume() {
@@ -105,6 +113,27 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 is Resource.Failure -> {
                 }
             }
+        }
+    }
+
+    private fun setDefaultImage(frame: FrameLayout) {
+        val defaultImageView = createImageView()
+        Glide.with(requireActivity())
+            .load(R.drawable.find_date_bg) // Replace with your actual default image resource
+            .into(defaultImageView)
+
+        frame.addView(defaultImageView)
+        frame.visibility = View.VISIBLE
+    }
+
+    private fun createImageView(): ImageView {
+        return ImageView(requireActivity()).apply {
+            layoutParams =
+                FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                )
+            scaleType = ImageView.ScaleType.CENTER_CROP
         }
     }
 
@@ -192,15 +221,108 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                     }
                 }
 
-                // Remove unused frames on the Main thread
+                // Remove unused frames on the Main thread, but keep the first frame visible if the list is empty
                 withContext(Dispatchers.Main) {
-                    imageViews.drop(validMedia.size).forEach { frame ->
-                        frame.removeAllViews()
-                        frame.visibility = View.GONE
+                    if (validMedia.isEmpty()) {
+                        imageViews.forEachIndexed { index, frame ->
+                            if (index == 0) return@forEachIndexed // Keep the first frame visible
+                            frame.removeAllViews()
+                            frame.visibility = View.GONE
+                        }
+                    } else {
+                        imageViews.drop(validMedia.size).forEach { frame ->
+                            frame.removeAllViews()
+                            frame.visibility = View.GONE
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun showReportAbuseDialog() {
+        // Inflate the custom layout
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_report_abuse, null)
+
+        // Initialize UI elements
+        val etFeedback = dialogView.findViewById<EditText>(R.id.et_feedback)
+        val btnSubmit = dialogView.findViewById<Button>(R.id.btn_submit)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btn_cancel)
+        val policy = dialogView.findViewById<TextView>(R.id.see_policy_link)
+
+        // Create AlertDialog
+        val dialog =
+            AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .setCancelable(false)
+                .create()
+
+        // Handle submit button click
+        btnSubmit.setOnClickListener {
+            val feedback = etFeedback.text.toString().trim()
+            val obj =
+                JsonObject().apply {
+                    addProperty("date_id", date.dateId)
+                    addProperty("user_id", date.userId)
+                    addProperty("thumbs_up", false)
+                    addProperty("comment", feedback)
+                }
+            viewModel.updateReview(obj)
+            viewModel.updateReviewResponse.observe(viewLifecycleOwner) {
+                showLoading(false)
+                when (it) {
+                    is Resource.Success -> {
+                        mixpanel?.track("Android_Find_Date_Report_Date_Button_Clicked")
+                        val d = dates[currentIdx]
+                        viewModel.addSwipe(
+                            d.dateId,
+                            d.userId,
+                            false,
+                        )
+                        viewModel.addSwipe.observe(viewLifecycleOwner) {
+                            showLoading(false)
+                            when (it) {
+                                is Resource.Success -> {
+                                    showToast("Report Submitted")
+                                    if (currentIdx < dates.lastIndex) {
+                                        setScreen()
+                                    } else {
+                                        showToast("No more dates available")
+                                        showEmpty()
+                                    }
+                                }
+
+                                is Resource.Failure -> {
+                                    showToast(it.message ?: it.errorBody ?: "")
+                                }
+                            }
+                        }
+                    }
+
+                    is Resource.Failure -> {
+                    }
+                }
+            }
+
+            dialog.dismiss() // Close the dialog
+        }
+
+        btnCancel.setOnClickListener {
+            showLoading(false)
+            dialog.dismiss()
+        }
+        policy.setOnClickListener {
+            policy.text =
+                HtmlCompat.fromHtml(
+                    getString(R.string.we_frown_against_child_abuse_see_policy_here_play_your_part_in_reporting_a_suspected_child_abuse),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY,
+                )
+            policy.movementMethod = LinkMovementMethod.getInstance() // Makes the link clickable
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.you4me.social/child-abuse-policy"))
+            it.context.startActivity(intent)
+        }
+        // Show the dialog
+        dialog.show()
     }
 
     private fun generateVideoThumbnail(videoUrl: String): Bitmap? {
@@ -240,7 +362,9 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
 //        binding.userVideo.setMediaController(mediaControls)
 
         binding.acceptBtn.setOnClickListener {
-            if (currentIdx < 0) return@setOnClickListener
+            if (currentIdx < 0 || currentIdx >= dates.size) {
+                return@setOnClickListener // Prevents out-of-bounds access
+            }
             val d = dates[currentIdx]
             showLoading(true)
             viewModel.addDateInterest(
@@ -252,7 +376,9 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
             mixpanel?.track("Android_Liked_Find_Date_Button_Pressed")
         }
         binding.rejectBtn.setOnClickListener {
-            if (currentIdx < 0) return@setOnClickListener
+            if (currentIdx < 0 || currentIdx >= dates.size) {
+                return@setOnClickListener // Prevents out-of-bounds access
+            }
             showLoading(true)
             val d = dates[currentIdx]
             viewModel.addSwipe(
@@ -279,7 +405,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                     // Apply the tilt animation based on the swipe direction
                     if (swipeDistance > 0) {
                         startTiltAnimation(true)
-                        if (currentIdx < 0) {
+                        if (currentIdx < 0 || currentIdx >= dates.size) {
                             // do nothing
                         } else {
                             showLoading(true)
@@ -292,7 +418,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                         }
                     } else {
                         startSecondTiltAnimation(true)
-                        if (currentIdx < 0) {
+                        if (currentIdx < 0 || currentIdx >= dates.size) {
                             // do nothing
                         } else {
                             showLoading(true)

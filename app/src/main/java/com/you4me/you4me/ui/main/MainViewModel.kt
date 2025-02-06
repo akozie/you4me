@@ -80,6 +80,11 @@ class MainViewModel(
     val dateInterestsRequiringApproval: LiveData<Resource<DateInterestsRequiringApproval>>
         get() = _dateInterestsRequiringApproval
 
+    private val _completedDates =
+        SingleLiveEvent<Resource<CompletedDateResponse>>()
+    val completedDates: LiveData<Resource<CompletedDateResponse>>
+        get() = _completedDates
+
     private val _proposeNewDateTime = SingleLiveEvent<Resource<Unit>>()
     val proposeNewDateTime: LiveData<Resource<Unit>>
         get() = _proposeNewDateTime
@@ -95,6 +100,10 @@ class MainViewModel(
     val _updatePaymentResponse = MutableLiveData<Resource<Unit>>()
     val updatePaymentResponse: LiveData<Resource<Unit>>
         get() = _updatePaymentResponse
+
+    val _updateReviewResponse = MutableLiveData<Resource<Unit>>()
+    val updateReviewResponse: LiveData<Resource<Unit>>
+        get() = _updateReviewResponse
 
     init {
         getUser()
@@ -289,6 +298,13 @@ class MainViewModel(
         }
     }
 
+    fun fetchCompletedDates() {
+        viewModelScope.launch {
+            _completedDates.value =
+                repository.fetchCompletedDates(_user.value?.userId ?: "")
+        }
+    }
+
     fun proposeNewDateTime(
         dateId: String,
         interestId: String,
@@ -307,6 +323,10 @@ class MainViewModel(
 
     fun registerPayment(obj: JsonObject) {
         viewModelScope.launch { _updatePaymentResponse.value = repository.registerPayment(obj) }
+    }
+
+    fun updateReview(obj: JsonObject) {
+        viewModelScope.launch { _updateReviewResponse.value = repository.updateReview(obj) }
     }
 
     private val _getImagesAndVideos: MutableLiveData<Resource<ImagesVideosResponse>> =
