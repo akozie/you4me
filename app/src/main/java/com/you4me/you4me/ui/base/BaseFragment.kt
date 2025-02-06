@@ -89,13 +89,15 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
         positiveButtonTitle: String,
         onPositiveButtonClick: () -> Unit,
     ) {
-        val alertDialog =
-            android.app.AlertDialog.Builder(context).setMessage(message)
-                .setPositiveButton(positiveButtonTitle) { _, _ ->
-                    onPositiveButtonClick()
-                    // Dismiss the dialog when "Yes" is clicked
-                    // alertDialog(context).dismiss()
-                }.setCancelable(false).create()
+        val alertDialog = android.app.AlertDialog.Builder(context).create()
+
+        alertDialog.setMessage(message)
+        alertDialog.setCancelable(false)
+
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, positiveButtonTitle) { _, _ ->
+            onPositiveButtonClick()
+            alertDialog.dismiss() // Dismiss the dialog here
+        }
 
         alertDialog.show()
     }

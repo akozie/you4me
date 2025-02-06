@@ -53,6 +53,21 @@ class DatesInterestFragment : BaseFragment<MainViewModel, FragmentDatesInterestB
             object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     Log.d("ViewPagerDebug", "Page changed to: $position")
+                    when (position) { // When the second screen is selected
+                        0 -> {
+                            binding.titleText.text = getString(R.string.interested_in_you)
+                            binding.titleSub.text = getString(R.string.interest_in_date)
+                        }
+                        1 -> { // When the second screen is selected
+                            binding.titleText.text = "People you are interested in"
+                            binding.titleSub.text =
+                                "Check out people you have sent date interest to"
+                        }
+                        else -> {
+                            binding.titleText.text = getString(R.string.interested_in_you)
+                            binding.titleSub.text = getString(R.string.interest_in_date)
+                        }
+                    }
                 }
             },
         )

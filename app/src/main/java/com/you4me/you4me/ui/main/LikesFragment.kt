@@ -16,6 +16,7 @@ import android.widget.ImageView
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.android.billingclient.api.*
 import com.bumptech.glide.Glide
@@ -415,7 +416,10 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                             "You need to subscribe to access this screen",
                             "OK",
                         ) {
-                            findNavController().popBackStack()
+//                            findNavController().popBackStack()
+                            if (isAdded) {
+                                (parentFragment as? DatesInterestFragment)?.findNavController()?.popBackStack()
+                            }
                         }
                         showEmpty()
                         showLoading(false)
