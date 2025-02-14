@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_10dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -85,6 +85,7 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/main_lyt_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -153,7 +154,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_10dp"
-                        android:text="Mary, 25"
+                        tools:text="Mary, 25"
                         android:textColor="@color/black"
                         android:textSize="@dimen/text_size_20sp"
                         android:textStyle="bold"
@@ -165,7 +166,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_20dp"
-                        android:text="Lagos"
+                        tools:text="Lagos"
                         android:textSize="@dimen/text_size_15sp"
                         android:textStyle="italic"
                         app:layout_constraintBottom_toBottomOf="@+id/user_name"
@@ -178,7 +179,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_10dp"
                         android:gravity="start"
-                        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
                         android:textSize="@dimen/text_size_15sp"
                         android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -206,7 +207,7 @@
                             android:id="@+id/location"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Blackbell" />
+                            tools:text="Blackbell" />
 
                     </LinearLayout>
 
@@ -232,7 +233,7 @@
                             android:id="@+id/payment"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Mary will pay" />
+                            tools:text="Mary will pay" />
 
                     </LinearLayout>
 
@@ -255,7 +256,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_20dp"
-                        android:text="Mary's Gallery"
+                        tools:text="Mary's Gallery"
                         android:textSize="@dimen/text_size_20sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"

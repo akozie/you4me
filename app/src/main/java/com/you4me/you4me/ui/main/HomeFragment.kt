@@ -61,10 +61,8 @@ class HomeFragment :
     ) {
         super.onViewCreated(view, savedInstanceState)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
-        Log.d("PROFILEID", userProfile)
         val gson = Gson()
         user = gson.fromJson(userProfile, User::class.java)
-//         viewModel.getNewUser(requireContext())
         viewModel.getUserDetails(user.userId)
         addObservers()
         viewModel.getSubscriptionStatusForHome(user.userId)
@@ -81,6 +79,9 @@ class HomeFragment :
                 binding.completedDatesRecycler.visibility = View.GONE
                 binding.toggleArrow.setImageResource(R.drawable.baseline_keyboard_arrow_down_24) // Change icon
             }
+        }
+        binding.chat.setOnClickListener {
+            findNavController().navigate(R.id.chatFragment)
         }
     }
 

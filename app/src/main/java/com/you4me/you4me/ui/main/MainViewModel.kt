@@ -11,6 +11,7 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.SingleLiveEvent
+import com.you4me.you4me.ui.main.messaging.model.Message
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -337,6 +338,74 @@ class MainViewModel(
     fun getImagesAndVideos(userId: String) {
         viewModelScope.launch {
             _getImagesAndVideos.value = repository.getImageVideoUpload(userId)
+        }
+    }
+
+    private val _messages = MutableLiveData<List<Message>>()
+    val messages: LiveData<List<Message>> get() = _messages
+
+    private val _newMessage = MutableLiveData<Message>()
+    val newMessage: LiveData<Message> get() = _newMessage
+
+    fun sendMessage(
+        senderId: String,
+        receiverId: String,
+        message: String,
+    ) {
+        Log.d("OKOKOKOKOKO", "OKOKOK")
+        repository.sendMessage(senderId, receiverId, message) { success ->
+            if (success) {
+                // Handle UI updates if needed
+            }
+        }
+    }
+
+    fun listenForNewMessages(
+        senderId: String,
+        receiverId: String,
+    ) {
+        repository.listenForNewMessages(senderId, receiverId) { newMessage ->
+            _newMessage.postValue(newMessage)
+        }
+    }
+
+    private val _isRecipientTyping = MutableLiveData<Boolean>()
+    val isRecipientTyping: LiveData<Boolean> get() = _isRecipientTyping
+
+    fun setTypingStatus(
+        isTyping: Boolean,
+        senderId: String,
+        recipientId: String,
+        chatId: String,
+    ) {
+        repository.setTypingStatus(isTyping, senderId, recipientId, chatId)
+    }
+
+    fun listenForTyping(
+        senderId: String,
+        recipientId: String,
+        chatId: String,
+    ) {
+        repository.observeTypingStatus(senderId, recipientId, chatId) { isTyping ->
+            _isRecipientTyping.postValue(isTyping)
+        }
+    }
+
+    fun markMessagesAsSeen(
+        chatId: String,
+        senderId: String,
+        receiverId: String,
+    ) {
+        repository.markMessagesAsSeen(chatId, senderId, receiverId) {
+            // After messages are marked as seen, reload messages to update UI
+            loadMessages(chatId)
+            Log.d("OK_SEEN_VIEWMODEL", "OK_SEEN_VIEWMODEL")
+        }
+    }
+
+    fun loadMessages(chatId: String) {
+        repository.getMessages(chatId) { messagesList ->
+            _messages.postValue(messagesList)
         }
     }
 }

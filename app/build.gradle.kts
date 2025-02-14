@@ -88,6 +88,10 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:30.4.1"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx:23.0.8")
+    implementation("com.google.firebase:firebase-database-ktx:20.2.1")
+    implementation("com.google.firebase:firebase-storage:20.3.0")
+//    implementation("com.google.firebase:firebase-storage:20.3.0")
+    implementation("com.google.firebase:firebase-auth:22.1.2")
 
     // cloudinary
     implementation("com.cloudinary:cloudinary-android-core:2.5.0")

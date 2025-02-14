@@ -303,6 +303,9 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupView() {
+        binding.cardView.visibility = View.VISIBLE
+        binding.mainLytBtn.visibility = View.VISIBLE
+
         viewModel.fetchDateInterests()
 
         binding.acceptBtn.setOnClickListener {
@@ -547,6 +550,9 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     }
 
     private fun setScreen() {
+        binding.cardView.visibility = View.VISIBLE
+        binding.mainLytBtn.visibility = View.VISIBLE
+
         showLoading(false)
         currentIdx++
 //        val date = dateInterests[currentIdx]

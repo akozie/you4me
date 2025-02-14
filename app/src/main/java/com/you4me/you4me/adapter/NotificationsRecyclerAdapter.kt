@@ -40,13 +40,6 @@ class NotificationsRecyclerAdapter(
         holder.binding.root.setOnClickListener {
             listener.onNotificationClick(notification) // Trigger the click callback
         }
-
-        // Show secondDivider if this is the last item
-        if (position == notifications.size - 1) {
-            holder.binding.secondDivider.visibility = View.VISIBLE
-        } else {
-            holder.binding.secondDivider.visibility = View.GONE
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {

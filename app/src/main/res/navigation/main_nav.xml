@@ -61,7 +61,7 @@
         android:id="@+id/imageAndVideoDetailsFragment"
         android:name="com.you4me.you4me.ui.profileDetails.ImageAndVideoDetailsFragment"
         android:label="fragment_image_and_video_details"
-        tools:layout="@layout/fragment_image_and_video_details" >
+        tools:layout="@layout/activity_image_and_video_details" >
         <argument
             android:name="IMAGES"
             app:argType="com.you4me.you4me.models.ImagesVideosResponseItem" />
@@ -95,4 +95,9 @@
             android:id="@+id/action_datesFragment_to_imageAndVideoDetailsFragment"
             app:destination="@id/imageAndVideoDetailsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.you4me.you4me.ui.main.messaging.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" />
 </navigation>

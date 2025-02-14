@@ -211,6 +211,12 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chat"/>
+
 <!--    <TextView-->
 <!--        android:id="@+id/no_dates_interests"-->
 <!--        android:layout_width="match_parent"-->
