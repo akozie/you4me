@@ -45,7 +45,7 @@ class ChatAdapter(private val messages: List<Message>, private val currentUserId
         if (message.seen) {
             holder.readStatusIcon.setImageResource(R.drawable.baseline_remove_red_eye_24) // A checkmark or read icon
         } else {
-            holder.readStatusIcon.setImageResource(R.drawable.icon) // A checkmark or read icon
+//            holder.readStatusIcon.setImageResource(R.drawable.icon) // A checkmark or read icon
         }
     }
 

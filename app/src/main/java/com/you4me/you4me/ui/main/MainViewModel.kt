@@ -43,6 +43,10 @@ class MainViewModel(
     val addSwipe: LiveData<Resource<Unit>>
         get() = _addSwipe
 
+    private val _sendPushNotification = SingleLiveEvent<Resource<Unit>>()
+    val sendPushNotification: LiveData<Resource<Unit>>
+        get() = _sendPushNotification
+
     private val _addDateInterest = SingleLiveEvent<Resource<Unit>>()
     val addDateInterest: LiveData<Resource<Unit>>
         get() = _addDateInterest
@@ -217,6 +221,15 @@ class MainViewModel(
         }
     }
 
+    fun sendPushNotification(obj: JsonObject) {
+        viewModelScope.launch {
+            _sendPushNotification.value =
+                repository.sendPushNotification(
+                    obj,
+                )
+        }
+    }
+
     fun fetchDateOneInterest(userId: String) {
         viewModelScope.launch {
             _fetchDateInterests.value = repository.fetchDateInterest(userId)
@@ -351,11 +364,20 @@ class MainViewModel(
         senderId: String,
         receiverId: String,
         message: String,
+        senderName: String,
+        chatId: String,
     ) {
         Log.d("OKOKOKOKOKO", "OKOKOK")
         repository.sendMessage(senderId, receiverId, message) { success ->
             if (success) {
                 // Handle UI updates if needed
+                val obj =
+                    JsonObject().apply {
+                        addProperty("sender_name", senderName)
+                        addProperty("recipient_user_id", receiverId)
+                        addProperty("date_id", chatId)
+                    }
+                sendPushNotification(obj)
             }
         }
     }

@@ -57,6 +57,9 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
         val gson = Gson()
         user = gson.fromJson(userProfile, User::class.java)
 
+        // Initialize the chatId
+        chatId = "06f9cc96-a01e-4238-a2a1-588172059494-fffab5c1-1c84-4e1a-ba66-bfbdff033f06"
+
         recyclerView = binding.recyclerViewChat
         messageInput = binding.editTextMessage
         sendButton = binding.buttonSend
@@ -76,15 +79,12 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
             val messageText = messageInput.text.toString().trim()
             if (messageText.isNotEmpty()) {
                 // Send message using the viewModel
-                viewModel.sendMessage(senderID, receiverId, messageText)
+                viewModel.sendMessage(senderID, receiverId, messageText, "Emma", chatId)
 
                 // Clear the input field
                 messageInput.text.clear()
             }
         }
-
-        // Initialize the chatId
-        chatId = "06f9cc96-a01e-4238-a2a1-588172059494-fffab5c1-1c84-4e1a-ba66-bfbdff033f06"
 
         // Set up Firebase reference for messages
         messagesRef = FirebaseDatabase.getInstance().getReference("chats/$chatId/messages")

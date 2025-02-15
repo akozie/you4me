@@ -124,6 +124,11 @@ interface ApiCollector {
         @Body body: AddSwipeBody,
     )
 
+    @POST("notify-user")
+    suspend fun sendPushNotification(
+        @Body obj: JsonObject,
+    )
+
     @GET("users/{userId}/dates/interests")
     suspend fun fetchDateInterests(
         @Path("userId") userId: String,

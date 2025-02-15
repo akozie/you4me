@@ -28,14 +28,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="10:30 AM"
-            android:textSize="12sp"
+            android:textSize="10sp"
+            android:textStyle="italic"
             android:textColor="@android:color/darker_gray"
             android:gravity="end"/>
 
         <ImageView
             android:id="@+id/readStatusIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"/> <!-- Default to unread icon -->
+            android:layout_width="wrap_content"
+            android:layout_gravity="end"
+            android:layout_height="wrap_content"/> <!-- Default to unread icon -->
 
     </LinearLayout>
 </LinearLayout>

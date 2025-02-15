@@ -43,6 +43,11 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
             apiCollector.addSwipe(addSwipeBody)
         }
 
+    suspend fun sendPushNotification(notification: JsonObject) =
+        safeApiCall {
+            apiCollector.sendPushNotification(notification)
+        }
+
     suspend fun fetchDateInterest(userId: String) =
         safeApiCall {
             apiCollector.fetchDateInterests(userId)
