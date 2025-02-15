@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="start"
     android:padding="8dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_message_receiver"
@@ -19,25 +21,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hi there!"
+            android:textColor="@android:color/black"
             android:textSize="16sp"
-            android:textColor="@android:color/black"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
             android:id="@+id/timestampTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="end"
             android:text="10:30 AM"
-            android:textStyle="italic"
-            android:textSize="10sp"
             android:textColor="@android:color/darker_gray"
-            android:gravity="end"/>
+            android:textSize="10sp"
+            app:layout_constraintStart_toEndOf="@+id/textViewMessage"
+            app:layout_constraintTop_toBottomOf="@+id/textViewMessage" />
 
         <ImageView
             android:id="@+id/readStatusIcon"
             android:layout_width="24dp"
             android:layout_height="14dp"
-            android:src="@drawable/baseline_remove_red_eye_24" /> <!-- Default to unread icon -->
+            android:src="@drawable/baseline_remove_red_eye_24"
+            app:layout_constraintBottom_toBottomOf="@+id/timestampTextView"
+            app:layout_constraintStart_toEndOf="@+id/timestampTextView"
+            app:layout_constraintTop_toTopOf="@+id/timestampTextView" /> <!-- Default to unread icon -->
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

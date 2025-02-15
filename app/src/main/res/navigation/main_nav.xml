@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeFragment_to_notificationsFragment"
             app:destination="@id/notificationsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
     </fragment>
     <fragment
         android:id="@+id/findDateFragment"
@@ -99,5 +102,9 @@
         android:id="@+id/chatFragment"
         android:name="com.you4me.you4me.ui.main.messaging.ChatFragment"
         android:label="fragment_chat"
-        tools:layout="@layout/fragment_chat" />
+        tools:layout="@layout/fragment_chat" >
+        <argument
+            android:name="CHAT"
+            app:argType="com.you4me.you4me.ui.main.messaging.model.ChatMessage" />
+    </fragment>
 </navigation>

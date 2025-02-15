@@ -119,7 +119,7 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
         callback: (Boolean) -> Unit,
     ) {
         val chatId = getChatId(senderId, receiverId)
-        val messageId = dbRef.child(chatId).child("messages").push().key ?: return
+        val messageId = dbRef.child(chatId).push().key ?: return
 
 //        val currentDateTime = LocalDateTime.now() // Get current date and time
 //        val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
@@ -138,7 +138,7 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
                 seen = false,
             )
 
-        dbRef.child(chatId).child("messages").child(messageId).setValue(message)
+        dbRef.child(chatId).child(messageId).setValue(message)
             .addOnSuccessListener { callback(true) }
             .addOnFailureListener { callback(false) }
     }
@@ -202,7 +202,7 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
         senderId: String,
         callback: () -> Unit,
     ) {
-        val messagesRef = dbRef.child(chatId).child("messages")
+        val messagesRef = dbRef.child(chatId)
 
         messagesRef.addValueEventListener(
             object : ValueEventListener {
@@ -277,7 +277,7 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
     ) {
         val chatId = getChatId(senderId, receiverId)
 
-        dbRef.child(chatId).child("messages").orderByChild("timestamp")
+        dbRef.child(chatId).orderByChild("timestamp")
             .addChildEventListener(
                 object : ChildEventListener {
                     override fun onChildAdded(

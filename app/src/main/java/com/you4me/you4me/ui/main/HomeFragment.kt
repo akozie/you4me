@@ -290,7 +290,7 @@ class HomeFragment :
         } else {
             binding.upcomingDatesRecycler.visibility = View.VISIBLE
             binding.noUpcomingDates.visibility = View.GONE
-            val adapter = UpcomingDatesRecyclerAdapter(requireActivity(), this, dates, ctx)
+            val adapter = UpcomingDatesRecyclerAdapter(user, this, this, dates, ctx)
             binding.upcomingDatesRecycler.adapter = adapter
         }
     }

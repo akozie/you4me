@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
@@ -28,6 +29,7 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
     private lateinit var senderID: String
     private lateinit var receiverId: String
     private lateinit var chatId: String
+    private lateinit var senderName: String
     private lateinit var user: User
     private lateinit var messageListener: ChildEventListener
 
@@ -35,6 +37,8 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
     private lateinit var messagesRef: DatabaseReference
 
     private var isFragmentVisible = false
+
+    private val args: ChatFragmentArgs by navArgs()
 
     override fun getViewModel() = MainViewModel::class.java
 
@@ -56,9 +60,12 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         val gson = Gson()
         user = gson.fromJson(userProfile, User::class.java)
+        val userId = args.CHAT
+        Log.d("ChatFragment", "Received userId: $userId")
 
         // Initialize the chatId
-        chatId = "06f9cc96-a01e-4238-a2a1-588172059494-fffab5c1-1c84-4e1a-ba66-bfbdff033f06"
+        chatId = userId.dateId
+//        chatId = "06f9cc96-a01e-4238-a2a1-588172059494-fffab5c1-1c84-4e1a-ba66-bfbdff033f06"
 
         recyclerView = binding.recyclerViewChat
         messageInput = binding.editTextMessage
@@ -68,9 +75,13 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
 //        senderID = "06f9cc96-a01e-4238-a2a1-588172059494" // Replace with actual receiver ID
 
         // doogee
-        senderID = "fffab5c1-1c84-4e1a-ba66-bfbdff033f06"
-        receiverId = "06f9cc96-a01e-4238-a2a1-588172059494" // Replace with actual receiver ID
+        senderID = userId.senderId
+        receiverId = userId.recipientId
 
+//        // doogee
+//        senderID = "fffab5c1-1c84-4e1a-ba66-bfbdff033f06"
+//        receiverId = "06f9cc96-a01e-4238-a2a1-588172059494" // Replace with actual receiver ID
+        senderName = userId.senderName
         chatAdapter = ChatAdapter(messages, user.userId)
         recyclerView.adapter = chatAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -79,7 +90,7 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
             val messageText = messageInput.text.toString().trim()
             if (messageText.isNotEmpty()) {
                 // Send message using the viewModel
-                viewModel.sendMessage(senderID, receiverId, messageText, "Emma", chatId)
+                viewModel.sendMessage(senderID, receiverId, messageText, senderName, chatId)
 
                 // Clear the input field
                 messageInput.text.clear()
@@ -87,7 +98,7 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
         }
 
         // Set up Firebase reference for messages
-        messagesRef = FirebaseDatabase.getInstance().getReference("chats/$chatId/messages")
+        messagesRef = FirebaseDatabase.getInstance().getReference("chats/$chatId")
 
         // Add child event listener
         messageListener =

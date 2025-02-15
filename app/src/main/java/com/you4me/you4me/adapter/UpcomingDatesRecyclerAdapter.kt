@@ -1,14 +1,19 @@
 package com.you4me.you4me.adapter
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.provider.CalendarContract
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.you4me.you4me.databinding.UpcomingDateItemBinding
 import com.you4me.you4me.models.UpcomingDates
+import com.you4me.you4me.models.User
+import com.you4me.you4me.ui.main.HomeFragmentDirections
+import com.you4me.you4me.ui.main.messaging.model.ChatMessage
 import com.you4me.you4me.utils.Utils.ADD_EVENT_REQUEST_CODE
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -16,7 +21,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class UpcomingDatesRecyclerAdapter(private val activity: Activity, private val listener: CalendarResultListener, private val dates: UpcomingDates, private val context: Context) : RecyclerView.Adapter<UpcomingDatesRecyclerAdapter.MyViewHolder>() {
+class UpcomingDatesRecyclerAdapter(private val user: User, private val fragment: Fragment, private val listener: CalendarResultListener, private val dates: UpcomingDates, private val context: Context) : RecyclerView.Adapter<UpcomingDatesRecyclerAdapter.MyViewHolder>() {
     class MyViewHolder(val binding: UpcomingDateItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(
@@ -45,6 +50,18 @@ class UpcomingDatesRecyclerAdapter(private val activity: Activity, private val l
             val formattedDate = parsedDate.format(DateTimeFormatter.ofPattern(outputFormat))
             val dateTime = LocalDateTime.parse("${formattedDate}T${date.time}")
             addEventToCalendar("Date with ${date.name}", date.place, dateTime)
+        }
+        holder.binding.chat.setOnClickListener {
+            val chatMessage =
+                ChatMessage(
+                    dateId = date.dateId,
+                    senderId = user.userId,
+                    senderName = user.name,
+                    recipientId = date.dateId,
+                    recipientName = date.name,
+                )
+            val action = HomeFragmentDirections.actionHomeFragmentToChatFragment(chatMessage)
+            fragment.findNavController().navigate(action)
         }
     }
 
