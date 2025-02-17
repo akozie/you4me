@@ -59,16 +59,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        repository = MainRepository(
-            RemoteDataSource().buildApi(
-                ApiCollector::class.java
+        repository =
+            MainRepository(
+                RemoteDataSource().buildApi(
+                    ApiCollector::class.java,
+                ),
             )
-        )
-        viewModel = MainViewModel(
-            repository, DbRepository(
-                AppDatabase.invoke(this)
+        viewModel =
+            MainViewModel(
+                repository,
+                DbRepository(
+                    AppDatabase.invoke(this),
+                ),
             )
-        )
         sharedPrefHelper = SharedPrefHelper(this)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         val gson = Gson()
@@ -85,7 +88,6 @@ class MainActivity : AppCompatActivity() {
         setupViews()
         initializePlacesSdk()
         createNotificationChannel()
-
     }
 
     private fun getFireBaseToken(
@@ -146,17 +148,21 @@ class MainActivity : AppCompatActivity() {
     private fun setupViews() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as
-                    NavHostFragment
+                NavHostFragment
         binding.bottomNavBar.setupWithNavController(
             navHostFragment
-                .findNavController()
+                .findNavController(),
         )
 
         navHostFragment.findNavController()
             .addOnDestinationChangedListener { _, destination, _ ->
                 when (destination.id) {
                     R.id.notificationsFragment, R.id.notificationViewFragment,
-                    R.id.datesFragment -> {
+                    R.id.datesFragment,
+                    -> {
+                        binding.bottomNavBar.visibility = View.GONE
+                    }
+                    R.id.chatFragment -> {
                         binding.bottomNavBar.visibility = View.GONE
                     }
 
@@ -184,9 +190,10 @@ class MainActivity : AppCompatActivity() {
             val channel = NotificationChannel("YOU_4_ME_CHANNEL_ID", name, importance)
             channel.description = description
 
-            val notificationManager = getSystemService(
-                NotificationManager::class.java
-            )
+            val notificationManager =
+                getSystemService(
+                    NotificationManager::class.java,
+                )
             notificationManager.createNotificationChannel(channel)
         }
     }

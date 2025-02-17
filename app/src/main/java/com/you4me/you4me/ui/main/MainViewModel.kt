@@ -291,6 +291,12 @@ class MainViewModel(
         }
     }
 
+    fun getUpcomingDates(userId: String) {
+        viewModelScope.launch {
+            _upcomingDates.value = repository.getUpcomingDates(userId)
+        }
+    }
+
     fun getUserDetails(userId: String) {
         viewModelScope.launch {
             _existingUser.value = repository.getExistingUser(userId)
@@ -366,9 +372,10 @@ class MainViewModel(
         message: String,
         senderName: String,
         chatId: String,
+        receiverName: String,
     ) {
         Log.d("OKOKOKOKOKO", "OKOKOK")
-        repository.sendMessage(senderId, receiverId, message) { success ->
+        repository.sendMessage(senderId, receiverId, chatId, message, senderName, receiverName) { success ->
             if (success) {
                 // Handle UI updates if needed
                 val obj =
@@ -385,8 +392,9 @@ class MainViewModel(
     fun listenForNewMessages(
         senderId: String,
         receiverId: String,
+        chatId: String,
     ) {
-        repository.listenForNewMessages(senderId, receiverId) { newMessage ->
+        repository.listenForNewMessages(senderId, receiverId, chatId) { newMessage ->
             _newMessage.postValue(newMessage)
         }
     }

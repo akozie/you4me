@@ -59,6 +59,9 @@
         <action
             android:id="@+id/action_notificationsFragment_to_datesFragment"
             app:destination="@id/datesFragment" />
+        <action
+            android:id="@+id/action_notificationsFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
     </fragment>
     <fragment
         android:id="@+id/imageAndVideoDetailsFragment"

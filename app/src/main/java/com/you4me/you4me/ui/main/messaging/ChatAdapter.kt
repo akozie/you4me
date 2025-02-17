@@ -38,8 +38,8 @@ class ChatAdapter(private val messages: List<Message>, private val currentUserId
     ) {
         val message = messages[position]
         holder.textViewMessage.text = message.text
-        Log.d("CHECKIN", "${message.timestamp}")
-        val currentTime = convertTImeFromMilli(message.timestamp)
+        Log.d("MESSAGES", "$message")
+        val currentTime = convertTimeFromMilli(message.timestamp)
         holder.time.text = currentTime
         // Show the appropriate icon based on whether the message has been read
         if (message.seen) {
@@ -57,16 +57,10 @@ class ChatAdapter(private val messages: List<Message>, private val currentUserId
         val time: TextView = view.findViewById(R.id.timestampTextView)
     }
 
-    private fun convertTImeFromMilli(timestamp: Long): String {
-// Create a Date object from the timestamp
-        val date = Date(timestamp)
-
-// Create a SimpleDateFormat to format the date to AM/PM format
-        val format =
-            SimpleDateFormat("hh:mm a", Locale.getDefault()) // "hh:mm a" is for AM/PM format
-
-// Format the date
-
+    private fun convertTimeFromMilli(timestamp: Long): String {
+        val date = Date(timestamp * 1000) // Convert seconds to milliseconds
+        val format = SimpleDateFormat("hh:mm a", Locale.getDefault()) // 12-hour format with AM/PM
+        format.timeZone = TimeZone.getDefault() // Use the device's local time zone (same as iOS)
         return format.format(date)
     }
 }

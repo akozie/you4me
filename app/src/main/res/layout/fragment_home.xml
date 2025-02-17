@@ -230,15 +230,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/chat_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Send a message"
-            android:gravity="center"
-            android:background="@drawable/btn_not_interested_stroke_color"
-            android:textColor="@color/primary_pink"
-            android:paddingVertical="15dp" />
 
     </androidx.cardview.widget.CardView>
 

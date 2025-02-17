@@ -105,36 +105,33 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
 
     private val dbRef = FirebaseDatabase.getInstance().getReference("chats")
 
-    private fun getChatId(
-        senderId: String,
-        receiverId: String,
-    ): String {
-        return if (senderId < receiverId) "$senderId-$receiverId" else "$receiverId-$senderId"
-    }
-
     fun sendMessage(
         senderId: String,
         receiverId: String,
+        dateId: String,
         text: String,
+        senderName: String,
+        receiverName: String,
         callback: (Boolean) -> Unit,
     ) {
-        val chatId = getChatId(senderId, receiverId)
+        val chatId = dateId
         val messageId = dbRef.child(chatId).push().key ?: return
 
 //        val currentDateTime = LocalDateTime.now() // Get current date and time
 //        val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        val timestamp = (System.currentTimeMillis() / 1000)
 
         val message =
             Message(
                 messageId = messageId,
                 senderId = senderId,
-                senderName = "Sender Name", // Update dynamically
-                senderImage = "Sender Image", // Update dynamically
+                senderName = senderName, // Update dynamically
+                senderImage = "", // Update dynamically
                 recipientId = receiverId,
-                recipientName = "Receiver Name", // Update dynamically
-                recipientImage = "Receiver Image", // Update dynamically
+                recipientName = receiverName, // Update dynamically
+                recipientImage = "", // Update dynamically
                 text = text,
-                timestamp = System.currentTimeMillis(),
+                timestamp = timestamp,
                 seen = false,
             )
 
@@ -196,7 +193,7 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
 //        )
 //    }
 
-    fun markMessagesAsSeen(
+    fun markMessagesAsSeenn(
         chatId: String,
         receiverId: String,
         senderId: String,
@@ -232,11 +229,52 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
         )
     }
 
+    fun markMessagesAsSeen(
+        chatId: String,
+        receiverId: String,
+        senderId: String,
+        callback: () -> Unit,
+    ) {
+        val messagesRef = dbRef.child(chatId)
+
+        messagesRef.addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach { messageSnapshot ->
+                        val message = messageSnapshot.getValue(Message::class.java)
+
+                        if (message != null) {
+                            val messageId = messageSnapshot.key // Get the message ID
+
+                            // Ensure the message is received by the receiver and is not yet seen
+                            if (message.recipientId != senderId && !message.seen) {
+                                // Update the 'seen' field for this specific message
+                                messagesRef.child(messageId!!).child("seen").setValue(true)
+                                    .addOnSuccessListener {
+                                        Log.d("Firebase_OKOK", "Message marked as seen: $messageId")
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.e("Firebase", "Failed to update seen status", e)
+                                    }
+                            }
+                        } else {
+                            Log.e("Firebase", "Invalid message format: ${messageSnapshot.value}")
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Firebase", "Error reading messages", error.toException())
+                }
+            },
+        )
+    }
+
     fun getMessages(
         chatId: String,
         callback: (List<Message>) -> Unit,
     ) {
-        dbRef.child("chats").child(chatId)
+        dbRef.child(chatId)
             .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -273,9 +311,10 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
     fun listenForNewMessages(
         senderId: String,
         receiverId: String,
+        dateId: String,
         callback: (Message) -> Unit,
     ) {
-        val chatId = getChatId(senderId, receiverId)
+        val chatId = dateId
 
         dbRef.child(chatId).orderByChild("timestamp")
             .addChildEventListener(

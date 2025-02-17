@@ -1,6 +1,8 @@
 package com.you4me.you4me.ui.main.messaging
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +32,7 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
     private lateinit var receiverId: String
     private lateinit var chatId: String
     private lateinit var senderName: String
+    private lateinit var receiverName: String
     private lateinit var user: User
     private lateinit var messageListener: ChildEventListener
 
@@ -61,7 +64,6 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
         val gson = Gson()
         user = gson.fromJson(userProfile, User::class.java)
         val userId = args.CHAT
-        Log.d("ChatFragment", "Received userId: $userId")
 
         // Initialize the chatId
         chatId = userId.dateId
@@ -82,6 +84,7 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
 //        senderID = "fffab5c1-1c84-4e1a-ba66-bfbdff033f06"
 //        receiverId = "06f9cc96-a01e-4238-a2a1-588172059494" // Replace with actual receiver ID
         senderName = userId.senderName
+        receiverName = userId.recipientName
         chatAdapter = ChatAdapter(messages, user.userId)
         recyclerView.adapter = chatAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -90,7 +93,7 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
             val messageText = messageInput.text.toString().trim()
             if (messageText.isNotEmpty()) {
                 // Send message using the viewModel
-                viewModel.sendMessage(senderID, receiverId, messageText, senderName, chatId)
+                viewModel.sendMessage(senderID, receiverId, messageText, senderName, chatId, receiverName)
 
                 // Clear the input field
                 messageInput.text.clear()
@@ -162,6 +165,42 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
 
         // Mark messages as seen when the fragment is resumed
         markMessagesAsSeen()
+        viewModel.loadMessages(chatId)
+        // Start listening for typing status
+        viewModel.listenForTyping(senderID, receiverId, chatId)
+
+        // Example: Set typing status when user starts typing
+        binding.editTextMessage.addTextChangedListener(
+            object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    viewModel.setTypingStatus(!s.isNullOrEmpty(), senderID, receiverId, chatId)
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {}
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {}
+            },
+        )
+
+        viewModel.isRecipientTyping.observe(viewLifecycleOwner) { isTyping ->
+            if (isTyping) {
+                showTypingIndicator()
+            } else {
+                hideTypingIndicator()
+            }
+        }
+
+//        viewModel.listenForNewMessages(senderID, receiverId)
     }
 
     private fun processMessage(message: Message) {
@@ -191,6 +230,15 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
         // Replace with actual chatId and senderId logic
         viewModel.markMessagesAsSeen(chatId = chatId, senderId = senderID, receiverId)
         Log.d("OK_SEEN", "OK_SEEN")
+    }
+
+    private fun showTypingIndicator() {
+        binding.typingIndicator.visibility = View.VISIBLE
+        binding.typingIndicator.text = "${user.name} is Typing"
+    }
+
+    private fun hideTypingIndicator() {
+        binding.typingIndicator.visibility = View.GONE
     }
 
     override fun onResume() {

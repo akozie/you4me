@@ -63,8 +63,9 @@ object Utils {
     ) {
         val alertDialog =
             android.app.AlertDialog.Builder(context).setMessage(message)
-                .setPositiveButton(positiveButtonTitle) { _, _ ->
+                .setPositiveButton(positiveButtonTitle) { dialog, _ ->
                     onPositiveButtonClick()
+                    dialog.dismiss()
                     // Set action here
                 }
                 .setNegativeButton(negativeButtonTitle) { _, _ ->
