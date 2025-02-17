@@ -1,22 +1,30 @@
 package com.you4me.you4me.ui.main.messaging
 
+import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageButton
+import android.widget.*
+import androidx.core.text.HtmlCompat
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
 import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentChatBinding
 import com.you4me.you4me.models.User
 import com.you4me.you4me.network.ApiCollector
+import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.main.MainViewModel
@@ -100,6 +108,10 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
             }
         }
 
+        binding.reportDate.setOnClickListener {
+            showReportAbuseDialog(userId.dateId, userId.senderId)
+        }
+
         // Set up Firebase reference for messages
         messagesRef = FirebaseDatabase.getInstance().getReference("chats/$chatId")
 
@@ -151,14 +163,21 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
 
         // Observe messages from ViewModel
         viewModel.messages.observe(viewLifecycleOwner) { newMessages ->
-            // Clear the old messages and add only the new messages
+            // Create a mutable list of current messages
             val currentMessages = messages.toMutableList()
+
             newMessages.forEach { newMessage ->
+                // Check if the message is already in the list
                 val isMessageAlreadyAdded = currentMessages.any { it.messageId == newMessage.messageId }
                 if (!isMessageAlreadyAdded) {
                     messages.add(newMessage)
                 }
             }
+
+            // Sort messages by timestamp (assuming `timestamp` is a Long)
+            messages.sortBy { it.timestamp }
+
+            // Notify adapter of the change and scroll to the last message
             chatAdapter.notifyDataSetChanged()
             recyclerView.scrollToPosition(messages.size - 1)
         }
@@ -201,6 +220,76 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
         }
 
 //        viewModel.listenForNewMessages(senderID, receiverId)
+    }
+
+    private fun showReportAbuseDialog(
+        dateId: String,
+        userId: String,
+    ) {
+        // Inflate the custom layout
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_report_abuse, null)
+
+        // Initialize UI elements
+        val etFeedback = dialogView.findViewById<EditText>(R.id.et_feedback)
+        val btnSubmit = dialogView.findViewById<Button>(R.id.btn_submit)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btn_cancel)
+        val policy = dialogView.findViewById<TextView>(R.id.see_policy_link)
+
+        // Create AlertDialog
+        val dialog =
+            AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .setCancelable(false)
+                .create()
+
+        // Handle submit button click
+        btnSubmit.setOnClickListener {
+            showLoading(true)
+            val feedback = etFeedback.text.toString().trim()
+            val obj =
+                JsonObject().apply {
+                    addProperty("date_id", dateId)
+                    addProperty("user_id", userId)
+                    addProperty("thumbs_up", false)
+                    addProperty("comment", feedback)
+                }
+            viewModel.updateReview(obj)
+            viewModel.updateReviewResponse.observe(viewLifecycleOwner) {
+                showLoading(false)
+                when (it) {
+                    is Resource.Success -> {
+                        mixpanel?.track("Android_Chat_Report_Date_Button_Clicked")
+                        findNavController().popBackStack()
+                    }
+
+                    is Resource.Failure -> {
+                    }
+                }
+            }
+
+            dialog.dismiss() // Close the dialog
+        }
+
+        btnCancel.setOnClickListener {
+            showLoading(false)
+            dialog.dismiss()
+        }
+        policy.setOnClickListener {
+            policy.text =
+                HtmlCompat.fromHtml(
+                    getString(R.string.we_frown_against_child_abuse_see_policy_here_play_your_part_in_reporting_a_suspected_child_abuse),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY,
+                )
+            policy.movementMethod = LinkMovementMethod.getInstance() // Makes the link clickable
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.you4me.social/child-abuse-policy"))
+            it.context.startActivity(intent)
+        }
+        // Show the dialog
+        dialog.show()
+    }
+
+    private fun showLoading(loading: Boolean) {
+        binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
 
     private fun processMessage(message: Message) {
@@ -275,5 +364,7 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
         isFragmentVisible = false
         // Clean up and remove the listener when the fragment view is destroyed
         messagesRef.removeEventListener(messageListener)
+        mixpanel?.flush()
+        mixpanel?.optOutTracking()
     }
 }
