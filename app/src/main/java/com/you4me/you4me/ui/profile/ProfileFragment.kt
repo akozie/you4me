@@ -202,6 +202,7 @@ class ProfileFragment :
                         if (isAdded() && getActivity() != null) {
                             // Perform operations safely
                             loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                            Log.d("LIST_OFIMAGES", "$listOfImagesAndVideos")
                         }
                     } catch (e: Exception) {
                         Log.e("MyApp", "Error loading data", e)
@@ -637,6 +638,7 @@ class ProfileFragment :
                                 getCategoryFromUri(requireContext(), videoUri!!),
                             ),
                         )
+                        Log.d("YEPAAA", "$videoUri")
                     } else {
                         showDialog("Video duration must not be longer than 30 seconds")
                     }
@@ -749,6 +751,8 @@ class ProfileFragment :
                 binding.frame2,
                 binding.frame3,
                 binding.frame4,
+                binding.frame5,
+                binding.frame6,
             ) // Predefined ImageViews
 
         var isProfilePictureSet = false // Flag to check if profile picture is already set
