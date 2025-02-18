@@ -120,7 +120,7 @@ class ProfileFragment :
         trackProfileViewed()
 
         mixpanel?.track("Android_Profile_Viewed")
-
+        
         // Register the BroadcastReceiver
         LocalBroadcastManager.getInstance(requireContext())
             .registerReceiver(
@@ -877,7 +877,7 @@ class ProfileFragment :
     private fun openDetailScreen(
         fileUrl: String,
         category: String,
-        videoId: String,
+        videoId: String
     ) {
         val intent =
             Intent(
@@ -891,6 +891,7 @@ class ProfileFragment :
             }
         context?.startActivity(intent)
     }
+
 
     // Suspend function to generate video thumbnail in background
 
