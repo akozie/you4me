@@ -236,9 +236,9 @@ class LoginFragment :
         val props =
             JSONObject().apply {
                 put("user_id", userId)
-                put("email", email)
+//                put("email", email)
             }
-        mixpanel?.track("Android_User_Logged_In", props)
+        mixpanel?.trackLogin(userId)
     }
 
     private fun trackLoginButtonClicked(email: String) {
@@ -246,7 +246,7 @@ class LoginFragment :
             JSONObject().apply {
                 put("email", email)
             }
-        mixpanel?.track("Android_Login_Button_Clicked", props)
+        mixpanel?.mixpanel?.track("Android_Login_Button_Clicked", props)
     }
 
     private fun trackGoogleLoginButtonClicked(
@@ -258,7 +258,7 @@ class LoginFragment :
                 put("user_id", userId)
                 put("email", email)
             }
-        mixpanel?.track("Android_User_Logged_In_With_Google", props)
+        mixpanel?.trackLogin(userId)
     }
 
     private fun showLoader(show: Boolean) {
@@ -285,8 +285,8 @@ class LoginFragment :
     }
 
     override fun onDestroy() {
-        mixpanel?.flush()
-        mixpanel?.optOutTracking()
         super.onDestroy()
+        mixpanel?.mixpanel?.flush()
+        mixpanel?.mixpanel?.optOutTracking()
     }
 }

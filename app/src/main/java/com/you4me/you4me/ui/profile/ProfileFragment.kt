@@ -339,6 +339,7 @@ class ProfileFragment :
         viewModel.uploadVideoCloudinaryResponse.observe(viewLifecycleOwner) {
             showLoader(true)
             viewModel.updateVideoUrl(it.public_id, it.url)
+            Log.d("ASDFG", "$it")
         }
         viewModel.updateVideoUrlResponse.observe(viewLifecycleOwner) {
             when (it) {

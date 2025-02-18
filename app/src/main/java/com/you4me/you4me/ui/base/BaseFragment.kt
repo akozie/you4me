@@ -17,6 +17,7 @@ import com.you4me.you4me.database.AppDatabase
 import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.repository.BaseRepository
 import com.you4me.you4me.repository.DbRepository
+import com.you4me.you4me.utils.MixpanelManager
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.UtilityParam.MIXPANEL_SECRET_KEY
 
@@ -26,7 +27,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
     protected lateinit var viewModel: VM
     protected lateinit var ctx: Context
     protected lateinit var sharedPrefHelper: SharedPrefHelper
-    var mixpanel: MixpanelAPI? = null
+    var mixpanel: MixpanelManager? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,7 +56,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        mixpanel = MixpanelAPI.getInstance(context, MIXPANEL_SECRET_KEY)
+         mixpanel = MixpanelManager.getInstance(context)
     }
 
     override fun onResume() {
@@ -68,7 +69,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
     }
 
     override fun onDestroy() {
-        mixpanel?.flush()
+        mixpanel?.mixpanel?.flush()
         super.onDestroy()
     }
 

@@ -106,7 +106,6 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                             loadImagesAndVideosInBackground(listOfImagesAndVideos)
                         }
                     } catch (e: Exception) {
-                        Log.e("MyApp", "Error loading data", e)
                     }
                 }
 
@@ -671,8 +670,8 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
     }
 
     override fun onDestroy() {
-        mixpanel?.flush()
-        mixpanel?.optOutTracking()
         super.onDestroy()
+        mixpanel?.mixpanel?.flush()
+        mixpanel?.mixpanel?.optOutTracking()
     }
 }

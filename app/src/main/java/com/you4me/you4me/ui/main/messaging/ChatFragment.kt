@@ -318,7 +318,6 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
     private fun markMessagesAsSeen() {
         // Replace with actual chatId and senderId logic
         viewModel.markMessagesAsSeen(chatId = chatId, senderId = senderID, receiverId)
-        Log.d("OK_SEEN", "OK_SEEN")
     }
 
     private fun showTypingIndicator() {
@@ -364,7 +363,7 @@ class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainReposi
         isFragmentVisible = false
         // Clean up and remove the listener when the fragment view is destroyed
         messagesRef.removeEventListener(messageListener)
-        mixpanel?.flush()
-        mixpanel?.optOutTracking()
+        mixpanel?.mixpanel?.flush()
+        mixpanel?.mixpanel?.optOutTracking()
     }
 }

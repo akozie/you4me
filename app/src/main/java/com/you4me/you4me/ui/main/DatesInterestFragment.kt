@@ -74,8 +74,8 @@ class DatesInterestFragment : BaseFragment<MainViewModel, FragmentDatesInterestB
     }
 
     override fun onDestroy() {
-        mixpanel?.flush()
-        mixpanel?.optOutTracking()
         super.onDestroy()
+        mixpanel?.mixpanel?.flush()
+        mixpanel?.mixpanel?.optOutTracking()
     }
 }

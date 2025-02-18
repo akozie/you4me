@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -180,7 +181,7 @@ class RegistrationFragment :
                                 val dialog = showDialog("Registration Successful", true)
                                 viewModel.saveUser(it.value)
                                 Log.d("CHECKING", it.value.toString())
-                                trackUserRegisteredIn(it.value.userId, it.value.email)
+                                trackUserRegisteredIn(it.value.userId, it.value.email, it.value.name)
                                 val gson = Gson()
                                 val userProfileJsonString = gson.toJson(it.value)
                                 sharedPrefHelper.saveString(SharedPrefHelper.USER_PROFILE, userProfileJsonString)
@@ -261,13 +262,14 @@ class RegistrationFragment :
     private fun trackUserRegisteredIn(
         userId: String,
         email: String,
+        userName: String,
     ) {
         val props =
             JSONObject().apply {
                 put("user_id", userId)
                 put("email", email)
             }
-        mixpanel?.track("Android_User_Registered", props)
+        mixpanel?.trackSignup( userId, email, userName)
     }
 
     private fun trackRegisteredButtonClicked(email: String) {
@@ -275,12 +277,12 @@ class RegistrationFragment :
             JSONObject().apply {
                 put("email", email)
             }
-        mixpanel?.track("Android_Register_Button_Clicked", props)
+        mixpanel?.track("Android_Register_Button_Clicked")
     }
 
     override fun onDestroy() {
-        mixpanel?.flush()
-        mixpanel?.optOutTracking()
         super.onDestroy()
+        mixpanel?.mixpanel?.flush()
+        mixpanel?.mixpanel?.optOutTracking()
     }
 }

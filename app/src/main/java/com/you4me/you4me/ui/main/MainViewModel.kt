@@ -130,7 +130,6 @@ class MainViewModel(
 
     fun updatePushToken(token: JsonObject) {
         viewModelScope.launch {
-            Log.d("FIREBASE", _user.value.toString())
             _updateFirebaseTokenResponse.value = repository.updatePushToken(_user.value?.userId ?: "", token)
         }
     }
@@ -140,7 +139,6 @@ class MainViewModel(
         userId: String,
     ) {
         viewModelScope.launch {
-            Log.d("NEW_FIREBASE", "$token")
             _updateFirebaseTokenResponse.value = repository.updatePushToken(userId, token)
         }
     }
@@ -152,7 +150,6 @@ class MainViewModel(
     }
 
     fun fetchPaymentModes() {
-        Log.d("ME--me", "ME")
         viewModelScope.launch {
             _paymentModes.value = repository.getPaymentModes()
         }
@@ -374,7 +371,6 @@ class MainViewModel(
         chatId: String,
         receiverName: String,
     ) {
-        Log.d("OKOKOKOKOKO", "OKOKOK")
         repository.sendMessage(senderId, receiverId, chatId, message, senderName, receiverName) { success ->
             if (success) {
                 // Handle UI updates if needed

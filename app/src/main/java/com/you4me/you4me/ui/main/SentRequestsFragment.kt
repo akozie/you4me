@@ -80,7 +80,7 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
         } else {
             binding.emptyLyt.visibility = View.GONE
             val adapter =
-                mixpanel?.let {
+                mixpanel?.mixpanel?.let {
                     SentRequestsRecyclerAdapter(
                         dates,
                         viewModel,
@@ -106,8 +106,8 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
     }
 
     override fun onDestroy() {
-        mixpanel?.flush()
-        mixpanel?.optOutTracking()
         super.onDestroy()
+        mixpanel?.mixpanel?.flush()
+        mixpanel?.mixpanel?.optOutTracking()
     }
 }

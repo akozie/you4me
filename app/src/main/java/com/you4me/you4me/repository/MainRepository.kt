@@ -214,10 +214,8 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
                                 messageSnapshot.ref.child("seen").setValue(true)
 
                                 // Optionally log the update
-                                Log.d("Firebase_OKOK", "Message marked as seen: $message")
                             }
                         } else {
-                            Log.e("Firebase", "Invalid message format: ${messageSnapshot.value}")
                         }
                     }
                 }
@@ -251,10 +249,8 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
                                 // Update the 'seen' field for this specific message
                                 messagesRef.child(messageId!!).child("seen").setValue(true)
                                     .addOnSuccessListener {
-                                        Log.d("Firebase_OKOK", "Message marked as seen: $messageId")
                                     }
                                     .addOnFailureListener { e ->
-                                        Log.e("Firebase", "Failed to update seen status", e)
                                     }
                             }
                         } else {
@@ -264,7 +260,6 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.e("Firebase", "Error reading messages", error.toException())
                 }
             },
         )

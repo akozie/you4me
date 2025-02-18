@@ -89,7 +89,6 @@ class HomeFragment :
         viewModel.existingUser.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    Log.d("OK_DONR", it.value.toString())
 //                    viewModel._user.value = it.value
                     viewModel.getUpcomingDates()
                     viewModel.getInviteeDatesRequiringApproval(user.userId)
@@ -218,10 +217,10 @@ class HomeFragment :
         if (requestCode == ADD_EVENT_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 // The user successfully added the event to the calendar
-                Log.d("OKKKKK", "Event added to calendar")
+//                Log.d("OKKKKK", "Event added to calendar")
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // The user canceled the operation
-                Log.d("NNNNOKKKKK", "Event addition canceled")
+//                Log.d("NNNNOKKKKK", "Event addition canceled")
             }
         }
     }
@@ -234,7 +233,7 @@ class HomeFragment :
             binding.datesRequiringAppLyt.visibility = View.VISIBLE
             binding.dateInterestRecycler.visibility = View.VISIBLE
             val adapter =
-                mixpanel?.let {
+                mixpanel?.mixpanel?.let {
                     DateInterestsRequiringApprovalRecyclerAdapter(
                         dates,
                         viewModel,
@@ -255,7 +254,7 @@ class HomeFragment :
             binding.approvedDatesLytTxt.visibility = View.VISIBLE
             binding.approvedDatesLytView.visibility = View.VISIBLE
             val adapter =
-                mixpanel?.let { InviteeDateForApprovalRecyclerAdapter(dates, viewModel, ctx, it) }
+                mixpanel?.mixpanel?.let { InviteeDateForApprovalRecyclerAdapter(dates, viewModel, ctx, it) }
             binding.inviteeDatesRecycler.adapter = adapter
         }
     }
@@ -270,7 +269,7 @@ class HomeFragment :
             binding.completedDatesTxt.visibility = View.VISIBLE
             binding.completedDatesDivider.visibility = View.VISIBLE
             val adapter =
-                mixpanel?.let {
+                mixpanel?.mixpanel?.let {
                     CompletedDatesRecyclerAdapter(
                         viewModel,
                         viewLifecycleOwner,
@@ -311,13 +310,12 @@ class HomeFragment :
         intent: Intent,
         resultCode: Int,
     ) {
-        Log.d("RESULTCODEK", "$resultCode")
         startActivityForResult(intent, ADD_EVENT_REQUEST_CODE)
     }
 
     override fun onDestroy() {
-        mixpanel?.flush()
-        mixpanel?.optOutTracking()
+        mixpanel?.mixpanel?.flush()
+        mixpanel?.mixpanel?.optOutTracking()
         super.onDestroy()
     }
 }

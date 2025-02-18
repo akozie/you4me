@@ -73,7 +73,6 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 obj.addProperty("period", p.quantity)
                 obj.addProperty("user_id", user.userId)
 //            viewModel.registerPayment(obj)
-                Log.d("GGLEOBJ_1", obj.toString())
             }
         }
 
@@ -96,10 +95,9 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                     }
                     viewModel.registerPayment(obj)
                     displayToast = true
-                    Log.d("GGLEOBJ", obj.toString())
                 }
-                Log.d("google_play_purchase", purchases[0].toString())
-                Log.d("google_new_purchase", obj.toString())
+//                Log.d("google_play_purchase", purchases[0].toString())
+//                Log.d("google_new_purchase", obj.toString())
 //            viewModel.registerPayment(obj)
             } else {
                 hasCheckedBilling = true
@@ -112,7 +110,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 //                    if (productDetails.toString().isNotEmpty()){
                         productDetails = productDetailsList.first { it.productId == "you4me_premium" }
                         if (!isUserSubscribed) {
-                            Log.d("FIRST_PID", productDetailsList.first().toString())
+//                            Log.d("FIRST_PID", productDetailsList.first().toString())
                             showBilling()
                         }
 //                    } else {
@@ -170,10 +168,8 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                         if (isAdded() && getActivity() != null) {
                             // Perform operations safely
                             loadImagesAndVideosInBackground(listOfImagesAndVideos)
-                            Log.d("JUST_CHECKING", "$listOfImagesAndVideos")
                         }
                     } catch (e: Exception) {
-                        Log.e("MyApp", "Error loading data", e)
                     }
                 }
 
@@ -697,8 +693,8 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     }
 
     override fun onDestroy() {
-        mixpanel?.flush()
-        mixpanel?.optOutTracking()
         super.onDestroy()
+        mixpanel?.mixpanel?.flush()
+        mixpanel?.mixpanel?.optOutTracking()
     }
 }
