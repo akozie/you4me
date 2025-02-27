@@ -36,6 +36,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.you4me.you4me.R
@@ -294,7 +296,14 @@ class ProfileFragment :
             showLoader(false)
             when (it) {
                 is Resource.Success -> {
-                    showToast("Profile Update Successful")
+                    val message = "Profile Update Successful"
+                    val navOptions = NavOptions.Builder()
+                        .setPopUpTo(R.id.homeFragment, false)  // Clears backstack up to homeFragment
+                        .build()
+
+                    showAlertDialog(requireContext(), message, "OK") {
+                        findNavController().navigate(R.id.goOnDateFragment, null, navOptions)
+                    }
                     viewModel.updateUser(updateBody)
                     observeUsersDetails()
                     trackProfileUpdate()
