@@ -39,6 +39,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentProfileBinding
@@ -55,6 +56,7 @@ import com.you4me.you4me.utils.Utils
 import com.you4me.you4me.utils.Utils.BANNER_TIMEOUT
 import com.you4me.you4me.utils.Utils.generateVideoThumbnail
 import com.you4me.you4me.utils.Utils.getCategoryFromString
+import com.you4me.you4me.utils.Utils.showAlertDialog
 import com.you4me.you4me.utils.removeSimpleProgressDialog
 import com.you4me.you4me.utils.showSimpleProgressDialog
 import kotlinx.coroutines.Dispatchers
@@ -106,10 +108,10 @@ class ProfileFragment :
     ) {
         super.onViewCreated(view, savedInstanceState)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
-        Log.d("PROFILEID", userProfile)
+//        Log.d("PROFILEID", userProfile)
         val gson = Gson()
         val newUser: User? = gson.fromJson(userProfile, User::class.java)
-        Log.d("OKKPROFILEID", newUser.toString())
+//        Log.d("OKKPROFILEID", newUser.toString())
         if (newUser != null) {
             user = newUser
 //            populateViews(user)
@@ -120,6 +122,32 @@ class ProfileFragment :
         checkAndRequestPermissions()
         observeImagesAndVideos()
         trackProfileViewed()
+
+        binding.editBtn.setOnClickListener {
+            showLoader(true)
+
+
+             updateBody = UpdateUserBody(
+                agePreferred,
+                country,
+                dob,
+                gender,
+                binding.name.text.toString(),
+                binding.bio.text.toString(),
+                binding.completionPercentage.text.toString(),
+                religionPreferred,
+                sexualOrientation,
+                state,
+            )
+            if (viewModel.dbUser.value == null) {
+                viewModel._dbUser.value = user
+                viewModel.updateUserInfo(updateBody)
+            } else {
+                viewModel.updateUserInfo(updateBody)
+            }
+
+        }
+
 
         mixpanel?.track("Android_Profile_Viewed")
         
@@ -147,7 +175,7 @@ class ProfileFragment :
             when (it) {
                 is Resource.Success -> {
                     user = it.value
-                    Log.d("CHECKING_USER", "$user")
+//                    Log.d("CHECKING_USER", "$user")
                     populateViews(user)
                     if (it.value.videoURL.isNotBlank()) {
                         binding.btnPlay.visibility = View.VISIBLE
@@ -204,7 +232,7 @@ class ProfileFragment :
                         if (isAdded() && getActivity() != null) {
                             // Perform operations safely
                             loadImagesAndVideosInBackground(listOfImagesAndVideos)
-                            Log.d("LIST_OFIMAGES", "$listOfImagesAndVideos")
+//                            Log.d("LIST_OFIMAGES", "$listOfImagesAndVideos")
                         }
                     } catch (e: Exception) {
                         Log.e("MyApp", "Error loading data", e)
@@ -256,7 +284,7 @@ class ProfileFragment :
                 is Resource.Success -> {
                     sexualOrientations = it.value
                     setupSpinner(it.value, SEXUAL_ORIENTATION_SPINNER)
-                    Log.d("GENDERRRR", "${it.value[0].value}")
+//                    Log.d("GENDERRRR", "${it.value[0].value}")
                     binding.genderLabel.visibility =
                         if (it.value[0].value == "4") View.VISIBLE else View.GONE
                     binding.genderSpinner.visibility =
@@ -296,16 +324,43 @@ class ProfileFragment :
             showLoader(false)
             when (it) {
                 is Resource.Success -> {
-                    val message = "Profile Update Successful"
-                    val navOptions = NavOptions.Builder()
-                        .setPopUpTo(R.id.homeFragment, false)  // Clears backstack up to homeFragment
-                        .build()
+                    viewModel.getUserProfileDetails(user.userId)
+                    viewModel.userDetails.removeObservers(viewLifecycleOwner)
+                    viewModel.userDetails.observe(viewLifecycleOwner) {users ->
+                        when (users) {
+                            is Resource.Success -> {
+                                user = users.value
+                                if (user.completionPercentage.contains("100") ){
+                                    val message = "Profile Update Successful, you can now create dates"
+                                    showAlertDialog(requireContext(), message, "OK") {
+                                        val navOptions = NavOptions.Builder()
+                                            .setPopUpTo(
+                                                R.id.homeFragment,
+                                                false
+                                            )  // Clears backstack up to homeFragment
+                                            .build()
 
-                    showAlertDialog(requireContext(), message, "OK") {
-                        findNavController().navigate(R.id.goOnDateFragment, null, navOptions)
+                                        findNavController().navigate(
+                                            R.id.goOnDateFragment,
+                                            null,
+                                            navOptions
+                                        )
+                                        viewModel.updateUser(updateBody)
+                                        observeUsersDetails()
+                                    }
+                                }else {
+                                    val message = "Profile Update Successful"
+                                    showAlertDialog(requireContext(), message, "OK") {}
+                                    viewModel.updateUser(updateBody)
+                                    observeUsersDetails()
+                                }
+                            }
+
+                            is Resource.Failure -> {
+                            }
+                        }
                     }
-                    viewModel.updateUser(updateBody)
-                    observeUsersDetails()
+
                     trackProfileUpdate()
                 }
 
@@ -314,6 +369,7 @@ class ProfileFragment :
                 }
             }
         }
+
         viewModel.validateVideoUpload.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -348,8 +404,15 @@ class ProfileFragment :
         viewModel.uploadVideoCloudinaryResponse.observe(viewLifecycleOwner) {
             showLoader(true)
             viewModel.updateVideoUrl(it.public_id, it.url)
-            Log.d("ASDFG", "$it")
         }
+
+        viewModel.uploadError.observe(viewLifecycleOwner) {errorMessage ->
+            errorMessage?.let {
+                showToast(it)
+            }
+        }
+
+
         viewModel.updateVideoUrlResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -369,25 +432,29 @@ class ProfileFragment :
     }
 
     private fun addListeners() {
-        binding.editBtn.setOnClickListener {
-            showLoader(true)
-            updateBody =
-                UpdateUserBody(
-                    agePreferred,
-                    country,
-                    dob,
-                    gender,
-                    binding.name.text.toString(),
-                    binding.bio.text.toString(),
-                    binding.completionPercentage.text.toString(),
-                    religionPreferred,
-                    sexualOrientation,
-                    state,
-                )
-            viewModel.updateUserInfo(
-                updateBody,
-            )
-        }
+//        binding.editBtn.setOnClickListener {
+//            showLoader(true)
+//            updateBody =
+//                UpdateUserBody(
+//                    agePreferred,
+//                    country,
+//                    dob,
+//                    gender,
+//                    binding.name.text.toString(),
+//                    binding.bio.text.toString(),
+//                    binding.completionPercentage.text.toString(),
+//                    religionPreferred,
+//                    sexualOrientation,
+//                    state,
+//                )
+//            Log.d("THE_FIELDS", "$updateBody")
+//
+//            viewModel.updateUserInfo(
+//                user,
+//                updateBody,
+//            )
+//        }
+
 
 //        binding.skipBanner.setOnClickListener {
 //            binding.videoBannerLayout.isVisible = false
@@ -470,7 +537,7 @@ class ProfileFragment :
                     if (p2 == 0) return
                     try {
                         sexualOrientation = sexualOrientations[p2 - 1].value
-                        Log.d("GENDER", sexualOrientation.toString())
+//                        Log.d("GENDER", sexualOrientation.toString())
                         // binding.genderLyt.visibility = if (sexualOrientation == "4") View.VISIBLE else View.GONE
                         binding.genderLabel.visibility =
                             if (sexualOrientation == "4") View.VISIBLE else View.GONE
@@ -648,7 +715,7 @@ class ProfileFragment :
                                 getCategoryFromUri(requireContext(), videoUri!!),
                             ),
                         )
-                        Log.d("YEPAAA", "$videoUri")
+//                        Log.d("YEPAAA", "$videoUri")
                     } else {
                         showDialog("Video duration must not be longer than 30 seconds")
                     }
@@ -910,7 +977,7 @@ class ProfileFragment :
     }
 
     private fun populateViews(user: User) {
-        Log.d("JUST_CHECKING", "$user")
+//        Log.d("JUST_CHECKING", "$user")
         showLoader(false)
         binding.name.setText(user.name)
         if (user.bio.isEmpty()) {

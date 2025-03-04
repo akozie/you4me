@@ -107,7 +107,7 @@ class RegistrationFragment :
     private fun startDashboard(account: GoogleSignInAccount?) {
         showLoader(true)
         account?.idToken?.let { it ->
-            Log.d("GOOGLE_TOKEN", it)
+//            Log.d("GOOGLE_TOKEN", it)
             viewModel.signInWithGoogle(it)
             viewModel.signWithGoogleLoginResponse.observe(viewLifecycleOwner) {
                 when (it) {
@@ -121,7 +121,7 @@ class RegistrationFragment :
                                     viewModel.clearUser()
                                     val dialog = showDialog("Registration Successful", true)
                                     viewModel.saveUser(user.value)
-                                    Log.d("CHECKING", user.value.toString())
+//                                    Log.d("CHECKING", user.value.toString())
                                     val gson = Gson()
                                     val userProfileJsonString = gson.toJson(user.value)
                                     sharedPrefHelper.saveString(SharedPrefHelper.USER_PROFILE, userProfileJsonString)
@@ -180,7 +180,7 @@ class RegistrationFragment :
                                 viewModel.clearUser()
                                 val dialog = showDialog("Registration Successful", true)
                                 viewModel.saveUser(it.value)
-                                Log.d("CHECKING", it.value.toString())
+//                                Log.d("CHECKING", it.value.toString())
                                 trackUserRegisteredIn(it.value.userId, it.value.email, it.value.name)
                                 val gson = Gson()
                                 val userProfileJsonString = gson.toJson(it.value)

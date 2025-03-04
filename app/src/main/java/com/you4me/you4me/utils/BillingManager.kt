@@ -17,7 +17,7 @@ class BillingManager(private val activity: Activity) : PurchasesUpdatedListener 
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(result: BillingResult) {
                 if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                    Log.d("BillingManager", "Billing client setup successful")
+//                    Log.d("BillingManager", "Billing client setup successful")
                     val params = QueryPurchasesParams.newBuilder()
                         .setProductType(BillingClient.ProductType.SUBS)
 
@@ -28,7 +28,7 @@ class BillingManager(private val activity: Activity) : PurchasesUpdatedListener 
             }
 
             override fun onBillingServiceDisconnected() {
-                Log.d("BillingManager", "Billing client disconnected, attempting to reconnect...")
+//                Log.d("BillingManager", "Billing client disconnected, attempting to reconnect...")
                 billingClient.startConnection(this)
             }
         })

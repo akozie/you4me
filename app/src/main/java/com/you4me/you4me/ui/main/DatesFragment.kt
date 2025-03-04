@@ -111,7 +111,7 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
                         if (isAdded() && getActivity() != null) {
                             // Perform operations safely
                             loadImagesAndVideosInBackground(listOfImagesAndVideos)
-                            Log.d("JUST_CHECKING", "$listOfImagesAndVideos")
+//                            Log.d("JUST_CHECKING", "$listOfImagesAndVideos")
                         }
                     } catch (e: Exception) {
                         Log.e("MyApp", "Error loading data", e)
@@ -167,10 +167,10 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
                                     .into(imageView)
 
                                 frame.addView(imageView)
-                                Log.d(
-                                    "IMAGES_RESSS",
-                                    "Added image: $secureUrl to frame: ${frame.id}"
-                                )
+//                                Log.d(
+//                                    "IMAGES_RESSS",
+//                                    "Added image: $secureUrl to frame: ${frame.id}"
+//                                )
 
                                 if (!isProfilePictureSet) {
                                     isProfilePictureSet = true
@@ -195,7 +195,7 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
                                 if (bitmap != null) {
                                     thumbnailView.setImageBitmap(bitmap)
                                     frame.addView(thumbnailView)
-                                    Log.d("IMAGES_RESSS", "Added video thumbnail for: $secureUrl")
+//                                    Log.d("IMAGES_RESSS", "Added video thumbnail for: $secureUrl")
                                 } else {
                                     Log.e(
                                         "IMAGES_RESSS",

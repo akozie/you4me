@@ -425,7 +425,7 @@ class MainViewModel(
         repository.markMessagesAsSeen(chatId, senderId, receiverId) {
             // After messages are marked as seen, reload messages to update UI
             loadMessages(chatId)
-            Log.d("OK_SEEN_VIEWMODEL", "OK_SEEN_VIEWMODEL")
+//            Log.d("OK_SEEN_VIEWMODEL", "OK_SEEN_VIEWMODEL")
         }
     }
 

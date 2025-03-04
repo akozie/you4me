@@ -519,7 +519,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
             }
         }
         viewModel.existingUser.observe(viewLifecycleOwner) {
-            Log.d("OK_FUNNY_GIRL", "$it")
+//            Log.d("OK_FUNNY_GIRL", "$it")
             when (it) {
                 is Resource.Success -> {
                     if (it.value.status == "incomplete") {

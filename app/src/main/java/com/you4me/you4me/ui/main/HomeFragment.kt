@@ -213,7 +213,7 @@ class HomeFragment :
         data: Intent?,
     ) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d("RESULTCODEK", "$requestCode")
+//        Log.d("RESULTCODEK", "$requestCode")
         if (requestCode == ADD_EVENT_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 // The user successfully added the event to the calendar

@@ -43,10 +43,10 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                     val place = Autocomplete.getPlaceFromIntent(intent)
                     binding.searchDateLocations.setText("${place.name}, ${place.address}")
                 } else {
-                    Log.d("Place Result", "Intent Null")
+//                    Log.d("Place Result", "Intent Null")
                 }
             } else if (result.resultCode == Activity.RESULT_CANCELED) {
-                Log.d("Place Result", "Cancelled")
+//                Log.d("Place Result", "Cancelled")
             }
         }
 

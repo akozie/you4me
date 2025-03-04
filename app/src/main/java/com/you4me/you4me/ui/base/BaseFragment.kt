@@ -23,7 +23,10 @@ import com.you4me.you4me.utils.UtilityParam.MIXPANEL_SECRET_KEY
 
 abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>(private val screenName: String) : Fragment() {
     protected val dataSource = RemoteDataSource()
-    protected lateinit var binding: B
+//    protected lateinit var binding: B
+    private var _binding: B? = null
+     val binding get() = _binding!!
+
     protected lateinit var viewModel: VM
     protected lateinit var ctx: Context
     protected lateinit var sharedPrefHelper: SharedPrefHelper
@@ -34,7 +37,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        binding = getFragmentBinding(inflater, container)
+        _binding = getFragmentBinding(inflater, container)
         val factory = ViewModelFactory(getRepository(), getDbRepository())
         viewModel = ViewModelProvider(this, factory)[getViewModel()]
         ctx = requireContext()
@@ -71,6 +74,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
     override fun onDestroy() {
         mixpanel?.mixpanel?.flush()
         super.onDestroy()
+        _binding = null
     }
 
     fun showDialog(

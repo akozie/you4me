@@ -15,7 +15,9 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.base.SingleLiveEvent
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.pow
 
 class ProfileViewModel(
     private val repository: ProfileRepository,
@@ -56,13 +58,16 @@ class ProfileViewModel(
     val getImagesAndVideos: LiveData<Resource<ImagesVideosResponse>>
         get() = _getImagesAndVideos
 
-    private val _dbUser: MutableLiveData<User> = MutableLiveData()
+     val _dbUser: MutableLiveData<User> = MutableLiveData()
     val dbUser: LiveData<User>
         get() = _dbUser
 
     private val _user: MutableLiveData<Resource<User>> = MutableLiveData()
     val user: LiveData<Resource<User>>
         get() = _user
+
+    private val _userDetails = SingleLiveEvent<Resource<User>>()
+    val userDetails: LiveData<Resource<User>> get() = _userDetails
 
     private val _updateUserResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
     val updateUserResponse: LiveData<Resource<Unit>>
@@ -72,6 +77,9 @@ class ProfileViewModel(
         SingleLiveEvent()
     val uploadVideoCloudinaryResponse: LiveData<CloudinaryVideoUploadResponse>
         get() = _uploadVideoCloudinaryResponse
+
+    private val _uploadError: MutableLiveData<String> = SingleLiveEvent()
+    val uploadError: LiveData<String> get() = _uploadError
 
     private val _registerVideoUploadResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
     val registerVideoUploadResponse: LiveData<Resource<Unit>>
@@ -135,6 +143,11 @@ class ProfileViewModel(
     fun getUserDetails(userId: String) {
         viewModelScope.launch {
             _user.value = repository.getUser(userId)
+        }
+    }
+    fun getUserProfileDetails(userId: String) {
+        viewModelScope.launch {
+            _userDetails.value = repository.getUser(userId)
         }
     }
 
@@ -209,6 +222,26 @@ class ProfileViewModel(
         saveUser(uUser)
     }
 
+//    fun updateUserInfo(user: User, userBody: UpdateUserBody) {
+//        viewModelScope.launch {
+//            val obj = JsonObject()
+//            userBody.apply {
+//                obj.addProperty("bio", bio)
+//                obj.addProperty("name", name)
+//                obj.addProperty("country", country)
+//                obj.addProperty("state", state)
+//                obj.addProperty("age_preferred", age_preferred)
+//                obj.addProperty("religion_preferred", religion_preferred)
+//                obj.addProperty("sexual_orientation", sexual_orientation)
+//                obj.addProperty("dob", dob)
+//                obj.addProperty("gender", gender)
+//            }
+//            Log.d("DB_CHECKING", _dbUser.value!!.userId)
+//
+//            _updateUserResponse.value = repository.updateUserInfo(user.userId, obj)
+//        }
+//    }
+
     fun updateUserInfo(userBody: UpdateUserBody) {
         viewModelScope.launch {
             val obj = JsonObject()
@@ -223,58 +256,123 @@ class ProfileViewModel(
                 obj.addProperty("dob", dob)
                 obj.addProperty("gender", gender)
             }
-            Log.d("DB_CHECKING", _dbUser.value!!.userId)
 
-            _updateUserResponse.value = repository.updateUserInfo(_dbUser.value!!.userId, obj)
+            val userId = _dbUser.value?.userId
+            if (userId == null) {
+                Log.e("ProfileViewModel", "User ID is null! Cannot update user info.")
+                return@launch
+            }
+
+            Log.d("DB_CHECKING", userId)
+
+            _updateUserResponse.value = repository.updateUserInfo(userId, obj)
         }
     }
 
-    fun uploadVideo(
-        videoUri: Uri,
-        videoId: String,
-    ) {
+//    fun uploadVideo(
+//        videoUri: Uri,
+//        videoId: String,
+//    ) {
+//        viewModelScope.launch {
+//            MediaManager.get()
+//                .upload(videoUri)
+//                .option("resource_type", "auto")
+//                .option("public_id", videoId)
+//                .callback(
+//                    object : UploadCallback {
+//                        override fun onStart(requestId: String?) {
+//                        }
+//
+//                        override fun onProgress(
+//                            requestId: String?,
+//                            bytes: Long,
+//                            totalBytes: Long,
+//                        ) {
+//                        }
+//
+//                        override fun onSuccess(
+//                            requestId: String?,
+//                            resultData: MutableMap<Any?, Any?>?,
+//                        ) {
+//                            _uploadVideoCloudinaryResponse.value =
+//                                resultData?.let {
+//                                    CloudinaryVideoUploadResponse.from(
+//                                        it,
+//                                    )
+//                                }
+//                        }
+//
+//                        override fun onError(
+//                            requestId: String?,
+//                            error: ErrorInfo?,
+//                        ) {
+//                        }
+//
+//                        override fun onReschedule(
+//                            requestId: String?,
+//                            error: ErrorInfo?,
+//                        ) {
+//                        }
+//                    },
+//                ).dispatch()
+//        }
+//    }
+
+
+
+    fun uploadVideo(videoUri: Uri, videoId: String, attempt: Int = 1) {
         viewModelScope.launch {
             MediaManager.get()
                 .upload(videoUri)
                 .option("resource_type", "auto")
                 .option("public_id", videoId)
-                .callback(
-                    object : UploadCallback {
-                        override fun onStart(requestId: String?) {
+                .callback(object : UploadCallback {
+                    override fun onStart(requestId: String?) {}
+
+                    override fun onProgress(
+                        requestId: String?,
+                        bytes: Long,
+                        totalBytes: Long
+                    ) {
+                    }
+
+                    override fun onSuccess(
+                        requestId: String?,
+                        resultData: MutableMap<Any?, Any?>?
+                    ) {
+                        _uploadVideoCloudinaryResponse.value = resultData?.let {
+                            CloudinaryVideoUploadResponse.from(it)
+                        }
+                    }
+
+                    override fun onError(
+                        requestId: String?,
+                        error: ErrorInfo?
+                    ) {
+                        val errorMessage = when (error?.code) {
+                            502, 503 -> "Cloudinary is temporarily unavailable. Retrying..."
+                            400 -> "Invalid request. Please check your video file."
+                            401 -> "Unauthorized. Please check your API credentials."
+                            else -> error?.description ?: "Unknown error occurred"
                         }
 
-                        override fun onProgress(
-                            requestId: String?,
-                            bytes: Long,
-                            totalBytes: Long,
-                        ) {
-                        }
 
-                        override fun onSuccess(
-                            requestId: String?,
-                            resultData: MutableMap<Any?, Any?>?,
-                        ) {
-                            _uploadVideoCloudinaryResponse.value =
-                                resultData?.let {
-                                    CloudinaryVideoUploadResponse.from(
-                                        it,
-                                    )
-                                }
-                        }
+                        // Update LiveData to notify UI
+                        _uploadError.postValue(errorMessage)
 
-                        override fun onError(
-                            requestId: String?,
-                            error: ErrorInfo?,
-                        ) {
+                        // Retry logic for 502 and 503 errors
+                        if (error?.code == 502 || error?.code == 503) {
+                            retryUpload(videoUri, videoId)
                         }
+                    }
 
-                        override fun onReschedule(
-                            requestId: String?,
-                            error: ErrorInfo?,
-                        ) {
-                        }
-                    },
-                ).dispatch()
+                    override fun onReschedule(
+                        requestId: String?,
+                        error: ErrorInfo?
+                    ) {
+                    }
+                })
+                .dispatch()
         }
     }
 
@@ -306,6 +404,22 @@ class ProfileViewModel(
         obj.addProperty("video_url", videoUrl)
         viewModelScope.launch {
             _updateVideoUrlResponse.value = repository.updateVideoUrl(videoId, obj)
+        }
+    }
+
+    private fun retryUpload(videoUri: Uri, videoId: String, attempt: Int = 1) {
+        val maxRetries = 5
+        val delayMillis = (2.0.pow(attempt) * 1000L).toLong() // Exponential backoff (2^attempt * 1000ms)
+
+        if (attempt > maxRetries) {
+            Log.e("Upload", "Max retries reached. Upload failed.")
+            return
+        }
+
+        viewModelScope.launch {
+            delay(delayMillis) // Wait before retrying
+            Log.d("Upload", "Retrying upload (Attempt $attempt)...")
+            uploadVideo(videoUri, videoId, attempt + 1)
         }
     }
 }

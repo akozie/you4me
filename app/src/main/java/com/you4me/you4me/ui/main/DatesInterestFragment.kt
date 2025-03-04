@@ -52,7 +52,7 @@ class DatesInterestFragment : BaseFragment<MainViewModel, FragmentDatesInterestB
         binding.pager.registerOnPageChangeCallback(
             object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
-                    Log.d("ViewPagerDebug", "Page changed to: $position")
+//                    Log.d("ViewPagerDebug", "Page changed to: $position")
                     when (position) { // When the second screen is selected
                         0 -> {
                             binding.titleText.text = getString(R.string.interested_in_you)

@@ -45,7 +45,7 @@ object Utils {
         val date = inputFormat.parse(combinedString)
 
         // Format the Date object into the desired format
-        Log.d("CHECKING", outputFormat.format(date!!))
+//        Log.d("CHECKING", outputFormat.format(date!!))
         return outputFormat.format(date!!)
     }
 

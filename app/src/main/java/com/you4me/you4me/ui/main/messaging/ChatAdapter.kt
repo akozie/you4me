@@ -38,7 +38,7 @@ class ChatAdapter(private val messages: List<Message>, private val currentUserId
     ) {
         val message = messages[position]
         holder.textViewMessage.text = message.text
-        Log.d("MESSAGES", "$message")
+//        Log.d("MESSAGES", "$message")
         val currentTime = convertTimeFromMilli(message.timestamp)
         holder.time.text = currentTime
         // Show the appropriate icon based on whether the message has been read

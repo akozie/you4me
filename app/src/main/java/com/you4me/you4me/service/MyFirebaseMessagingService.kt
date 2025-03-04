@@ -33,7 +33,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         sendToken(token)
-        Log.d("TOKEN_PROFI", "$token")
+//        Log.d("TOKEN_PROFI", "$token")
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -45,7 +45,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val sharedPref = SharedPrefHelper(applicationContext)
         val userProfile = sharedPref.getString(SharedPrefHelper.USER_PROFILE)
         if (userProfile.isNotEmpty()) {
-            Log.d("TOKEN_PROFILEID", userProfile)
+//            Log.d("TOKEN_PROFILEID", userProfile)
             val gson = Gson()
             val user = gson.fromJson(userProfile, User::class.java)
             updateToken(user.userId, token)
