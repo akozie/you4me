@@ -19,6 +19,9 @@ class MainViewModel(
     val repository: MainRepository,
     private val dbRepository: DbRepository,
 ) : ViewModel() {
+
+    var hasNavigatedToProfile = false
+
     val _user: MutableLiveData<User> = MutableLiveData()
     val user: LiveData<User>
         get() = _user

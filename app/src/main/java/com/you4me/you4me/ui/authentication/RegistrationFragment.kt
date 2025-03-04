@@ -134,12 +134,12 @@ class RegistrationFragment :
                                         true,
                                     )
                                     dialog.dismiss()
-                                    startActivity(
-                                        Intent(
-                                            requireActivity(),
-                                            MainActivity::class.java,
-                                        ),
+                                    val intent = Intent(
+                                        requireActivity(),
+                                        MainActivity::class.java,
                                     )
+                                    intent.putExtra("navigate_to", "profile") // Sending instruction
+                                    startActivity(intent)
                                     requireActivity().finish()
                                 }
 
@@ -193,7 +193,12 @@ class RegistrationFragment :
                                 binding.email.text?.clear()
                                 binding.password.text?.clear()
                                 dialog.dismiss()
-                                startActivity(Intent(requireActivity(), MainActivity::class.java))
+                                val intent = Intent(requireContext(), MainActivity::class.java).apply {
+                                    putExtra("navigate_to", "profile")
+                                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                                }
+                                startActivity(intent)
+                                requireActivity().finish()
                             }
 
                             is Resource.Failure -> {

@@ -69,6 +69,20 @@ class HomeFragment :
         binding.notificationIcon.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment) }
         mixpanel?.track("Android_Home_Viewed")
 
+
+        // Check if we need to navigate to ProfileFragment
+        val navigateToProfile = activity?.intent?.getStringExtra("navigate_to") == "profile"
+
+        if (navigateToProfile && !viewModel.hasNavigatedToProfile) {
+            viewModel.hasNavigatedToProfile = true // Mark as navigated
+
+            // Clear the intent extra to prevent re-triggering
+            activity?.intent?.removeExtra("navigate_to")
+
+            // Navigate to ProfileFragment
+            findNavController().navigate(R.id.profileFragment)
+        }
+
         binding.toggleLayout.setOnClickListener {
             isExpanded = !isExpanded // Toggle state
 

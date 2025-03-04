@@ -13,8 +13,11 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.libraries.places.api.Places
@@ -29,6 +32,7 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.MainRepository
+import com.you4me.you4me.ui.profile.ProfileFragment
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.UtilityParam
 
@@ -41,6 +45,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var user: User
     private lateinit var sharedPrefHelper: SharedPrefHelper
     private lateinit var firebaseInstance: FirebaseMessaging
+    private lateinit var navHostFragment: NavHostFragment
+    private lateinit var navController: NavController
+    private var hasNavigatedToProfile = false  // To prevent multiple navigations
 
     // 1️⃣ Register the permission launcher
     private val requestPermissionLauncher =
@@ -59,6 +66,42 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Setup Navigation
+         navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
+        navController = navHostFragment.navController
+
+//        val navigateTo = intent.getStringExtra("navigate_to")
+//        if (navigateTo == "profile") {
+//            navController.navigate(R.id.profileFragment)
+//
+//            // Clear the intent extra so it doesn't persist
+//            intent.removeExtra("navigate_to")
+//        }
+
+//        // Restore state to prevent multiple navigations
+//        if (savedInstanceState != null) {
+//            hasNavigatedToProfile = savedInstanceState.getBoolean("hasNavigatedToProfile", false)
+//        }
+//
+//        // Navigate to ProfileFragment only once
+//        if (!hasNavigatedToProfile && intent?.getStringExtra("navigate_to") == "profile") {
+//            navController.navigate(R.id.profileFragment)
+//            hasNavigatedToProfile = true  // Mark as navigated
+//        }
+
+
+//        // Handle one-time navigation
+//        if (intent?.getStringExtra("navigate_to") == "profile") {
+//            intent.removeExtra("navigate_to") // Clear intent extra to prevent re-triggering
+//
+//            // Navigate to ProfileFragment only if we're on the HomeFragment
+//            if (navController.currentDestination?.id == R.id.homeFragment) {
+//                navController.navigate(R.id.profileFragment)
+//            }
+//        }
+
+
         repository =
             MainRepository(
                 RemoteDataSource().buildApi(
@@ -88,6 +131,11 @@ class MainActivity : AppCompatActivity() {
         setupViews()
         initializePlacesSdk()
         createNotificationChannel()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("hasNavigatedToProfile", hasNavigatedToProfile)
     }
 
     private fun getFireBaseToken(
@@ -146,17 +194,40 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as
-                NavHostFragment
+//         navHostFragment =
+//            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as
+//                NavHostFragment
         binding.bottomNavBar.setupWithNavController(
             navHostFragment
                 .findNavController(),
         )
 
+        // Manually handle Home button clicks to reset back stack
+        binding.bottomNavBar.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.homeFragment -> {
+                    // If already on HomeFragment, pop back stack to prevent ProfileFragment from appearing
+                    if (navController.currentDestination?.id != R.id.homeFragment) {
+                        navController.popBackStack(R.id.homeFragment, false)
+                    }
+                    true
+                }
+                else -> {
+                    NavigationUI.onNavDestinationSelected(item, navController)
+                    true
+                }
+            }
+        }
+
         navHostFragment.findNavController()
             .addOnDestinationChangedListener { _, destination, _ ->
                 when (destination.id) {
+                    R.id.homeFragment -> {
+                        // Check if already on HomeFragment
+                        if (navController.currentDestination?.id != R.id.homeFragment) {
+                            navController.popBackStack(R.id.homeFragment, false) // Clear back stack
+                        }
+                    }
                     R.id.notificationsFragment, R.id.notificationViewFragment,
                     R.id.datesFragment,
                     -> {
