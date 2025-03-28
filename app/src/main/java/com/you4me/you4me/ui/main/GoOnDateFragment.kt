@@ -14,13 +14,16 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.google.gson.Gson
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentGoOnDateBinding
+import com.you4me.you4me.models.User
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils
 import org.json.JSONException
 import org.json.JSONObject
@@ -30,7 +33,7 @@ import java.util.*
 class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, MainRepository>("GO_ON_DATE") {
     private lateinit var calendar: Calendar
     private lateinit var dateFormat: SimpleDateFormat
-
+    private lateinit var user: User
     private lateinit var paymentModes: ArrayList<ValueLabelResponse>
 
     private val startAutoComplete =
@@ -58,6 +61,11 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
         setupViews()
         setupObservers()
         mixpanel?.track("Android_Request_Date_Viewed")
+
+        val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
+        val gson = Gson()
+         user = gson.fromJson(userProfile, User::class.java)
+
     }
 
     private fun setupViews() {
@@ -104,6 +112,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                     paymentModes[binding.whoPaysSpinner.selectedItemPosition].value,
                     binding.searchDateLocations.text.toString(),
                     binding.time.text.toString(),
+                    user.userId
                 )
                 mixpanel?.track("Android_Request_Date_Button_Pressed")
                 showLoader(true)

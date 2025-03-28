@@ -163,6 +163,7 @@ class MainViewModel(
         paymentMode: String,
         place: String,
         time: String,
+        userId: String,
     ) {
         val submitDateBody =
             SubmitDateBody(
@@ -170,16 +171,16 @@ class MainViewModel(
                 paymentMode,
                 Place(place),
                 time,
-                user.value?.userId ?: "",
+                userId
             )
         viewModelScope.launch {
             _submitDateResponse.value = repository.submitDate(submitDateBody)
         }
     }
 
-    fun fetchDates() {
+    fun fetchDates(userId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _fetchDates.postValue(repository.fetchDates(_user.value?.userId ?: ""))
+            _fetchDates.postValue(repository.fetchDates(userId))
         }
     }
 
@@ -187,6 +188,7 @@ class MainViewModel(
         dateId: String,
         date: String,
         time: String,
+        userId: String,
         proposer: String,
     ) {
         viewModelScope.launch {
@@ -196,7 +198,7 @@ class MainViewModel(
                     AddDateInterestBody(
                         date,
                         time,
-                        _user.value?.userId ?: "",
+                        userId,
                         proposer,
                     ),
                 )
@@ -207,6 +209,7 @@ class MainViewModel(
         dateId: String,
         personId: String,
         like: Boolean,
+        userId: String
     ) {
         viewModelScope.launch {
             _addSwipe.value =
@@ -215,7 +218,7 @@ class MainViewModel(
                         if (like) "like" else "dislike",
                         dateId,
                         personId,
-                        _user.value?.userId ?: "",
+                        userId,
                     ),
                 )
         }
@@ -236,15 +239,15 @@ class MainViewModel(
         }
     }
 
-    fun fetchDateInterests() {
+    fun fetchDateInterests(userId: String) {
         viewModelScope.launch {
-            _fetchDateInterests.value = repository.fetchDateInterest(_user.value?.userId ?: "")
+            _fetchDateInterests.value = repository.fetchDateInterest(userId)
         }
     }
 
-    fun getSubscriptionStatus() {
+    fun getSubscriptionStatus(userId: String) {
         viewModelScope.launch {
-            _getSubscriptionStatus.value = repository.getSubscriptionStatus(_user.value?.userId ?: "")
+            _getSubscriptionStatus.value = repository.getSubscriptionStatus(userId)
         }
     }
 
@@ -285,11 +288,6 @@ class MainViewModel(
         }
     }
 
-    fun getUpcomingDates() {
-        viewModelScope.launch {
-            _upcomingDates.value = repository.getUpcomingDates(_user.value?.userId ?: "")
-        }
-    }
 
     fun getUpcomingDates(userId: String) {
         viewModelScope.launch {

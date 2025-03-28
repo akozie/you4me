@@ -50,6 +50,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
     private var playbackPosition = 0L
     private lateinit var date: FetchDatesResponseItem
     private var paymentModes: ArrayList<ValueLabelResponse>? = null
+    private lateinit var user: User
 
     //  private lateinit var user: User
     override fun getViewModel() = MainViewModel::class.java
@@ -70,12 +71,13 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         super.onViewCreated(view, savedInstanceState)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         val gson = Gson()
-        val user = gson.fromJson(userProfile, User::class.java)
+         user = gson.fromJson(userProfile, User::class.java)
         setupView()
         setupObservers()
         showBottomSheetDialog()
         viewModel.getUserDetails(user.userId)
         mixpanel?.track("Android_Find_Date_Viewed")
+
 
         binding.reportAbuse.setOnClickListener {
             showLoading(true)
@@ -277,7 +279,8 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                             d.dateId,
                             d.userId,
                             false,
-                        )
+                            user.userId,
+                            )
                         viewModel.addSwipe.observe(viewLifecycleOwner) {
                             showLoading(false)
                             when (it) {
@@ -370,6 +373,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 d.dateId,
                 d.date,
                 d.time,
+                user.userId,
                 d.userId,
             )
             mixpanel?.track("Android_Liked_Find_Date_Button_Pressed")
@@ -384,7 +388,8 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 d.dateId,
                 d.userId,
                 false,
-            )
+                user.userId,
+                )
             mixpanel?.track("Android_Disliked_Find_Date_Button_Pressed")
         }
 
@@ -413,7 +418,8 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                                 d.dateId,
                                 d.userId,
                                 false,
-                            )
+                                user.userId,
+                                )
                         }
                     } else {
                         startSecondTiltAnimation(true)
@@ -426,6 +432,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                                 d.dateId,
                                 d.date,
                                 d.time,
+                                user.userId,
                                 d.userId,
                             )
                         }
@@ -529,7 +536,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                     } else {
                         binding.completeProfileLayout.visibility = View.GONE
                         //  Log.d("FUNNY_GIRL", user.userId)
-                        viewModel.fetchDates()
+                        viewModel.fetchDates(user.userId)
                     }
                 }
 
@@ -546,7 +553,8 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                         d.dateId,
                         d.userId,
                         true,
-                    )
+                        user.userId,
+                        )
                 }
 
                 is Resource.Failure -> {

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
+import com.you4me.you4me.models.GetTokenResponse
 import com.you4me.you4me.models.RegisterResponse
 import com.you4me.you4me.models.User
 import com.you4me.you4me.network.Resource
@@ -14,6 +15,12 @@ import com.you4me.you4me.ui.base.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 class AuthenticationViewModel(private val repository: AuthenticationRepository, private val dbRepository: DbRepository) : ViewModel() {
+
+    private val _getTokenResponse: MutableLiveData<Resource<GetTokenResponse>> =
+        SingleLiveEvent<Resource<GetTokenResponse>>()
+    val getTokenResponse: LiveData<Resource<GetTokenResponse>>
+        get() = _getTokenResponse
+
     private val _loginResponse: MutableLiveData<Resource<User>> =
         SingleLiveEvent<Resource<User>>()
     val loginResponse: LiveData<Resource<User>>
@@ -31,6 +38,16 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository, 
     private val _user: MutableLiveData<Resource<User>> = MutableLiveData()
     val user: LiveData<Resource<User>>
         get() = _user
+
+    fun getToken(
+        apiKey: String,
+    ) {
+        val obj = JsonObject()
+        obj.addProperty("api_key", apiKey)
+        viewModelScope.launch {
+            _getTokenResponse.value = repository.getToken(obj)
+        }
+    }
 
     fun login(
         email: String,

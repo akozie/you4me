@@ -302,7 +302,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         binding.cardView.visibility = View.VISIBLE
         binding.mainLytBtn.visibility = View.VISIBLE
 
-        viewModel.fetchDateInterests()
+        viewModel.fetchDateInterests(user.userId)
 
         binding.acceptBtn.setOnClickListener {
             if (currentIdx < 0 || currentIdx >= dateInterests.size) {
@@ -400,7 +400,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
     private fun setupObservers() {
         viewModel.user.observe(viewLifecycleOwner) {
             user = it
-            viewModel.getSubscriptionStatus()
+            viewModel.getSubscriptionStatus(user.userId)
         }
         viewModel.getSubscriptionStatus.observe(viewLifecycleOwner) {
             when (it) {
@@ -533,7 +533,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                         } else {
                             //
                         }
-                        viewModel.getSubscriptionStatus()
+                        viewModel.getSubscriptionStatus(user.userId)
                         Log.d("OK_SUB", isSubscribed.toString())
                     }
 

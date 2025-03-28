@@ -1,6 +1,7 @@
 package com.you4me.you4me.repository
 
 import com.google.gson.JsonObject
+import com.you4me.you4me.models.GetTokenResponse
 import com.you4me.you4me.models.User
 import com.you4me.you4me.models.RegisterResponse
 import com.you4me.you4me.network.ApiCollector
@@ -8,11 +9,18 @@ import com.you4me.you4me.network.Resource
 
 class AuthenticationRepository(private val api: ApiCollector) : BaseRepository() {
 
+    suspend fun getToken(obj: JsonObject): Resource<GetTokenResponse> {
+        return safeApiCall {
+            api.getToken(obj)
+        }
+    }
+
     suspend fun login(obj: JsonObject): Resource<User> {
         return safeApiCall {
             api.login(obj)
         }
     }
+
 
     suspend fun register(obj: JsonObject): Resource<RegisterResponse> {
         return safeApiCall {

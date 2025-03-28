@@ -2,13 +2,29 @@ package com.you4me.you4me.network
 
 import com.google.gson.JsonObject
 import com.you4me.you4me.models.*
+import retrofit2.Call
 import retrofit2.http.*
 
 interface ApiCollector {
+
+//    @POST("auth/refresh")
+//     fun refreshToken(
+//    ): Call<GetTokenResponse>
+
+    @POST("auth/token")
+     fun refreshToken(
+        @Body obj: JsonObject,
+        ): Call<GetTokenResponse>
+
     @POST("login")
     suspend fun login(
         @Body obj: JsonObject,
     ): User
+
+    @POST("auth/token")
+    suspend fun getToken(
+        @Body obj: JsonObject,
+    ): GetTokenResponse
 
     @POST("logout/{userId}")
     suspend fun logout(

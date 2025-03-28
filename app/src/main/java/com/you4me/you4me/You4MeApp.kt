@@ -4,12 +4,14 @@ import android.app.Application
 import com.cloudinary.android.MediaManager
 import com.google.firebase.FirebaseApp
 import com.you4me.you4me.utils.MixpanelManager
+import com.you4me.you4me.utils.SharedPrefManager
 
 class You4MeApp : Application() {
     override fun onCreate() {
         super.onCreate()
         FirebaseApp.initializeApp(this)
         configureCloudinary()
+        SharedPrefManager.init(this)
         MixpanelManager.getInstance(this) // Ensures Mixpanel is initialized
     }
 

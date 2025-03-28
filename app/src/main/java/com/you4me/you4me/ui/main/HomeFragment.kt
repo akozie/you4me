@@ -104,7 +104,7 @@ class HomeFragment :
             when (it) {
                 is Resource.Success -> {
 //                    viewModel._user.value = it.value
-                    viewModel.getUpcomingDates()
+                    viewModel.getUpcomingDates(user.userId)
                     viewModel.getInviteeDatesRequiringApproval(user.userId)
                     viewModel.getDateInterestsRequiringApproval()
                     viewModel.getNotifications()

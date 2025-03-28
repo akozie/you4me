@@ -22,6 +22,8 @@ import com.you4me.you4me.repository.AuthenticationRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.main.MainActivity
 import com.you4me.you4me.utils.SharedPrefHelper
+import com.you4me.you4me.utils.SharedPrefHelper.Companion.APP_TOKEN
+import com.you4me.you4me.utils.UtilityParam.API_KEY
 import com.you4me.you4me.utils.Utils.GOOGLE_SIGN_IN_RQ_CODE
 import com.you4me.you4me.utils.validateEmail
 import com.you4me.you4me.utils.validatePassword
@@ -40,6 +42,8 @@ class LoginFragment :
         if (sharedPrefHelper.getBoolean(SharedPrefHelper.IS_LOGGED_IN)) {
             startActivity(Intent(requireActivity(), MainActivity::class.java))
         }
+        getApiToken()
+
         setupViews()
         googleSignInClient()
 
@@ -173,7 +177,7 @@ class LoginFragment :
         container: ViewGroup?,
     ) = FragmentLoginBinding.inflate(inflater, container, false)
 
-    override fun getRepository() = AuthenticationRepository(dataSource.buildApi(ApiCollector::class.java))
+    override fun getRepository() = AuthenticationRepository(dataSource!!.buildApi(ApiCollector::class.java))
 
     private fun setupViews() {
         // viewModel.clearUser()
@@ -282,6 +286,29 @@ class LoginFragment :
             binding.emailLyt.error = "Enter a valid email"
         }
         return false
+    }
+
+    private fun getApiToken() {
+        viewModel.getToken(API_KEY)
+        viewModel.getTokenResponse.observe(viewLifecycleOwner) {
+            showLoader(false)
+            when (it) {
+                is Resource.Success -> {
+                    sharedPrefHelper.saveString(APP_TOKEN, it.value.token)
+                }
+
+                is Resource.Failure -> {
+                    val message =
+                        if (it.isNetworkError) "Please check your internet" else it.message
+                    showAlertDialog(
+                        requireContext(),
+                        message ?: it.errorBody ?: "Please try again",
+                        "OK",
+                    ) {}
+                }
+            }
+        }
+
     }
 
     override fun onDestroy() {
