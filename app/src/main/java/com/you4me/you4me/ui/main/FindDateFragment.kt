@@ -78,6 +78,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         mixpanel?.track("Android_Find_Date_Viewed")
 
 
+        //Report Abuse dialog
         binding.reportAbuse.setOnClickListener {
             showLoading(true)
             showReportAbuseDialog()
