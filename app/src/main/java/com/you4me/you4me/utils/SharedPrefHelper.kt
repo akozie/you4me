@@ -10,7 +10,7 @@ class SharedPrefHelper(context: Context) {
         const val IS_LOGGED_IN = "is_logged_in"
         const val IS_ONBOARDED = "onboarding_finished"
         const val IS_SUBSCRIBED = "is_subscribed"
-        const val IS_FREE_PLAN = "is_free_plan"
+//        const val IS_FREE_PLAN = "is_free_plan"
         const val APP_TOKEN = "app_token"
     }
 

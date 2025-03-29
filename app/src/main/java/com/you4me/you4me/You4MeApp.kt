@@ -1,10 +1,20 @@
 package com.you4me.you4me
 
+import android.app.AlarmManager
 import android.app.Application
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.SystemClock
+import android.util.Log
+import androidx.work.*
 import com.cloudinary.android.MediaManager
 import com.google.firebase.FirebaseApp
 import com.you4me.you4me.utils.MixpanelManager
+import com.you4me.you4me.utils.SharedPrefHelper.Companion.APP_TOKEN
 import com.you4me.you4me.utils.SharedPrefManager
+import com.you4me.you4me.worker.TokenRefreshWorker
+import java.util.concurrent.TimeUnit
 
 class You4MeApp : Application() {
     override fun onCreate() {
@@ -23,4 +33,6 @@ class You4MeApp : Application() {
         config.put("secure", true)
         MediaManager.init(this, config)
     }
+
+
 }

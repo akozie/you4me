@@ -30,7 +30,6 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.BillingManager
-import com.you4me.you4me.utils.SharedPrefHelper.Companion.IS_FREE_PLAN
 import com.you4me.you4me.utils.SharedPrefHelper.Companion.IS_SUBSCRIBED
 import com.you4me.you4me.utils.Utils.getCategoryFromString
 import kotlinx.coroutines.Dispatchers
@@ -140,10 +139,10 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         binding.loader.show()
         setupObservers()
 //        billingManager = BillingManager(requireActivity())
-        isFreeTrial = sharedPrefHelper.getBoolean(IS_FREE_PLAN)
-        if (!isFreeTrial) {
-            setupBilling()
-        }
+//        isFreeTrial = sharedPrefHelper.getBoolean(IS_FREE_PLAN)
+//        if (!isFreeTrial) {
+//            setupBilling()
+//        }
         mixpanel?.track("Android_Received_Interest_Viewed")
     }
 
@@ -409,6 +408,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                         isSubscribed = true
                         setupView()
                     } else {
+                        setupBilling()
                         isSubscribed = false
                         showAlertDialog(
                             requireContext(),

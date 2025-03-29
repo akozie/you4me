@@ -1,8 +1,12 @@
 package com.you4me.you4me.ui.main
 
 import android.app.Activity
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +26,6 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.SharedPrefHelper
-import com.you4me.you4me.utils.SharedPrefHelper.Companion.IS_FREE_PLAN
 import com.you4me.you4me.utils.Utils.ADD_EVENT_REQUEST_CODE
 import java.util.*
 
@@ -65,7 +68,7 @@ class HomeFragment :
         user = gson.fromJson(userProfile, User::class.java)
         viewModel.getUserDetails(user.userId)
         addObservers()
-        viewModel.getSubscriptionStatusForHome(user.userId)
+//        viewModel.getSubscriptionStatusForHome(user.userId)
         binding.notificationIcon.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment) }
         mixpanel?.track("Android_Home_Viewed")
 
@@ -207,17 +210,17 @@ class HomeFragment :
             }
         }
 
-        viewModel.getSubscriptionStatusForHome.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Success -> {
-                    sharedPrefHelper.saveBoolean(IS_FREE_PLAN, it.value.isFreeTrial)
-                }
-
-                is Resource.Failure -> {
-                    //
-                }
-            }
-        }
+//        viewModel.getSubscriptionStatusForHome.observe(viewLifecycleOwner) {
+//            when (it) {
+//                is Resource.Success -> {
+//                    sharedPrefHelper.saveBoolean(IS_FREE_PLAN, it.value.isFreeTrial)
+//                }
+//
+//                is Resource.Failure -> {
+//                    //
+//                }
+//            }
+//        }
     }
 
     // Override onActivityResult to handle the result of the calendar activity
@@ -295,6 +298,7 @@ class HomeFragment :
             binding.completedDatesRecycler.adapter = adapter
         }
     }
+
 
     private fun setupUpcomingDates(dates: UpcomingDates) {
         if (dates.isEmpty()) {

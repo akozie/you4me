@@ -1,12 +1,13 @@
 package com.you4me.you4me.ui.main
 
 import android.Manifest
-import android.app.AlertDialog
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.*
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -25,6 +26,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.you4me.you4me.R
+import com.you4me.you4me.TokenRefreshReceiver
 import com.you4me.you4me.database.AppDatabase
 import com.you4me.you4me.databinding.ActivityMainBinding
 import com.you4me.you4me.models.User
@@ -66,7 +68,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         // Setup Navigation
          navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
         navController = navHostFragment.navController
@@ -131,6 +132,9 @@ class MainActivity : AppCompatActivity() {
         setupViews()
         initializePlacesSdk()
         createNotificationChannel()
+
+        scheduleTokenRefresh(this)
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -267,6 +271,23 @@ class MainActivity : AppCompatActivity() {
                 )
             notificationManager.createNotificationChannel(channel)
         }
+    }
+
+    private fun scheduleTokenRefresh(context: Context) {
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, TokenRefreshReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        //  Repeat every 2 minutes
+        alarmManager.setRepeating(
+            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            SystemClock.elapsedRealtime() + 5 * 60 * 1000, // First trigger after 2 minutes
+            5 * 60 * 1000, // Repeat every 2 minutes
+            pendingIntent
+        )
     }
 
 //    override fun onBackPressed() {

@@ -113,4 +113,5 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
     ) {
         Toast.makeText(requireContext(), message, length).show()
     }
+
 }

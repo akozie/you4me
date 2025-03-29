@@ -54,5 +54,8 @@
             android:name=".ui.profileDetails.ImageAndVideoDetailsActivity"
             android:exported="true">
         </activity>
+
+        <receiver android:name=".TokenRefreshReceiver" android:exported="false" />
+
     </application>
 </manifest>

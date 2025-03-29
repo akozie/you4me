@@ -75,7 +75,6 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         setupView()
         setupObservers()
         showBottomSheetDialog()
-        viewModel.getUserDetails(user.userId)
         mixpanel?.track("Android_Find_Date_Viewed")
 
 
@@ -525,26 +524,17 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 }
             }
         }
-        viewModel.existingUser.observe(viewLifecycleOwner) {
-//            Log.d("OK_FUNNY_GIRL", "$it")
-            when (it) {
-                is Resource.Success -> {
-                    if (it.value.status == "incomplete") {
-                        binding.completeProfileLayout.visibility = View.VISIBLE
-                        binding.constraintLayout2.visibility = View.GONE
-                        return@observe
-                    } else {
-                        binding.completeProfileLayout.visibility = View.GONE
-                        //  Log.d("FUNNY_GIRL", user.userId)
-                        viewModel.fetchDates(user.userId)
-                    }
-                }
 
-                is Resource.Failure -> {
-                    showToast(it.message ?: it.errorBody ?: "")
-                }
-            }
+        if (user.status == "incomplete") {
+            binding.completeProfileLayout.visibility = View.VISIBLE
+            binding.constraintLayout2.visibility = View.GONE
+            return
+        } else {
+            binding.completeProfileLayout.visibility = View.GONE
+            //  Log.d("FUNNY_GIRL", user.userId)
+            viewModel.fetchDates(user.userId)
         }
+
         viewModel.addDateInterest.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {

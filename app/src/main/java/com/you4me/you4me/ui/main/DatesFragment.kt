@@ -30,7 +30,6 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.BillingManager
-import com.you4me.you4me.utils.SharedPrefHelper.Companion.IS_FREE_PLAN
 import com.you4me.you4me.utils.SharedPrefHelper.Companion.IS_SUBSCRIBED
 import com.you4me.you4me.utils.Utils.getCategoryFromString
 import com.you4me.you4me.utils.safeNavigate

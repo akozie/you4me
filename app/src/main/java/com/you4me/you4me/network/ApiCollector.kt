@@ -7,12 +7,13 @@ import retrofit2.http.*
 
 interface ApiCollector {
 
-//    @POST("auth/refresh")
-//     fun refreshToken(
-//    ): Call<GetTokenResponse>
+    @POST("auth/refresh")
+     fun refreshToken(
+        @Header("Authorization") token: String
+    ): Call<GetTokenResponse>
 
     @POST("auth/token")
-     fun refreshToken(
+     fun getNewToken(
         @Body obj: JsonObject,
         ): Call<GetTokenResponse>
 

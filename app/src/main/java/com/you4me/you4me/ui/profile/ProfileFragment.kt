@@ -1,11 +1,8 @@
 package com.you4me.you4me.ui.profile
 
 import android.Manifest
-import android.app.Activity
-import android.app.AlertDialog
-import android.app.DatePickerDialog
+import android.app.*
 import android.app.DatePickerDialog.OnDateSetListener
-import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.ContentResolver
 import android.content.Context
@@ -42,6 +39,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.you4me.you4me.R
+import com.you4me.you4me.TokenRefreshReceiver
 import com.you4me.you4me.databinding.FragmentProfileBinding
 import com.you4me.you4me.databinding.VideoDialogBinding
 import com.you4me.you4me.models.*
@@ -120,8 +118,9 @@ class ProfileFragment :
         addListeners()
         setupView()
         checkAndRequestPermissions()
-        observeImagesAndVideos()
+//        observeImagesAndVideos()
         trackProfileViewed()
+        getImages()
 
         binding.editBtn.setOnClickListener {
             showLoader(true)
@@ -213,30 +212,6 @@ class ProfileFragment :
                 is Resource.Success -> {
                     user = it.value
                     binding.completionPercentage.text = "${user.completionPercentage}%"
-                }
-
-                is Resource.Failure -> {
-                }
-            }
-        }
-    }
-
-    private fun observeImagesAndVideos() {
-        viewModel.getImagesAndVideos(user.userId)
-        viewModel.getImagesAndVideos.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Success -> {
-                    val listOfImagesAndVideos = it.value
-                    try {
-                        // Your potentially crashing code (e.g., loading images, videos, etc.)
-                        if (isAdded() && getActivity() != null) {
-                            // Perform operations safely
-                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
-//                            Log.d("LIST_OFIMAGES", "$listOfImagesAndVideos")
-                        }
-                    } catch (e: Exception) {
-                        Log.e("MyApp", "Error loading data", e)
-                    }
                 }
 
                 is Resource.Failure -> {
@@ -759,6 +734,8 @@ class ProfileFragment :
                             trackProfileLogout()
                             showToast("Account logged out successfully!")
                             sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, false)
+                            //stop refreshing token
+                            stopRefreshingToken(requireContext())
                             // change shared pref to is logged out
                             val intent =
                                 Intent(requireContext(), AuthenticationActivity::class.java)
@@ -1086,10 +1063,10 @@ class ProfileFragment :
         player?.play()
     }
 
-    override fun onResume() {
-        super.onResume()
-        fetchImages()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        fetchImages()
+//    }
 
     private fun fetchImages() {
         showLoader(true)
@@ -1208,6 +1185,15 @@ class ProfileFragment :
         }
     }
 
+    private fun stopRefreshingToken(context: Context) {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(context, TokenRefreshReceiver::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            alarmManager.cancel(pendingIntent)
+
+    }
     private fun trackProfileViewed() {
         mixpanel?.track("Android_Profile_Viewed")
     }
