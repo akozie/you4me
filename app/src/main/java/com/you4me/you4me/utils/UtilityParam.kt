@@ -11,8 +11,8 @@ object UtilityParam {
     private external fun getApiKey(): String
     private external fun getBaseUrl(): String
 
-    val GOOGLE_PLACES_SECRET_KEY = getGooglePlacesSecretKey()
 
+    val GOOGLE_PLACES_SECRET_KEY = getGooglePlacesSecretKey()
     val MIXPANEL_SECRET_KEY = getMixpanelSecretKey()
     val API_KEY = getApiKey()
     val BASE_URL = getBaseUrl()

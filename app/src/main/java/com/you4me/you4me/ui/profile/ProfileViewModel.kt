@@ -145,6 +145,7 @@ class ProfileViewModel(
             _user.value = repository.getUser(userId)
         }
     }
+
     fun getUserProfileDetails(userId: String) {
         viewModelScope.launch {
             _userDetails.value = repository.getUser(userId)
