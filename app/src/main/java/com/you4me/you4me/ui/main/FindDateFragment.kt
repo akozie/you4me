@@ -526,7 +526,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
             }
         }
 
-        if (user.status == "incomplete") {
+        if (user.status.toLowerCase() == "incomplete") {
             binding.completeProfileLayout.visibility = View.VISIBLE
             binding.constraintLayout2.visibility = View.GONE
             return
