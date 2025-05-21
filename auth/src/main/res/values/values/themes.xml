@@ -1,0 +1,20 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.You4me" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Customize your light theme here. -->
+         <item name="colorPrimary">@color/primary_pink</item>
+    </style>
+
+    <style name="Theme.You4me" parent="Base.Theme.You4me"/>
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/primary_pink</item>
+        <item name="postSplashScreenTheme">@style/Theme.You4me</item>
+    </style>
+
+    <style name="You4meSplashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/slash_screen</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/primary_pink</item>
+    </style>
+
+</resources>

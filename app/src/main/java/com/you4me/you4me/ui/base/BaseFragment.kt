@@ -12,14 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
-import com.mixpanel.android.mpmetrics.MixpanelAPI
-import com.you4me.you4me.database.AppDatabase
+import com.you4me.you4me.core.AppDatabase
+import com.you4me.you4me.core.DbRepository
 import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.repository.BaseRepository
-import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.utils.MixpanelManager
 import com.you4me.you4me.utils.SharedPrefHelper
-import com.you4me.you4me.utils.UtilityParam.MIXPANEL_SECRET_KEY
 
 abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>(private val screenName: String) : Fragment() {
     protected val dataSource = RemoteDataSource()

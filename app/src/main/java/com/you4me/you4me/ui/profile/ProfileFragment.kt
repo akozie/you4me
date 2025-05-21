@@ -36,7 +36,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.you4me.you4me.R
 import com.you4me.you4me.TokenRefreshReceiver
@@ -47,14 +46,11 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.authentication.AuthenticationActivity
-import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.base.BaseFragment
 import com.you4me.you4me.ui.profileDetails.ImageAndVideoDetailsActivity
-import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils
 import com.you4me.you4me.utils.Utils.BANNER_TIMEOUT
-import com.you4me.you4me.utils.Utils.generateVideoThumbnail
 import com.you4me.you4me.utils.Utils.getCategoryFromString
-import com.you4me.you4me.utils.Utils.showAlertDialog
 import com.you4me.you4me.utils.removeSimpleProgressDialog
 import com.you4me.you4me.utils.showSimpleProgressDialog
 import kotlinx.coroutines.Dispatchers

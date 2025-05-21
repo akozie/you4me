@@ -1,16 +1,13 @@
 package com.you4me.you4me.repository
 
-import android.util.Log
 import com.google.gson.JsonObject
+import com.you4me.you4me.core.utils.SharedPrefHelper.Companion.APP_TOKEN
 import com.you4me.you4me.network.ApiCollector
-import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.network.Resource
-import com.you4me.you4me.utils.SharedPrefHelper.Companion.APP_TOKEN
 import com.you4me.you4me.utils.SharedPrefManager
 import com.you4me.you4me.utils.UtilityParam
 import com.you4me.you4me.utils.UtilityParam.BASE_URL
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
@@ -108,7 +105,12 @@ abstract class BaseRepository {
                                 return@withContext if (!newToken.isNullOrEmpty()) {
                                     Resource.Success(apiCall.invoke()) // Retry API call
                                 } else {
-                                    Resource.Failure(false, 401, "Session expired. Please login again.", null)
+                                    Resource.Failure(
+                                        false,
+                                        401,
+                                        "Session expired. Please login again.",
+                                        null
+                                    )
                                 }
                             }
                         }
@@ -116,7 +118,12 @@ abstract class BaseRepository {
                         Resource.Failure(false, throwable.code(), errorMessage, body)
                     }
                     else -> {
-                        Resource.Failure(isNetworkError = true, null, "Please check your internet", null)
+                        Resource.Failure(
+                            isNetworkError = true,
+                            null,
+                            "Please check your internet",
+                            null
+                        )
                     }
                 }
             }
@@ -153,7 +160,8 @@ abstract class BaseRepository {
 
                 if (response.isSuccessful) {
                     val newToken = response.body()!!.token
-                    SharedPrefManager.getInstance().saveString(APP_TOKEN, newToken) // Save new token
+                    SharedPrefManager.getInstance()
+                        .saveString(APP_TOKEN, newToken) // Save new token
                     newToken
                 } else {
                     null // Token refresh failed

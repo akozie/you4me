@@ -8,9 +8,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.VideoView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.you4me.you4me.R
@@ -19,10 +17,7 @@ import com.you4me.you4me.databinding.ActivityImageAndVideoDetailsBinding
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.network.Resource
-import com.you4me.you4me.repository.DbRepository
-import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.repository.ProfileRepository
-import com.you4me.you4me.ui.main.MainViewModel
 import com.you4me.you4me.ui.profile.ProfileViewModel
 import com.you4me.you4me.utils.removeSimpleProgressDialog
 import com.you4me.you4me.utils.showSimpleProgressDialog

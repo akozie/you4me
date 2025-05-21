@@ -1,11 +1,7 @@
-package com.you4me.you4me.database
+package com.you4me.you4me.core
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import com.you4me.you4me.models.User
+import androidx.room.*
+import com.you4me.you4me.model.User
 
 @Dao
 interface UserDAO {

@@ -1,5 +1,14 @@
 import java.net.URI
 
+include(":core")
+
+
+include(":auth")
+
+
+
+
+
 pluginManagement {
     repositories {
         mavenCentral()
@@ -16,5 +25,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "you4me"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
+
  

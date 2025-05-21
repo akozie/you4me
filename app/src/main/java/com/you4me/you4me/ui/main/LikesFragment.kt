@@ -16,7 +16,6 @@ import android.widget.ImageView
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.android.billingclient.api.*
 import com.bumptech.glide.Glide

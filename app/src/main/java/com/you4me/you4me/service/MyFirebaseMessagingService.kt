@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.SystemClock
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -19,7 +18,6 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.main.MainActivity
-import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils.toSentenceCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -9,7 +9,6 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -33,8 +32,7 @@ import com.you4me.you4me.models.*
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.ui.base.BaseFragment
-import com.you4me.you4me.utils.SharedPrefHelper
+import com.you4me.you4me.base.BaseFragment
 import com.you4me.you4me.utils.Utils.getCategoryFromString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -16,10 +16,9 @@ import com.you4me.you4me.models.User
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.base.BaseFragment
 import com.you4me.you4me.ui.main.messaging.model.ChatMessage
 import com.you4me.you4me.utils.Constants
-import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.safeNavigate
 import com.you4me.you4me.utils.safeNavigateUp
 import java.text.SimpleDateFormat

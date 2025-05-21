@@ -2,7 +2,6 @@ package com.you4me.you4me.ui.authentication
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -124,7 +123,10 @@ class LoginFragment :
 //                                    Log.d("CHECKING", user.value.toString())
                                     val gson = Gson()
                                     val userProfileJsonString = gson.toJson(user.value)
-                                    sharedPrefHelper.saveString(SharedPrefHelper.USER_PROFILE, userProfileJsonString)
+                                    sharedPrefHelper.saveString(
+                                        SharedPrefHelper.USER_PROFILE,
+                                        userProfileJsonString
+                                    )
                                     sharedPrefHelper.saveString(
                                         SharedPrefHelper.USER_ID,
                                         user.value.userId,
@@ -177,7 +179,8 @@ class LoginFragment :
         container: ViewGroup?,
     ) = FragmentLoginBinding.inflate(inflater, container, false)
 
-    override fun getRepository() = AuthenticationRepository(dataSource!!.buildApi(ApiCollector::class.java))
+    override fun getRepository() =
+        AuthenticationRepository(dataSource!!.buildApi(ApiCollector::class.java))
 
     private fun setupViews() {
         // viewModel.clearUser()
@@ -194,7 +197,10 @@ class LoginFragment :
                     sharedPrefHelper.saveString(SharedPrefHelper.USER_ID, it.value.userId)
                     val gson = Gson()
                     val userProfileJsonString = gson.toJson(it.value)
-                    sharedPrefHelper.saveString(SharedPrefHelper.USER_PROFILE, userProfileJsonString)
+                    sharedPrefHelper.saveString(
+                        SharedPrefHelper.USER_PROFILE,
+                        userProfileJsonString
+                    )
                     sharedPrefHelper.saveBoolean(SharedPrefHelper.IS_LOGGED_IN, true)
                     binding.email.text?.clear()
                     binding.password.text?.clear()

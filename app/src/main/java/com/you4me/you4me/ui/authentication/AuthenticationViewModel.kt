@@ -5,12 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
+import com.you4me.you4me.core.DbRepository
 import com.you4me.you4me.models.GetTokenResponse
 import com.you4me.you4me.models.RegisterResponse
 import com.you4me.you4me.models.User
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.AuthenticationRepository
-import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.ui.base.SingleLiveEvent
 import kotlinx.coroutines.launch
 
@@ -89,7 +89,7 @@ class AuthenticationViewModel(private val repository: AuthenticationRepository, 
         }
     }
 
-    fun saveUser(user: User) {
+    fun saveUser(user: com.you4me.you4me.model.User) {
         viewModelScope.launch { dbRepository.insertUser(user) }
     }
 

@@ -15,7 +15,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -32,10 +31,7 @@ import com.you4me.you4me.databinding.ActivityMainBinding
 import com.you4me.you4me.models.User
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.RemoteDataSource
-import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.ui.profile.ProfileFragment
-import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.UtilityParam
 
 class MainActivity : AppCompatActivity() {

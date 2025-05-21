@@ -1,10 +1,10 @@
-package com.you4me.you4me.database
+package com.you4me.you4me.core
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.you4me.you4me.models.User
+import com.you4me.you4me.model.User
 
 @Database(entities = [User::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {

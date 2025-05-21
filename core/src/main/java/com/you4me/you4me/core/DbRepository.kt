@@ -1,7 +1,6 @@
-package com.you4me.you4me.repository
+package com.you4me.you4me.core
 
-import com.you4me.you4me.database.AppDatabase
-import com.you4me.you4me.models.User
+import com.you4me.you4me.model.User
 
 class DbRepository(private val appDb: AppDatabase) {
     suspend fun insertUser(user: User) = appDb.UserDAO().saveUserData(user)

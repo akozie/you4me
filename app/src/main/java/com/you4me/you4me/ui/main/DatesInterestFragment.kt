@@ -1,7 +1,6 @@
 package com.you4me.you4me.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,7 @@ import com.you4me.you4me.adapter.DatesInterestPagerAdapter
 import com.you4me.you4me.databinding.FragmentDatesInterestBinding
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.base.BaseFragment
 
 class DatesInterestFragment : BaseFragment<MainViewModel, FragmentDatesInterestBinding, MainRepository>("PROPOSE_DATE_TIME") {
     override fun getViewModel() = MainViewModel::class.java

@@ -9,11 +9,11 @@ import androidx.navigation.fragment.findNavController
 import com.you4me.you4me.databinding.FragmentNotificationViewBinding
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.base.BaseFragment
 import com.you4me.you4me.utils.safeNavigateUp
 
 class NotificationViewFragment : BaseFragment<MainViewModel, FragmentNotificationViewBinding,
-    MainRepository>("NOTIFICATION_VIEW") {
+        MainRepository>("NOTIFICATION_VIEW") {
 
     // Arguments
     private var timestamp: String? = null

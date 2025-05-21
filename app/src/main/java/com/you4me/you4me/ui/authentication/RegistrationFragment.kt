@@ -2,12 +2,10 @@ package com.you4me.you4me.ui.authentication
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -16,6 +14,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
 import com.you4me.you4me.R
+import com.you4me.you4me.core.utils.SharedPrefHelper
 import com.you4me.you4me.databinding.FragmentRegistrationBinding
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource

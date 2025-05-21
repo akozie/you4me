@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,8 +21,7 @@ import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.ui.base.BaseFragment
-import com.you4me.you4me.utils.SharedPrefHelper
+import com.you4me.you4me.base.BaseFragment
 import com.you4me.you4me.utils.Utils
 import org.json.JSONException
 import org.json.JSONObject

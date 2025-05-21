@@ -12,7 +12,6 @@ import com.cloudinary.android.callback.UploadCallback
 import com.google.gson.JsonObject
 import com.you4me.you4me.models.*
 import com.you4me.you4me.network.Resource
-import com.you4me.you4me.repository.DbRepository
 import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.base.SingleLiveEvent
 import kotlinx.coroutines.delay
