@@ -1,9 +1,9 @@
 package com.you4me.you4me.repository
 
 import com.google.gson.JsonObject
-import com.you4me.you4me.core.utils.SharedPrefHelper.Companion.APP_TOKEN
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
+import com.you4me.you4me.utils.SharedPrefHelper.Companion.APP_TOKEN
 import com.you4me.you4me.utils.SharedPrefManager
 import com.you4me.you4me.utils.UtilityParam
 import com.you4me.you4me.utils.UtilityParam.BASE_URL

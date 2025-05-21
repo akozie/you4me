@@ -1,7 +1,7 @@
 package com.you4me.you4me.network
 
 import com.you4me.you4me.BuildConfig
-import com.you4me.you4me.core.utils.SharedPrefHelper.Companion.APP_TOKEN
+import com.you4me.you4me.utils.SharedPrefHelper.Companion.APP_TOKEN
 import com.you4me.you4me.utils.SharedPrefManager
 import com.you4me.you4me.utils.UtilityParam.BASE_URL
 import okhttp3.OkHttpClient
