@@ -22,4 +22,23 @@
         <item name="android:windowBackground">@color/transparent</item>
     </style>
 
+    <style name="CircleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="RoundedImageStyle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item> <!-- Customize as needed -->
+    </style>
+
+    <style name="BoostOptionCard">
+        <item name="cardElevation">2dp</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardBackgroundColor">@android:color/white</item>
+        <item name="android:foreground">@drawable/boost_option_background</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
 </resources>

@@ -1,5 +1,6 @@
 package com.you4me.you4me.repository
 
+import android.util.Log
 import com.google.gson.JsonObject
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
@@ -114,6 +115,7 @@ abstract class BaseRepository {
                                 }
                             }
                         }
+                        Log.d("JUST_CHECKING===", errorMessage.toString())
 
                         Resource.Failure(false, throwable.code(), errorMessage, body)
                     }

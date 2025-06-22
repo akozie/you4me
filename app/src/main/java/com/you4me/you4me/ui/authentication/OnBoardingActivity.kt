@@ -133,9 +133,9 @@ class OnBoardingActivity : AppCompatActivity() {
     // create a function outside the onCreate to bind the variables to the actual views
     private fun setOnBoardingViewPagerAdapter() {
         onBoardingDataList = ArrayList()
-        onBoardingDataList.add(OnBoardingData(getString(R.string.onboarding_txt1), R.drawable.onboarding_img1))
-        onBoardingDataList.add(OnBoardingData(getString(R.string.onboarding_txt2),  R.drawable.onboarding_img2))
-        onBoardingDataList.add(OnBoardingData(getString(R.string.onboarding_txt3),  R.drawable.onboarding_img3))
+        onBoardingDataList.add(OnBoardingData(getString(R.string.onboarding_txt1), R.drawable.onboarding_screen_1, R.drawable.progress_bar_1))
+        onBoardingDataList.add(OnBoardingData(getString(R.string.onboarding_txt2),  R.drawable.onboarding_screen_2, R.drawable.progress_bar_2))
+        onBoardingDataList.add(OnBoardingData(getString(R.string.onboarding_txt3),  R.drawable.onboarding_screen_3, R.drawable.progress_bar_3))
 
         onBoardingViewPagerAdapter = OnBoardingViewPagerAdapter(this, onBoardingDataList)
         onBoardingViewPager!!.adapter = onBoardingViewPagerAdapter

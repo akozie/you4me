@@ -50,40 +50,40 @@ class CompletedDatesRecyclerAdapter(
         holder.binding.location.text = "${date.venue}"
         getImagesResponse(date.personId, holder.binding)
 
-        if (date.hasReview == "true") {
-            holder.binding.thumbsDownLayout.visibility = View.GONE
-        } else {
-            holder.binding.thumbsDownLayout.visibility = View.VISIBLE
-        }
-        holder.binding.apply {
-            dislikeBtn.setOnClickListener {
-                showReportAbuseDialog(date.dateId, date.personId, this)
-            }
-
-            likeBtn.setOnClickListener {
-                val obj =
-                    JsonObject().apply {
-                        addProperty("date_id", date.dateId)
-                        addProperty("user_id", date.personId)
-                        addProperty("thumbs_up", true)
-                        addProperty("comment", "")
-                    }
-                viewModel.updateReview(obj)
-                viewModel.updateReviewResponse.observe(lifecycleOwner) {
-                    when (it) {
-                        is Resource.Success -> {
-                            thumbsDownLayout.visibility = View.GONE
-                            Toast.makeText(context, "Report Submitted", Toast.LENGTH_SHORT).show()
-                        }
-
-                        is Resource.Failure -> {
-                        }
-                    }
-                }
-
-                mixpanelAPI.track("Android_Home_Like_Review_Date_Button_Pressed")
-            }
-        }
+//        if (date.hasReview == "true") {
+//            holder.binding.thumbsDownLayout.visibility = View.GONE
+//        } else {
+//            holder.binding.thumbsDownLayout.visibility = View.VISIBLE
+//        }
+//        holder.binding.apply {
+//            dislikeBtn.setOnClickListener {
+//                showReportAbuseDialog(date.dateId, date.personId, this)
+//            }
+//
+//            likeBtn.setOnClickListener {
+//                val obj =
+//                    JsonObject().apply {
+//                        addProperty("date_id", date.dateId)
+//                        addProperty("user_id", date.personId)
+//                        addProperty("thumbs_up", true)
+//                        addProperty("comment", "")
+//                    }
+//                viewModel.updateReview(obj)
+//                viewModel.updateReviewResponse.observe(lifecycleOwner) {
+//                    when (it) {
+//                        is Resource.Success -> {
+////                            thumbsDownLayout.visibility = View.GONE
+//                            Toast.makeText(context, "Report Submitted", Toast.LENGTH_SHORT).show()
+//                        }
+//
+//                        is Resource.Failure -> {
+//                        }
+//                    }
+//                }
+//
+//                mixpanelAPI.track("Android_Home_Like_Review_Date_Button_Pressed")
+//            }
+//        }
     }
 
     private fun getImagesResponse(
@@ -164,7 +164,7 @@ class CompletedDatesRecyclerAdapter(
             viewModel.updateReviewResponse.observe(lifecycleOwner) {
                 when (it) {
                     is Resource.Success -> {
-                        holder.thumbsDownLayout.visibility = View.GONE
+//                        holder.thumbsDownLayout.visibility = View.GONE
                         Toast.makeText(context, "Report Submitted", Toast.LENGTH_SHORT).show()
                     }
 

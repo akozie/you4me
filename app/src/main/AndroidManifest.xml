@@ -6,12 +6,12 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".You4MeApp"
         android:allowBackup="true"
-        android:usesCleartextTraffic="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/icon"
@@ -19,7 +19,11 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.You4me"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".VeriffActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.authentication.OnBoardingActivity"
             android:exported="true"
@@ -30,6 +34,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/icon" />
@@ -47,15 +52,27 @@
             android:exported="true" />
         <activity
             android:name=".ui.authentication.AuthenticationActivity"
-            android:exported="true">
-        </activity>
-
+            android:exported="true"></activity>
         <activity
             android:name=".ui.profileDetails.ImageAndVideoDetailsActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
+        <activity
+            android:name=".ui.main.verification.VeriffActivity"
+            android:exported="true"></activity>
+        <receiver
+            android:name=".TokenRefreshReceiver"
+            android:exported="false" />
 
-        <receiver android:name=".TokenRefreshReceiver" android:exported="false" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
     </application>
+
 </manifest>

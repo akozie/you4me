@@ -13,7 +13,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.you4me.you4me.R
-import com.you4me.you4me.models.User
+import com.you4me.you4me.model.User
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.repository.MainRepository

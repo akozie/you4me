@@ -27,4 +27,5 @@ data class User(
     @ColumnInfo val token: String,
     @ColumnInfo val videoStatus: String,
     @ColumnInfo val videoURL: String,
+    @ColumnInfo val isVerified: Boolean = false,
 )

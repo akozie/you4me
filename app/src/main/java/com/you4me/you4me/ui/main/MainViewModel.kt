@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
+import com.you4me.you4me.core.DbRepository
+import com.you4me.you4me.model.User
 import com.you4me.you4me.models.*
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository

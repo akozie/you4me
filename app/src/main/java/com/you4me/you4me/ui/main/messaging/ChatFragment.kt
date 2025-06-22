@@ -22,13 +22,14 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentChatBinding
-import com.you4me.you4me.models.User
+import com.you4me.you4me.model.User
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.base.BaseFragment
+import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.main.MainViewModel
 import com.you4me.you4me.ui.main.messaging.model.Message
+import com.you4me.you4me.utils.SharedPrefHelper
 
 class ChatFragment : BaseFragment<MainViewModel, FragmentChatBinding, MainRepository>("CHAT_SCREEN") {
     private lateinit var recyclerView: RecyclerView

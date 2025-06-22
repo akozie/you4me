@@ -1,5 +1,6 @@
 package com.you4me.you4me.network
 
+import android.util.Log
 import com.you4me.you4me.BuildConfig
 import com.you4me.you4me.utils.SharedPrefHelper.Companion.APP_TOKEN
 import com.you4me.you4me.utils.SharedPrefManager
@@ -62,7 +63,7 @@ class RemoteDataSource {
 
                         chain.proceed(requestBuilder.build())
                     }
-                    .authenticator(TokenAuthenticator()) // Token refresh logic
+//                    .authenticator(TokenAuthenticator()) // Token refresh logic
                     .also { client ->
                         if (BuildConfig.DEBUG) {
                             val logging = HttpLoggingInterceptor()

@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".ui.main.HomeFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profileImage"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/onboarding_img1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/CircleImageView" />
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_10dp"
+            android:layout_marginTop="@dimen/margin_10dp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@+id/profileImage"
+            app:layout_constraintTop_toTopOf="@+id/profileImage"
+            android:text="Hi Mide" />
+
+        <TextView
+            android:id="@+id/time_of_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+            app:layout_constraintStart_toEndOf="@+id/profileImage"
+            app:layout_constraintTop_toBottomOf="@+id/user_name"
+            android:text="Good afternoon!" />
+        <ImageButton
+            android:id="@+id/notification_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/notifications"
+            android:padding="6dp"
+            android:src="@drawable/notification"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/unread_notifications_dot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="13"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary_pink"
+            android:background="@color/white"
+            android:contentDescription="@string/notifications"
+            app:layout_constraintEnd_toEndOf="@id/notification_icon"
+            app:layout_constraintTop_toTopOf="@id/notification_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/home"
+            android:visibility="gone"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/approved_dates_lyt">
+
+        <TextView
+            android:id="@+id/approvedDatesLyt_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:text="@string/approved_date_interests"
+            android:textSize="20sp" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/approvedDatesLyt_view"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/invitee_dates_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/approved_date_item" />
+
+    </LinearLayout>
+
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:drawablePadding="@dimen/padding_5dp"
+        android:text="@string/upcoming_dates"
+        android:gravity="center_vertical"
+        android:padding="@dimen/margin_5dp"
+        android:drawableStart="@drawable/baseline_calendar_month_24"
+        android:textSize="20sp" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/upcoming_dates_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="2"
+        tools:listitem="@layout/upcoming_date_item" />
+
+    <TextView
+        android:id="@+id/no_upcoming_dates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/you_have_no_upcoming_dates"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+
+<!--    <TextView-->
+<!--        android:id="@+id/no_approved_dates_interests"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:text="You have no approved date interests"-->
+<!--        android:textSize="16sp"-->
+<!--        android:visibility="gone" />-->
+
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/dates_requiring_app_lyt">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:text="@string/dates_requiring_approval"
+            android:textSize="20sp" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/date_interest_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:listitem="@layout/date_interest_requiring_approval_item" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/dates_completed_app_lyt">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/toggle_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/completed_dates_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/completed_dates"
+                android:textSize="20sp"
+                android:gravity="center_vertical"
+                android:drawablePadding="@dimen/padding_5dp"
+                android:drawableStart="@drawable/baseline_calendar_month_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/toggle_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:padding="8dp"
+                android:src="@drawable/baseline_keyboard_arrow_down_24"
+                app:layout_constraintBottom_toBottomOf="@+id/completed_dates_txt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/completed_dates_txt" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/completed_dates_divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/completed_dates_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/completed_dates_item" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/chatt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="Chat"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/chat"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/margin_10dp"
+        app:cardElevation="@dimen/margin_10dp"
+        android:layout_marginEnd="@dimen/margin_5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+    </androidx.cardview.widget.CardView>
+
+
+    <!--    <TextView-->
+<!--        android:id="@+id/no_dates_interests"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:text="You have no date interests requiring approval"-->
+<!--        android:textSize="16sp"-->
+<!--        android:visibility="gone" />-->
+
+</LinearLayout>

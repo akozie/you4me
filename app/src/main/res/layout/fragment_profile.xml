@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     tools:context=".ui.profile.ProfileFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+<androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -52,10 +54,11 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/profile_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginVertical="16dp"
             android:paddingHorizontal="@dimen/padding_20dp"
             android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -71,21 +74,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/logout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/log_out"
-                android:padding="8dp"
-                android:src="@drawable/baseline_logout_24"
-                android:text="@string/log_out"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/delete_acc_lyt" />
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/profile_constraint_layout"
                 android:layout_width="match_parent"
@@ -93,13 +81,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/profile_txt"
                 tools:layout_editor_absoluteX="32dp">
 
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="You can update your profile at anytime so that you do not lose the progress"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/profilePicture"
@@ -111,38 +92,20 @@
                     android:contentDescription="Profile Picture"
                     android:scaleType="centerCrop"
                     android:src="@drawable/baseline_person_24"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-                <EditText
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_10dp"
-                    android:gravity="center"
-                    android:hint="@string/name"
-                    android:textSize="@dimen/text_size_18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/profilePicture"
-                    app:layout_constraintTop_toTopOf="@+id/profilePicture" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
                     android:id="@+id/tvProgress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_5dp"
+                    android:layout_marginBottom="-10dp"
                     android:background="@drawable/text_bg"
                     android:orientation="horizontal"
-                    android:padding="@dimen/padding_10dp"
                     app:layout_constraintBottom_toBottomOf="@+id/profilePicture"
-                    app:layout_constraintStart_toStartOf="@+id/name"
-                    app:layout_constraintTop_toBottomOf="@+id/name">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Profile"
-                        android:textSize="14sp" />
+                    app:layout_constraintEnd_toEndOf="@+id/profilePicture"
+                    app:layout_constraintStart_toStartOf="@+id/profilePicture">
 
                     <TextView
                         android:id="@+id/completionPercentage"
@@ -150,60 +113,70 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_5dp"
                         android:text="0%"
+                        android:textColor="@color/primary_pink"
                         android:textSize="14sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_5dp"
-                        android:text="Completed"
-                        android:textSize="14sp" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider12"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/margin_10dp"
-                app:layout_constraintTop_toBottomOf="@id/profile_constraint_layout" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/name_layout"
+            <TextView
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_10dp"
+                android:gravity="center"
+                android:drawablePadding="@dimen/padding_10dp"
+                android:textSize="@dimen/text_size_18sp"
+                app:layout_constraintEnd_toEndOf="@+id/profile_constraint_layout"
+                app:layout_constraintStart_toStartOf="@+id/profile_constraint_layout"
+                app:layout_constraintTop_toBottomOf="@id/profile_constraint_layout" />
+
+            <TextView
+                android:id="@+id/edit_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_skip_for_now"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:padding="@dimen/padding_17dp"
+                android:text="Edit Profile"
+                android:textColor="@color/primary_pink"
+                android:textSize="17sp"
+                app:layout_constraintTop_toBottomOf="@+id/name"
+                tools:layout_editor_absoluteX="20dp" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/name_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider12">
+                app:layout_constraintTop_toBottomOf="@id/edit_btn">
 
                 <TextView
                     android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Bio"
+                    android:text="About me"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_20sp"
-                    android:textStyle="bold"
+                    android:textSize="@dimen/text_size_18sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/textView5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Describe yourself with a few words. Eg I am a devote x. I work at x, and I am looking for x"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
-                <EditText
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/bio"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/bio"
+                    android:background="@drawable/rectangle_about_me"
+                    android:padding="@dimen/padding_20dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                    app:layout_constraintStart_toStartOf="@+id/textView3"
+                    app:layout_constraintTop_toBottomOf="@+id/textView3"/>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -216,669 +189,330 @@
                 app:layout_constraintGuide_percent="0.55" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/sexual_orientation_label_layout"
+                android:id="@+id/not_yet_subscribed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/margin_5dp"
+                android:layout_marginTop="@dimen/padding_10dp"
+                android:background="@drawable/bg_premium_banner"
+                android:padding="@dimen/padding_16dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/name_layout"
                 app:layout_constraintStart_toStartOf="@+id/name_layout"
-                app:layout_constraintTop_toBottomOf="@id/name_layout">
+                app:layout_constraintTop_toBottomOf="@+id/name_layout">
 
                 <TextView
-                    android:id="@+id/sexual_orientation_label"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/premiumText"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/sexual_orientation"
-                    android:textStyle="bold"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/unlock_new_features_and_expand_your_network_with_our_premium_plan"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_size_12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-
-                <TextView
-                    android:id="@+id/textView6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_3dp"
-                    android:text="How would you describe your sexual orientation"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline13"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/sexual_orientation_label" />
-
-
-                <Spinner
-                    android:id="@+id/sexual_orientation_spinner"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_backgroung"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView6"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/guideline13"
-                    app:layout_constraintTop_toTopOf="@+id/sexual_orientation_label" />
-
                 <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline13"
+                    android:id="@+id/guideline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.55" />
+                    app:layout_constraintGuide_percent="0.6" />
 
+                <LinearLayout
+                    android:id="@+id/reject_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/bg_upgrade_button"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/guideline"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Upgrade Plan"
+                        android:textColor="@color/primary_pink"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider1"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/sexual_orientation_label_layout" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/gender_label_layout"
+                android:id="@+id/already_subscribed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10dp"
-                app:layout_constraintStart_toStartOf="@+id/sexual_orientation_label_layout"
-                app:layout_constraintTop_toBottomOf="@id/divider1">
+                android:visibility="visible"
+                android:layout_marginTop="@dimen/padding_10dp"
+                android:background="@drawable/bg_premium_banner"
+                android:padding="@dimen/padding_16dp"
+                app:layout_constraintEnd_toEndOf="@+id/not_yet_subscribed"
+                app:layout_constraintStart_toStartOf="@+id/not_yet_subscribed"
+                app:layout_constraintTop_toBottomOf="@+id/not_yet_subscribed"
+                >
 
-
-                <TextView
-                    android:id="@+id/gender_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gender"
-                    android:textSize="16sp"
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="@dimen/margin_50dp"
+                    android:layout_height="@dimen/margin_50dp"
+                    android:src="@drawable/hurray__"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/textView30"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_3dp"
-                    android:text="Choose your gender"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline19"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/gender_label" />
+                    android:layout_marginStart="@dimen/margin_10dp"
+                    android:text="Hurray!!! You’re now on premium plan"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView6"
+                    app:layout_constraintStart_toEndOf="@+id/imageView5"
+                    app:layout_constraintTop_toTopOf="@+id/imageView5" />
 
-                <Spinner
-                    android:id="@+id/gender_spinner"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_backgroung"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="50dp"
+                    android:layout_height="@dimen/margin_50dp"
+                    android:visibility="gone"
+                    android:src="@drawable/close_black__"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView30"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/guideline19"
-                    app:layout_constraintTop_toTopOf="@id/gender_label" />
-
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline19"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.55" />
-
-
+                    app:layout_constraintTop_toTopOf="@+id/textView30" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider8"
+            <ImageView
+                android:id="@+id/premium_img"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/gender_label_layout" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:src="@drawable/premium_img"
+                app:layout_constraintEnd_toEndOf="@+id/already_subscribed"
+                app:layout_constraintStart_toStartOf="@+id/already_subscribed"
+                app:layout_constraintTop_toBottomOf="@+id/already_subscribed" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/age_preference_label_layout"
+                android:id="@+id/boost_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10dp"
-                app:layout_constraintStart_toStartOf="@+id/gender_label_layout"
-                app:layout_constraintTop_toBottomOf="@id/divider8">
+                android:background="@drawable/rectangle_boost"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginTop="@dimen/margin_20dp"
+                android:padding="@dimen/padding_15dp"
+                app:layout_constraintEnd_toEndOf="@+id/premium_img"
+                app:layout_constraintStart_toStartOf="@+id/premium_img"
+                app:layout_constraintTop_toBottomOf="@+id/premium_img">
 
-                <TextView
-                    android:id="@+id/age_preference_label"
+                <ImageView
+                    android:id="@+id/googleIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/age_preference"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
+                    android:layout_marginStart="@dimen/margin_20dp"
+                    android:src="@drawable/frame_1000001511"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView7"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_3dp"
-                    android:text="What age groups would you prefer to go on dates with"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline14"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/age_preference_label" />
-
-                <Spinner
-                    android:id="@+id/age_preference_spinner"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_backgroung"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/guideline14"
-                    app:layout_constraintTop_toTopOf="@id/age_preference_label" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline14"
+                    android:id="@+id/boost_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.55" />
+                    android:text="Boost"
+                    android:layout_marginStart="@dimen/margin_10dp"
+                    app:layout_constraintStart_toEndOf="@+id/googleIcon"
+                    app:layout_constraintTop_toTopOf="@+id/googleIcon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_2dp"
+                    android:text="Get seen by 15X people on you4me"
+                    app:layout_constraintBottom_toBottomOf="@+id/googleIcon"
+                    app:layout_constraintStart_toStartOf="@+id/boost_tv"
+                    app:layout_constraintTop_toBottomOf="@+id/boost_tv" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/age_preference_label_layout" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/religion_preference_label_layout"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@string/log_out"
                 android:layout_marginTop="@dimen/margin_10dp"
-                app:layout_constraintStart_toStartOf="@+id/age_preference_label_layout"
-                app:layout_constraintTop_toBottomOf="@id/divider2">
-
-                <TextView
-                    android:id="@+id/religion_preference_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/religion_preference"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_3dp"
-                    android:text="@string/religion_preference"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline15"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/religion_preference_label" />
-
-                <Spinner
-                    android:id="@+id/religion_preference_spinner"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_backgroung"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/guideline15"
-                    app:layout_constraintTop_toTopOf="@id/religion_preference_label" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline15"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.55" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider9"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/religion_preference_label_layout" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/country_label_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10dp"
-                app:layout_constraintStart_toStartOf="@+id/religion_preference_label_layout"
-                app:layout_constraintTop_toBottomOf="@id/divider9">
-
-                <TextView
-                    android:id="@+id/country_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/country"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView8"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_3dp"
-                    android:text="What country do you currently live in"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline16"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/country_label" />
-
-                <Spinner
-                    android:id="@+id/country_spinner"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_backgroung"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/guideline16"
-                    app:layout_constraintTop_toTopOf="@id/country_label" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline16"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.55" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider4"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/country_label_layout" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/state_label_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider4">
-
-                <TextView
-                    android:id="@+id/state_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/state"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView9"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_3dp"
-                    android:text="What state of the country do you currently live in"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline17"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/state_label" />
-
-                <Spinner
-                    android:id="@+id/state_spinner"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_backgroung"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/guideline17"
-                    app:layout_constraintTop_toTopOf="@id/state_label" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline17"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.55" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider5"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/state_label_layout" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/dob_label_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider5">
-
-                <TextView
-                    android:id="@+id/dob_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dob"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView10"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_3dp"
-                    android:text="Please input the year, month and day which you were born"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline18"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/dob_label" />
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/dob"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="14dp"
-                    android:background="@android:color/transparent"
-                    android:gravity="end"
-                    android:hint="@string/date_hint"
-                    android:inputType="none"
-                    android:padding="5dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView10"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/guideline18"
-                    app:layout_constraintTop_toTopOf="@id/dob_label" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline18"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.55" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider6"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/dob_label_layout" />
-
-
-            <LinearLayout
-                android:id="@+id/photos_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10dp"
-                android:orientation="vertical"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider6">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Photos and Videos"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:text="Upload a picture that shows the true you. The first picture will be used as your main picture and display photo."
-                    android:textSize="14sp" />
-
-                <GridLayout
-                    android:id="@+id/photoGrid"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:columnCount="3"
-                    android:rowCount="2"
-                    android:useDefaultMargins="true">
-
-                    <!-- Placeholder buttons for images -->
-                    <FrameLayout
-                        android:id="@+id/frame1"
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_rowWeight="1"
-                        android:layout_columnWeight="1"
-                        android:layout_gravity="fill"
-                        android:background="@drawable/photos_bg"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:id="@+id/addPhotoButton1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:contentDescription="Add Photo"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/baseline_add_24"
-                            android:visibility="gone" />
-                    </FrameLayout>
-
-                    <!-- Placeholder buttons for images -->
-                    <FrameLayout
-                        android:id="@+id/frame2"
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_rowWeight="1"
-                        android:layout_columnWeight="1"
-                        android:layout_gravity="fill"
-                        android:background="@drawable/photos_bg"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageButton
-                            android:id="@+id/addPhotoButton2"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:contentDescription="Add Photo"
-                            android:scaleType="centerInside"
-                            android:visibility="gone" />
-                    </FrameLayout>
-
-                    <!-- Placeholder buttons for images -->
-                    <FrameLayout
-                        android:id="@+id/frame3"
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_rowWeight="1"
-                        android:layout_columnWeight="1"
-                        android:layout_gravity="fill"
-                        android:background="@drawable/photos_bg"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageButton
-                            android:id="@+id/addPhotoButton3"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/photos_bg"
-                            android:contentDescription="Add Photo"
-                            android:scaleType="centerInside"
-                            android:visibility="gone" />
-                    </FrameLayout>
-
-                    <!-- Placeholder buttons for images -->
-                    <FrameLayout
-                        android:id="@+id/frame4"
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_rowWeight="1"
-                        android:layout_columnWeight="1"
-                        android:layout_gravity="fill"
-                        android:background="@drawable/photos_bg"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageButton
-                            android:id="@+id/addPhotoButton4"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/photos_bg"
-                            android:contentDescription="Add Photo"
-                            android:scaleType="centerInside"
-                            android:visibility="gone" />
-                    </FrameLayout>
-
-                    <!-- Placeholder buttons for images -->
-                    <FrameLayout
-                        android:id="@+id/frame5"
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_rowWeight="1"
-                        android:layout_columnWeight="1"
-                        android:layout_gravity="fill"
-                        android:background="@drawable/photos_bg"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageButton
-                            android:id="@+id/addPhotoButton5"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/photos_bg"
-                            android:contentDescription="Add Photo"
-                            android:scaleType="centerInside"
-                            android:visibility="gone" />
-                    </FrameLayout>
-
-                    <!-- Placeholder buttons for images -->
-                    <FrameLayout
-                        android:id="@+id/frame6"
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_rowWeight="1"
-                        android:layout_columnWeight="1"
-                        android:layout_gravity="fill"
-                        android:background="@drawable/photos_bg"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageButton
-                            android:id="@+id/addPhotoButton6"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/photos_bg"
-                            android:contentDescription="Add Photo"
-                            android:scaleType="centerInside"
-                            android:visibility="gone" />
-                    </FrameLayout>
-
-                    <!-- Repeat similar blocks for all six placeholders -->
-                </GridLayout>
-            </LinearLayout>
-
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="@dimen/margin_50dp"
+                app:layout_constraintEnd_toEndOf="@+id/boost_layout"
+                app:layout_constraintStart_toStartOf="@+id/boost_layout"
+                app:layout_constraintTop_toBottomOf="@+id/boost_layout" />
 
             <TextView
-                android:id="@+id/add_video_lyt"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical"
-                android:text="Update Video"
-                android:textColor="@android:color/holo_blue_dark"
-                android:textSize="16sp"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/photos_layout" />
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider3"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/add_video_lyt" />
-
-            <TextView
-                android:id="@+id/btn_play"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical"
-                android:text="@string/view_existing_video"
-                android:textColor="@android:color/holo_blue_dark"
-                android:textSize="16sp"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider3" />
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider7"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/btn_play" />
-
-            <LinearLayout
                 android:id="@+id/delete_acc_lyt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:background="@drawable/rectangle_skip_for_now"
+                android:gravity="center"
+                android:padding="@dimen/padding_17dp"
+                android:text="@string/delete_account"
+                android:textColor="@color/primary_pink"
+                android:textSize="17sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider7">
+                app:layout_constraintTop_toBottomOf="@+id/logout" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/delete_your_account"
-                    android:textColor="@android:color/holo_red_dark"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:id="@+id/not_premiun_layout"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:visibility="gone"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="@+id/not_yet_subscribed"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/not_yet_subscribed"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/not_yet_subscribed">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/click_to_delete_your_account"
-                    android:textColor="@android:color/holo_red_dark"
-                    android:textSize="12sp" />
+<!--                <androidx.constraintlayout.widget.Guideline-->
+<!--                    android:id="@+id/guideline5"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical"-->
+<!--                    app:layout_constraintGuide_percent="0.55" />-->
 
-                <com.google.android.material.divider.MaterialDivider
-                    android:id="@+id/divider11"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="4dp"
-                    app:layout_constraintTop_toBottomOf="@id/dob_label" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/textView32"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Free"-->
+<!--                    app:layout_constraintEnd_toStartOf="@+id/guideline5"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/edit_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:padding="16dp"
-                android:text="@string/upload"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline5" />
+<!--                <TextView-->
+<!--                    android:id="@+id/textView31"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="$0"-->
+<!--                    app:layout_constraintEnd_toStartOf="@+id/guideline5"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/textView32" />-->
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.9" />
+<!--                <TextView-->
+<!--                    android:id="@+id/textView33"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="/ month"-->
+<!--                    app:layout_constraintEnd_toStartOf="@+id/guideline5"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/textView31" />-->
+
+<!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                    android:id="@+id/constraintLayout3"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="0dp"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="@+id/guideline5"-->
+<!--                    app:layout_constraintTop_toTopOf="parent">-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/textView34"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Premium"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/textView35"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="$9.99"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toBottomOf="@id/textView34" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/textView36"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="/ month"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/textView35" />-->
+
+<!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--                <View-->
+<!--                    android:id="@+id/view"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="@dimen/margin_2dp"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/textView33" />-->
+
+<!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="0dp"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="@+id/guideline5"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/view">-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/textView37"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Plan dates"-->
+<!--                        android:drawablePadding="@dimen/margin_10dp"-->
+<!--                        android:drawableStart="@drawable/check__green"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/textView38"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Dates"-->
+<!--                        android:drawablePadding="@dimen/margin_10dp"-->
+<!--                        android:drawableStart="@drawable/check__green"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toBottomOf="@id/textView37" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/textView39"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="15 per month"-->
+<!--                        android:drawablePadding="@dimen/margin_10dp"-->
+<!--                        android:drawableStart="@drawable/check__"-->
+<!--                        android:textColor="@color/primary_pink"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/textView38" />-->
+
+<!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
+

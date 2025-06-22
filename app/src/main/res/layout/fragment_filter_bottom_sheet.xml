@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.finddates.bottomsheet.FilterBottomSheetFragment">
+
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineVertical1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/top_arc_img"
+        android:layout_marginTop="@dimen/margin_10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView28"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_20dp"
+        android:text="Age Preference"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guidelineVertical1" />
+
+    <TextView
+        android:id="@+id/age_range"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_20dp"
+        android:textColor="@color/black"
+        android:gravity="end"
+        android:textSize="@dimen/text_size_20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView29"
+        app:layout_constraintEnd_toEndOf="@+id/cancel_icon"
+        app:layout_constraintStart_toEndOf="@+id/textView29"
+        app:layout_constraintTop_toTopOf="@+id/textView29"
+        android:text="18 - 24 years" />
+
+    <TextView
+        android:id="@+id/distance_range"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_20dp"
+        android:gravity="end"
+        android:text="18 - 24 years"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="@+id/cancel_icon"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/textView" />
+
+    <ImageView
+        android:id="@+id/cancel_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cancel_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/textView28"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView28" />
+
+    <TextView
+        android:id="@+id/textView29"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_20dp"
+        android:text="Age Range"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_20sp"
+        app:layout_constraintStart_toStartOf="@+id/textView28"
+        app:layout_constraintTop_toBottomOf="@+id/textView28" />
+
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/ageRangeSlider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_20dp"
+        android:stepSize="1"
+        android:valueFrom="0"
+        android:valueTo="3"
+        app:labelBehavior="gone"
+        app:layout_constraintEnd_toEndOf="@+id/age_range"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/textView29"
+        app:layout_constraintTop_toBottomOf="@+id/age_range"
+        app:thumbColor="@color/primary_pink"
+        app:trackColorActive="@color/primary_pink" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Distance (in miles)"
+        android:layout_marginTop="@dimen/margin_20dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_20sp"
+        app:layout_constraintStart_toStartOf="@+id/textView28"
+        app:layout_constraintTop_toBottomOf="@+id/ageRangeSlider" />
+
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/distanceRangeSlider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:stepSize="1"
+        android:valueFrom="0"
+        android:layout_marginTop="@dimen/margin_10dp"
+        android:valueTo="3"
+        app:labelBehavior="gone"
+        app:layout_constraintEnd_toEndOf="@+id/age_range"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/textView29"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:thumbColor="@color/primary_pink"
+        app:trackColorActive="@color/primary_pink" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Online now"
+
+        app:layout_constraintBottom_toBottomOf="@+id/switchCompat"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/switchCompat" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchCompat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_10dp"
+        app:layout_constraintEnd_toEndOf="@+id/distanceRangeSlider"
+        app:layout_constraintTop_toBottomOf="@+id/distanceRangeSlider"
+        app:thumbTint="@color/white"
+        app:trackTint="@color/primary_pink" />
+    <LinearLayout
+        android:id="@+id/save_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_10dp"
+        android:background="@drawable/rectangle_skip_for_now"
+        android:backgroundTint="@color/primary_pink"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/margin_40dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_17dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ageRangeSlider">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Apply Filters"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset"
+        android:textColor="@color/primary_pink"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/save_btn"
+        app:layout_constraintStart_toStartOf="@+id/save_btn"
+        app:layout_constraintTop_toBottomOf="@+id/save_btn" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

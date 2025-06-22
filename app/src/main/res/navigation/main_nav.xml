@@ -16,10 +16,19 @@
         <action
             android:id="@+id/action_homeFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_allUpcomingDatesFragment"
+            app:destination="@id/allUpcomingDatesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_allCompletedDatesFragment"
+            app:destination="@id/allCompletedDatesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_allDateProposalsFragment"
+            app:destination="@id/allDateProposalsFragment" />
     </fragment>
     <fragment
         android:id="@+id/findDateFragment"
-        android:name="com.you4me.you4me.ui.main.FindDateFragment"
+        android:name="com.you4me.you4me.ui.main.finddates.FindDateFragment"
         android:label="fragment_find_date"
         tools:layout="@layout/fragment_find_date" >
         <action
@@ -34,6 +43,15 @@
         <action
             android:id="@+id/action_profileFragment_to_imageAndVideoDetailsFragment"
             app:destination="@id/imageAndVideoDetailsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_deleteAccountFragment"
+            app:destination="@id/deleteAccountFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_profileBoostFragment"
+            app:destination="@id/profileBoostFragment" />
     </fragment>
     <fragment
         android:id="@+id/goOnDateFragment"
@@ -110,4 +128,144 @@
             android:name="CHAT"
             app:argType="com.you4me.you4me.ui.main.messaging.model.ChatMessage" />
     </fragment>
+    <fragment
+        android:id="@+id/allCompletedDatesFragment"
+        android:name="com.you4me.you4me.ui.main.AllCompletedDatesFragment"
+        android:label="fragment_all_completed_dates"
+        tools:layout="@layout/fragment_all_completed_dates" />
+    <fragment
+        android:id="@+id/allUpcomingDatesFragment"
+        android:name="com.you4me.you4me.ui.main.AllUpcomingDatesFragment"
+        android:label="fragment_all_upcoming_dates"
+        tools:layout="@layout/fragment_all_upcoming_dates" />
+    <fragment
+        android:id="@+id/allDateProposalsFragment"
+        android:name="com.you4me.you4me.ui.main.AllDateProposalsFragment"
+        android:label="fragment_all_date_proposals"
+        tools:layout="@layout/fragment_all_date_proposals" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.you4me.you4me.ui.profile.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" >
+        <action
+            android:id="@+id/action_editProfileFragment_to_sexualityBottomSheetFragment"
+            app:destination="@id/sexualityBottomSheetFragment" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_genderBottomSheetFragment"
+            app:destination="@id/genderBottomSheetFragment" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_stateBottomSheetFragment"
+            app:destination="@id/stateBottomSheetFragment" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_religionBottomSheetFragment"
+            app:destination="@id/religionBottomSheetFragment" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_countryBottomSheetFragment"
+            app:destination="@id/countryBottomSheetFragment" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_userNameBottomSheetFragment"
+            app:destination="@id/userNameBottomSheetFragment" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_bioBottomSheetFragment"
+            app:destination="@id/bioBottomSheetFragment" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_agePreferenceBottomSheetFragment"
+            app:destination="@id/agePreferenceBottomSheetFragment" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_editProfilePictureBottomSheetFragment"
+            app:destination="@id/editProfilePictureBottomSheetFragment" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_imageAndVideoDetailsFragment"
+            app:destination="@id/imageAndVideoDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/deleteAccountFragment"
+        android:name="com.you4me.you4me.ui.main.deleteaccount.DeleteAccountFragment"
+        android:label="fragment_delete_account"
+        tools:layout="@layout/fragment_delete_account" />
+    <dialog
+        android:id="@+id/sexualityBottomSheetFragment"
+        android:name="com.you4me.you4me.ui.profile.bottomsheet.SexualityBottomSheetFragment"
+        android:label="fragment_sexuality_bottom_sheet"
+        tools:layout="@layout/fragment_sexuality_bottom_sheet" >
+        <argument
+            android:name="SEXUAL"
+            app:argType="com.you4me.you4me.models.useroptions.SexualOrientation[]" />
+    </dialog>
+    <dialog
+        android:id="@+id/bioBottomSheetFragment"
+        android:name="com.you4me.you4me.ui.profile.bottomsheet.BioBottomSheetFragment"
+        android:label="fragment_bio_bottom_sheet"
+        tools:layout="@layout/fragment_bio_bottom_sheet" >
+        <argument
+            android:name="BIO"
+            app:argType="string"
+            app:nullable="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/userNameBottomSheetFragment"
+        android:name="com.you4me.you4me.ui.profile.bottomsheet.UserNameBottomSheetFragment"
+        android:label="fragment_user_name_bottom_sheet"
+        tools:layout="@layout/fragment_user_name_bottom_sheet" >
+        <argument
+            android:name="USERNAME"
+            app:argType="string"
+            app:nullable="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/countryBottomSheetFragment"
+        android:name="com.you4me.you4me.ui.profile.bottomsheet.CountryBottomSheetFragment"
+        android:label="fragment_country_bottom_sheet"
+        tools:layout="@layout/fragment_country_bottom_sheet" >
+        <argument
+            android:name="COUNTRY"
+            app:argType="com.you4me.you4me.models.ValueLabelResponse[]" />
+    </dialog>
+    <dialog
+        android:id="@+id/genderBottomSheetFragment"
+        android:name="com.you4me.you4me.ui.profile.bottomsheet.GenderBottomSheetFragment"
+        android:label="fragment_gender_bottom_sheet"
+        tools:layout="@layout/fragment_gender_bottom_sheet" >
+        <argument
+            android:name="GENDER"
+            app:argType="com.you4me.you4me.models.useroptions.Gender[]" />
+    </dialog>
+    <dialog
+        android:id="@+id/religionBottomSheetFragment"
+        android:name="com.you4me.you4me.ui.profile.bottomsheet.ReligionBottomSheetFragment"
+        android:label="fragment_religion_bottom_sheet"
+        tools:layout="@layout/fragment_religion_bottom_sheet" >
+        <argument
+            android:name="RELIGION"
+            app:argType="com.you4me.you4me.models.useroptions.Religion[]" />
+    </dialog>
+    <dialog
+        android:id="@+id/stateBottomSheetFragment"
+        android:name="com.you4me.you4me.ui.profile.bottomsheet.StateBottomSheetFragment"
+        android:label="fragment_state_bottom_sheet"
+        tools:layout="@layout/fragment_state_bottom_sheet" >
+        <argument
+            android:name="STATE"
+            app:argType="com.you4me.you4me.models.ValueLabelResponse[]" />
+    </dialog>
+    <dialog
+        android:id="@+id/agePreferenceBottomSheetFragment"
+        android:name="com.you4me.you4me.ui.profile.bottomsheet.AgePreferenceBottomSheetFragment"
+        android:label="fragment_age_preference_bottom_sheet"
+        tools:layout="@layout/fragment_age_preference_bottom_sheet" >
+        <argument
+            android:name="AGEGROUP"
+            app:argType="com.you4me.you4me.models.useroptions.AgeGroup[]" />
+    </dialog>
+    <dialog
+        android:id="@+id/editProfilePictureBottomSheetFragment"
+        android:name="com.you4me.you4me.ui.profile.bottomsheet.EditProfilePictureBottomSheetFragment"
+        android:label="fragment_edit_profile_picture_bottom_sheet"
+        tools:layout="@layout/fragment_edit_profile_picture_bottom_sheet" />
+    <dialog
+        android:id="@+id/profileBoostFragment"
+        android:name="com.you4me.you4me.ui.profile.bottomsheet.ProfileBoostFragment"
+        android:label="fragment_profile_boost"
+        tools:layout="@layout/fragment_profile_boost" />
 </navigation>

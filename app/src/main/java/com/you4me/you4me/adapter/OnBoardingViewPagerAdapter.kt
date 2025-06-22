@@ -29,9 +29,11 @@ class OnBoardingViewPagerAdapter(private var context: Context, private var onBoa
 
         val title: TextView = view.findViewById(R.id.onboarding_txt)
         val imageView: ImageView = view.findViewById(R.id.onboarding_img)
+        val progressBar: ImageView = view.findViewById(R.id.progress_bar)
 
         title.text = onBoardingDataList[position].title
         imageView.setImageResource(onBoardingDataList[position].imageUrl)
+        progressBar.setImageResource(onBoardingDataList[position].progressBar)
 
         container.addView(view)
         return view

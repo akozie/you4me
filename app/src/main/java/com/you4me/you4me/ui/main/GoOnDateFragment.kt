@@ -16,12 +16,13 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.gson.Gson
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentGoOnDateBinding
-import com.you4me.you4me.models.User
+import com.you4me.you4me.model.User
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.base.BaseFragment
+import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils
 import org.json.JSONException
 import org.json.JSONObject

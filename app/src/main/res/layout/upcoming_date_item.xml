@@ -1,65 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="12dp"
-    android:orientation="vertical">
+    android:layout_marginTop="@dimen/margin_10dp"
+    >
 
-    <TextView
-        android:id="@+id/text"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
-        tools:text="You have a date with jane doe at so so and so. Add to calendar" />
+        android:backgroundTint="@color/grey"
+        app:cardCornerRadius="@dimen/margin_20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/add_to_calender"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_lyt"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/rounded_bg"
-            android:padding="6dp"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:backgroundTint="@color/primary_pink"
-            android:text="@string/add_to_calendar" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/chat"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:elevation="@dimen/margin_10dp"
-            app:cardElevation="@dimen/margin_10dp"
-            android:layout_marginStart="@dimen/margin_10dp"
-            android:layout_marginEnd="@dimen/margin_5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline6"
+            android:layout_marginBottom="@dimen/margin_10dp"
+            android:background="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageView"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="@dimen/margin_10dp"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/onboarding_img1"
+                app:layout_constraintBottom_toTopOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/CircleImageView" />
+
             <TextView
-                android:id="@+id/chat_btn"
-                android:layout_width="match_parent"
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Send a message"
-                android:gravity="center"
-                android:background="@drawable/send_a_message"
+                android:layout_marginStart="@dimen/margin_10dp"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:text="Date with Chukwuka"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+            <TextView
+                android:id="@+id/time_of_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_10dp"
+                android:text="Hiking at National Park"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toBottomOf="@+id/user_name" />
+
+            <TextView
+                android:id="@+id/date_and_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jun 18"
+                android:layout_marginEnd="@dimen/margin_10dp"
                 android:textColor="@color/primary_pink"
-                android:paddingVertical="10dp" />
+                app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imageView" />
 
-        </androidx.cardview.widget.CardView>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/grey"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:padding="@dimen/margin_10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline2">
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/margin_2dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10dp"
+                    android:layout_marginTop="@dimen/margin_20dp"
+                    android:drawableStart="@drawable/calender__"
+                    android:drawablePadding="@dimen/padding_10dp"
+                    android:text="Wed . Jun 18 . 2025"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view" />
 
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:drawableStart="@drawable/time__"
+                    android:drawablePadding="@dimen/padding_10dp"
+                    android:text="Mountain trail"
+                    app:layout_constraintStart_toStartOf="@+id/textView16"
+                    app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
 
+                <TextView
+                    android:id="@+id/completed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:drawableStart="@drawable/location__"
+                    android:drawablePadding="@dimen/padding_10dp"
+                    android:text="March 10,2025 at 10:00am "
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/location"
+                    app:layout_constraintTop_toBottomOf="@+id/location" />
 
-</LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/add_to_calender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10dp"
+                    android:layout_marginTop="@dimen/margin_20dp"
+                    android:layout_marginEnd="@dimen/margin_10dp"
+                    android:background="@drawable/rectangle_skip_for_now"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_17dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/completed">
+
+                    <ImageView
+                        android:id="@+id/googleIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/calendar__pink" />
+
+                    <TextView
+                        android:id="@+id/googleTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add to Calendar"
+                        android:textColor="@color/primary_pink"
+                        android:textSize="17sp" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView >
+
+</androidx.constraintlayout.widget.ConstraintLayout>

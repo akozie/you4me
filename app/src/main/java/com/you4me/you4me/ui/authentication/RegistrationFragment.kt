@@ -2,6 +2,8 @@ package com.you4me.you4me.ui.authentication
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +16,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
 import com.you4me.you4me.R
-import com.you4me.you4me.core.utils.SharedPrefHelper
 import com.you4me.you4me.databinding.FragmentRegistrationBinding
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
@@ -44,6 +45,29 @@ class RegistrationFragment :
         binding.googleTv.setOnClickListener {
             signIn()
         }
+
+        binding.password.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Enable the button only if the EditText is not empty
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                validatePassword()
+            }
+        })
+
+        binding.confirmPassword.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Enable the button only if the EditText is not empty
+                binding.signUpBtn.isEnabled = !s.isNullOrBlank()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
 
     override fun getViewModel() = AuthenticationViewModel::class.java
@@ -283,6 +307,38 @@ class RegistrationFragment :
             }
         mixpanel?.track("Android_Register_Button_Clicked")
     }
+
+    private fun validatePassword(): Boolean {
+        val password = binding.password.text.toString().trim()
+        val layout = binding.passwordLyt
+
+        val errors = mutableListOf<String>()
+
+        if (password.length < 6) {
+            errors.add("Minimum 6 characters")
+        }
+        if (!password.any { it.isUpperCase() }) {
+            errors.add("At least one uppercase letter")
+        }
+        if (!password.any { it.isLowerCase() }) {
+            errors.add("At least one lowercase letter")
+        }
+        if (!password.any { it.isDigit() }) {
+            errors.add("At least one digit")
+        }
+        if (!password.matches(Regex(".*[!@#\$%^&*(),.?\":{}|<>\\[\\]~`_+=/\\\\'-].*"))) {
+            errors.add("At least one special character")
+        }
+
+        return if (errors.isNotEmpty()) {
+            layout.error = errors.joinToString("\n")
+            false
+        } else {
+            layout.error = null
+            true
+        }
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

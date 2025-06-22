@@ -1,8 +1,10 @@
 package com.you4me.you4me.repository
 
 import com.google.gson.JsonObject
+import com.you4me.you4me.models.RegisterProfilePhotoBody
 import com.you4me.you4me.models.RegisterVideoUploadBody
 import com.you4me.you4me.models.ValueLabelResponse
+import com.you4me.you4me.models.useroptions.UserOptionsResponse
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 
@@ -10,9 +12,16 @@ class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository
     suspend fun logout(userId: String) = safeApiCall { apiCollector.logout(userId) }
 
     suspend fun getUser(userId: String) = safeApiCall { apiCollector.getUser(userId) }
+    suspend fun getSubscriptionStatus(userId: String) = safeApiCall { apiCollector.getSubscriptionStatus(userId) }
+    suspend fun requestVerification(userId: String) = safeApiCall { apiCollector.requestVerification(userId) }
 
     suspend fun deleteUser(userId: String) = safeApiCall { apiCollector.deleteUser(userId) }
 
+    suspend fun getUserOptions(): Resource<UserOptionsResponse> {
+        return safeApiCall {
+            apiCollector.getUserOptions()
+        }
+    }
     suspend fun getGenders(): Resource<ArrayList<ValueLabelResponse>> {
         return safeApiCall {
             apiCollector.getGenders()
@@ -58,6 +67,11 @@ class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository
         safeApiCall {
             apiCollector.validateVideoUpload(userId)
         }
+
+    suspend fun registerProfilePhotoUpload(
+        userId: String,
+        registerVideoUploadBody: RegisterProfilePhotoBody,
+    ) = safeApiCall { apiCollector.registerProfilePhotoUpload(userId, registerVideoUploadBody) }
 
     suspend fun registerVideoUpload(
         userId: String,

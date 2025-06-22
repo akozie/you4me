@@ -36,6 +36,8 @@ googlePlacesBom = "1.9.10"
 espressoCore = "3.5.1"
 junit = "4.13.2"
 androidJunit = "1.1.5"
+pinViewVersion = "1.4.4"
+latestVeriffAndroidSdkVersion = "7.8.0"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
@@ -70,10 +72,9 @@ google-places-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = 
 
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 junit = { module = "junit:junit", version.ref = "junit" }
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "mediaVersion" }
 exoplayer-ui = { module = "androidx.media3:media3-ui", version.ref = "mediaVersion" }
 exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "mediaVersion" }
@@ -84,8 +85,10 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigationVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofitVersion" }
+pinview = { module = "io.github.chaosleung:pinview", version.ref = "pinViewVersion" }
 splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen" }
 
+veriff = { module = "com.veriff:veriff-library", version.ref = "latestVeriffAndroidSdkVersion" }
 work = { module = "androidx.work:work-runtime-ktx", version.ref = "workVersion" }
 
 

@@ -11,4 +11,5 @@ data class ImagesVideosResponseItem(
     val status: String,
     val userId: String,
     val videoId: String,
+    val isProfilePhoto: Boolean = false,
 ) : Parcelable

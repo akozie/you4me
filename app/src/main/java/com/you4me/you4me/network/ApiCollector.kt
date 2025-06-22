@@ -1,11 +1,29 @@
 package com.you4me.you4me.network
 
 import com.google.gson.JsonObject
+import com.you4me.you4me.model.User
 import com.you4me.you4me.models.*
+import com.you4me.you4me.models.useroptions.UserOptionsResponse
+import com.you4me.you4me.models.verification.VeriffVerification
 import retrofit2.Call
 import retrofit2.http.*
 
 interface ApiCollector {
+
+    @POST("auth/request-password-reset")
+    suspend fun requestPasswordReset(
+        @Body obj: JsonObject
+    ) : RequestPasswordResetResponse
+
+    @POST("auth/verify-code")
+    suspend fun verifyCode(
+        @Body obj: JsonObject
+    ) : VerifyCodeResponse
+
+    @POST("auth/reset-password")
+    suspend fun resetPassword(
+        @Body obj: JsonObject
+    ) : ResetPasswordResponse
 
     @POST("auth/refresh")
      fun refreshToken(
@@ -47,6 +65,11 @@ interface ApiCollector {
         @Path("userId") userId: String,
     ): User
 
+    @POST("user/request-verification")
+    suspend fun requestVerification(
+        @Path("userId") userId: String,
+    ): VeriffVerification
+
     @GET("users/{userId}")
     suspend fun getExistingUser(
         @Path("userId") userId: String,
@@ -57,6 +80,9 @@ interface ApiCollector {
         @Path("userId") userId: String,
         @Body token: JsonObject,
     )
+
+    @GET("user/option-lists")
+    suspend fun getUserOptions(): UserOptionsResponse
 
     @GET("genders")
     suspend fun getGenders(): ArrayList<ValueLabelResponse>
@@ -92,6 +118,12 @@ interface ApiCollector {
     @GET("users/{userId}/validate-upload")
     suspend fun validateVideoUpload(
         @Path("userId") userId: String,
+    )
+
+    @POST("users/{userId}/uploads")
+    suspend fun registerProfilePhotoUpload(
+        @Path("userId") userId: String,
+        @Body registerProfilePhotoBody: RegisterProfilePhotoBody,
     )
 
     @POST("users/{userId}/uploads")

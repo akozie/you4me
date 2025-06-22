@@ -13,6 +13,7 @@ plugins {
 buildscript {
     repositories {
         maven("https://jcenter.bintray.com")
+        maven("https://cdn.veriff.me/android/")
 //        maven { url = uri("https://jcenter.bintray.com") }
         google() // Add Google repository
         mavenCentral() // Add Maven Central repository
@@ -40,7 +41,7 @@ fun BaseExtension.defaultConfig() {
         configurations.all {
             resolutionStrategy { force("androidx.core:core-ktx:1.6.0") }
         }
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

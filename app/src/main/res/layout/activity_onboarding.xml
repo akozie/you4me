@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+    android:background="@color/white"
+tools:context=".ui.authentication.OnBoardingActivity">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/screenPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/on_boarding_activity_skip_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:text="@string/skip"
+        android:textSize="@dimen/text_size_16sp"
+        android:textColor="@color/white"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_next_button" />
+
+
+<com.google.android.material.tabs.TabLayout
+    android:id="@+id/on_boarding_activity_tab_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="@dimen/margin_5dp"
+    android:visibility="gone"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/screenPager"
+    app:tabBackground="@drawable/indicator_selector"
+    app:tabGravity="center"
+    app:tabIndicatorHeight="0dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineVertical1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/activity_next_button"
+        style="@style/onBoarding_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_60dp"
+        app:cornerRadius="@dimen/margin_50dp"
+        android:text="Next"
+        android:layout_margin="@dimen/margin_20dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guidelineVertical1" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/activity_get_started_button"
+        style="@style/onBoarding_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_60dp"
+        app:cornerRadius="@dimen/margin_50dp"
+        android:text="Sign Up"
+        android:layout_margin="@dimen/margin_20dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guidelineVertical1" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,7 +13,7 @@
     </style>
 
     <style name="You4meSplashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowBackground">@drawable/slash_screen</item>
+        <item name="android:windowBackground">@drawable/splash_screen</item>
         <item name="android:statusBarColor" tools:targetApi="l">@color/primary_pink</item>
     </style>
 

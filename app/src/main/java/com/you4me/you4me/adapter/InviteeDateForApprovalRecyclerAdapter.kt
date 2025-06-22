@@ -48,7 +48,7 @@ class InviteeDateForApprovalRecyclerAdapter(
         val date = dates[position]
         holder.binding.apply {
             // name.text = date.name
-            location.text = "Cheers! Your date with ${date.name} is scheduled for ${date.date} at ${date.time}. Does this date and time work for you?"
+//            location.text = "Cheers! Your date with ${date.name} is scheduled for ${date.date} at ${date.time}. Does this date and time work for you?"
             // dateODate.text = "${date.date} : ${date.time}"
 
             acceptBtn.setOnClickListener {
@@ -60,57 +60,57 @@ class InviteeDateForApprovalRecyclerAdapter(
 //                dates.removeAt(position)
                 notifyItemRemoved(position)
             }
-            newTimeBtn.setOnClickListener {
+            rejectBtn.setOnClickListener {
                 acceptBtn.visibility = View.GONE
-                newTimeBtn.visibility = View.GONE
-                newDateTimeLyt.visibility = View.VISIBLE
+//                newTimeBtn.visibility = View.GONE
+//                newDateTimeLyt.visibility = View.VISIBLE
                 mixpanelAPI.track("Android_Home_Propose_Time_Button_Pressed")
             }
-            updateTimeBtn.setOnClickListener {
-                // propose new time
-                // update list and ui
-                viewModel.proposeNewDateTime(
-                    date.dateId,
-                    date.interestId,
-                    newDate.text.toString(),
-                    newTime.text.toString(),
-                )
-                dates.clear()
-//                dates.removeAt(position)
-                notifyItemRemoved(position)
-            }
+//            updateTimeBtn.setOnClickListener {
+//                // propose new time
+//                // update list and ui
+//                viewModel.proposeNewDateTime(
+//                    date.dateId,
+//                    date.interestId,
+//                    newDate.text.toString(),
+//                    newTime.text.toString(),
+//                )
+//                dates.clear()
+////                dates.removeAt(position)
+//                notifyItemRemoved(position)
+//            }
 
             val time =
                 TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
                     val hour = hourOfDay.toString().padStart(2, '0')
                     val minutePadded = minute.toString().padStart(2, '0')
-                    newTime.text = "$hour:$minutePadded"
+//                    newTime.text = "$hour:$minutePadded"
                 }
 
-            newTime.setOnClickListener {
+            rejectBtn.setOnClickListener {
                 TimePickerDialog(context, time, 12, 0, true).show()
             }
 
             val calendar = Calendar.getInstance()
-            newDate.text = Utils.getDateFormat().format(calendar.time)
-            newTime.text = "12:00"
+//            newDate.text = Utils.getDateFormat().format(calendar.time)
+//            newTime.text = "12:00"
             val datee =
                 DatePickerDialog.OnDateSetListener { _, year, month, day ->
                     calendar.set(Calendar.YEAR, year)
                     calendar.set(Calendar.MONTH, month)
                     calendar.set(Calendar.DAY_OF_MONTH, day)
-                    newDate.text = Utils.getDateFormat().format(calendar.time)
+//                    newDate.text = Utils.getDateFormat().format(calendar.time)
                 }
 
-            newDate.setOnClickListener {
-                DatePickerDialog(
-                    context,
-                    datee,
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH),
-                ).show()
-            }
+//            newDate.setOnClickListener {
+//                DatePickerDialog(
+//                    context,
+//                    datee,
+//                    calendar.get(Calendar.YEAR),
+//                    calendar.get(Calendar.MONTH),
+//                    calendar.get(Calendar.DAY_OF_MONTH),
+//                ).show()
+//            }
         }
     }
 }

@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import com.google.gson.Gson
 import com.you4me.you4me.adapter.SentRequestsRecyclerAdapter
 import com.you4me.you4me.databinding.FragmentSentRequestsBinding
+import com.you4me.you4me.model.User
 import com.you4me.you4me.models.*
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.SharedPrefHelper
 
 class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBinding, MainRepository>("DATE_INTEREST_SENT") {
     override fun getViewModel() = MainViewModel::class.java

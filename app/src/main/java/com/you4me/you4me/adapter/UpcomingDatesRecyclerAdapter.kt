@@ -5,12 +5,13 @@ import android.content.Intent
 import android.provider.CalendarContract
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.you4me.you4me.databinding.UpcomingDateItemBinding
+import com.you4me.you4me.model.User
 import com.you4me.you4me.models.UpcomingDates
-import com.you4me.you4me.models.User
 import com.you4me.you4me.ui.main.HomeFragmentDirections
 import com.you4me.you4me.ui.main.messaging.model.ChatMessage
 import com.you4me.you4me.utils.Utils.ADD_EVENT_REQUEST_CODE
@@ -41,35 +42,36 @@ class UpcomingDatesRecyclerAdapter(private val user: User, private val fragment:
         position: Int,
     ) {
         val date = dates[position]
-        holder.binding.text.text = "You have a date with ${date.name} at ${date.place} on ${date.date} by ${date.time}"
+//        holder.binding.text.text = "You have a date with ${date.name} at ${date.place} on ${date.date} by ${date.time}"
         holder.binding.addToCalender.setOnClickListener {
             // add to calendar
-            val intent = Intent(Intent.ACTION_EDIT)
-            intent.setType("vnd.android.cursor.item/event")
-            val outputFormat = "yyyy-MM-dd"
-            val dateFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH)
-            val parsedDate = LocalDate.parse(date.date, dateFormatter)
-            val formattedDate = parsedDate.format(DateTimeFormatter.ofPattern(outputFormat))
-            val dateTime = LocalDateTime.parse("${formattedDate}T${date.time}")
-            addEventToCalendar("Date with ${date.name}", date.place, dateTime)
+            Toast.makeText(context, "add to calender", Toast.LENGTH_SHORT).show()
+//            val intent = Intent(Intent.ACTION_EDIT)
+//            intent.setType("vnd.android.cursor.item/event")
+//            val outputFormat = "yyyy-MM-dd"
+//            val dateFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH)
+//            val parsedDate = LocalDate.parse(date.date, dateFormatter)
+//            val formattedDate = parsedDate.format(DateTimeFormatter.ofPattern(outputFormat))
+//            val dateTime = LocalDateTime.parse("${formattedDate}T${date.time}")
+//            addEventToCalendar("Date with ${date.name}", date.place, dateTime)
         }
-        holder.binding.chat.setOnClickListener {
-            val dateAndTime = "${date.date} ${date.time}"
-            if (checkTimeAndShowToast(dateAndTime)) {
-                val chatMessage =
-                    ChatMessage(
-                        dateId = date.dateId,
-                        senderId = user.userId,
-                        senderName = user.name,
-                        recipientId = date.userId,
-                        recipientName = date.name,
-                    )
-                val action = HomeFragmentDirections.actionHomeFragmentToChatFragment(chatMessage)
-                fragment.findNavController().navigate(action)
-            } else {
-                val dialog = showAlertDialog(context, "You can only message this person 3 hours to the agreed date time", "OK", "", {}, {})
-            }
-        }
+//        holder.binding.chat.setOnClickListener {
+//            val dateAndTime = "${date.date} ${date.time}"
+//            if (checkTimeAndShowToast(dateAndTime)) {
+//                val chatMessage =
+//                    ChatMessage(
+//                        dateId = date.dateId,
+//                        senderId = user.userId,
+//                        senderName = user.name,
+//                        recipientId = date.userId,
+//                        recipientName = date.name,
+//                    )
+//                val action = HomeFragmentDirections.actionHomeFragmentToChatFragment(chatMessage)
+//                fragment.findNavController().navigate(action)
+//            } else {
+//                val dialog = showAlertDialog(context, "You can only message this person 3 hours to the agreed date time", "OK", "", {}, {})
+//            }
+//        }
     }
 
     private fun checkTimeAndShowToast(dateTimeString: String): Boolean {

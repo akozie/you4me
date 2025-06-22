@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.authentication.VerificationCodeFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineVertical1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.08" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/password__"
+        android:layout_marginStart="@dimen/margin_10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guidelineVertical1" />
+
+
+    <TextView
+        android:id="@+id/txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Verification code"
+        android:textSize="@dimen/text_size_28sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+
+    <TextView
+        android:id="@+id/txt1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_10dp"
+        android:text="@string/verification_code"
+        android:textColor="@color/black"
+        android:ellipsize="end"
+        android:layout_marginEnd="@dimen/margin_5dp"
+        android:scrollHorizontally="true"
+        android:textSize="16sp"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeMaxTextSize="18sp"
+        android:autoSizeStepGranularity="1sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/txt"
+        app:layout_constraintTop_toBottomOf="@+id/txt" />
+
+
+    <TextView
+        android:id="@+id/change_email_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/go_ahead"
+        android:textColor="@color/black"
+        android:ellipsize="end"
+        android:inputType="text"
+        android:layout_marginEnd="@dimen/margin_5dp"
+        android:scrollHorizontally="true"
+        android:textSize="16sp"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeMaxTextSize="18sp"
+        android:autoSizeStepGranularity="1sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/txt"
+        app:layout_constraintTop_toBottomOf="@+id/txt1" />
+
+
+    <com.chaos.view.PinView
+        android:id="@+id/pinView"
+        style="@style/PinWidget.PinView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_30dp"
+        android:cursorVisible="true"
+        android:elevation="@dimen/margin_10dp"
+        android:gravity="center_horizontal"
+        android:inputType="numberPassword"
+        android:itemBackground="@color/primary_pink"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_18sp"
+        app:cursorColor="@color/white"
+        app:hideLineWhenFilled="true"
+        app:itemCount="7"
+        app:itemHeight="@dimen/margin_50dp"
+        app:itemRadius="@dimen/margin_10dp"
+        app:itemSpacing="@dimen/margin_5dp"
+        app:itemWidth="@dimen/margin_50dp"
+        app:layout_constraintTop_toBottomOf="@+id/change_email_address"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:lineColor="@color/white"
+        app:viewType="rectangle" />
+
+    <TextView
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_20dp"
+        android:drawableStart="@drawable/baseline_access_time_24"
+        android:gravity="end"
+        android:text="00:00"
+        android:drawablePadding="@dimen/margin_5dp"
+        app:layout_constraintEnd_toEndOf="@+id/pinView"
+        app:layout_constraintTop_toBottomOf="@+id/pinView" />
+
+    <TextView
+        android:id="@+id/send_again"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:text="@string/didn_t_get_the_code_send_again"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/verify_btn"
+        app:layout_constraintEnd_toStartOf="@+id/timer"
+        app:layout_constraintStart_toStartOf="@+id/verify_btn"
+        app:layout_constraintTop_toBottomOf="@+id/timer" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress_circular"
+        style="@style/Widget.Material3.CircularProgressIndicator.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/verify_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pinView" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/verify_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_10dp"
+        android:enabled="false"
+        android:padding="16dp"
+        android:text="Verify Code"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="@dimen/margin_50dp"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineVertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineVertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

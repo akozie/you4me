@@ -9,443 +9,53 @@
     android:gravity="center"
     android:orientation="horizontal"
     android:paddingHorizontal="32dp"
-    tools:context=".ui.main.FindDateFragment">
+    tools:context=".ui.main.finddates.FindDateFragment">
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:fitsSystemWindows="true">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main_lyt"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_marginBottom="@dimen/margin_70dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="vertical"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/find_date_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Find Date"
-            android:layout_marginTop="@dimen/margin_20dp"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_25sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/find_date_sub_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Find people who are available to go on a date"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/find_date_text" />
-
-        <ImageView
-            android:id="@+id/imageView"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="@dimen/margin_10dp"
-            android:src="@drawable/find_date_placeholder"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/find_date_sub_text" />
-
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10dp"
-            android:text="Mary, 25"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-        <TextView
-            android:id="@+id/my_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_20dp"
-            android:text="Lagos"
-            android:textSize="@dimen/text_size_15sp"
-            android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="@+id/user_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-            <TextView
-                android:id="@+id/bio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10dp"
-                android:gravity="start"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-                android:textSize="@dimen/text_size_15sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/user_name" />
-
-        <LinearLayout
-            android:id="@+id/location_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10dp"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bio">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Location : "
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Blackbell" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/payment_lyt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_5dp"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/location_layout">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Who is paying? : "
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/payment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mary will pay" />
-
-        </LinearLayout>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.65" />
-
-        <TextView
-            android:id="@+id/name_gallery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_20dp"
-            android:text="Mary's Gallery"
-            android:textSize="@dimen/text_size_20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/payment_lyt" />
-
-            <GridLayout
-                android:id="@+id/photoGrid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10dp"
-                android:columnCount="2"
-                android:rowCount="2"
-                android:useDefaultMargins="true"
-                app:layout_constraintTop_toBottomOf="@+id/name_gallery">
-
-                <!-- Placeholder buttons for images -->
-                <FrameLayout
-                    android:id="@+id/frame1"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_gravity="fill"
-                    android:background="@drawable/find_date_bg"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageView
-                        android:id="@+id/addPhotoButton1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:contentDescription="Add Photo"
-                        android:scaleType="centerCrop"
-                        android:visibility="gone" />
-                </FrameLayout>
-
-                <!-- Placeholder buttons for images -->
-                <FrameLayout
-                    android:id="@+id/frame2"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_gravity="fill"
-                    android:background="@drawable/find_date_bg"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageButton
-                        android:id="@+id/addPhotoButton2"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="Add Photo"
-                        android:scaleType="centerCrop"
-                        android:visibility="gone" />
-                </FrameLayout>
-
-                <!-- Placeholder buttons for images -->
-                <FrameLayout
-                    android:id="@+id/frame3"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_gravity="fill"
-                    android:background="@drawable/find_date_bg"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageButton
-                        android:id="@+id/addPhotoButton3"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/photos_bg"
-                        android:contentDescription="Add Photo"
-                        android:scaleType="centerCrop"
-                        android:visibility="gone" />
-                </FrameLayout>
-
-                <!-- Placeholder buttons for images -->
-                <FrameLayout
-                    android:id="@+id/frame4"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_gravity="fill"
-                    android:background="@drawable/find_date_bg"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageButton
-                        android:id="@+id/addPhotoButton4"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/photos_bg"
-                        android:contentDescription="Add Photo"
-                        android:scaleType="centerCrop"
-                        android:visibility="gone" />
-                </FrameLayout>
-
-            </GridLayout>
-
-            <TextView
-                android:id="@+id/report_abuse"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/margin_20dp"
-                android:layout_marginBottom="@dimen/margin_70dp"
-                android:drawableStart="@drawable/report"
-                android:drawablePadding="@dimen/padding_10dp"
-                android:text="Report Date"
-                android:textSize="@dimen/text_size_22sp"
-                android:textStyle="bold"
-                android:gravity="center_vertical"
-                android:textColor="@color/primary_pink"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/photoGrid" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
-<!--        <TextView-->
-<!--            android:id="@+id/empty_lyt"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:text="No Dates available"-->
-<!--            android:textAlignment="center"-->
-<!--            android:textSize="28sp"-->
-<!--            android:visibility="gone"-->
-<!--            app:drawableTopCompat="@drawable/baseline_not_interested_24" />-->
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/lottieAnimationView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:lottie_autoPlay="true"
-                    app:lottie_fileName="dating.json"
-                    app:lottie_loop="true" />
-
-                <TextView
-                    android:id="@+id/empty_lyt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No Dates available"
-                    android:textAlignment="center"
-                    android:textSize="25sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/lottieAnimationView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/lottieAnimationView"
-                    app:layout_constraintVertical_bias="0.8" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/complete_profile_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/completeLottieAnimationView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:lottie_autoPlay="true"
-                    app:lottie_fileName="complete-profile.json"
-                    app:lottie_loop="true" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Please complete your profile in the profile tab to continue"
-                    android:textAlignment="center"
-                    android:textSize="25sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/completeLottieAnimationView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/completeLottieAnimationView"
-                    app:layout_constraintVertical_bias="0.8" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/loader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main_lyt_btn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/reject_btn_cardview"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:elevation="@dimen/margin_10dp"
-            app:cardElevation="@dimen/margin_10dp"
-            android:layout_marginEnd="@dimen/margin_5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline6"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-            <TextView
-                android:id="@+id/reject_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Not Interested"
-                android:gravity="center"
-                android:background="@drawable/btn_not_interested_stroke_color"
-                android:textColor="@color/primary_pink"
-                android:paddingVertical="15dp" />
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
-
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:elevation="@dimen/margin_10dp"
-            app:cardElevation="@dimen/margin_10dp"
-            android:layout_marginStart="@dimen/margin_5dp"
-            app:layout_constraintBottom_toBottomOf="@+id/reject_btn_cardview"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline6"
-            app:layout_constraintTop_toTopOf="@+id/reject_btn_cardview">
-        <TextView
-            android:id="@+id/accept_btn"
+                android:text="@string/find_date"
+                android:textSize="@dimen/text_size_24sp"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Go on date"
-            android:gravity="center"
-            android:background="@drawable/btn_go_on_date"
-            android:textColor="@color/white"
-            android:paddingVertical="15dp" />
-        </androidx.cardview.widget.CardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:tabGravity="fill"
+            app:tabMode="fixed"
+            android:layout_marginTop="@dimen/padding_20dp"
+            android:minHeight="?attr/actionBarSize"
+            app:tabSelectedTextColor="@color/primary_pink"
+            android:background="@color/white"
+            app:tabIndicatorColor="@color/primary_pink" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/pager"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/tabs"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

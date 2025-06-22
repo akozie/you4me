@@ -26,12 +26,14 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.you4me.you4me.R
 import com.you4me.you4me.TokenRefreshReceiver
-import com.you4me.you4me.database.AppDatabase
+import com.you4me.you4me.core.AppDatabase
+import com.you4me.you4me.core.DbRepository
 import com.you4me.you4me.databinding.ActivityMainBinding
-import com.you4me.you4me.models.User
+import com.you4me.you4me.model.User
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.repository.MainRepository
+import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.UtilityParam
 
 class MainActivity : AppCompatActivity() {
@@ -229,7 +231,9 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     R.id.notificationsFragment, R.id.notificationViewFragment,
-                    R.id.datesFragment,
+                    R.id.datesFragment, R.id.editProfileFragment, R.id.allDateProposalsFragment,
+                    R.id.allUpcomingDatesFragment, R.id.allCompletedDatesFragment,
+                        R.id.deleteAccountFragment
                     -> {
                         binding.bottomNavBar.visibility = View.GONE
                     }

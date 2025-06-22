@@ -12,23 +12,29 @@
     <string name="date_hint">yyyy-mm-dd</string>
     <string name="dob">Date of Birth</string>
     <string name="edit">Edit</string>
-    <string name="email_address">Email Address</string>
-    <string name="existing_user">Existing user? <font fgcolor="#ff0052">Sign in here</font></string>
-    <string name="find_date">Find Dates</string>
+    <string name="email_address">Enter your email address</string>
+    <string name="existing_user">Already have an account? <font fgcolor="#ED0D57">Sign in</font></string>
+    <string name="terms">By signing up, you agree to our <font fgcolor="#ED0D57"> Terms of service </font> and <font fgcolor="#ff0052"> privacy policy </font> </string>
+    <string name="verification_code">We’ve sent the verification code to mide@gmail.com. </string>
+    <!--    <string name="go_ahead">Go ahead and enter it below. <font fgcolor="#ED0D57"><u>Change email address</u></font></string>-->
+    <string name="go_ahead">Go ahead and enter it below. %1$s</string>
+    <string name="find_date">Find Date</string>
+    <string name="explore_date">Explore Dates</string>
+    <string name="my_date">My Dates</string>
     <string name="gender">Gender</string>
-    <string name="go_on_date">Go on date</string>
+    <string name="go_on_date">Plan date</string>
     <string name="home">Home</string>
     <string name="likes">Likes</string>
     <string name="login">Login</string>
     <string name="name">Enter your name</string>
     <string name="bio">Enter your bio</string>
-    <string name="new_user">New user? <font fgcolor="#ff0052">Sign up here</font></string>
-    <string name="onboarding_txt1">Start your love story with a date, not endless messages.</string>
-    <string name="onboarding_txt2">There is something truly special about connecting with someone face to face.</string>
-    <string name="onboarding_txt3">No chats, plan outings, find love.</string>
-    <string name="password">Password</string>
+    <string name="new_user">Don\'t have an account? <font fgcolor="#ED0D57">Create One</font></string>
+    <string name="onboarding_txt1">From the first glance to the first laugh, begin your love story with a date.</string>
+    <string name="onboarding_txt2">Feel the moments and connection in person. Moments can’t be captured in texts.</string>
+    <string name="onboarding_txt3">Skip the endless chats — meet, vibe, and build something real. Sign Up now</string>
+    <string name="password">Enter your password</string>
     <string name="profile">Profile</string>
-    <string name="register">Register</string>
+    <string name="register">Create Account</string>
     <string name="registration_success_login">Registration Successful. Please login</string>
     <string name="religion_preference">Religion Preference</string>
     <string name="sexual_orientation">Sexual Orientation</string>
@@ -46,7 +52,7 @@
     <string name="religion">Religion</string>
     <string name="phone_number">Phone Number</string>
     <string name="no_date_interests">No date interests</string>
-    <string name="date_interests">Date Interests</string>
+    <string name="date_interests">Interests</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_up_with_google">Sign up with Google</string>
     <string name="circle">Circle</string>
@@ -62,6 +68,7 @@
     <string name="dates_requiring_approval">Dates requiring approval</string>
     <string name="completed_dates">Completed Dates</string>
     <string name="approved_date_interests">Approved Date Interests</string>
+    <string name="date_proposal">Date proposals</string>
     <string name="you_have_no_upcoming_dates">You have no upcoming dates</string>
     <string name="add_to_calendar">Add to Calendar</string>
     <string name="skip">Skip</string>
@@ -73,8 +80,21 @@
     <string name="let_people_know_you_are_available_to_go_on_a_date">Let people know you are available to go on a date</string>
     <string name="where_would_you_like_the_date_to_happen">Where would you like the date to happen?</string>
     <string name="received_requests">Received Interests</string>
+    <string name="nearby">Nearby</string>
+    <string name="discover">Discover</string>
+    <string name="suggested">Suggested</string>
+    <string name="custom">Custom</string>
     <string name="sent_requests">Sent Interests</string>
     <string name="we_frown_against_child_abuse_see_policy_here_play_your_part_in_reporting_a_suspected_child_abuse">We frown against child abuse <a href="https://www.you4me.social/child-abuse-policy">See policy here</a>. Play your part in reporting a suspected child abuse.</string>
+    <string name="sign_in_text">Sign in</string>
+    <string name="email_text">Email</string>
+    <string name="sign_in">Sign In</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="we_ll_never_share_anything_without_your_permission">We’ll never share anything without your permission</string>
+    <string name="stand_out">Stand out. \nMake your profile as \nunique as you are.</string>
+    <string name="didn_t_get_the_code_send_again">Didn\'t get the code? <font fgcolor="#ED0D57">Send again</font></string>
+    <string name="unlock_new_features_and_expand_your_network_with_our_premium_plan">Unlock new features and expand your network with our Premium plan.</string>
+    <string name="delete_account">Delete Account</string>
 
 
 </resources>

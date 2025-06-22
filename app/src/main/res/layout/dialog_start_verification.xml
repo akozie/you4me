@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_10dp"
+    android:background="@android:color/transparent">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        app:cardCornerRadius="@dimen/margin_20dp"
+        app:cardElevation="8dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        android:clipToOutline="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_20dp">
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:src="@drawable/top_arc_img"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/cancel_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/cancel_icon"
+                app:layout_constraintTop_toBottomOf="@id/imageView4"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/profileImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/onboarding_img1"
+                app:layout_constraintTop_toBottomOf="@id/cancel_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:shapeAppearanceOverlay="@style/CircleImageView" />
+
+            <TextView
+                android:id="@+id/textView56"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_20dp"
+                android:text="How Identity \nVerification Works"
+                android:textSize="@dimen/text_size_21sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/profileImage"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/textView57"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_20dp"
+                android:text="We do not keep underlying facial recognition information or “template” beyond the Selfie Verification process (usually complete within 24 hours). \n\nWe do not keep your video selfie."
+                android:textColor="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/textView56"
+                app:layout_constraintStart_toStartOf="@id/textView56"
+                app:layout_constraintEnd_toEndOf="@id/textView56" />
+
+            <LinearLayout
+                android:id="@+id/save_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_20dp"
+                android:layout_marginBottom="@dimen/margin_20dp"
+                android:background="@drawable/rectangle_skip_for_now"
+                android:backgroundTint="@color/primary_pink"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_17dp"
+                app:layout_constraintTop_toBottomOf="@id/textView57"
+                app:layout_constraintStart_toStartOf="@id/textView57"
+                app:layout_constraintEnd_toEndOf="@id/textView57"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start Verification"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"
+                    android:layout_marginEnd="8dp" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

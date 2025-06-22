@@ -25,13 +25,13 @@ class MixpanelManager private constructor(context: Context) {
     }
 
     // Identify Users
-    fun identifyUser(userId: String) {
+    private fun identifyUser(userId: String) {
         mixpanel.identify(userId)
         mixpanel.people.identify(userId)
     }
 
     // Set User Properties (People)
-    fun setUserProperties(userId: String, email: String, name: String) {
+    private fun setUserProperties(userId: String, email: String, name: String) {
         identifyUser(userId)
         mixpanel.people.set(
             JSONObject(

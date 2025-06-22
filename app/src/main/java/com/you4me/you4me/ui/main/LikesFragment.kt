@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableList
 import com.google.gson.JsonObject
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentLikesBinding
+import com.you4me.you4me.model.User
 import com.you4me.you4me.models.*
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
@@ -291,8 +292,8 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 "",
                 videoId,
             )
-        val action = FindDateFragmentDirections.actionFindDateFragmentToImageAndVideoDetailsFragment(imagesVideosResponseItem)
-        findNavController().navigate(action)
+//        val action = Like.actionFindDateFragmentToImageAndVideoDetailsFragment(imagesVideosResponseItem)
+//        findNavController().navigate(action)
     }
 
     @SuppressLint("ClickableViewAccessibility")

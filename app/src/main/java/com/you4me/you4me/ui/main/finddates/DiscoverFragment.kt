@@ -1,4 +1,4 @@
-package com.you4me.you4me.ui.main
+package com.you4me.you4me.ui.main.finddates
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -9,6 +9,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -23,22 +24,32 @@ import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.you4me.you4me.R
-import com.you4me.you4me.databinding.FragmentFindDateBinding
-import com.you4me.you4me.models.*
+import com.you4me.you4me.databinding.FragmentDiscoverBinding
+import com.you4me.you4me.model.User
+import com.you4me.you4me.models.FetchDatesResponseItem
+import com.you4me.you4me.models.ImagesVideosResponse
+import com.you4me.you4me.models.ImagesVideosResponseItem
+import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.base.BaseFragment
-import com.you4me.you4me.utils.Utils.getCategoryFromString
+import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.ui.main.MainViewModel
+import com.you4me.you4me.utils.SharedPrefHelper
+import com.you4me.you4me.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, MainRepository>("FIND_DATE") {
+
+class DiscoverFragment :
+    BaseFragment<MainViewModel, FragmentDiscoverBinding, MainRepository>("DISCOVER_DATE") {
+
     private var dates = ArrayList<FetchDatesResponseItem>()
     private var currentIdx = -1
 
@@ -50,14 +61,13 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
     private var paymentModes: ArrayList<ValueLabelResponse>? = null
     private lateinit var user: User
 
-    //  private lateinit var user: User
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
-    ): FragmentFindDateBinding {
-        return FragmentFindDateBinding.inflate(layoutInflater)
+    ): FragmentDiscoverBinding {
+        return FragmentDiscoverBinding.inflate(layoutInflater)
     }
 
     override fun getRepository() = MainRepository(dataSource.buildApi(ApiCollector::class.java))
@@ -69,7 +79,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         super.onViewCreated(view, savedInstanceState)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         val gson = Gson()
-         user = gson.fromJson(userProfile, User::class.java)
+        user = gson.fromJson(userProfile, User::class.java)
         setupView()
         setupObservers()
         showBottomSheetDialog()
@@ -103,7 +113,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                         // Your potentially crashing code (e.g., loading images, videos, etc.)
                         if (isAdded() && getActivity() != null) {
                             // Perform operations safely
-                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
+//                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
                         }
                     } catch (e: Exception) {
                     }
@@ -136,108 +146,108 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         }
     }
 
-    private fun loadImagesAndVideosInBackground(listOfImagesAndVideos: ImagesVideosResponse) {
-        val imageViews =
-            listOf(
-                binding.frame1,
-                binding.frame2,
-                binding.frame3,
-                binding.frame4,
-            ) // Predefined ImageViews
-
-        var isProfilePictureSet = false // Flag to check if profile picture is already set
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                val validMedia = listOfImagesAndVideos.filter { it.fileURL.isNotEmpty() } // Remove empty URLs
-
-                validMedia.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
-                    val frame = imageViews[index]
-                    frame.isClickable = true
-                    frame.isFocusable = true
-
-                    val secureUrl = fileData.fileURL.replace("http://", "https://")
-
-                    if (getCategoryFromString(fileData.fileURL) == "image") {
-                        val imageView =
-                            ImageView(requireActivity()).apply {
-                                layoutParams =
-                                    FrameLayout.LayoutParams(
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                    )
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                            }
-
-                        withContext(Dispatchers.Main) {
-                            if (isAdded) {
-                                Glide.with(requireActivity())
-                                    .load(secureUrl)
-                                    .into(imageView)
-                                frame.addView(imageView)
-
-                                if (!isProfilePictureSet) {
-                                    isProfilePictureSet = true
-                                    Glide.with(requireActivity())
-                                        .load(fileData.fileURL)
-                                        .override(
-                                            com.bumptech.glide.request.target.Target.SIZE_ORIGINAL,
-                                            com.bumptech.glide.request.target.Target.SIZE_ORIGINAL,
-                                        )
-                                        .into(binding.imageView)
-                                    binding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-                                }
-                            }
-                        }
-                    } else if (getCategoryFromString(fileData.fileURL) == "video") {
-                        val thumbnailView =
-                            ImageView(requireContext()).apply {
-                                layoutParams =
-                                    FrameLayout.LayoutParams(
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                    )
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                            }
-
-                        val bitmap = generateVideoThumbnail(secureUrl)
-
-                        withContext(Dispatchers.Main) {
-                            if (isAdded && bitmap != null) {
-                                thumbnailView.setImageBitmap(bitmap)
-                                frame.addView(thumbnailView)
-                            }
-                        }
-                    }
-
-                    withContext(Dispatchers.Main) {
-                        if (isAdded) {
-                            frame.setOnClickListener {
-                                if (fileData.fileURL.isEmpty()) return@setOnClickListener
-                                openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
-                            }
-                        }
-                    }
-                }
-
-                // Remove unused frames on the Main thread, but keep the first frame visible if the list is empty
-                withContext(Dispatchers.Main) {
-                    if (validMedia.isEmpty()) {
-                        imageViews.forEachIndexed { index, frame ->
-                            if (index == 0) return@forEachIndexed // Keep the first frame visible
-                            frame.removeAllViews()
-                            frame.visibility = View.GONE
-                        }
-                    } else {
-                        imageViews.drop(validMedia.size).forEach { frame ->
-                            frame.removeAllViews()
-                            frame.visibility = View.GONE
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    private fun loadImagesAndVideosInBackground(listOfImagesAndVideos: ImagesVideosResponse) {
+//        val imageViews =
+//            listOf(
+//                binding.frame1,
+//                binding.frame2,
+//                binding.frame3,
+//                binding.frame4,
+//            ) // Predefined ImageViews
+//
+//        var isProfilePictureSet = false // Flag to check if profile picture is already set
+//
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            withContext(Dispatchers.IO) {
+//                val validMedia = listOfImagesAndVideos.filter { it.fileURL.isNotEmpty() } // Remove empty URLs
+//
+//                validMedia.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
+//                    val frame = imageViews[index]
+//                    frame.isClickable = true
+//                    frame.isFocusable = true
+//
+//                    val secureUrl = fileData.fileURL.replace("http://", "https://")
+//
+//                    if (Utils.getCategoryFromString(fileData.fileURL) == "image") {
+//                        val imageView =
+//                            ImageView(requireActivity()).apply {
+//                                layoutParams =
+//                                    FrameLayout.LayoutParams(
+//                                        FrameLayout.LayoutParams.MATCH_PARENT,
+//                                        FrameLayout.LayoutParams.MATCH_PARENT,
+//                                    )
+//                                scaleType = ImageView.ScaleType.CENTER_CROP
+//                            }
+//
+//                        withContext(Dispatchers.Main) {
+//                            if (isAdded) {
+//                                Glide.with(requireActivity())
+//                                    .load(secureUrl)
+//                                    .into(imageView)
+//                                frame.addView(imageView)
+//
+//                                if (!isProfilePictureSet) {
+//                                    isProfilePictureSet = true
+//                                    Glide.with(requireActivity())
+//                                        .load(fileData.fileURL)
+//                                        .override(
+//                                            Target.SIZE_ORIGINAL,
+//                                            Target.SIZE_ORIGINAL,
+//                                        )
+//                                        .into(binding.imageView)
+//                                    binding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+//                                }
+//                            }
+//                        }
+//                    } else if (Utils.getCategoryFromString(fileData.fileURL) == "video") {
+//                        val thumbnailView =
+//                            ImageView(requireContext()).apply {
+//                                layoutParams =
+//                                    FrameLayout.LayoutParams(
+//                                        FrameLayout.LayoutParams.MATCH_PARENT,
+//                                        FrameLayout.LayoutParams.MATCH_PARENT,
+//                                    )
+//                                scaleType = ImageView.ScaleType.CENTER_CROP
+//                            }
+//
+//                        val bitmap = generateVideoThumbnail(secureUrl)
+//
+//                        withContext(Dispatchers.Main) {
+//                            if (isAdded && bitmap != null) {
+//                                thumbnailView.setImageBitmap(bitmap)
+//                                frame.addView(thumbnailView)
+//                            }
+//                        }
+//                    }
+//
+//                    withContext(Dispatchers.Main) {
+//                        if (isAdded) {
+//                            frame.setOnClickListener {
+//                                if (fileData.fileURL.isEmpty()) return@setOnClickListener
+//                                openDetailScreen(secureUrl, Utils.getCategoryFromString(fileData.fileURL), fileData.videoId)
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                // Remove unused frames on the Main thread, but keep the first frame visible if the list is empty
+//                withContext(Dispatchers.Main) {
+//                    if (validMedia.isEmpty()) {
+//                        imageViews.forEachIndexed { index, frame ->
+//                            if (index == 0) return@forEachIndexed // Keep the first frame visible
+//                            frame.removeAllViews()
+//                            frame.visibility = View.GONE
+//                        }
+//                    } else {
+//                        imageViews.drop(validMedia.size).forEach { frame ->
+//                            frame.removeAllViews()
+//                            frame.visibility = View.GONE
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private fun showReportAbuseDialog() {
         // Inflate the custom layout
@@ -278,7 +288,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                             d.userId,
                             false,
                             user.userId,
-                            )
+                        )
                         viewModel.addSwipe.observe(viewLifecycleOwner) {
                             showLoading(false)
                             when (it) {
@@ -350,7 +360,10 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 "",
                 videoId,
             )
-        val action = FindDateFragmentDirections.actionFindDateFragmentToImageAndVideoDetailsFragment(imagesVideosResponseItem)
+        val action =
+            FindDateFragmentDirections.actionFindDateFragmentToImageAndVideoDetailsFragment(
+                imagesVideosResponseItem
+            )
         findNavController().navigate(action)
     }
 
@@ -387,7 +400,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                 d.userId,
                 false,
                 user.userId,
-                )
+            )
             mixpanel?.track("Android_Disliked_Find_Date_Button_Pressed")
         }
 
@@ -417,7 +430,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                                 d.userId,
                                 false,
                                 user.userId,
-                                )
+                            )
                         }
                     } else {
                         startSecondTiltAnimation(true)
@@ -543,7 +556,7 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
                         d.userId,
                         true,
                         user.userId,
-                        )
+                    )
                 }
 
                 is Resource.Failure -> {
@@ -582,12 +595,12 @@ class FindDateFragment : BaseFragment<MainViewModel, FragmentFindDateBinding, Ma
         }
         observeImagesAndVideos(date.userId)
 
-        binding.userName.text = "${date.name.trim()}, ${date.age}"
-        binding.nameGallery.text = "${date.name.trim()}'s Gallery"
-        binding.location.text = date.place
-        binding.bio.text = date.bio
-        binding.payment.text =
-            paymentModes?.firstOrNull { it.value == date.payment }?.label ?: date.payment
+//        binding.userName.text = "${date.name.trim()}, ${date.age}"
+//        binding.nameGallery.text = "${date.name.trim()}'s Gallery"
+//        binding.location.text = date.place
+//        binding.bio.text = date.bio
+//        binding.payment.text =
+//            paymentModes?.firstOrNull { it.value == date.payment }?.label ?: date.payment
 
         val mediaItem = MediaItem.fromUri(date.videoURL.replace("http:", "https:"))
         player?.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)

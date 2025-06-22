@@ -12,7 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.you4me.you4me.R
-import com.you4me.you4me.database.AppDatabase
+import com.you4me.you4me.core.AppDatabase
+import com.you4me.you4me.core.DbRepository
 import com.you4me.you4me.databinding.ActivityImageAndVideoDetailsBinding
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.RemoteDataSource

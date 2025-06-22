@@ -3,7 +3,7 @@ package com.you4me.you4me.ui.base
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.you4me.you4me.core.DbRepository
-import com.you4me.you4me.core.repository.AuthenticationRepository
+import com.you4me.you4me.repository.AuthenticationRepository
 import com.you4me.you4me.repository.BaseRepository
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.repository.ProfileRepository

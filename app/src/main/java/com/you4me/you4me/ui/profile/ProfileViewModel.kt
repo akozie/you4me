@@ -10,7 +10,11 @@ import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.google.gson.JsonObject
+import com.you4me.you4me.core.DbRepository
+import com.you4me.you4me.model.User
 import com.you4me.you4me.models.*
+import com.you4me.you4me.models.useroptions.UserOptionsResponse
+import com.you4me.you4me.models.verification.VeriffVerification
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.ProfileRepository
 import com.you4me.you4me.ui.base.SingleLiveEvent
@@ -22,6 +26,11 @@ class ProfileViewModel(
     private val repository: ProfileRepository,
     private val dbRepository: DbRepository,
 ) : ViewModel() {
+    private val _getUserOptionsResponse: MutableLiveData<Resource<UserOptionsResponse>> =
+        MutableLiveData()
+    val getUserOptionsResponse: LiveData<Resource<UserOptionsResponse>>
+        get() = _getUserOptionsResponse
+
     private val _genders: MutableLiveData<Resource<ArrayList<ValueLabelResponse>>> =
         MutableLiveData()
     val genders: LiveData<Resource<ArrayList<ValueLabelResponse>>>
@@ -68,6 +77,13 @@ class ProfileViewModel(
     private val _userDetails = SingleLiveEvent<Resource<User>>()
     val userDetails: LiveData<Resource<User>> get() = _userDetails
 
+    private val _getSubscriptionStatus = SingleLiveEvent<Resource<GetSubscriptionStatus>>()
+    val getSubscriptionStatus: LiveData<Resource<GetSubscriptionStatus>>
+        get() = _getSubscriptionStatus
+
+    private val _requestVeriffVerification: MutableLiveData<Resource<VeriffVerification>> = SingleLiveEvent()
+    val requestVeriffVerification: LiveData<Resource<VeriffVerification>> get() = _requestVeriffVerification
+
     private val _updateUserResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
     val updateUserResponse: LiveData<Resource<Unit>>
         get() = _updateUserResponse
@@ -88,6 +104,10 @@ class ProfileViewModel(
     val deleteVideoUploadResponse: LiveData<Resource<Unit>>
         get() = _deleteVideoUploadResponse
 
+    private val _cameraUploadResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val cameraUploadResponse: LiveData<Resource<Unit>>
+        get() = _cameraUploadResponse
+
     private val _validateVideoUploadResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
     val validateVideoUpload: LiveData<Resource<Unit>>
         get() = _validateVideoUploadResponse
@@ -106,11 +126,12 @@ class ProfileViewModel(
 
     init {
         getUserFromDb()
-        getGenders()
         getCountries()
-        getSexualOrientations()
-        getAgeGroups()
-        getReligions()
+        getUserOptions()
+//        getGenders()
+//        getSexualOrientations()
+//        getAgeGroups()
+//        getReligions()
     }
 
     fun logout(userId: String) {
@@ -148,6 +169,23 @@ class ProfileViewModel(
     fun getUserProfileDetails(userId: String) {
         viewModelScope.launch {
             _userDetails.value = repository.getUser(userId)
+        }
+    }
+    fun getSubscriptionStatus(userId: String) {
+        viewModelScope.launch {
+            _getSubscriptionStatus.value = repository.getSubscriptionStatus(userId)
+        }
+    }
+
+    fun requestVerification(userId: String) {
+        viewModelScope.launch {
+            _requestVeriffVerification.value = repository.requestVerification(userId)
+        }
+    }
+
+    fun getUserOptions() {
+        viewModelScope.launch {
+            _getUserOptionsResponse.value = repository.getUserOptions()
         }
     }
 
@@ -218,6 +256,7 @@ class ProfileViewModel(
                 u.token,
                 u.videoStatus,
                 u.videoURL,
+                u.isVerified ?: false
             )
         saveUser(uUser)
     }
@@ -242,7 +281,7 @@ class ProfileViewModel(
 //        }
 //    }
 
-    fun updateUserInfo(userBody: UpdateUserBody) {
+    fun updateUserInfo(userBody: UpdateUserBody, userId: String) {
         viewModelScope.launch {
             val obj = JsonObject()
             userBody.apply {
@@ -257,7 +296,6 @@ class ProfileViewModel(
                 obj.addProperty("gender", gender)
             }
 
-            val userId = _dbUser.value?.userId
             if (userId == null) {
                 Log.e("ProfileViewModel", "User ID is null! Cannot update user info.")
                 return@launch
@@ -376,9 +414,21 @@ class ProfileViewModel(
         }
     }
 
+    fun cameraUpload() {
+        viewModelScope.launch {
+            _cameraUploadResponse.value = repository.validateVideoUpload(_dbUser.value!!.userId)
+        }
+    }
     fun validateVideoUpload() {
         viewModelScope.launch {
             _validateVideoUploadResponse.value = repository.validateVideoUpload(_dbUser.value!!.userId)
+        }
+    }
+
+    fun registerProfilePhotoUpload(registerVideoUploadBody: RegisterProfilePhotoBody) {
+        viewModelScope.launch {
+            _registerVideoUploadResponse.value =
+                repository.registerProfilePhotoUpload(_dbUser.value!!.userId, registerVideoUploadBody)
         }
     }
 

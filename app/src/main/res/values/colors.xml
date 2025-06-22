@@ -2,7 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary_pink">#ffff0052</color>
+    <color name="primary_pink">#ED0D57</color>
     <color name="blue">#1F3BF4</color>
     <color name="purple">#605FEC</color>
     <color name="grey_circle">#59656F</color>
@@ -11,5 +11,9 @@
     <color name="text_grey">#C3CFD9</color>
     <color name="splash_bg">#3660AD</color>
     <color name="transparent">#00000000</color>
+    <color name="light_green">#E9FCEC</color>
+    <color name="green_for_profile">#F8F8F8</color>
+    <color name="green">#4CAF50</color>
+    <color name="light_pink">#FDF6F8</color>
 
 </resources>

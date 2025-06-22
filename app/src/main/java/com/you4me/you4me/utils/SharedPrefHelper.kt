@@ -2,6 +2,7 @@ package com.you4me.you4me.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.you4me.you4me.models.useroptions.UserOptionsResponse
 
 class SharedPrefHelper(context: Context) {
     companion object {
@@ -12,6 +13,12 @@ class SharedPrefHelper(context: Context) {
         const val IS_SUBSCRIBED = "is_subscribed"
 //        const val IS_FREE_PLAN = "is_free_plan"
         const val APP_TOKEN = "app_token"
+        const val USER_EMAIL = "user_email"
+        const val RESET_TOKEN = "reset_token"
+        const val USERNAME = "user_name"
+        const val SESSION_ID = "sessionId"
+        const val COUNTRY_ID = "country_id"
+        const val SEXUALITY_ID = "sexuality_id"
     }
 
     private val sharedPreferences: SharedPreferences =
@@ -27,6 +34,13 @@ class SharedPrefHelper(context: Context) {
     ) {
         sharedPreferences.edit().putString(key, value).apply()
     }
+
+//    fun saveUserOptionsResponse(
+//        key: String,
+//        value: UserOptionsResponse,
+//    ) {
+//        sharedPreferences.edit().putString(key, value).apply()
+//    }
 
 //    fun saveUser(key: String, value: User) {
 //        sharedPreferences.edit().putString(key, value.toString()).apply()

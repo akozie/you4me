@@ -7,27 +7,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
 import com.you4me.you4me.R
-import com.you4me.you4me.adapter.CompletedDatesRecyclerAdapter
-import com.you4me.you4me.adapter.DateInterestsRequiringApprovalRecyclerAdapter
-import com.you4me.you4me.adapter.InviteeDateForApprovalRecyclerAdapter
-import com.you4me.you4me.adapter.UpcomingDatesRecyclerAdapter
+import com.you4me.you4me.adapter.*
 import com.you4me.you4me.databinding.FragmentHomeBinding
+import com.you4me.you4me.model.User
 import com.you4me.you4me.models.*
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.base.BaseFragment
+import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils.ADD_EVENT_REQUEST_CODE
 import java.util.*
 
 class HomeFragment :
-    BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>("HOME"),
-    UpcomingDatesRecyclerAdapter.CalendarResultListener {
+    BaseFragment<MainViewModel, FragmentHomeBinding, MainRepository>("HOME"){
     private lateinit var user: User
-    private var isExpanded = false // Track visibility state
 
     override fun getViewModel() = MainViewModel::class.java
 
@@ -62,6 +61,7 @@ class HomeFragment :
         user = gson.fromJson(userProfile, User::class.java)
         viewModel.getUserDetails(user.userId)
         addObservers()
+        setUpViewPager()
 //        viewModel.getSubscriptionStatusForHome(user.userId)
         binding.notificationIcon.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment) }
         mixpanel?.track("Android_Home_Viewed")
@@ -80,19 +80,12 @@ class HomeFragment :
             findNavController().navigate(R.id.profileFragment)
         }
 
-        binding.toggleLayout.setOnClickListener {
-            isExpanded = !isExpanded // Toggle state
-
-            if (isExpanded) {
-                binding.completedDatesRecycler.visibility = View.VISIBLE
-                binding.toggleArrow.setImageResource(R.drawable.baseline_keyboard_arrow_up_24) // Change icon
-            } else {
-                binding.completedDatesRecycler.visibility = View.GONE
-                binding.toggleArrow.setImageResource(R.drawable.baseline_keyboard_arrow_down_24) // Change icon
-            }
-        }
         binding.chat.setOnClickListener {
             findNavController().navigate(R.id.chatFragment)
+        }
+
+        binding.viewAllDateProposalsBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_allDateProposalsFragment)
         }
     }
 
@@ -101,11 +94,12 @@ class HomeFragment :
             when (it) {
                 is Resource.Success -> {
 //                    viewModel._user.value = it.value
-                    viewModel.getUpcomingDates(user.userId)
+//                    viewModel.getUpcomingDates(user.userId)
                     viewModel.getInviteeDatesRequiringApproval(user.userId)
                     viewModel.getDateInterestsRequiringApproval()
                     viewModel.getNotifications()
-                    viewModel.fetchCompletedDates()
+//                    viewModel.fetchCompletedDates()
+                    setUpPremiumBanner(user)
                 }
 
                 is Resource.Failure -> {
@@ -114,33 +108,29 @@ class HomeFragment :
             }
         }
 
-        viewModel.upcomingDates.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Success -> {
-                    setupUpcomingDates(it.value)
-                }
 
-                is Resource.Failure -> {
-                    showToast(it.message ?: it.errorBody ?: "")
-                }
-            }
-        }
-        viewModel.completedDates.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Success -> {
-                    setupCompletedDates(it.value)
-                }
 
-                is Resource.Failure -> {
-                    showToast(it.message ?: it.errorBody ?: "")
-                }
-            }
-        }
 
         viewModel.inviteeDatesRequiringApproval.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    setupInviteeDates(it.value)
+//                    setupInviteeDates(it.value)
+                    val list =  InviteeDatesRequiringApproval().apply {
+                        add(
+                            InviteeDatesRequiringApprovalItem(
+                                "CHAT",
+                                "2025/06/09",
+                                "12wqasde",
+                                "12wqasde111",
+                                "Emmanuel",
+                                "Lekki",
+                                "2025/06/09",
+                                "13:20",
+                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8"
+                            )
+                        )
+                    }
+                    setupInviteeDates(list)
                 }
 
                 is Resource.Failure -> {
@@ -236,6 +226,23 @@ class HomeFragment :
         }
     }
 
+    private fun setUpPremiumBanner(user: User) {
+        if (user.status.toLowerCase().contains("complete")) {
+            binding.alreadySubscribed.isVisible = true
+            binding.notYetSubscribed.isVisible = false
+        } else {
+            binding.alreadySubscribed.isVisible = false
+            binding.notYetSubscribed.isVisible = true
+        }
+
+        if (user.name.isNotEmpty()) {
+            binding.userName.isVisible = true
+            binding.userName.text = user.name
+        } else {
+            binding.userName.isVisible = false
+        }
+    }
+
     private fun setupDateInterests(dates: DateInterestsRequiringApproval) {
         if (dates.isEmpty()) {
             binding.datesRequiringAppLyt.visibility = View.GONE
@@ -255,6 +262,7 @@ class HomeFragment :
         }
     }
 
+
     private fun setupInviteeDates(dates: InviteeDatesRequiringApproval) {
         if (dates.isEmpty()) {
             binding.approvedDatesLyt.visibility = View.GONE
@@ -270,60 +278,21 @@ class HomeFragment :
         }
     }
 
-    private fun setupCompletedDates(dates: CompletedDateResponse) {
-        if (dates.isEmpty()) {
-            binding.datesCompletedAppLyt.visibility = View.GONE
-            binding.completedDatesTxt.visibility = View.GONE
-            binding.completedDatesDivider.visibility = View.GONE
-        } else {
-            binding.datesCompletedAppLyt.visibility = View.VISIBLE
-            binding.completedDatesTxt.visibility = View.VISIBLE
-            binding.completedDatesDivider.visibility = View.VISIBLE
-            val adapter =
-                mixpanel?.mixpanel?.let {
-                    CompletedDatesRecyclerAdapter(
-                        viewModel,
-                        viewLifecycleOwner,
-                        requireContext(),
-                        dates,
-                        it,
-                    )
+    private fun setUpViewPager() {
+        val adapter = HomePagerAdapter(this, 2) // ✅ Pass `this` (fragment)
+        binding.pager.adapter = adapter
+        binding.pager.isUserInputEnabled = true // ✅ Ensure swiping is enabled
+
+        TabLayoutMediator(binding.tabs, binding.pager) { tab, position ->
+            tab.text =
+                when (position) {
+                    0 -> getString(R.string.upcoming_dates)
+                    1 -> getString(R.string.completed_dates)
+                    else -> getString(R.string.upcoming_dates)
                 }
-            binding.completedDatesRecycler.adapter = adapter
-        }
+        }.attach()
     }
 
-
-    private fun setupUpcomingDates(dates: UpcomingDates) {
-        if (dates.isEmpty()) {
-            binding.upcomingDatesRecycler.visibility = View.GONE
-            binding.noUpcomingDates.visibility = View.VISIBLE
-        } else {
-            binding.upcomingDatesRecycler.visibility = View.VISIBLE
-            binding.noUpcomingDates.visibility = View.GONE
-            val adapter = UpcomingDatesRecyclerAdapter(user, this, this, dates, ctx)
-            binding.upcomingDatesRecycler.adapter = adapter
-        }
-    }
-
-    override fun onCalendarEventAdded(
-        resultCode: Int,
-        data: Intent?,
-    ) {
-        if (resultCode == Activity.RESULT_OK) {
-            mixpanel?.track("Android_Home_Added_Date_to_Google_Calendar")
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            // The user canceled the operation
-//            Log.d("NNNNOKKKKK","Event addition canceled")
-        }
-    }
-
-    override fun startActivityForCalendarEvent(
-        intent: Intent,
-        resultCode: Int,
-    ) {
-        startActivityForResult(intent, ADD_EVENT_REQUEST_CODE)
-    }
 
     override fun onDestroy() {
         mixpanel?.mixpanel?.flush()

@@ -111,7 +111,7 @@ dependencies {
 //    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
 
     // Logging Interceptor
-    implementation(libs.logging)
+    implementation(libs.logging.interceptor)
 
 //    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
@@ -174,5 +174,12 @@ dependencies {
     // mixpanel
     implementation(libs.mixpanel)
 //    implementation("com.mixpanel.android:mixpanel-android:5.9.6")
+
+    // OTP VIEWS
+    implementation(libs.pinview)
+
+    //Veriff
+    implementation(libs.veriff)
+
 }
 apply(plugin = "com.google.gms.google-services")

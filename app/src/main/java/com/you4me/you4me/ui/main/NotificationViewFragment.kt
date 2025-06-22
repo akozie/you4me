@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.you4me.you4me.databinding.FragmentNotificationViewBinding
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.base.BaseFragment
+import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.safeNavigateUp
 
 class NotificationViewFragment : BaseFragment<MainViewModel, FragmentNotificationViewBinding,

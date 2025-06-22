@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.NotificationItemBinding
 import com.you4me.you4me.`interface`.OnNotificationClickListener
+import com.you4me.you4me.model.User
 import com.you4me.you4me.models.Notification
-import com.you4me.you4me.models.User
 import com.you4me.you4me.utils.Utils.formatDate
 
 class NotificationsRecyclerAdapter(

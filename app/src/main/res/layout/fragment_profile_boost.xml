@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/boostDialogLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="24dp"
+        tools:context=".ui.profile.bottomsheet.ProfileBoostFragment">
+
+        <!-- Avatar -->
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/onboarding_screen_1"
+            android:scaleType="centerCrop" />
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profile boost"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"/>
+
+        <!-- Subtitle -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Each boost gets you seen by 15x more people for 24hrs"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal" />
+
+        <!-- Boost Options -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/optionTwoBoosts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/BoostOptionCard"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/optionThreeBoosts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/BoostOptionCard"
+                android:layout_marginTop="12dp"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/optionOneBoost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/BoostOptionCard"
+                android:layout_marginTop="12dp"/>
+        </LinearLayout>
+
+        <!-- Superboost CTA -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/rectangle_shape_for_active"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Increase your chances of getting more dates within 24hr superboost"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/superBoostBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Superboost for $31.0"
+                android:backgroundTint="@color/primary_pink"
+                android:textColor="@android:color/white"
+                android:background="@drawable/rectangle_about_me"/>
+        </LinearLayout>
+    </LinearLayout>
+

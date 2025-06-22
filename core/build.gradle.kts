@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.android)
+    id("kotlin-kapt")
     id("com.android.library")
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
@@ -29,6 +30,7 @@ dependencies {
     // room
     implementation(libs.androidx.room.paging)
     annotationProcessor(libs.androidx.room.compiler)
+    kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
 

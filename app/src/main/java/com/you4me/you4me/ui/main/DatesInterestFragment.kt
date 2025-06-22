@@ -11,7 +11,7 @@ import com.you4me.you4me.adapter.DatesInterestPagerAdapter
 import com.you4me.you4me.databinding.FragmentDatesInterestBinding
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.base.BaseFragment
+import com.you4me.you4me.ui.base.BaseFragment
 
 class DatesInterestFragment : BaseFragment<MainViewModel, FragmentDatesInterestBinding, MainRepository>("PROPOSE_DATE_TIME") {
     override fun getViewModel() = MainViewModel::class.java

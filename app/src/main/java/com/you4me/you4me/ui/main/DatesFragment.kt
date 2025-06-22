@@ -22,7 +22,7 @@ import com.you4me.you4me.models.*
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
-import com.you4me.you4me.base.BaseFragment
+import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.utils.Utils.getCategoryFromString
 import com.you4me.you4me.utils.safeNavigate
 import com.you4me.you4me.utils.safeNavigateUp
@@ -36,7 +36,6 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
     private var playWhenReady = true
     private var mediaItemIndex = 0
     private var playbackPosition = 0L
-    private lateinit var user: User
     private lateinit var date: FetchDateInterestItem
     private var userId: String? = null
 
@@ -239,6 +238,7 @@ class DatesFragment : BaseFragment<MainViewModel, FragmentDatesBinding, MainRepo
                 "",
                 "",
                 videoId,
+                false
             )
         val action =
             DatesFragmentDirections.actionDatesFragmentToImageAndVideoDetailsFragment(
