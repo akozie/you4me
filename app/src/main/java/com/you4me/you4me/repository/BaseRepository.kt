@@ -99,6 +99,8 @@ abstract class BaseRepository {
                         val body = throwable.response()?.errorBody()?.string()
                         val errorMessage = extractErrorMessage(body)
 
+                        Log.d("JUST==CHECKING===", errorMessage.toString())
+
                         // 🛑 Handle Unauthorized (401) and retry request after token refresh
                         if (errorMessage != null) {
                             if (throwable.code() == 401 && errorMessage.contains("Invalid token")) {
@@ -120,6 +122,8 @@ abstract class BaseRepository {
                         Resource.Failure(false, throwable.code(), errorMessage, body)
                     }
                     else -> {
+                        Log.d("JUSTCHECKING===", "${throwable::class.java}==${throwable.message}==${throwable}")
+
                         Resource.Failure(
                             isNetworkError = true,
                             null,

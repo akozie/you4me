@@ -182,6 +182,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="top|end"
                             android:layout_margin="6dp"
+                            android:background="@drawable/rectangle_shape_for_active"
                             android:src="@drawable/cancel_icon"
                             android:visibility="gone"
                             android:contentDescription="Remove photo" />
@@ -226,6 +227,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="top|end"
                             android:layout_margin="6dp"
+                            android:background="@drawable/rectangle_shape_for_active"
                             android:src="@drawable/cancel_icon"
                             android:visibility="gone"
                             android:contentDescription="Remove photo" />
@@ -271,6 +273,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="top|end"
                             android:layout_margin="6dp"
+                            android:background="@drawable/rectangle_shape_for_active"
                             android:src="@drawable/cancel_icon"
                             android:visibility="gone"
                             android:contentDescription="Remove photo" />
@@ -316,6 +319,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="top|end"
                             android:layout_margin="6dp"
+                            android:background="@drawable/rectangle_shape_for_active"
                             android:src="@drawable/cancel_icon"
                             android:visibility="gone"
                             android:contentDescription="Remove photo" />
@@ -359,6 +363,7 @@
                             android:id="@+id/cancel5"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
+                            android:background="@drawable/rectangle_shape_for_active"
                             android:layout_gravity="top|end"
                             android:layout_margin="6dp"
                             android:src="@drawable/cancel_icon"
@@ -407,6 +412,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="top|end"
                             android:layout_margin="6dp"
+                            android:background="@drawable/rectangle_shape_for_active"
                             android:src="@drawable/cancel_icon"
                             android:visibility="gone"
                             android:contentDescription="Remove photo" />

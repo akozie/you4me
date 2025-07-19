@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="#FFFFFF"
+tools:context=".ui.main.likes.bottomsheet.DecliningInterestFragment">
+
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Top Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:weightSum="2"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Help us Improve"
+            android:layout_weight="1.8"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:gravity="end"
+            android:layout_weight="0.2"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            app:tint="@color/black" />
+    </LinearLayout>
+
+    <!-- Red Cross Icon (Placeholder) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:contentDescription="Red Cross"
+            android:src="@drawable/cancel_img" />
+    </LinearLayout>
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Declining Emma proposal?"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- Subtitle -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="24dp"
+        android:text="Help us show you better matches by telling us why?"
+        android:textAlignment="center"
+        android:textColor="#666666"
+        android:textSize="14sp" />
+
+    <!-- Reason Option 1 -->
+    <TextView
+        android:id="@+id/etReason1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_input"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="Not my type"
+        android:padding="12dp" />
+
+    <!-- Reason Option 2 -->
+    <TextView
+        android:id="@+id/etReason2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_input"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="Location too far"
+        android:padding="12dp" />
+
+    <!-- Reason Option 3 -->
+    <TextView
+        android:id="@+id/etReason3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_input"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="Age preference"
+        android:padding="12dp" />
+
+    <!-- Reason Option 4 -->
+    <TextView
+        android:id="@+id/etReason4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_input"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="New time cannot work"
+        android:padding="12dp" />
+
+    <!-- Other Reason -->
+    <TextView
+        android:id="@+id/etOtherReason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_input"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="Other"
+        android:padding="12dp" />
+
+    <!-- Additional Info -->
+    <EditText
+        android:id="@+id/etAdditionalInfo"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/bg_dotted_border"
+        android:gravity="top|start"
+        android:hint="Tell us why you’re not interested in Lovie"
+        android:inputType="textMultiLine"
+        android:textSize="@dimen/text_size_15sp"
+        android:maxLength="145"
+        android:padding="12dp" />
+
+    <!-- Character Counter -->
+    <TextView
+        android:id="@+id/tvCharCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:gravity="end"
+        android:text="0/145"
+        android:textColor="#888888"
+        android:textSize="12sp" />
+
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/btnReport"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@drawable/bg_rounded_button"
+        android:text="Report User"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
+
+</LinearLayout>
+</ScrollView>

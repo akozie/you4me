@@ -16,6 +16,7 @@ object Utils {
     const val GOOGLE_SIGN_IN_RQ_CODE = 100
     const val TAG_TOUCH_START_X = 1000
     const val BANNER_TIMEOUT = 5000L
+    const val STORAGE_CODE = 1001
 
     fun getDateFormat() = SimpleDateFormat("yyyy/MM/dd", Locale.UK)
 

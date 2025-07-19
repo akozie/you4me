@@ -1,4 +1,4 @@
-package com.you4me.you4me.ui.main
+package com.you4me.you4me.ui.main.likes
 
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +14,7 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.ui.main.MainViewModel
 import com.you4me.you4me.utils.SharedPrefHelper
 
 class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBinding, MainRepository>("DATE_INTEREST_SENT") {

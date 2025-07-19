@@ -34,6 +34,15 @@
         <action
             android:id="@+id/action_findDateFragment_to_imageAndVideoDetailsFragment"
             app:destination="@id/imageAndVideoDetailsFragment" />
+        <action
+            android:id="@+id/action_findDateFragment_to_complimentsBottomSheetFragment"
+            app:destination="@id/complimentsBottomSheetFragment" />
+        <action
+            android:id="@+id/action_findDateFragment_to_dateMatchFragment"
+            app:destination="@id/dateMatchFragment" />
+        <action
+            android:id="@+id/action_findDateFragment_to_notInterestedFragment"
+            app:destination="@id/notInterestedFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -55,12 +64,12 @@
     </fragment>
     <fragment
         android:id="@+id/goOnDateFragment"
-        android:name="com.you4me.you4me.ui.main.GoOnDateFragment"
+        android:name="com.you4me.you4me.ui.main.mydates.GoOnDateFragment"
         android:label="fragment_go_on_date"
         tools:layout="@layout/fragment_go_on_date" />
     <fragment
         android:id="@+id/likesFragment"
-        android:name="com.you4me.you4me.ui.main.LikesFragment"
+        android:name="com.you4me.you4me.ui.main.likes.LikesFragment"
         android:label="fragment_likes"
         tools:layout="@layout/fragment_likes" />
     <fragment
@@ -104,7 +113,7 @@
     </fragment>
     <fragment
         android:id="@+id/datesInterestFragment"
-        android:name="com.you4me.you4me.ui.main.DatesInterestFragment"
+        android:name="com.you4me.you4me.ui.main.likes.DatesInterestFragment"
         android:label="fragment_dates_interest"
         tools:layout="@layout/fragment_dates_interest" />
     <fragment
@@ -268,4 +277,56 @@
         android:name="com.you4me.you4me.ui.profile.bottomsheet.ProfileBoostFragment"
         android:label="fragment_profile_boost"
         tools:layout="@layout/fragment_profile_boost" />
+    <dialog
+        android:id="@+id/complimentsBottomSheetFragment"
+        android:name="com.you4me.you4me.ui.main.finddates.bottomsheet.ComplimentsBottomSheetFragment"
+        android:label="fragment_compliments_bottom_sheet"
+        tools:layout="@layout/fragment_compliments_bottom_sheet" />
+    <fragment
+        android:id="@+id/suggestedFragment"
+        android:name="com.you4me.you4me.ui.main.finddates.SuggestedFragment"
+        android:label="fragment_suggested"
+        tools:layout="@layout/fragment_suggested" />
+    <fragment
+        android:id="@+id/discoverFragment"
+        android:name="com.you4me.you4me.ui.main.finddates.DiscoverFragment"
+        android:label="fragment_discover"
+        tools:layout="@layout/fragment_discover" >
+        <action
+            android:id="@+id/action_discoverFragment_to_dateMatchFragment"
+            app:destination="@id/dateMatchFragment" />
+        <action
+            android:id="@+id/action_discoverFragment_to_notInterestedFragment"
+            app:destination="@id/notInterestedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dateMatchFragment"
+        android:name="com.you4me.you4me.ui.main.finddates.DateMatchFragment"
+        android:label="fragment_date_match"
+        tools:layout="@layout/fragment_date_match" />
+    <dialog
+        android:id="@+id/notInterestedFragment"
+        android:name="com.you4me.you4me.ui.main.finddates.NotInterestedFragment"
+        android:label="fragment_not_interested"
+        tools:layout="@layout/fragment_not_interested" />
+    <fragment
+        android:id="@+id/myDatesFragment"
+        android:name="com.you4me.you4me.ui.main.mydates.MyDatesFragment"
+        android:label="fragment_my_dates"
+        tools:layout="@layout/fragment_my_dates" />
+    <fragment
+        android:id="@+id/approvedMyDatesFragment"
+        android:name="com.you4me.you4me.ui.main.mydates.ApprovedMyDatesFragment"
+        android:label="fragment_approved_my_dates"
+        tools:layout="@layout/fragment_approved_my_dates" />
+    <fragment
+        android:id="@+id/upcomingMyDatesFragment"
+        android:name="com.you4me.you4me.ui.main.mydates.UpcomingMyDatesFragment"
+        android:label="fragment_upcoming_my_dates"
+        tools:layout="@layout/fragment_upcoming_my_dates" />
+    <fragment
+        android:id="@+id/completedMyDatesFragment"
+        android:name="com.you4me.you4me.ui.main.mydates.CompletedMyDatesFragment"
+        android:label="fragment_completed_my_dates"
+        tools:layout="@layout/fragment_completed_my_dates" />
 </navigation>

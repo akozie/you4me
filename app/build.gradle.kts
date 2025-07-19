@@ -25,6 +25,7 @@ android {
             storeFile = file("/Users/admin/Downloads/you4me-android/you4meKeyStore")
         }
     }
+
     namespace = "com.you4me.you4me"
 
 //    tasks.named("mergeDebugResources") {
@@ -36,8 +37,8 @@ android {
             resolutionStrategy { force("androidx.core:core-ktx:1.6.0") }
         }
         applicationId = "com.you4me.you4me"
-        versionCode = 40
-        versionName = "1.40"
+        versionCode = 42
+        versionName = "1.42"
     }
 
     buildTypes {
@@ -52,6 +53,9 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+    }
+    lint {
+        baseline = file("lint-baseline.xml")
     }
 }
 

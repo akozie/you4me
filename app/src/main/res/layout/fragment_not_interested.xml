@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.finddates.NotInterestedFragment">
+
+
+    <!-- Scrollable Content -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:fitsSystemWindows="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guidelineVertical1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.1" />
+
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/top_arc_img"
+                android:layout_marginTop="@dimen/margin_10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/headerTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="Help us Improve"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/cancel_img" />
+
+            <TextView
+                android:id="@+id/mainQuestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Not interested in Lovie?"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/subText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:gravity="center"
+                android:text="Let’s know why you want to cancel this date so as to serve you better"
+                android:textColor="#888888"
+                android:textSize="14sp" />
+
+            <!-- Reason Buttons -->
+            <LinearLayout
+                android:id="@+id/reason1"
+                style="@style/SelectableCardStyle">
+
+                <TextView
+                    android:id="@+id/reasonText1"
+                    style="@style/ReasonText"
+                    android:text="Not my type" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/reason2"
+                style="@style/SelectableCardStyle">
+
+                <TextView
+                    android:id="@+id/reasonText2"
+                    style="@style/ReasonText"
+                    android:text="Location too far" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/reason3"
+                style="@style/SelectableCardStyle">
+
+                <TextView
+                    android:id="@+id/reasonText3"
+                    style="@style/ReasonText"
+                    android:text="Age preference" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/reason4"
+                style="@style/SelectableCardStyle">
+
+                <TextView
+                    android:id="@+id/reasonText4"
+                    style="@style/ReasonText"
+                    android:text="Looking for something different" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/reason5"
+                style="@style/SelectableCardStyle">
+
+                <TextView
+                    android:id="@+id/reasonText5"
+                    style="@style/ReasonText"
+                    android:text="Profile seems incomplete" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/reason6"
+                style="@style/SelectableCardStyle">
+
+                <TextView
+                    android:id="@+id/reasonText6"
+                    style="@style/ReasonText"
+                    android:text="Other" />
+            </LinearLayout>
+
+            <!-- Optional Feedback -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Tell us why you’re not interested in Lovie"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/primary_pink"
+                app:counterEnabled="true"
+                app:counterMaxLength="145">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/otherFeedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|start"
+                    android:inputType="textMultiLine"
+                    android:minLines="3" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Bottom Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/submitFeedbackBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_20dp"
+                android:enabled="false"
+                android:padding="16dp"
+                android:text="Submit Feedback"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/primary_pink"
+                app:cornerRadius="@dimen/margin_50dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.you4me.you4me.ui.authentication
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,7 @@ import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.main.MainActivity
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils
+import com.you4me.you4me.utils.Utils.GOOGLE_SIGN_IN_RQ_CODE
 import org.json.JSONObject
 
 
@@ -79,7 +81,7 @@ class SignWithEmailAndGoogleFragment :
     private fun signIn() {
         you4meSignInClient.signOut()
         val signInIntent = you4meSignInClient.signInIntent
-        startActivityForResult(signInIntent, Utils.GOOGLE_SIGN_IN_RQ_CODE)
+        startActivityForResult(signInIntent, GOOGLE_SIGN_IN_RQ_CODE)
     }
 
     // gets the selected google account from the intent
@@ -89,8 +91,9 @@ class SignWithEmailAndGoogleFragment :
         data: Intent?,
     ) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == Utils.GOOGLE_SIGN_IN_RQ_CODE) {
+        if (requestCode == GOOGLE_SIGN_IN_RQ_CODE) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            Log.d("NOT_TOKEN_OKAY", "OKAY")
             handleSignInResult(task)
         }
     }
@@ -102,8 +105,10 @@ class SignWithEmailAndGoogleFragment :
         try {
             val account = completedTask.getResult(ApiException::class.java)
             startDashboard(account)
+            Log.d("GOOGLE_TOKEN", "GOOGLE")
         } catch (e: ApiException) {
-            // showToast(e.localizedMessage)
+            Log.e("GOOGLE_SIGN_IN_ERROR", "signInResult:failed code=" + e.statusCode)
+             showToast(e.localizedMessage)
         }
     }
 
@@ -113,13 +118,13 @@ class SignWithEmailAndGoogleFragment :
     private fun startDashboard(account: GoogleSignInAccount?) {
         showLoader(true)
         account?.idToken?.let { it ->
-//            Log.d("GOOGLE_TOKEN", it)
+            Log.d("GOOGLE_TOKEN", it)
             viewModel.signInWithGoogle(it)
             viewModel.signWithGoogleLoginResponse.observe(viewLifecycleOwner) {
                 when (it) {
                     is Resource.Success -> {
                         // viewModel.clearUser()
-//                        Log.d("NOT_TOKEN", it.value.userId)
+                        Log.d("NOT_TOKEN", it.value.userId)
                         trackGoogleLoginButtonClicked(it.value.userId, it.value.email)
                         viewModel.getUserDetails(it.value.userId)
                         viewModel.user.observe(viewLifecycleOwner) { user ->
@@ -129,7 +134,7 @@ class SignWithEmailAndGoogleFragment :
                                     viewModel.clearUser()
                                     val dialog = showDialog("Login Successful", true)
                                     viewModel.saveUser(user.value)
-//                                    Log.d("CHECKING", user.value.toString())
+                                    Log.d("CHECKING", user.value.toString())
                                     val gson = Gson()
                                     val userProfileJsonString = gson.toJson(user.value)
                                     sharedPrefHelper.saveString(

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.you4me.you4me.R
 import com.you4me.you4me.adapter.ComplimentsPagerAdapter
@@ -12,7 +13,7 @@ import com.you4me.you4me.adapter.FindDatesPagerAdapter
 import com.you4me.you4me.databinding.FragmentComplimentsBottomSheetBinding
 
 
-class ComplimentsBottomSheetFragment : Fragment() {
+class ComplimentsBottomSheetFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentComplimentsBottomSheetBinding
     override fun onCreateView(
@@ -37,12 +38,11 @@ class ComplimentsBottomSheetFragment : Fragment() {
         TabLayoutMediator(binding.tabs, binding.pager) { tab, position ->
             tab.text =
                 when (position) {
-                    0 -> getString(R.string.custom)
-                    1 -> getString(R.string.suggested)
-                    else -> getString(R.string.custom)
+                    0 -> getString(R.string.suggested)
+                    1 -> getString(R.string.custom)
+                    else -> getString(R.string.suggested)
                 }
         }.attach()
-
     }
 
 }

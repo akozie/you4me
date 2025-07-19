@@ -55,6 +55,10 @@ class UpcomingDatesFragment :
             findNavController().navigate(R.id.action_homeFragment_to_allUpcomingDatesFragment)
         }
 
+        binding.createADateLayout.setOnClickListener {
+            findNavController().navigate(R.id.goOnDateFragment)
+        }
+
         addObservers()
         viewModel.upcomingDates.observe(viewLifecycleOwner) {
             when (it) {
@@ -89,10 +93,12 @@ class UpcomingDatesFragment :
     private fun setupUpcomingDates(dates: UpcomingDates) {
         if (dates.isEmpty()) {
             binding.upcomingDatesRecycler.visibility = View.GONE
-            binding.noUpcomingDates.visibility = View.VISIBLE
+            binding.noDatesLyt.visibility = View.VISIBLE
+            binding.viewAllBtn.visibility = View.GONE
         } else {
             binding.upcomingDatesRecycler.visibility = View.VISIBLE
-            binding.noUpcomingDates.visibility = View.GONE
+            binding.viewAllBtn.visibility = View.VISIBLE
+            binding.noDatesLyt.visibility = View.GONE
             val adapter = UpcomingDatesRecyclerAdapter(user, this, this, dates, ctx)
             binding.upcomingDatesRecycler.adapter = adapter
         }

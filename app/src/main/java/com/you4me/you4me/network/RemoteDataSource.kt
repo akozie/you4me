@@ -9,6 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 //class RemoteDataSource {
 //
@@ -63,15 +64,20 @@ class RemoteDataSource {
 
                         chain.proceed(requestBuilder.build())
                     }
-//                    .authenticator(TokenAuthenticator()) // Token refresh logic
+                    .connectTimeout(20, TimeUnit.SECONDS)
+                    .readTimeout(20, TimeUnit.SECONDS)
+                    .writeTimeout(20, TimeUnit.SECONDS)
+                    .authenticator(TokenAuthenticator()) // Token refresh logic
                     .also { client ->
-                        if (BuildConfig.DEBUG) {
+//                        if (BuildConfig.DEBUG) {
+                        Log.d("BASE_URL", "$BASE_URL")
                             val logging = HttpLoggingInterceptor()
                             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
                             client.addInterceptor(logging)
-                        }
+//                        }
                     }
                     .build()
+
             )
             .addConverterFactory(GsonConverterFactory.create())
             .build()

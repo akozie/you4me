@@ -43,6 +43,7 @@ import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.main.verification.VeriffActivity
 import com.you4me.you4me.utils.*
 import com.you4me.you4me.utils.SharedPrefHelper.Companion.COUNTRY_ID
+import com.you4me.you4me.utils.SharedPrefHelper.Companion.PROFILE_IMAGE
 import com.you4me.you4me.utils.SharedPrefHelper.Companion.SESSION_ID
 import com.you4me.you4me.utils.SharedPrefHelper.Companion.SEXUALITY_ID
 import com.you4me.you4me.utils.SharedPrefHelper.Companion.USERNAME
@@ -82,6 +83,7 @@ class EditProfileFragment :
     private lateinit var image1 : ImageView
     private lateinit var addBadge1 : ImageView
     private lateinit var cancel1 : ImageView
+    private lateinit var imageSlots : List<ImageSlotViews>
 
     private val imageIds = listOf(
         R.id.image1,
@@ -121,6 +123,15 @@ class EditProfileFragment :
         if (newUser != null) {
             user = newUser
         }
+
+        imageSlots = listOf(
+            ImageSlotViews(binding.image1, binding.addBadge1, binding.cancel1),
+            ImageSlotViews(binding.image2, binding.addBadge2, binding.cancel2),
+            ImageSlotViews(binding.image3, binding.addBadge3, binding.cancel3),
+            ImageSlotViews(binding.image4, binding.addBadge4, binding.cancel4),
+            ImageSlotViews(binding.image5, binding.addBadge5, binding.cancel5),
+            ImageSlotViews(binding.image6, binding.addBadge6, binding.cancel6)
+        )
 
         image1 = binding.image1
         addBadge1 = binding.addBadge1
@@ -255,11 +266,13 @@ class EditProfileFragment :
         }
 
         binding.country.setOnClickListener {
-            val action =
-                EditProfileFragmentDirections.actionEditProfileFragmentToCountryBottomSheetFragment(
-                    countries.toTypedArray()
-                )
-            findNavController().navigate(action)
+            if (findNavController().currentDestination?.id == R.id.editProfileFragment) {
+                val action =
+                    EditProfileFragmentDirections.actionEditProfileFragmentToCountryBottomSheetFragment(
+                        countries.toTypedArray()
+                    )
+                findNavController().navigate(action)
+            }
         }
 
         binding.state.setOnClickListener {
@@ -301,10 +314,9 @@ class EditProfileFragment :
         setUpResultListener()
 
 
-        for (id in imageIds) {
-            val imageView = view.findViewById<ImageView>(id)
+        for (slot in imageSlots) {
+            val imageView = slot.imageView
 
-            // Start dragging
             imageView.setOnLongClickListener { view ->
                 val dragData = ClipData.newPlainText("", "")
                 val shadow = View.DragShadowBuilder(view)
@@ -312,40 +324,39 @@ class EditProfileFragment :
                 true
             }
 
-            // Handle drop
             imageView.setOnDragListener { targetView, event ->
                 when (event.action) {
                     DragEvent.ACTION_DROP -> {
                         val draggedView = event.localState as ImageView
+
                         if (draggedView != targetView) {
-                            // Swap image drawables
+                            val sourceSlot = imageSlots.find { it.imageView == draggedView }
+                            val targetSlot = imageSlots.find { it.imageView == targetView }
+
+                            // Swap drawables
                             val draggedDrawable = draggedView.drawable
                             val targetDrawable = (targetView as ImageView).drawable
-
                             draggedView.setImageDrawable(targetDrawable)
                             targetView.setImageDrawable(draggedDrawable)
 
-                            // Optional: swap tags too (for future tracking)
-                            val tempTag = draggedView.tag
-                            draggedView.tag = targetView.tag
-                            targetView.tag = tempTag
+                            // Swap video IDs
+                            val tempId = sourceSlot?.videoId
+                            sourceSlot?.videoId = targetSlot?.videoId
+                            targetSlot?.videoId = tempId
+
+                            sendSortedListToApi()
                         }
+
                         true
                     }
 
                     DragEvent.ACTION_DRAG_ENDED -> {
-                        // Restore visibility in case it was hidden
                         val draggedView = event.localState as ImageView
                         draggedView.visibility = View.VISIBLE
                         true
                     }
 
-                    DragEvent.ACTION_DRAG_STARTED,
-                    DragEvent.ACTION_DRAG_ENTERED,
-                    DragEvent.ACTION_DRAG_EXITED,
-                    DragEvent.ACTION_DRAG_LOCATION -> true
-
-                    else -> false
+                    else -> true
                 }
             }
         }
@@ -356,6 +367,17 @@ class EditProfileFragment :
                 imageDeletedReceiver,
                 IntentFilter("IMAGE_DELETED"),
             )
+    }
+
+    private fun sendSortedListToApi() {
+        val mediaIds = imageSlots
+            .mapNotNull { it.videoId } // Only include non-null IDs
+            .filter { it.isNotBlank() } // Remove empty strings
+
+//        val payload = mapOf("mediaIds" to mediaIds)
+        val payload = SortUploadsRequest(mediaIds)
+
+        viewModel.sortPhotoUpload(payload) // Pass it to your ViewModel or API service
     }
 
     private fun showCustomDialog(context: Context) {
@@ -400,6 +422,17 @@ class EditProfileFragment :
                     } else {
                         showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
                     }
+                }
+            }
+        }
+        viewModel.sortPhotoUploadResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    showLoader(false)
+                }
+
+                is Resource.Failure -> {
+                    showLoader(false)
                 }
             }
         }
@@ -480,15 +513,6 @@ class EditProfileFragment :
     }
 
     private fun loadImagesAndVideosInBackground(listOfImagesAndVideos: ImagesVideosResponse) {
-        val imageSlots = listOf(
-            ImageSlotViews(binding.image1, binding.addBadge1, binding.cancel1),
-            ImageSlotViews(binding.image2, binding.addBadge2, binding.cancel2),
-            ImageSlotViews(binding.image3, binding.addBadge3, binding.cancel3),
-            ImageSlotViews(binding.image4, binding.addBadge4, binding.cancel4),
-            ImageSlotViews(binding.image5, binding.addBadge5, binding.cancel5),
-            ImageSlotViews(binding.image6, binding.addBadge6, binding.cancel6)
-        )
-
         val profileImageView = binding.profilePicture
 
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
@@ -503,11 +527,13 @@ class EditProfileFragment :
                         .circleCrop()
                         .into(profileImageView)
                     binding.uploadProfilePictureTxt.text = "Edit Profile Picture"
+                    sharedPrefHelper.saveString(PROFILE_IMAGE, it.videoId)
                 }
 
                 // 🟢 Load the rest into the 6 slots
                 imageSlots.forEachIndexed { index, slot ->
                     val item = galleryItems.getOrNull(index)
+
 
                     if (item != null && item.fileURL.isNotBlank()) {
                         Glide.with(slot.imageView.context)
@@ -515,11 +541,13 @@ class EditProfileFragment :
                             .centerCrop()
                             .into(slot.imageView)
 
+                        slot.videoId = item.videoId
                         slot.imageView.visibility = View.VISIBLE
                         slot.imageView.clipToOutline = true
                         slot.addBadge.visibility = View.INVISIBLE
                         slot.cancelButton.visibility = View.VISIBLE
                     } else {
+                        slot.videoId = null
                         slot.imageView.setImageDrawable(null)
                         slot.imageView.visibility = View.INVISIBLE
                         slot.addBadge.visibility = View.VISIBLE
@@ -535,6 +563,7 @@ class EditProfileFragment :
                                 slot.imageView.visibility = View.INVISIBLE
                                 slot.addBadge.visibility = View.VISIBLE
                                 slot.cancelButton.visibility = View.GONE
+                                slot.videoId = null
                             }
                         }
                     }
@@ -682,6 +711,9 @@ class EditProfileFragment :
                 "RELIGION" -> {
                     binding.religionPreference.text = value
                 }
+                "EDIT_PROFILE" -> {
+                    Glide.with(requireActivity()).load(value).into(binding.profilePicture)
+                }
                 // Add more as needed
             }
         }
@@ -767,15 +799,6 @@ class EditProfileFragment :
         binding.religionPreference.text = user.religion
         binding.country.text = user.country
         binding.state.text = user.state
-
-//        name = user.name
-//        country = user.country
-//        state = user.state
-//        gender = user.gender
-//        religionPreferred = user.religionPreferred
-//        agePreferred = user.agePreferred
-//        sexualOrientation = user.sexualOrientation
-//        dob = user.dob
 
     }
 
@@ -890,46 +913,6 @@ class EditProfileFragment :
             binding.videoBannerLayout.isVisible = false
         }
 
-//        binding.addPhotoButton1.setOnClickListener {
-//            showLoader(true)
-//            viewModel.validateVideoUpload()
-//        }
-//        binding.addPhotoButton2.setOnClickListener {
-//            showLoader(true)
-//            viewModel.validateVideoUpload()
-//        }
-//        binding.addPhotoButton3.setOnClickListener {
-//            showLoader(true)
-//            viewModel.validateVideoUpload()
-//        }
-//        binding.addPhotoButton4.setOnClickListener {
-//            showLoader(true)
-//            viewModel.validateVideoUpload()
-//        }
-//        binding.addPhotoButton5.setOnClickListener {
-//            showLoader(true)
-//            viewModel.validateVideoUpload()
-//        }
-//        binding.addPhotoButton6.setOnClickListener {
-//            showLoader(true)
-//            viewModel.validateVideoUpload()
-//        }
-
-//        addBadge1.setOnClickListener {
-//            // Show image picker, assume you get 'bitmap'
-////            image1.setImageBitmap(bitmap)
-//            image1.visibility = View.VISIBLE
-//            addBadge1.visibility = View.GONE
-//            cancel1.visibility = View.VISIBLE
-//            viewModel.validateVideoUpload()
-//        }
-//
-//        cancel1.setOnClickListener {
-//            image1.setImageDrawable(null)
-//            image1.visibility = View.INVISIBLE
-//            addBadge1.visibility = View.VISIBLE
-//            cancel1.visibility = View.GONE
-//        }
     }
 
     private fun showLoader(show: Boolean) {

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/terms_scroll"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="#F5F5F5"
+android:padding="16dp"
+tools:context=".ui.main.termsandcondition.TermsAndConditionFragment">
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Terms"
+            android:layout_weight="1"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/btn_download_terms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Download"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#EB005C"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:elevation="2dp" />
+    </LinearLayout>
+
+    <!-- Terms Content Card -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/terms_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:lineSpacingExtra="6dp"
+            android:textIsSelectable="true"
+            android:text="@string/terms_text" />
+    </LinearLayout>
+</LinearLayout>
+</ScrollView>

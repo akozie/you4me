@@ -41,4 +41,46 @@
         <item name="android:focusable">true</item>
     </style>
 
+    <style name="SelectableCardStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/compliment_item_bg</item>
+    </style>
+
+    <style name="ReasonText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="RightCornersOnly" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeTopRight">12dp</item>
+        <item name="cornerSizeBottomRight">12dp</item>
+    </style>
+
+    <style name="SelectableCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="strokeColor">@android:color/transparent</item>
+    </style>
+
+    <style name="PaymentOptionStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/payment_option_bg</item>
+        <item name="android:padding">16dp</item>
+    </style>
+
 </resources>

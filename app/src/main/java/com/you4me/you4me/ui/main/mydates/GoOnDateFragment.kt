@@ -1,39 +1,54 @@
-package com.you4me.you4me.ui.main
+package com.you4me.you4me.ui.main.mydates
 
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.gson.Gson
 import com.you4me.you4me.R
+import com.you4me.you4me.adapter.mydates.DateTypeAdapter
 import com.you4me.you4me.databinding.FragmentGoOnDateBinding
 import com.you4me.you4me.model.User
 import com.you4me.you4me.models.ValueLabelResponse
+import com.you4me.you4me.models.mydates.DateOption
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.ui.main.MainViewModel
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
-class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, MainRepository>("GO_ON_DATE") {
+class GoOnDateFragment :
+    BaseFragment<MainViewModel, FragmentGoOnDateBinding, MainRepository>("GO_ON_DATE") {
     private lateinit var calendar: Calendar
     private lateinit var dateFormat: SimpleDateFormat
     private lateinit var user: User
+    private lateinit var layouts: Map<String, LinearLayout>
+    private lateinit var icons: Map<String, Int>
     private lateinit var paymentModes: ArrayList<ValueLabelResponse>
+    private var selectedOptionValue: String? = null
 
     private val startAutoComplete =
         registerForActivityResult(
@@ -43,7 +58,7 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
                 val intent = result.data
                 if (intent != null) {
                     val place = Autocomplete.getPlaceFromIntent(intent)
-                    binding.searchDateLocations.setText("${place.name}, ${place.address}")
+//                    binding.searchDateLocations.setText("${place.name}, ${place.address}")
                 } else {
 //                    Log.d("Place Result", "Intent Null")
                 }
@@ -57,14 +72,34 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-        setupViews()
-        setupObservers()
+//        setupViews()
+//        setupObservers()
         mixpanel?.track("Android_Request_Date_Viewed")
 
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         val gson = Gson()
          user = gson.fromJson(userProfile, User::class.java)
 
+        val splitLayout = binding.optionSplit
+        val youLayout = binding.optionYou
+        val theyLayout = binding.optionThey
+
+         layouts = mapOf(
+            "0" to splitLayout,
+            "1" to youLayout,
+            "2" to theyLayout
+        )
+
+        // Inflate icons dynamically (example placeholders used here)
+         icons = mapOf(
+            "0" to R.drawable.split,
+            "1" to R.drawable.you_pay,
+            "2" to R.drawable.they_pay
+        )
+
+        setupViews()
+        setupObservers()
+        dateType()
     }
 
     private fun setupViews() {
@@ -129,7 +164,8 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
             when (it) {
                 is Resource.Success -> {
                     paymentModes = it.value
-                    setupSpinner(it.value)
+//                    setupSpinner(it.value)
+                    setUpWhoIsPayingList(it.value)
                 }
 
                 is Resource.Failure -> {
@@ -198,6 +234,89 @@ class GoOnDateFragment : BaseFragment<MainViewModel, FragmentGoOnDateBinding, Ma
 
     override fun getRepository() = MainRepository(dataSource.buildApi(ApiCollector::class.java))
 
+
+
+
+
+
+    private fun setUpWhoIsPayingList(paymentOptions: ArrayList<ValueLabelResponse>) {
+        paymentOptions.forEach { option ->
+            val layout = layouts[option.value]
+            layout?.removeAllViews()
+
+            val imageView = ImageView(requireContext()).apply {
+                setImageResource(icons[option.value] ?: R.drawable.ic_replay)
+                layoutParams = LinearLayout.LayoutParams(64, 64)
+            }
+
+            val textView = TextView(requireContext()).apply {
+                text = option.label
+                textSize = 14f
+                setTextColor(Color.BLACK)
+            }
+
+            layout?.apply {
+                addView(imageView)
+                addView(textView)
+                updateLayoutStroke(this, option.value == selectedOptionValue)
+
+                setOnClickListener {
+                    selectedOptionValue = option.value
+                    updateAllStrokes(paymentOptions)
+                }
+            }
+        }
+    }
+
+    private fun updateAllStrokes(options: List<ValueLabelResponse>) {
+        options.forEach { option ->
+            val layout = layouts[option.value]
+            updateLayoutStroke(layout, option.value == selectedOptionValue)
+        }
+    }
+
+    private fun updateLayoutStroke(layout: LinearLayout?, isSelected: Boolean) {
+        layout?.background = ContextCompat.getDrawable(
+            requireContext(),
+            if (isSelected) R.drawable.bg_selected_stroke else R.drawable.bg_unselected_stroke
+        )
+    }
+
+
+    private fun dateType(){
+
+        val spinner: Spinner = binding.dateTypeSpinner
+        val customInput = binding.customInput
+
+        val options = listOf(
+            DateOption(R.drawable.coffee, "Coffee", "Perfect for"),
+            DateOption(R.drawable.dinner, "Dinner", "Relaxed dining"),
+            DateOption(R.drawable.city_walk, "City walk", "Relaxed walking"),
+            DateOption(R.drawable.movies, "Movies", "Fun watching"),
+            DateOption(R.drawable.museum, "Museum", "Cultural visit"),
+            DateOption(R.drawable.something_else, "Something else", "Custom option", isCustomOption = true)
+        )
+
+        val adapter = DateTypeAdapter(requireContext(), options)
+        spinner.adapter = adapter
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedOption = options[position]
+                if (selectedOption.isCustomOption) {
+                    customInput.visibility = View.VISIBLE
+                } else {
+                    customInput.visibility = View.GONE
+                    binding.customLayout.customInput.text.clear()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                customInput.visibility = View.GONE
+            }
+        }
+
+    }
     override fun onDestroy() {
         super.onDestroy()
         mixpanel?.mixpanel?.flush()

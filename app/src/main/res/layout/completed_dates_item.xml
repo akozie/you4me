@@ -154,6 +154,7 @@
             app:layout_constraintTop_toBottomOf="@+id/constraint_layout" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/show_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_10dp"
@@ -166,23 +167,75 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_10dp"
                 android:layout_marginStart="@dimen/margin_10dp"
-                android:text="Your rating:"
+                android:text="Review:"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <RatingBar
+            <TextView
                 android:id="@+id/ratingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:numStars="5"
-                android:scaleX="0.5"
-                android:scaleY="0.5"
-                android:stepSize="1"
-                app:layout_constraintBottom_toBottomOf="@+id/rating_tv"
-                app:layout_constraintStart_toEndOf="@+id/rating_tv"
-                app:layout_constraintTop_toTopOf="@+id/rating_tv" />
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:background="@drawable/bg_message_receiver"
+                android:padding="@dimen/padding_10dp"
+                android:text="Lovely date."
+                app:layout_constraintStart_toStartOf="@+id/rating_tv"
+                app:layout_constraintTop_toBottomOf="@+id/rating_tv" />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/drop_a_review_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_10dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/constraint_layout"
+            app:layout_constraintTop_toBottomOf="@+id/show_review">
+
+            <TextView
+                android:id="@+id/drop_a_review_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:layout_marginStart="@dimen/margin_10dp"
+                android:text="Drop a review:"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/customInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:background="@drawable/dashed_border"
+                android:orientation="vertical"
+                android:padding="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/drop_a_review_tv"
+                app:layout_constraintTop_toBottomOf="@+id/drop_a_review_tv">
+
+                <EditText
+                    android:id="@+id/customInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:background="@android:color/white"
+                    android:gravity="top|start"
+                    android:hint="What do you have to say about this date?"
+                    android:maxLength="145"
+                    android:padding="8dp"
+                    android:textSize="@dimen/text_size_14sp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/submit_review"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/margin_55dp"
+                android:background="@drawable/bg_rounded_button"
+                android:layout_marginTop="@dimen/margin_20dp"
+                android:text="Submit Review"
+                app:layout_constraintEnd_toEndOf="@+id/customInputLayout"
+                app:layout_constraintStart_toStartOf="@+id/customInputLayout"
+                app:layout_constraintTop_toBottomOf="@+id/customInputLayout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

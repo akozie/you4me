@@ -24,7 +24,8 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/onboarding_img1"
+                android:clipToOutline="true"
+                android:src="@drawable/baseline_person_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -46,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_10dp"
-                android:text="Good afternoon!"
+                tools:text="Good afternoon!"
                 app:layout_constraintBottom_toBottomOf="@+id/profileImage"
                 app:layout_constraintStart_toEndOf="@+id/profileImage"
                 app:layout_constraintTop_toBottomOf="@+id/user_name" />
@@ -240,6 +241,140 @@
                 tools:listitem="@layout/approved_date_item" />
 
         </LinearLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/boost_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_boost"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/margin_20dp"
+            android:padding="@dimen/padding_15dp"
+            app:layout_constraintEnd_toEndOf="@+id/premium_img"
+            app:layout_constraintStart_toStartOf="@+id/premium_img"
+            app:layout_constraintTop_toBottomOf="@+id/premium_img">
+
+            <ImageView
+                android:id="@+id/googleIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_20dp"
+                android:src="@drawable/frame_1000001511"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/boost_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Boost"
+                android:layout_marginStart="@dimen/margin_10dp"
+                app:layout_constraintStart_toEndOf="@+id/googleIcon"
+                app:layout_constraintTop_toTopOf="@+id/googleIcon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_2dp"
+                android:text="Get seen by 15X people on you4me"
+                app:layout_constraintBottom_toBottomOf="@+id/googleIcon"
+                app:layout_constraintStart_toStartOf="@+id/boost_tv"
+                app:layout_constraintTop_toBottomOf="@+id/boost_tv" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/no_dates_lyt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_20dp"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_10dp"
+                android:visibility="visible"
+                >
+
+                <TextView
+                    android:id="@+id/no_dates_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Your dating journey starts here. Create a date, find someone special, or explore interests to get started"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/create_a_date_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_20dp"
+                    android:background="@drawable/rectangle_skip_for_now"
+                    android:backgroundTint="@color/primary_pink"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_17dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/no_dates_tv">
+
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/baseline_add_24"
+                        app:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="Create a Date"
+                        android:textColor="@color/white"
+                        android:textSize="17sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/find_dates_lyt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_20dp"
+                    android:background="@drawable/rectangle_skip_for_now"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_17dp"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="@+id/create_a_date_layout"
+                    app:layout_constraintStart_toStartOf="@+id/create_a_date_layout"
+                    app:layout_constraintTop_toBottomOf="@+id/create_a_date_layout">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/search_icon"
+                        app:tint="@color/primary_pink" />
+
+                    <TextView
+                        android:id="@+id/find_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Find a Date"
+                        android:textColor="@color/primary_pink"
+                        android:textSize="17sp" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"

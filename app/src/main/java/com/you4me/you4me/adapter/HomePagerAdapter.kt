@@ -3,8 +3,6 @@ package com.you4me.you4me.adapter
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.you4me.you4me.ui.main.CompletedDatesFragment
-import com.you4me.you4me.ui.main.LikesFragment
-import com.you4me.you4me.ui.main.SentRequestsFragment
 import com.you4me.you4me.ui.main.UpcomingDatesFragment
 
 class HomePagerAdapter(fragment: Fragment, private val NUM_PAGES: Int) :

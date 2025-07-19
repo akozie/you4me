@@ -3,6 +3,7 @@ package com.you4me.you4me.repository
 import com.google.gson.JsonObject
 import com.you4me.you4me.models.RegisterProfilePhotoBody
 import com.you4me.you4me.models.RegisterVideoUploadBody
+import com.you4me.you4me.models.SortUploadsRequest
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.models.useroptions.UserOptionsResponse
 import com.you4me.you4me.network.ApiCollector
@@ -22,26 +23,26 @@ class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository
             apiCollector.getUserOptions()
         }
     }
-    suspend fun getGenders(): Resource<ArrayList<ValueLabelResponse>> {
-        return safeApiCall {
-            apiCollector.getGenders()
-        }
-    }
-
-    suspend fun getSexualOrientations() =
-        safeApiCall {
-            apiCollector.getSexualOrientations()
-        }
-
-    suspend fun getAgeGroups() =
-        safeApiCall {
-            apiCollector.getAgeGroups()
-        }
-
-    suspend fun getReligions() =
-        safeApiCall {
-            apiCollector.getReligions()
-        }
+//    suspend fun getGenders(): Resource<ArrayList<ValueLabelResponse>> {
+//        return safeApiCall {
+//            apiCollector.getGenders()
+//        }
+//    }
+//
+//    suspend fun getSexualOrientations() =
+//        safeApiCall {
+//            apiCollector.getSexualOrientations()
+//        }
+//
+//    suspend fun getAgeGroups() =
+//        safeApiCall {
+//            apiCollector.getAgeGroups()
+//        }
+//
+//    suspend fun getReligions() =
+//        safeApiCall {
+//            apiCollector.getReligions()
+//        }
 
     suspend fun getCountries() =
         safeApiCall {
@@ -67,6 +68,11 @@ class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository
         safeApiCall {
             apiCollector.validateVideoUpload(userId)
         }
+
+    suspend fun sortPhotoUpload(
+        userId: String,
+        sortUploadsRequest: SortUploadsRequest,
+    ) = safeApiCall { apiCollector.sortPhotoUpload(userId, sortUploadsRequest) }
 
     suspend fun registerProfilePhotoUpload(
         userId: String,

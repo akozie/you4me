@@ -66,7 +66,7 @@ class ProfileViewModel(
     val getImagesAndVideos: LiveData<Resource<ImagesVideosResponse>>
         get() = _getImagesAndVideos
 
-     val _dbUser: MutableLiveData<User> = MutableLiveData()
+    val _dbUser: MutableLiveData<User> = MutableLiveData()
     val dbUser: LiveData<User>
         get() = _dbUser
 
@@ -81,7 +81,8 @@ class ProfileViewModel(
     val getSubscriptionStatus: LiveData<Resource<GetSubscriptionStatus>>
         get() = _getSubscriptionStatus
 
-    private val _requestVeriffVerification: MutableLiveData<Resource<VeriffVerification>> = SingleLiveEvent()
+    private val _requestVeriffVerification: MutableLiveData<Resource<VeriffVerification>> =
+        SingleLiveEvent()
     val requestVeriffVerification: LiveData<Resource<VeriffVerification>> get() = _requestVeriffVerification
 
     private val _updateUserResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
@@ -95,6 +96,14 @@ class ProfileViewModel(
 
     private val _uploadError: MutableLiveData<String> = SingleLiveEvent()
     val uploadError: LiveData<String> get() = _uploadError
+
+    private val _sortPhotoUploadResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val sortPhotoUploadResponse: LiveData<Resource<Unit>>
+        get() = _sortPhotoUploadResponse
+
+    private val _registerPhotoUploadResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
+    val registerPhotoUploadResponse: LiveData<Resource<Unit>>
+        get() = _registerPhotoUploadResponse
 
     private val _registerVideoUploadResponse: MutableLiveData<Resource<Unit>> = SingleLiveEvent()
     val registerVideoUploadResponse: LiveData<Resource<Unit>>
@@ -171,6 +180,7 @@ class ProfileViewModel(
             _userDetails.value = repository.getUser(userId)
         }
     }
+
     fun getSubscriptionStatus(userId: String) {
         viewModelScope.launch {
             _getSubscriptionStatus.value = repository.getSubscriptionStatus(userId)
@@ -191,7 +201,7 @@ class ProfileViewModel(
 
     fun getGenders() {
         viewModelScope.launch {
-            _genders.value = repository.getGenders()
+//            _genders.value = repository.getGenders()
         }
     }
 
@@ -203,19 +213,19 @@ class ProfileViewModel(
 
     fun getSexualOrientations() {
         viewModelScope.launch {
-            _sexualOrientations.value = repository.getSexualOrientations()
+//            _sexualOrientations.value = repository.getSexualOrientations()
         }
     }
 
     fun getAgeGroups() {
         viewModelScope.launch {
-            _ageGroups.value = repository.getAgeGroups()
+//            _ageGroups.value = repository.getAgeGroups()
         }
     }
 
     fun getReligions() {
         viewModelScope.launch {
-            _religions.value = repository.getReligions()
+//            _religions.value = repository.getReligions()
         }
     }
 
@@ -357,7 +367,6 @@ class ProfileViewModel(
 //    }
 
 
-
     fun uploadVideo(videoUri: Uri, videoId: String, attempt: Int = 1) {
         viewModelScope.launch {
             MediaManager.get()
@@ -419,16 +428,28 @@ class ProfileViewModel(
             _cameraUploadResponse.value = repository.validateVideoUpload(_dbUser.value!!.userId)
         }
     }
+
     fun validateVideoUpload() {
         viewModelScope.launch {
-            _validateVideoUploadResponse.value = repository.validateVideoUpload(_dbUser.value!!.userId)
+            _validateVideoUploadResponse.value =
+                repository.validateVideoUpload(_dbUser.value!!.userId)
+        }
+    }
+
+    fun sortPhotoUpload(sortUploadsRequest: SortUploadsRequest) {
+        viewModelScope.launch {
+            _sortPhotoUploadResponse.value =
+                repository.sortPhotoUpload(_dbUser.value!!.userId, sortUploadsRequest)
         }
     }
 
     fun registerProfilePhotoUpload(registerVideoUploadBody: RegisterProfilePhotoBody) {
         viewModelScope.launch {
-            _registerVideoUploadResponse.value =
-                repository.registerProfilePhotoUpload(_dbUser.value!!.userId, registerVideoUploadBody)
+            _registerPhotoUploadResponse.value =
+                repository.registerProfilePhotoUpload(
+                    _dbUser.value!!.userId,
+                    registerVideoUploadBody
+                )
         }
     }
 
@@ -459,7 +480,8 @@ class ProfileViewModel(
 
     private fun retryUpload(videoUri: Uri, videoId: String, attempt: Int = 1) {
         val maxRetries = 5
-        val delayMillis = (2.0.pow(attempt) * 1000L).toLong() // Exponential backoff (2^attempt * 1000ms)
+        val delayMillis =
+            (2.0.pow(attempt) * 1000L).toLong() // Exponential backoff (2^attempt * 1000ms)
 
         if (attempt > maxRetries) {
             Log.e("Upload", "Max retries reached. Upload failed.")

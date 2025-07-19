@@ -46,11 +46,20 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="date">Date</string>
+    <string name="when">When</string>
+    <string name="decline_proposal">Decline Proposal</string>
+    <string name="decline">Decline</string>
+    <string name="accept_proposal">Accept New Time</string>
+    <string name="accept">Accept</string>
     <string name="visible_to_date_only">This will only be visible to the person you agree to go on a date with.</string>
     <string name="who_is_paying">Who is paying?</string>
     <string name="save">Save</string>
     <string name="religion">Religion</string>
     <string name="phone_number">Phone Number</string>
+    <string name="no_approved_date">No Approved Date!</string>
+    <string name="no_upcoming_date">No Upcoming Date!</string>
+    <string name="no_completed_date">No Completed Date!</string>
+    <string name="plan_a_date">Plan a Date</string>
     <string name="no_date_interests">No date interests</string>
     <string name="date_interests">Interests</string>
     <string name="sign_in_with_google">Sign in with Google</string>
@@ -70,16 +79,26 @@
     <string name="approved_date_interests">Approved Date Interests</string>
     <string name="date_proposal">Date proposals</string>
     <string name="you_have_no_upcoming_dates">You have no upcoming dates</string>
+    <string name="no_upcoming_dates">No upcoming dates</string>
+    <string name="no_completed_dates">No Completed dates</string>
+    <string name="no_upcoming_sub_dates">When you create or accept date invitations, they\'ll appear here.</string>
+    <string name="no_completed_sub_dates">When you complete date invitations, they\'ll appear here.</string>
     <string name="add_to_calendar">Add to Calendar</string>
     <string name="skip">Skip</string>
     <string name="request_date">Create a Date</string>
+    <string name="plan_date">Plan Date</string>
     <string name="venue">Venue</string>
+    <string name="location">Location</string>
     <string name="view_existing_video">View existing video</string>
     <string name="video_regulations">Share intriguing insights about yourself, including captivating facts and reasons why you would make a great date.\n\nPlease not that videos containing any form of nudity will not be accepted.\n\nKindly be aware that videos unrelated to dating content will be declined, and repeated violations may result in permanent account suspension</string>
     <string name="upcoming_dates">Upcoming Dates</string>
     <string name="let_people_know_you_are_available_to_go_on_a_date">Let people know you are available to go on a date</string>
     <string name="where_would_you_like_the_date_to_happen">Where would you like the date to happen?</string>
     <string name="received_requests">Received Interests</string>
+    <string name="type_of_date">What type of date do you want to have?</string>
+    <string name="approved">Approved</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="completed">Completed</string>
     <string name="nearby">Nearby</string>
     <string name="discover">Discover</string>
     <string name="suggested">Suggested</string>
@@ -89,12 +108,127 @@
     <string name="sign_in_text">Sign in</string>
     <string name="email_text">Email</string>
     <string name="sign_in">Sign In</string>
+    <string name="send_compliments">Send Compliments</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="we_ll_never_share_anything_without_your_permission">We’ll never share anything without your permission</string>
     <string name="stand_out">Stand out. \nMake your profile as \nunique as you are.</string>
     <string name="didn_t_get_the_code_send_again">Didn\'t get the code? <font fgcolor="#ED0D57">Send again</font></string>
     <string name="unlock_new_features_and_expand_your_network_with_our_premium_plan">Unlock new features and expand your network with our Premium plan.</string>
     <string name="delete_account">Delete Account</string>
+    <string name="privacy_policy_full">
+Welcome to You4me ("we", "our", "us"). Your privacy is important to us. This Privacy Policy explains how we collect, use, share, and protect your personal information when you use our mobile app and related services (“You4me” or “the App”).
+
+1. Information we collect
+We collect the following types of information:
+
+a. Personal Information:
+• Name, email address, phone number
+• Profile information (e.g., photo, bio)
+• Payment information (processed through secure third-party providers)
+
+b. Usage Data:
+• Device type, operating system, IP address
+• Date and time of use, features accessed
+• Interactions with other users (e.g., messages, bookings)
+
+c. Location Data:
+• With your permission, we may access your device’s location to enhance app functionality.
+
+2. How We Use Your Information
+We use your information to:
+• Create and manage your account
+• Provide and improve our services
+• Facilitate communication between users
+• Send updates, service-related messages, and marketing communications (opt-out available)
+• Detect, prevent, and respond to fraud or misuse
+
+3. Sharing Your Information
+We do not sell your personal information. We may share data with:
+
+• Service Providers: Payment processors, hosting providers, and analytics tools under strict agreements.
+• Legal Authorities: When required by law or to protect our rights and users.
+• Other Users: Limited profile data may be visible to others (e.g., during bookings or messaging).
+
+4. Your Choices and Rights
+You can:
+• Access or update your profile
+• Delete your account anytime via app settings or by contacting us
+• Opt-out of marketing communications
+• Request access to or deletion of your data (subject to applicable law)
+
+5. Data Security
+We use industry-standard encryption and security practices to protect your data. However, no method of transmission over the internet or electronic storage is 100% secure.
+
+6. Children’s Privacy
+You4me is not intended for individuals under the age of 13. We do not knowingly collect personal data from children.
+
+7. International Users
+If you access the app from outside [Insert base country, e.g., Nigeria], please note that your information may be processed and stored on our servers located in [Insert server location].
+
+8. Changes to this Policy
+We may update this Privacy Policy from time to time. We’ll notify you of major changes via email or in-app notifications.
+
+9. Contact Us
+If you have any questions or concerns about this policy, please contact us at:
+
+Email: you4me@email.com
+Phone: +2348090234567
+Address: 9, Shagari Estate, Lekki, Lagos Nigeria.
+</string>
+    <string name="terms_text">
+Terms of agreement
+
+Welcome to You4me! These Terms and Conditions ("Terms") govern your access to and use of the You4me mobile application and related services (the “App” or “Services”).
+
+By creating an account, accessing, or using You4me, you agree to be bound by these Terms. If you do not agree, please do not use the App.
+
+1. Eligibility
+You must be at least 18 years old to use You4me. By using the App, you confirm that you meet this requirement.
+
+2. User Account
+• You are responsible for maintaining the confidentiality of your login credentials.
+• You agree to provide accurate content, and to update the information during registration.
+• You may not impersonate another person or create an account for someone else without permission.
+
+3. Use of the App
+You agree to use the App only for lawful purposes and in accordance with these Terms. You may not misuse or interfere with the App’s normal functioning.
+
+Prohibited activities include but are not limited to:
+• Harassment or abuse of other users
+• Fraudulent behavior or misrepresentation
+• Attempting to gain unauthorized access to other accounts or systems
+
+4. Payments and Bookings
+• All payments made through You4me are processed securely via third-party payment providers.
+• You agree to the terms and conditions of those providers when making a payment.
+• We are not liable for any errors, delays, or issues arising from payment services outside our control.
+
+5. Content and Conduct
+• You retain ownership of any content you post or share on You4me.
+• By submitting content, you grant us a limited license to use, display, and share that content as necessary to operate the service.
+• We reserve the right to remove content or suspend accounts that violate these Terms.
+
+6. Privacy
+We respect your privacy. Our data practices are disclosed in our Privacy Policy, which is an integral part of these Terms.
+
+7. Termination
+We may suspend or terminate your account at our sole discretion if you violate these Terms or act in a way that harms the community or the platform.
+
+8. Changes to Terms
+We may update these Terms from time to time. You will be notified of any significant changes, and continued use of the App after such changes means you accept the revised terms.
+
+8. Limitation of Liability
+You4me is provided “as is” and “as available”. We do not guarantee uninterrupted or error-free service.
+
+To the fullest extent permitted by law, we are not liable for any indirect, incidental, or consequential damages arising from your use of the App.
+
+9. Contact Us
+If you have any questions or concerns about these Terms, please contact us at:
+
+Email: you4me@email.com
+Phone: +2348090234567
+Address: 9, Shagari Estate, Lekki, Lagos Nigeria.
+</string>
 
 
 </resources>

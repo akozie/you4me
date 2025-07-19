@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/grey"
+        app:cardCornerRadius="@dimen/margin_20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/profileRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="@dimen/margin_50dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/userImage"
+            android:layout_width="@dimen/margin_70dp"
+            android:layout_height="@dimen/margin_70dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/circle_background"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/onboarding_img3" />
+
+        <ImageView
+            android:id="@+id/heartBetween"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/big_love" />
+
+        <ImageView
+            android:id="@+id/matchImage"
+            android:layout_width="@dimen/margin_70dp"
+            android:layout_height="@dimen/margin_70dp"
+            android:background="@drawable/circle_background"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/onboarding_screen" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view11"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/margin_2dp"
+        android:layout_margin="@dimen/margin_30dp"
+        android:background="@color/text_grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileRow" />
+
+    <TextView
+        android:id="@+id/textView33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_20dp"
+        android:text="You shown interest in going on a date with Lovie!"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view11" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/submitFeedbackBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_50dp"
+            android:enabled="false"
+            android:padding="16dp"
+            android:text="Ok!"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/primary_pink"
+            app:cornerRadius="@dimen/margin_50dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView33" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@ import com.you4me.you4me.models.*
 import com.you4me.you4me.models.useroptions.UserOptionsResponse
 import com.you4me.you4me.models.verification.VeriffVerification
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiCollector {
@@ -84,18 +85,18 @@ interface ApiCollector {
     @GET("user/option-lists")
     suspend fun getUserOptions(): UserOptionsResponse
 
-    @GET("genders")
-    suspend fun getGenders(): ArrayList<ValueLabelResponse>
+//    @GET("genders")
+//    suspend fun getGenders(): ArrayList<ValueLabelResponse>
 
-    @GET("sexualOrientations")
-    suspend fun getSexualOrientations(): ArrayList<ValueLabelResponse>
-
-    @GET("ageGroups")
-    suspend fun getAgeGroups(): ArrayList<ValueLabelResponse>
-
-    @GET("religions")
-    suspend fun getReligions(): ArrayList<ValueLabelResponse>
-
+//    @GET("sexualOrientations")
+//    suspend fun getSexualOrientations(): ArrayList<ValueLabelResponse>
+//
+//    @GET("ageGroups")
+//    suspend fun getAgeGroups(): ArrayList<ValueLabelResponse>
+//
+//    @GET("religions")
+//    suspend fun getReligions(): ArrayList<ValueLabelResponse>
+//
     @GET("countries")
     suspend fun getCountries(): ArrayList<ValueLabelResponse>
 
@@ -120,6 +121,11 @@ interface ApiCollector {
         @Path("userId") userId: String,
     )
 
+    @POST("users/{userId}/sort-uploads")
+    suspend fun sortPhotoUpload(
+        @Path("userId") userId: String,
+        @Body sortUploadsRequest: SortUploadsRequest,
+    )
     @POST("users/{userId}/uploads")
     suspend fun registerProfilePhotoUpload(
         @Path("userId") userId: String,

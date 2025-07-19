@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/customInputLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/dashed_border">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="What’s your date idea?"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingBottom="8dp" />
+
+    <EditText
+        android:id="@+id/customInput"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@android:color/white"
+        android:hint="Tell us why this will be fun"
+        android:maxLength="145"
+        android:gravity="top|start"
+        android:padding="8dp" />
+</LinearLayout>

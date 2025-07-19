@@ -133,7 +133,8 @@ class MainViewModel(
 
     fun updatePushToken(token: JsonObject) {
         viewModelScope.launch {
-            _updateFirebaseTokenResponse.value = repository.updatePushToken(_user.value?.userId ?: "", token)
+            _updateFirebaseTokenResponse.value =
+                repository.updatePushToken(_user.value?.userId ?: "", token)
         }
     }
 
@@ -372,7 +373,14 @@ class MainViewModel(
         chatId: String,
         receiverName: String,
     ) {
-        repository.sendMessage(senderId, receiverId, chatId, message, senderName, receiverName) { success ->
+        repository.sendMessage(
+            senderId,
+            receiverId,
+            chatId,
+            message,
+            senderName,
+            receiverName
+        ) { success ->
             if (success) {
                 // Handle UI updates if needed
                 val obj =

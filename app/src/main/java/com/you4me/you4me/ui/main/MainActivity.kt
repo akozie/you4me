@@ -33,6 +33,7 @@ import com.you4me.you4me.model.User
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.repository.MainRepository
+import com.you4me.you4me.utils.LocaleHelper
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.UtilityParam
 
@@ -133,6 +134,10 @@ class MainActivity : AppCompatActivity() {
 
         scheduleTokenRefresh(this)
 
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.applySavedLocale(newBase))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

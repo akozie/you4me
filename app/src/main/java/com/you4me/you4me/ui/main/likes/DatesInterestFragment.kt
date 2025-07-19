@@ -1,4 +1,4 @@
-package com.you4me.you4me.ui.main
+package com.you4me.you4me.ui.main.likes
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +12,7 @@ import com.you4me.you4me.databinding.FragmentDatesInterestBinding
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.ui.main.MainViewModel
 
 class DatesInterestFragment : BaseFragment<MainViewModel, FragmentDatesInterestBinding, MainRepository>("PROPOSE_DATE_TIME") {
     override fun getViewModel() = MainViewModel::class.java

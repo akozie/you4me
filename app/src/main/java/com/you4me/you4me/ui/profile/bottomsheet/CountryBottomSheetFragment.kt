@@ -16,6 +16,8 @@ import com.you4me.you4me.databinding.FragmentCountryBottomSheetBinding
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.SharedPrefHelper.Companion.COUNTRY_ID
+import com.you4me.you4me.utils.closeSoftKeyboard
+import com.you4me.you4me.utils.hideKeyboard
 
 
 class CountryBottomSheetFragment : BottomSheetDialogFragment() {
@@ -90,10 +92,11 @@ class CountryBottomSheetFragment : BottomSheetDialogFragment() {
                 label.text = item.label
 
                 view.setOnClickListener {
+                    hideKeyboard()
                     selectedValue = item.value
                     selectedLabel = item.label
                     sharedPrefHelper.saveString(COUNTRY_ID, selectedValue.toString())
-                    Log.d("GETT", selectedValue!!)
+                    Log.d("GETT_COUNTRY", selectedValue!!)
                     updateRadioIcons(container, index)
                 }
 
@@ -101,7 +104,6 @@ class CountryBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
     }
-
     private fun updateRadioIcons(container: LinearLayout, selectedIndex: Int) {
         for (i in 0 until container.childCount) {
             val item = container.getChildAt(i)

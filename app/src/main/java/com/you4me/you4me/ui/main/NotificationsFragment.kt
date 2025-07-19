@@ -5,23 +5,23 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
+import com.you4me.you4me.R
 import com.you4me.you4me.adapter.NotificationsRecyclerAdapter
 import com.you4me.you4me.databinding.FragmentNotificationsBinding
 import com.you4me.you4me.`interface`.OnNotificationClickListener
 import com.you4me.you4me.model.User
 import com.you4me.you4me.models.Notification
+import com.you4me.you4me.models.NotificationListItem
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.main.messaging.model.ChatMessage
-import com.you4me.you4me.utils.Constants
-import com.you4me.you4me.utils.SharedPrefHelper
-import com.you4me.you4me.utils.safeNavigate
-import com.you4me.you4me.utils.safeNavigateUp
+import com.you4me.you4me.utils.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -93,6 +93,20 @@ class NotificationsFragment :
         )
     }
 
+    private fun groupNotificationsByDate(notifications: List<Notification>): List<NotificationListItem> {
+        val grouped = mutableListOf<NotificationListItem>()
+
+        notifications
+            .sortedByDescending { it.date + it.time }
+            .groupBy { getReadableDate(it.date) }
+            .forEach { (dateLabel, list) ->
+                grouped.add(NotificationListItem.DateHeader(dateLabel))
+                grouped.addAll(list.map { NotificationListItem.NotificationItem(it) })
+            }
+
+        return grouped
+    }
+
     private fun setupRecycler(notifications: ArrayList<Notification>) {
         val sortedNotifications =
             notifications.sortedByDescending {
@@ -101,10 +115,13 @@ class NotificationsFragment :
                 )
             }
 
+        val groupedItems = groupNotificationsByDate(sortedNotifications)
+
+
         val adapter =
             NotificationsRecyclerAdapter(
                 user = user,
-                sortedNotifications,
+                groupedItems,
                 this,
                 object : OnNotificationClickListener {
                     override fun onNotificationClick(notification: Notification) {
@@ -140,7 +157,24 @@ class NotificationsFragment :
                         }
                     }
                 },
-            )
+            ){ _ , anchorView ->
+                val popup = PopupMenu(requireContext(), anchorView)
+                popup.menuInflater.inflate(R.menu.notification_menu, popup.menu)
+                popup.setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.mark_as_read -> {
+                            // handle mark as read
+                            true
+                        }
+                        R.id.delete -> {
+                            // handle delete
+                            true
+                        }
+                        else -> false
+                    }
+                }
+                popup.show()
+            }
         binding.notificationsRecyclerView.adapter = adapter
     }
 

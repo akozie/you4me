@@ -14,6 +14,8 @@ import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentStateBottomSheetBinding
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.utils.SharedPrefHelper
+import com.you4me.you4me.utils.closeSoftKeyboard
+import com.you4me.you4me.utils.hideKeyboard
 
 
 class StateBottomSheetFragment : BottomSheetDialogFragment() {
@@ -88,6 +90,7 @@ class StateBottomSheetFragment : BottomSheetDialogFragment() {
                     selectedValue = item.value
                     selectedLabel = item.label
                     updateRadioIcons(container, index)
+                    hideKeyboard()
                 }
 
                 container.addView(view)

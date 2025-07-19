@@ -1,7 +1,10 @@
 package com.you4me.you4me.ui.profile.bottomsheet
 
 import android.app.Activity
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.ContentResolver
+import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -9,42 +12,40 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
-import android.view.*
-import androidx.fragment.app.Fragment
-import android.widget.FrameLayout
-import android.widget.ImageView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
+import androidx.fragment.app.setFragmentResult
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.gson.Gson
-import com.you4me.you4me.R
 import com.you4me.you4me.core.AppDatabase
 import com.you4me.you4me.core.DbRepository
-import com.you4me.you4me.databinding.FragmentCountryBottomSheetBinding
 import com.you4me.you4me.databinding.FragmentEditProfilePictureBottomSheetBinding
-import com.you4me.you4me.databinding.FragmentProfileBinding
 import com.you4me.you4me.model.User
+import com.you4me.you4me.models.ImagesVideosResponse
 import com.you4me.you4me.models.RegisterProfilePhotoBody
 import com.you4me.you4me.models.RegisterVideoUploadBody
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.RemoteDataSource
 import com.you4me.you4me.network.Resource
-import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.repository.ProfileRepository
-import com.you4me.you4me.ui.base.BaseFragment
-import com.you4me.you4me.ui.main.MainViewModel
-import com.you4me.you4me.ui.profile.ProfileFragment
 import com.you4me.you4me.ui.profile.ProfileViewModel
 import com.you4me.you4me.utils.SharedPrefHelper
+import com.you4me.you4me.utils.SharedPrefHelper.Companion.PROFILE_IMAGE
 import com.you4me.you4me.utils.Utils.showAlertDialog
 import com.you4me.you4me.utils.removeSimpleProgressDialog
 import com.you4me.you4me.utils.showSimpleProgressDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.*
 
@@ -55,13 +56,13 @@ class EditProfilePictureBottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var viewModel: ProfileViewModel
     private lateinit var repository: ProfileRepository
     private lateinit var sharedPrefHelper: SharedPrefHelper
+    private lateinit var activityResultLauncherForCamera: ActivityResultLauncher<Intent>
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
-    private lateinit var recordVideoLauncher: ActivityResultLauncher<Intent>
-    private var videoUri: Uri? = null
+
+    //    private var videoUri: Uri? = null
     private lateinit var videoId: String
     private lateinit var user: User
     private lateinit var photoUri: Uri
-    private lateinit var cameraLauncher: ActivityResultLauncher<Uri>
 
     private var player: ExoPlayer? = null
     private val handler = Handler(Looper.getMainLooper())
@@ -78,8 +79,6 @@ class EditProfilePictureBottomSheetFragment : BottomSheetDialogFragment() {
         }
 
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -94,15 +93,30 @@ class EditProfilePictureBottomSheetFragment : BottomSheetDialogFragment() {
         sharedPrefHelper = SharedPrefHelper(requireContext())
         isCancelable = false
 
+        activityResultLauncherForCamera =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Activity.RESULT_OK) {
+                    Log.d("YEPAAAKK", "Captured image URI: $photoUri")
 
-        // Register in onCreate or onViewCreated
-        cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-            if (success) {
-                // Handle the captured image (photoUri contains the image URI)
-//                binding.image1.setImageURI(photoUri) // Example
-                Log.d("URI_PHOTO", "$photoUri")
+                    if (photoUri != null && validateMedia(photoUri!!)) {
+                        videoId = UUID.randomUUID().toString()
+                        showLoader(true)
+
+                        viewModel.registerProfilePhotoUpload(
+                            RegisterProfilePhotoBody(
+                                "$photoUri",
+                                user.userId,
+                                videoId,
+                                getCategoryFromUri(requireContext(), photoUri!!),
+                                isProfilePhoto = true,
+                            ),
+                        )
+                    } else {
+                        // showDialog("Media is not valid")
+                    }
+                }
             }
-        }
+
 
         repository =
             ProfileRepository(
@@ -142,22 +156,25 @@ class EditProfilePictureBottomSheetFragment : BottomSheetDialogFragment() {
 
     }
 
-    private fun setUpView(){
+    private fun setUpView() {
+
+
         activityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
-                    videoUri = it.data?.data ?: return@registerForActivityResult
-                    if (validateMedia(videoUri!!)) {
+                    photoUri = it.data?.data ?: return@registerForActivityResult
+                    if (com.you4me.you4me.utils.validateMedia(photoUri!!, requireContext())) {
                         videoId = UUID.randomUUID().toString()
                         showLoader(true)
-
-                        viewModel.registerProfilePhotoUpload(
-                            RegisterProfilePhotoBody(
-                                "$videoUri",
+                        viewModel.registerVideoUpload(
+                            RegisterVideoUploadBody(
+                                "$photoUri",
                                 user.userId,
                                 videoId,
-                                getCategoryFromUri(requireContext(), videoUri!!),
-                                true,
+                                com.you4me.you4me.utils.getCategoryFromUri(
+                                    requireContext(),
+                                    photoUri!!
+                                ),
                             ),
                         )
 //                        Log.d("YEPAAA", "$videoUri")
@@ -167,30 +184,6 @@ class EditProfilePictureBottomSheetFragment : BottomSheetDialogFragment() {
                 }
             }
 
-
-        recordVideoLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    // Handle the recorded video URI (e.g., upload it to your server or save it locally)
-                    videoUri = result.data?.data ?: return@registerForActivityResult
-                    if (validateMedia(videoUri!!)) {
-                        videoId = UUID.randomUUID().toString()
-                        showLoader(true)
-
-                        viewModel.registerProfilePhotoUpload(
-                            RegisterProfilePhotoBody(
-                                "$videoUri",
-                                user.userId,
-                                videoId,
-                                getCategoryFromUri(requireContext(), videoUri!!),
-                                true
-                            ),
-                        )
-                    } else {
-//                        showAlertDialog(requireContext(), "Video duration must not be longer than 30 seconds")
-                    }
-                }
-            }
 
     }
 
@@ -207,14 +200,22 @@ class EditProfilePictureBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun openCamera() {
-        val photoFile = File.createTempFile("IMG_", ".jpg", requireContext().cacheDir)
+        val photoFile = File.createTempFile("IMG_", ".jpg", requireContext().cacheDir).apply {
+            createNewFile()
+            deleteOnExit()
+        }
+
+
         photoUri = FileProvider.getUriForFile(
             requireContext(),
             "${requireContext().packageName}.provider",
             photoFile
         )
-
-        cameraLauncher.launch(photoUri)
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+            putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        activityResultLauncherForCamera.launch(intent)
     }
 
     fun showToast(
@@ -229,9 +230,6 @@ class EditProfilePictureBottomSheetFragment : BottomSheetDialogFragment() {
         viewModel.cameraUploadResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-//                    binding.videoBannerLayout.isVisible = true
-//                    binding.profileLayout.isVisible = false
-//                    showVideoRegulationsDialog()
                     openCamera()
                 }
 
@@ -240,7 +238,12 @@ class EditProfilePictureBottomSheetFragment : BottomSheetDialogFragment() {
                     if (it.errorCode == 400) {
                         showToast("You already uploaded a video")
                     } else {
-                        showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK", "", {}) {}
+                        showAlertDialog(
+                            requireContext(),
+                            it.message ?: it.errorBody ?: "",
+                            "OK",
+                            "",
+                            {}) {}
                     }
                 }
             }
@@ -259,8 +262,25 @@ class EditProfilePictureBottomSheetFragment : BottomSheetDialogFragment() {
                     if (it.errorCode == 400) {
                         showToast("You already uploaded a video")
                     } else {
-                        showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK", "", {}) {}
+                        showAlertDialog(
+                            requireContext(),
+                            it.message ?: it.errorBody ?: "",
+                            "OK",
+                            "",
+                            {}) {}
                     }
+                }
+            }
+        }
+        viewModel.registerPhotoUploadResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    showLoader(true)
+                    viewModel.uploadVideo(photoUri!!, videoId)
+                }
+
+                is Resource.Failure -> {
+                    showLoader(false)
                 }
             }
         }
@@ -268,7 +288,7 @@ class EditProfilePictureBottomSheetFragment : BottomSheetDialogFragment() {
             when (it) {
                 is Resource.Success -> {
                     showLoader(true)
-                    viewModel.uploadVideo(videoUri!!, videoId)
+                    viewModel.uploadVideo(photoUri!!, videoId)
                 }
 
                 is Resource.Failure -> {
@@ -281,7 +301,7 @@ class EditProfilePictureBottomSheetFragment : BottomSheetDialogFragment() {
             viewModel.updateVideoUrl(it.public_id, it.url)
         }
 
-        viewModel.uploadError.observe(viewLifecycleOwner) {errorMessage ->
+        viewModel.uploadError.observe(viewLifecycleOwner) { errorMessage ->
             errorMessage?.let {
                 showToast(it)
             }
@@ -291,16 +311,80 @@ class EditProfilePictureBottomSheetFragment : BottomSheetDialogFragment() {
         viewModel.updateVideoUrlResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
+                    val imageId = sharedPrefHelper.getString(PROFILE_IMAGE)
 //                    mixpanel?.track("Android_Profile_Uploaded_Media")
                     showToast("Uploaded Successfully")
 //                    videoViewBinding.videoView.setVideoURI(videoUri)
 //                    initializePlayer()
                     showLoader(true)
                     binding.root.isVisible = true
-//                    binding.profileLayout.isVisible = true
+                    viewModel.deleteVideoUpload(imageId)
+                    observeDeleteVideo()
+                    val result = Bundle().apply {
+                        putString("selected_value", "$photoUri")
+                        putString("sheet_id", "EDIT_PROFILE")  // Unique tag for the sheet
+                    }
+                    setFragmentResult("bottom_sheet_result", result)
                 }
 
                 is Resource.Failure -> {}
+            }
+        }
+    }
+
+    private fun getImages() {
+        showLoader(true)
+        viewModel.getImagesAndVideos(user.userId)
+        viewModel.getImagesAndVideos.observe(viewLifecycleOwner) { images ->
+            when (images) {
+                is Resource.Success -> {
+                    val listOfImagesAndVideos = images.value
+                    try {
+                        showLoader(false)
+                        // Your potentially crashing code (e.g., loading images, videos, etc.)
+                        if (isAdded() && getActivity() != null) {
+                            // Perform operations safely
+                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                        }
+                    } catch (e: Exception) {
+                        Log.e("MyApp", "Error loading data", e)
+                    }
+                }
+
+                is Resource.Failure -> {
+                }
+            }
+        }
+    }
+
+    private fun loadImagesAndVideosInBackground(listOfImagesAndVideos: ImagesVideosResponse) {
+
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val profileImageItem = listOfImagesAndVideos.firstOrNull { it.isProfilePhoto }
+
+            withContext(Dispatchers.Main) {
+                // 🔵 Load profile image
+                profileImageItem?.let {
+                    sharedPrefHelper.saveString(PROFILE_IMAGE, it.videoId)
+                    dismiss()
+                }
+
+            }
+        }
+    }
+
+    private fun observeDeleteVideo() {
+        viewModel.deleteVideoUploadResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    showLoader(false)
+                    getImages()
+                }
+
+                is Resource.Failure -> {
+                    showLoader(false)
+                    dismiss()
+                }
             }
         }
     }

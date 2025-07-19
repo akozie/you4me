@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:padding="24dp"
+    tools:context=".ui.main.likes.bottomsheet.ProposeNewDateAndTimeFragment">
+
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineVertical1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.1" />
+
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/top_arc_img"
+            android:layout_marginTop="@dimen/margin_10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Header -->
+        <TextView
+            android:id="@+id/tvHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_20dp"
+            android:text="Propose new date and time"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_size_18sp"
+            android:textStyle="bold" />
+
+        <!-- Profile Row -->
+        <LinearLayout
+            android:id="@+id/profileRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_light_gray"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+
+            <ImageView
+                android:id="@+id/profilePicture"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="start"
+                android:clipToOutline="true"
+                android:background="@drawable/profile_dotted_borders"
+                android:contentDescription="Profile Picture"
+                android:scaleType="centerCrop"
+                android:src="@drawable/baseline_person_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvDateTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date with Lovie – Coffee at starbucks"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvOriginalDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Original: June-15-2025"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- New Date Picker -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Select new date"
+            android:layout_gravity="start"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_edittext"
+            android:drawableEnd="@drawable/calender__"
+            android:focusable="false"
+            android:hint="Select date"
+            android:textSize="@dimen/text_size_15sp"
+            android:inputType="none"
+            android:padding="12dp" />
+
+        <!-- Time Picker -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Select time"
+            android:layout_gravity="start"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_edittext"
+            android:drawableEnd="@drawable/time__"
+            android:focusable="false"
+            android:hint="Select time"
+            android:textSize="@dimen/text_size_15sp"
+            android:inputType="none"
+            android:padding="12dp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Message(Optional)"
+            android:layout_gravity="start"
+            android:textSize="14sp" />
+
+        <!-- Message Field -->
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_edittext"
+            android:gravity="top|start"
+            android:textSize="@dimen/text_size_15sp"
+            android:hint="Why does this time work better for you?"
+            android:inputType="textMultiLine"
+            android:maxLength="145"
+            android:padding="12dp" />
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:text="Cancel"
+                android:textColor="@color/primary_pink" />
+
+            <Button
+                android:id="@+id/btnSendProposal"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/margin_55dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/primary_pink"
+                android:text="Send Proposal"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

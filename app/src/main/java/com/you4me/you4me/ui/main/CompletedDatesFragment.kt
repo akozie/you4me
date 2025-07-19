@@ -1,6 +1,7 @@
 package com.you4me.you4me.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -53,34 +54,11 @@ class CompletedDatesFragment : BaseFragment<MainViewModel, FragmentCompletedDate
             findNavController().navigate(R.id.action_homeFragment_to_allCompletedDatesFragment)
         }
 
-        addObservers()
-        viewModel.completedDates.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Success -> {
-//                    setupCompletedDates(it.value)
-                    val list =  CompletedDateResponse().apply {
-                        add(
-                            CompletedDateResponseItem(
-                                "CHAT",
-                                "2025/05/28",
-                                "12wqasde",
-                                "true",
-                                "Emmanuel",
-                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
-                                "5",
-                                "Lagos",
-                                "Lekki"
-                            )
-                        )
-                    }
-                    setupCompletedDates(list)
-                }
-
-                is Resource.Failure -> {
-                    showToast(it.message ?: it.errorBody ?: "")
-                }
-            }
+        binding.createADateLayout.setOnClickListener {
+            findNavController().navigate(R.id.goOnDateFragment)
         }
+
+        addObservers()
 
 
 
@@ -102,13 +80,15 @@ class CompletedDatesFragment : BaseFragment<MainViewModel, FragmentCompletedDate
 
     private fun setupCompletedDates(dates: CompletedDateResponse) {
         if (dates.isEmpty()) {
-            binding.datesCompletedAppLyt.visibility = View.GONE
             binding.completedDatesRecycler.visibility = View.GONE
+            binding.noDatesLyt.visibility = View.VISIBLE
+            binding.viewAllBtn.visibility = View.GONE
 //            binding.completedDatesTxt.visibility = View.GONE
 //            binding.completedDatesDivider.visibility = View.GONE
         } else {
-            binding.datesCompletedAppLyt.visibility = View.VISIBLE
             binding.completedDatesRecycler.visibility = View.VISIBLE
+            binding.noDatesLyt.visibility = View.GONE
+            binding.viewAllBtn.visibility = View.VISIBLE
 //            binding.completedDatesTxt.visibility = View.VISIBLE
 //            binding.completedDatesDivider.visibility = View.VISIBLE
             val adapter =
@@ -137,6 +117,35 @@ class CompletedDatesFragment : BaseFragment<MainViewModel, FragmentCompletedDate
                 }
             }
         }
+
+        viewModel.completedDates.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+//                    setupCompletedDates(it.value)
+                    val list =  CompletedDateResponse().apply {
+                        add(
+                            CompletedDateResponseItem(
+                                "CHAT",
+                                "2025/05/28",
+                                "12wqasde",
+                                "true",
+                                "Emmanuel",
+                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
+                                "5",
+                                "Lagos",
+                                "Lekki"
+                            )
+                        )
+                    }
+                    setupCompletedDates(list)
+                }
+
+                is Resource.Failure -> {
+                    showToast(it.message ?: it.errorBody ?: "")
+                }
+            }
+        }
+
     }
 
     override fun onDestroy() {

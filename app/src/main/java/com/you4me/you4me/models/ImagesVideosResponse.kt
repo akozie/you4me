@@ -8,5 +8,6 @@ class ImagesVideosResponse : ArrayList<ImagesVideosResponseItem>()
 data class ImageSlotViews(
     val imageView: ImageView,
     val addBadge: ImageView,
-    val cancelButton: ImageView
+    val cancelButton: ImageView,
+    var videoId: String? = null
 )

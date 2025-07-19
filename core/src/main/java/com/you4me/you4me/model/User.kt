@@ -29,3 +29,4 @@ data class User(
     @ColumnInfo val videoURL: String,
     @ColumnInfo val isVerified: Boolean = false,
 )
+

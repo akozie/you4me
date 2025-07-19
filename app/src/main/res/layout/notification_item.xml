@@ -1,46 +1,93 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_container"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/notification_lyt"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="20dp"
-    app:cardElevation="5dp"
-    app:cardCornerRadius="10dp"
-    app:cardPreventCornerOverlap="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_margin="@dimen/margin_10dp">
 
-    <LinearLayout
+    <!-- Optional Date Header -->
+    <TextView
+        android:id="@+id/dateHeaderText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/padding_20dp">
+        android:text="Today"
+        android:visibility="gone"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp"
+        android:textColor="@color/black" />
 
-        <TextView
-            android:id="@+id/notification_text"
+    <!-- Notification Item Container -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Pink vertical bar -->
+        <View
+            android:id="@+id/view"
+            android:layout_width="@dimen/margin_5dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@color/primary_pink" />
+
+        <!-- Rounded card on the right -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/notification_lyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawablePadding="6dp"
-            android:padding="5dp"
-            app:drawableStartCompat="@drawable/baseline_circle_24"
-            app:drawableTint="@color/primary_pink"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            tools:text="Mary has accepted your date request. We have added the details to your upcoming dates." />
+            android:layout_marginStart="@dimen/margin_5dp"
+            app:cardElevation="4dp"
+            app:shapeAppearanceOverlay="@style/RightCornersOnly">
 
-        <TextView
-            android:id="@+id/date_time"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:layout_marginEnd="4dp"
-            android:textSize="12sp"
-            android:textColor="@android:color/darker_gray"
-            android:paddingTop="@dimen/padding_5dp"
-            tools:text="7:30pm" />
+            <RelativeLayout
+                android:id="@+id/relativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_10dp">
 
-    </LinearLayout>
+                <ImageView
+                    android:id="@+id/userImage"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/profile_dotted_borders"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/baseline_person_24" />
 
-</androidx.cardview.widget.CardView>
+                <TextView
+                    android:id="@+id/notificationMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/userImage"
+                    android:layout_marginStart="12dp"
+                    android:layout_toEndOf="@id/userImage"
+                    android:text="You've received a like from your date interest"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
 
+                <TextView
+                    android:id="@+id/timeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/userImage"
+                    android:layout_marginStart="12dp"
+                    android:layout_toEndOf="@id/userImage"
+                    android:text="5:30 PM"
+                    android:textColor="@color/text_grey"
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:id="@+id/optionsMenu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/userImage"
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="Options"
+                    android:src="@drawable/menu" />
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
+</LinearLayout>

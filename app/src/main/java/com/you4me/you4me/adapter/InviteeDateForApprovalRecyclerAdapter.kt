@@ -47,9 +47,9 @@ class InviteeDateForApprovalRecyclerAdapter(
     ) {
         val date = dates[position]
         holder.binding.apply {
-            // name.text = date.name
+             userName.text = date.name
 //            location.text = "Cheers! Your date with ${date.name} is scheduled for ${date.date} at ${date.time}. Does this date and time work for you?"
-            // dateODate.text = "${date.date} : ${date.time}"
+//             dateODate.text = "${date.date} : ${date.time}"
 
             acceptBtn.setOnClickListener {
                 // accept

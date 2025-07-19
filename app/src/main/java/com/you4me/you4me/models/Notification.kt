@@ -11,3 +11,10 @@ data class Notification(
     val time: String,
     var category: String,
 )
+
+
+sealed class NotificationListItem {
+    data class DateHeader(val date: String) : NotificationListItem()
+    data class NotificationItem(val notification: Notification) : NotificationListItem()
+}
+

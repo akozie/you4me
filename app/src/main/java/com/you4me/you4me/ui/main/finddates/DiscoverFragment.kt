@@ -9,6 +9,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -31,10 +32,7 @@ import com.google.gson.JsonObject
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentDiscoverBinding
 import com.you4me.you4me.model.User
-import com.you4me.you4me.models.FetchDatesResponseItem
-import com.you4me.you4me.models.ImagesVideosResponse
-import com.you4me.you4me.models.ImagesVideosResponseItem
-import com.you4me.you4me.models.ValueLabelResponse
+import com.you4me.you4me.models.*
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
@@ -43,6 +41,7 @@ import com.you4me.you4me.ui.main.MainViewModel
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -91,6 +90,59 @@ class DiscoverFragment :
             showLoading(true)
             showReportAbuseDialog()
         }
+        binding.sendComplimentsImg.setOnClickListener {
+            findNavController().navigate(R.id.action_findDateFragment_to_complimentsBottomSheetFragment)
+        }
+
+//        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+//            try {
+//                viewModel.fetchDates(user.userId)
+//                viewModel.fetchDates.observe(viewLifecycleOwner) {
+//                    when (it) {
+//                        is Resource.Success -> {
+//                            if (!it.value.isEmpty()) {
+//                                showEmpty()
+//                                showToast("EMPTY")
+//                            } else {
+//                        dates = it.value
+//                                showToast("NOT EMPTY")
+//                            val list =  FetchDatesResponse().apply {
+//                                add(
+//                                    FetchDatesResponseItem(
+//                                        "30",
+//                                        "2025/06/09",
+//                                        "2025/06/09",
+//                                        "12wqasde111",
+//                                        "Emmanuel",
+//                                        "ME",
+//                                        "Lekki Phase 1",
+//                                        "Football lover",
+//                                        "2025/06/09",
+//                                        "2025/06/09",
+//                                        "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
+//                                        "",
+//                                        "",
+//                                        ""
+//                                    )
+//                                )
+//                            }
+//                            dates = list
+//                                setScreen()
+//                                binding.mainLyt.visibility = View.VISIBLE
+//                                binding.mainLytBtn.visibility = View.VISIBLE
+//                            }
+//                        }
+//
+//                        is Resource.Failure -> {
+//                            showToast(it.message ?: it.errorBody ?: "")
+//                        }
+//                    }
+//                }
+//
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        }
     }
 
     override fun onResume() {
@@ -130,7 +182,6 @@ class DiscoverFragment :
         Glide.with(requireActivity())
             .load(R.drawable.find_date_bg) // Replace with your actual default image resource
             .into(defaultImageView)
-
         frame.addView(defaultImageView)
         frame.visibility = View.VISIBLE
     }
@@ -375,33 +426,35 @@ class DiscoverFragment :
 //        binding.userVideo.setMediaController(mediaControls)
 
         binding.acceptBtn.setOnClickListener {
-            if (currentIdx < 0 || currentIdx >= dates.size) {
-                return@setOnClickListener // Prevents out-of-bounds access
-            }
-            val d = dates[currentIdx]
-            showLoading(true)
-            viewModel.addDateInterest(
-                d.dateId,
-                d.date,
-                d.time,
-                user.userId,
-                d.userId,
-            )
-            mixpanel?.track("Android_Liked_Find_Date_Button_Pressed")
+            findNavController().navigate(R.id.action_findDateFragment_to_dateMatchFragment)
+//            if (currentIdx < 0 || currentIdx >= dates.size) {
+//                return@setOnClickListener // Prevents out-of-bounds access
+//            }
+//            val d = dates[currentIdx]
+//            showLoading(true)
+//            viewModel.addDateInterest(
+//                d.dateId,
+//                d.date,
+//                d.time,
+//                user.userId,
+//                d.userId,
+//            )
+//            mixpanel?.track("Android_Liked_Find_Date_Button_Pressed")
         }
         binding.rejectBtn.setOnClickListener {
-            if (currentIdx < 0 || currentIdx >= dates.size) {
-                return@setOnClickListener // Prevents out-of-bounds access
-            }
-            showLoading(true)
-            val d = dates[currentIdx]
-            viewModel.addSwipe(
-                d.dateId,
-                d.userId,
-                false,
-                user.userId,
-            )
-            mixpanel?.track("Android_Disliked_Find_Date_Button_Pressed")
+            findNavController().navigate(R.id.notInterestedFragment)
+//            if (currentIdx < 0 || currentIdx >= dates.size) {
+//                return@setOnClickListener // Prevents out-of-bounds access
+//            }
+//            showLoading(true)
+//            val d = dates[currentIdx]
+//            viewModel.addSwipe(
+//                d.dateId,
+//                d.userId,
+//                false,
+//                user.userId,
+//            )
+//            mixpanel?.track("Android_Disliked_Find_Date_Button_Pressed")
         }
 
         binding.mainLyt.setOnTouchListener { _, event ->
@@ -518,33 +571,59 @@ class DiscoverFragment :
                 }
             }
         }
-        viewModel.fetchDates.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Success -> {
-                    if (it.value.isEmpty()) {
-                        showEmpty()
-                    } else {
-                        dates = it.value
-                        setScreen()
-                        binding.mainLyt.visibility = View.VISIBLE
-                        binding.mainLytBtn.visibility = View.VISIBLE
-                    }
-                }
 
-                is Resource.Failure -> {
-                    showToast(it.message ?: it.errorBody ?: "")
-                }
-            }
-        }
-
-        if (user.status.toLowerCase() == "incomplete") {
+        if (user.status.toLowerCase() != "incomplete") {
             binding.completeProfileLayout.visibility = View.VISIBLE
             binding.constraintLayout2.visibility = View.GONE
-            return
+            Log.d("FUNNY_GIRL===", user.userId)
+//            return
         } else {
             binding.completeProfileLayout.visibility = View.GONE
-            //  Log.d("FUNNY_GIRL", user.userId)
             viewModel.fetchDates(user.userId)
+            viewModel.fetchDates.observe(viewLifecycleOwner) {
+                when (it) {
+                    is Resource.Success -> {
+                        Log.d("FUNNY_GIRL", user.userId)
+                        if (!it.value.isEmpty()) {
+                            showEmpty()
+                            showToast("EMPTY")
+                        } else {
+//                        dates = it.value
+                            showToast("NOT EMPTY")
+                            val list =  FetchDatesResponse().apply {
+                                add(
+                                    FetchDatesResponseItem(
+                                        "30",
+                                        "2025/06/09",
+                                        "2025/06/09",
+                                        "12wqasde111",
+                                        "Emmanuel",
+                                        "ME",
+                                        "Lekki Phase 1",
+                                        "Football lover",
+                                        "2025/06/09",
+                                        "2025/06/09",
+                                        "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
+                                        "",
+                                        "",
+                                        ""
+                                    )
+                                )
+                            }
+                            dates = list
+                            setScreen()
+                            binding.mainLyt.visibility = View.VISIBLE
+                            binding.mainLytBtn.visibility = View.VISIBLE
+                        }
+                    }
+
+                    is Resource.Failure -> {
+                        Log.d("FUNNY_GIRL_NOT", user.userId)
+                        showToast(it.message ?: it.errorBody ?: "")
+                    }
+                }
+            }
+
         }
 
         viewModel.addDateInterest.observe(viewLifecycleOwner) {

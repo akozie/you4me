@@ -1,274 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/grey"
+    android:layout_marginBottom="@dimen/margin_20dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main_lyt"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:layout_marginStart="@dimen/margin_10dp"
-        android:layout_marginEnd="@dimen/margin_10dp"
-        android:layout_marginTop="@dimen/margin_5dp"
-        android:paddingBottom="@dimen/padding_20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:background="@color/grey"
+        android:padding="@dimen/padding_10dp">
 
-
-        <ImageView
-            android:id="@+id/imageView"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/shapeableImageView"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/find_date_placeholder"
+            android:src="@drawable/onboarding_img1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10dp"
-            android:text="Mary"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
 
 
-        <TextView
-            android:id="@+id/report_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_10dp"
-            android:layout_marginBottom="@dimen/margin_70dp"
-            android:drawableStart="@drawable/report"
-            android:drawablePadding="@dimen/padding_10dp"
-            android:text="Report Date"
-            android:padding="@dimen/padding_10dp"
-            android:textStyle="bold"
-            android:gravity="center_vertical"
-            android:textColor="@color/primary_pink"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/location_layout" />
-
-        <TextView
-            android:id="@+id/bio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10dp"
-            android:visibility="gone"
-            android:gravity="start"
-            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-            android:textSize="@dimen/text_size_15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_name" />
-
-        <LinearLayout
-            android:id="@+id/available_layout"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/second_constraint_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@color/grey"
             android:layout_marginTop="@dimen/margin_10dp"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bio">
+            android:padding="@dimen/margin_10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/shapeableImageView"
+            app:layout_constraintTop_toBottomOf="@+id/shapeableImageView">
+
 
             <TextView
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Available on : "
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:text="Emma proposed a new date"
+                android:textSize="@dimen/text_size_20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/second_constraint_layout"
+                app:layout_constraintTop_toTopOf="@+id/second_constraint_layout" />
+
+            <TextView
+                android:id="@+id/user_location_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:text="Coffee at Starbucks"
+                app:layout_constraintStart_toStartOf="@id/name"
+                app:layout_constraintTop_toBottomOf="@+id/name" />
+
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/margin_2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_location_tv" />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_10dp"
+                android:layout_marginTop="@dimen/margin_20dp"
+                android:drawableStart="@drawable/calender__"
+                android:drawablePadding="@dimen/padding_10dp"
+                android:text="Wed . Jun 18 . 2025"
                 android:textColor="@color/black"
-                android:textStyle="bold" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view" />
 
-            <TextView
-                android:id="@+id/available_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="13 Dec, 2024" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/payment_lyt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_5dp"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/available_layout">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Who is paying? : "
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/payment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mary will pay" />
-
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/location_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_5dp"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/payment_lyt">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Location? : "
-                android:textColor="@color/black"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="32, Ibeju Lekki" />
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:drawableStart="@drawable/time__"
+                android:drawablePadding="@dimen/padding_10dp"
+                android:text="Mountain trail"
+                app:layout_constraintStart_toStartOf="@+id/textView16"
+                app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
-        </LinearLayout>
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/main_lyt_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:layout_marginTop="@dimen/margin_10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/location_layout"
-            app:layout_constraintTop_toBottomOf="@+id/report_date">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/suggest_a_new_date_cardview"
+            <TextView
+                android:id="@+id/completed"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_5dp"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:drawableStart="@drawable/location__"
+                android:drawablePadding="@dimen/padding_10dp"
+                android:text="March 10,2025 at 10:00am "
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/location"
+                app:layout_constraintTop_toBottomOf="@+id/location" />
+
+
+            <TextView
+                android:id="@+id/who_paid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:drawableStart="@drawable/split_card"
+                android:drawablePadding="@dimen/padding_10dp"
+                android:text="Split"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/completed"
+                app:layout_constraintTop_toBottomOf="@+id/completed" />
+
+            <TextView
+                android:id="@+id/waiting_for_approval_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:background="@drawable/bg_rounded_button_yellow"
+                android:padding="@dimen/padding_10dp"
+                android:text="Waiting for approval"
+                android:textColor="@color/yellow"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="@+id/who_paid"
+                app:layout_constraintTop_toBottomOf="@+id/who_paid" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/waiting_for_approval_tv">
 
-                <TextView
-                    android:id="@+id/suggest_a_new_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/margin_45dp"
-                    android:autoSizeMaxTextSize="20sp"
-                    android:autoSizeMinTextSize="12sp"
-                    android:autoSizeStepGranularity="2sp"
-                    android:autoSizeTextType="uniform"
-                    android:background="@drawable/btn_not_interested_stroke_color"
+
+                <LinearLayout
+                    android:id="@+id/reject_btn_lyt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_10dp"
+                    android:background="@drawable/rectangle_skip_for_now"
                     android:gravity="center"
-                    android:padding="@dimen/padding_5dp"
-                    android:paddingVertical="15dp"
-                    android:text="Suggest a new time for the date"
-                    android:textColor="@color/primary_pink"
-                    android:textSize="@dimen/text_size_13sp" />
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_17dp"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            </androidx.cardview.widget.CardView>
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/close__" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/decline"
+                        android:textColor="@color/primary_pink"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
 
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
+                <LinearLayout
+                    android:id="@+id/accept_btn_lyt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10dp"
+                    android:layout_marginEnd="@dimen/margin_10dp"
+                    android:background="@drawable/rectangle_skip_for_now"
+                    android:backgroundTint="@color/primary_pink"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_17dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/reject_btn_lyt"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/guideline1"
+                    app:layout_constraintTop_toTopOf="@+id/reject_btn_lyt">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/check__" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/accept"
+                        android:textColor="@color/white"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_5dp"
-                app:layout_constraintEnd_toEndOf="@+id/suggest_a_new_date_cardview"
-                app:layout_constraintStart_toStartOf="@+id/suggest_a_new_date_cardview"
-                app:layout_constraintTop_toBottomOf="@+id/suggest_a_new_date_cardview">
-
-                <TextView
-                    android:id="@+id/accept_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/margin_45dp"
-                    android:autoSizeMaxTextSize="20sp"
-                    android:autoSizeMinTextSize="12sp"
-                    android:autoSizeStepGranularity="2sp"
-                    android:autoSizeTextType="uniform"
-                    android:background="@drawable/btn_go_on_date"
-                    android:gravity="center"
-                    android:padding="@dimen/padding_10dp"
-                    android:paddingVertical="15dp"
-                    android:text="Accept Date"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_13sp" />
-            </androidx.cardview.widget.CardView>
+                android:text="Propose New Date"
+                android:padding="@dimen/padding_10dp"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:textColor="@color/primary_pink"
+                app:layout_constraintEnd_toEndOf="@+id/constraintLayout8"
+                app:layout_constraintStart_toStartOf="@+id/constraintLayout8"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout8" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/loader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:drawableTopCompat="@drawable/baseline_not_interested_24"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieAnimationView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:lottie_autoPlay="true"
-            app:lottie_fileName="dating.json"
-            app:lottie_loop="true" />
-
-        <TextView
-            android:id="@+id/empty_lyt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/no_date_interests"
-            android:textAlignment="center"
-            android:textSize="25sp"
-            app:layout_constraintBottom_toBottomOf="@+id/lottieAnimationView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/lottieAnimationView"
-            app:layout_constraintVertical_bias="0.85" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

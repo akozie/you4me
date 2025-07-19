@@ -1,101 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/boostDialogLayout"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context=".ui.profile.bottomsheet.ProfileBoostFragment"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-    android:background="@color/white"
-        android:orientation="vertical"
-        android:padding="24dp"
-        tools:context=".ui.profile.bottomsheet.ProfileBoostFragment">
+        android:orientation="vertical">
 
-        <!-- Avatar -->
-        <ImageView
-            android:id="@+id/avatar"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/onboarding_screen_1"
-            android:scaleType="centerCrop" />
-
-        <!-- Title -->
-        <TextView
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profile_constraint_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Profile boost"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="center_horizontal"/>
+            app:layout_constraintTop_toBottomOf="@+id/profile_txt"
+            tools:layout_editor_absoluteX="32dp">
 
-        <!-- Subtitle -->
+
+            <ImageView
+                android:id="@+id/profilePicture"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:clipToOutline="true"
+                android:background="@drawable/profile_dotted_borders"
+                android:contentDescription="Profile Picture"
+                android:scaleType="centerCrop"
+                android:src="@drawable/baseline_person_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/tvProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-10dp"
+                android:orientation="horizontal"
+                android:src="@drawable/fire"
+                app:layout_constraintBottom_toBottomOf="@+id/profilePicture"
+                app:layout_constraintEnd_toEndOf="@+id/profilePicture" />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Each boost gets you seen by 15x more people for 24hrs"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
             android:gravity="center"
-            android:layout_gravity="center_horizontal" />
+            android:text="Profile boost"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="Each boost gets you seen by 15x more people for 24hrs"
+            android:textSize="14sp" />
 
         <!-- Boost Options -->
+        <include
+            android:id="@+id/boostOption1"
+            layout="@layout/item_boost_option" />
+
+        <include
+            android:id="@+id/boostOption2"
+            layout="@layout/item_boost_option" />
+
+        <include
+            android:id="@+id/boostOption3"
+            layout="@layout/item_boost_option" />
+
+        <!-- Superboost -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="#F5F5F5"
             android:orientation="vertical"
-            android:layout_marginTop="24dp">
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/optionTwoBoosts"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/BoostOptionCard"/>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/optionThreeBoosts"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/BoostOptionCard"
-                android:layout_marginTop="12dp"/>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/optionOneBoost"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/BoostOptionCard"
-                android:layout_marginTop="12dp"/>
-        </LinearLayout>
-
-        <!-- Superboost CTA -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/rectangle_shape_for_active"
             android:padding="16dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Increase your chances of getting more dates within 24hr superboost"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="12dp" />
-
-            <Button
-                android:id="@+id/superBoostBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Superboost for $31.0"
-                android:backgroundTint="@color/primary_pink"
-                android:textColor="@android:color/white"
-                android:background="@drawable/rectangle_about_me"/>
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:text="Increase your chances of getting more dates within 24hr superboost"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnSuperBoost"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_56dp"
+                android:background="@drawable/bg_rounded_button"
+                android:text="Superboost for $31.0" />
         </LinearLayout>
     </LinearLayout>
+</ScrollView>
+
 

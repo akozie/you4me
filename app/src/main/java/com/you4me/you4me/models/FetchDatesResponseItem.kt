@@ -13,4 +13,6 @@ data class FetchDatesResponseItem(
     val time: String,
     val userId: String,
     val videoURL: String,
+    val email: String,
+    val state: String,
 )

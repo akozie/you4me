@@ -19,6 +19,7 @@ class SharedPrefHelper(context: Context) {
         const val SESSION_ID = "sessionId"
         const val COUNTRY_ID = "country_id"
         const val SEXUALITY_ID = "sexuality_id"
+        const val PROFILE_IMAGE = "profile_image"
     }
 
     private val sharedPreferences: SharedPreferences =

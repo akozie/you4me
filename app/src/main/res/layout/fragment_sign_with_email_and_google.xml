@@ -59,7 +59,7 @@
         android:padding="@dimen/padding_17dp"
         android:layout_marginTop="@dimen/margin_30dp"
         android:layout_margin="@dimen/margin_20dp"
-        android:text="Sign In with Google"
+        android:text="Sign Up with Google"
         android:textColor="@color/black"
         android:textSize="17sp"
         app:drawableStartCompat="@drawable/google"

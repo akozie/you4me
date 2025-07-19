@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/mark_as_read"
+        android:title="Mark as read"
+        android:icon="@drawable/check__green"
+        android:iconTint="@color/black"/>
+    <item
+        android:id="@+id/delete"
+        android:title="Delete notification"
+        android:icon="@drawable/delete"/>
+</menu>

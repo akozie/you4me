@@ -73,6 +73,17 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/imageView" />
 
+            <ImageView
+                android:id="@+id/chat_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/chat__"
+                android:visibility="gone"
+                android:layout_marginEnd="@dimen/margin_10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imageView" />
+
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline2"
                 android:layout_width="wrap_content"
@@ -138,6 +149,84 @@
                     app:layout_constraintTop_toBottomOf="@+id/location" />
 
 
+                <TextView
+                    android:id="@+id/who_paid"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:drawableStart="@drawable/split_card"
+                    android:drawablePadding="@dimen/padding_10dp"
+                    android:text="Split"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/completed"
+                    app:layout_constraintTop_toBottomOf="@+id/completed" />
+
+                <TextView
+                    android:id="@+id/you_created"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_rounded_button_white"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:paddingTop="@dimen/padding_10dp"
+                    android:paddingBottom="@dimen/padding_10dp"
+                    android:paddingStart="@dimen/padding_20dp"
+                    android:paddingEnd="@dimen/padding_20dp"
+                    android:drawableStart="@drawable/you_pay"
+                    android:drawablePadding="@dimen/padding_10dp"
+                    android:text="You created"
+                    app:layout_constraintStart_toStartOf="@+id/who_paid"
+                    app:layout_constraintTop_toBottomOf="@+id/who_paid" />
+
+                <TextView
+                    android:id="@+id/confirmed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10dp"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:background="@drawable/bg_rounded_button_green"
+                    android:drawableStart="@drawable/check__green"
+                    android:drawablePadding="@dimen/padding_10dp"
+                    android:paddingStart="@dimen/padding_20dp"
+                    android:paddingTop="@dimen/padding_10dp"
+                    android:paddingEnd="@dimen/padding_20dp"
+                    android:paddingBottom="@dimen/padding_10dp"
+                    android:text="Confirmed"
+                    android:textColor="@color/green"
+                    app:layout_constraintStart_toEndOf="@+id/you_created"
+                    app:layout_constraintTop_toBottomOf="@+id/who_paid" />
+
+
+                <LinearLayout
+                    android:id="@+id/date_is_today_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10dp"
+                    android:layout_marginTop="@dimen/margin_20dp"
+                    android:layout_marginEnd="@dimen/margin_10dp"
+                    android:background="@drawable/rectangle_shape_for_free_and_premiun"
+                    android:gravity="start"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_17dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/you_created">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="Your date is today!"
+                        android:drawableStart="@drawable/calender__"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chat is now available"
+                        android:textColor="@color/primary_pink"
+                        android:textSize="17sp" />
+                </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/add_to_calender"
                     android:layout_width="match_parent"
@@ -151,7 +240,7 @@
                     android:padding="@dimen/padding_17dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/completed">
+                    app:layout_constraintTop_toBottomOf="@+id/date_is_today_layout">
 
                     <ImageView
                         android:id="@+id/googleIcon"

@@ -10,9 +10,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="@dimen/margin_5dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="@dimen/margin_5dp"
         android:layout_marginBottom="5dp"
         android:orientation="vertical"
         android:gravity="center"
@@ -43,17 +43,18 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView28"
+                android:id="@+id/name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_20dp"
-                android:layout_marginEnd="97dp"
+                android:layout_marginTop="@dimen/margin_20dp"
+                android:layout_marginEnd="@dimen/margin_20dp"
                 android:text="Say something nice to Lovie"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text_size_20sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/cancel_icon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guidelineVertical1" />
+                app:layout_constraintTop_toBottomOf="@+id/imageView4" />
 
 
             <ImageView
@@ -61,9 +62,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/cancel_icon"
-                app:layout_constraintBottom_toBottomOf="@+id/textView28"
+                app:layout_constraintBottom_toBottomOf="@+id/name"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textView28" />
+                app:layout_constraintTop_toTopOf="@+id/name" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <com.google.android.material.tabs.TabLayout

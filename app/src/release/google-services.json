@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "264358783975",
+    "firebase_url": "https://you4me-14d09-default-rtdb.firebaseio.com",
     "project_id": "you4me-14d09",
     "storage_bucket": "you4me-14d09.firebasestorage.app"
   },
@@ -59,12 +60,108 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:264358783975:android:ff8a9a68a0007339d9eb42",
+        "android_client_info": {
+          "package_name": "com.you4me.you4me.auth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264358783975-tqvk638q1ihkoqe7aitf6bj5hu7duhr3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.you4me.you4me.auth",
+            "certificate_hash": "5a5dec5799d8db308f7784f7e339b3f35cfc794e"
+          }
+        },
+        {
+          "client_id": "264358783975-1e9bshanasnnhig1v8puo6l8u9k83ku7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5MCtZPAdHbYrVvYWZX0_TTafa5zVhGWk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264358783975-1e9bshanasnnhig1v8puo6l8u9k83ku7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "264358783975-5df8hf3kk8c6i34lmir1l788tmbi681n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.you4me.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264358783975:android:e6f5777179b01c39d9eb42",
+        "android_client_info": {
+          "package_name": "com.you4me.you4me.core"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264358783975-uh185hfds6u7ufsoohcno8u8kvuust86.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.you4me.you4me.core",
+            "certificate_hash": "5a5dec5799d8db308f7784f7e339b3f35cfc794e"
+          }
+        },
+        {
+          "client_id": "264358783975-1e9bshanasnnhig1v8puo6l8u9k83ku7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5MCtZPAdHbYrVvYWZX0_TTafa5zVhGWk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264358783975-1e9bshanasnnhig1v8puo6l8u9k83ku7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "264358783975-5df8hf3kk8c6i34lmir1l788tmbi681n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.you4me.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:264358783975:android:784e2a03384fbaa0d9eb42",
         "android_client_info": {
           "package_name": "com.you4me.you4me.debug"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "264358783975-jjta2b0648c7sggn5bbd3pkj61i0965p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.you4me.you4me.debug",
+            "certificate_hash": "b0688f716285b119010465dbbbf2af643a352433"
+          }
+        },
         {
           "client_id": "264358783975-ms0aktkfp2fe434m457av6joov0qjuoj.apps.googleusercontent.com",
           "client_type": 1,

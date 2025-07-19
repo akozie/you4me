@@ -5,12 +5,12 @@
         android:id="@+id/homeFragment"
         android:icon="@drawable/home_icon"
         android:title="@string/home" />
-<!--    <item-->
-<!--        android:id="@+id/findDateFragment"-->
-<!--        android:icon="@drawable/search_icon"-->
-<!--        android:title="@string/explore_date" />-->
     <item
-        android:id="@+id/goOnDateFragment"
+        android:id="@+id/findDateFragment"
+        android:icon="@drawable/search_icon"
+        android:title="@string/explore_date" />
+    <item
+        android:id="@+id/myDatesFragment"
         android:icon="@drawable/calender_icon"
         android:title="@string/my_date" />
     <item

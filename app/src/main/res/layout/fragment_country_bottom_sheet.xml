@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp" />
+            android:paddingBottom="@dimen/margin_80dp" />
     </ScrollView>
 
     <LinearLayout
@@ -79,7 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_10dp"
         android:layout_marginEnd="@dimen/margin_10dp"
-        android:layout_marginBottom="@dimen/margin_20dp"
+        android:layout_marginBottom="@dimen/margin_10dp"
         android:background="@drawable/rectangle_skip_for_now"
         android:backgroundTint="@color/primary_pink"
         android:gravity="center"
@@ -100,3 +100,5 @@
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+

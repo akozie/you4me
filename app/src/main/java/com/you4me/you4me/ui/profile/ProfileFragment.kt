@@ -25,20 +25,20 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.you4me.you4me.R
 import com.you4me.you4me.TokenRefreshReceiver
 import com.you4me.you4me.databinding.FragmentProfileBinding
 import com.you4me.you4me.databinding.VideoDialogBinding
 import com.you4me.you4me.model.User
-import com.you4me.you4me.models.RegisterVideoUploadBody
-import com.you4me.you4me.models.UpdateUserBody
-import com.you4me.you4me.models.ValueLabelResponse
+import com.you4me.you4me.models.*
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.ProfileRepository
@@ -47,7 +47,11 @@ import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.profileDetails.ImageAndVideoDetailsActivity
 import com.you4me.you4me.utils.*
 import com.you4me.you4me.utils.SharedPrefHelper.Companion.COUNTRY_ID
+import com.you4me.you4me.utils.SharedPrefHelper.Companion.PROFILE_IMAGE
 import com.you4me.you4me.utils.Utils.BANNER_TIMEOUT
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class ProfileFragment :
@@ -72,6 +76,7 @@ class ProfileFragment :
     private lateinit var recordVideoLauncher: ActivityResultLauncher<Intent>
     private var videoUri: Uri? = null
     private lateinit var videoId: String
+    private lateinit var imageID: String
     private var player: ExoPlayer? = null
     private lateinit var videoViewBinding: VideoDialogBinding
     private lateinit var updateBody: UpdateUserBody
@@ -109,6 +114,7 @@ class ProfileFragment :
 //        observeImagesAndVideos()
         trackProfileViewed()
         getImages()
+        setUpResultListener()
 
 //        binding.boostLayout.setOnClickListener {
 //            val action = ProfileFragmentDirections.actionProfileFragmentToProfileBoostFragment()
@@ -196,7 +202,7 @@ class ProfileFragment :
                     } else {
                         binding.alreadySubscribed.isVisible = false
                         binding.notYetSubscribed.isVisible = true
-                        binding.premiumImg.setImageResource(R.drawable.frame_1000001678)
+                        binding.premiumImg.setImageResource(R.drawable.subscription_card)
                     }
                 }
 
@@ -698,109 +704,47 @@ class ProfileFragment :
         }
     }
 
-    // Call this function from the UI thread, like in your `onViewCreated` or `onStart`
 
     // Suspend function to generate video thumbnail in background
-// Call this function from the UI thread, like in your onViewCreated or onStart
-//    private fun loadImagesAndVideosInBackground(listOfImagesAndVideos: ImagesVideosResponse) {
-//        val imageViews =
-//            listOf(
-//                binding.frame1,
-//                binding.frame2,
-//                binding.frame3,
-//                binding.frame4,
-//                binding.frame5,
-//                binding.frame6,
-//            ) // Predefined ImageViews
-//
-//        var isProfilePictureSet = false // Flag to check if profile picture is already set
-//
-//        // Use viewLifecycleOwner.lifecycleScope to tie coroutine lifecycle to the fragment's view
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            // Run the heavy task on the IO thread
-//            withContext(Dispatchers.IO) {
-//                listOfImagesAndVideos.take(imageViews.size).asReversed()
-//                    .forEachIndexed { index, fileData ->
-//                        val frame = imageViews[index]
-//                        frame.isClickable = true
-//                        frame.isFocusable = true
-//
-//                        // Replace 'http' with 'https' for secure URLs
-//                        val secureUrl = fileData.fileURL.replace("http://", "https://")
-//
-//                        if (getCategoryFromString(fileData.fileURL) == "image") {
-//                            // Load image into FrameLayout
-//                            val imageView =
-//                                ImageView(requireActivity()).apply {
-//                                    layoutParams =
-//                                        FrameLayout.LayoutParams(
-//                                            FrameLayout.LayoutParams.MATCH_PARENT,
-//                                            FrameLayout.LayoutParams.MATCH_PARENT,
-//                                        )
-//                                    scaleType = ImageView.ScaleType.CENTER_CROP
-//                                }
-//
-//                            // Load image using Glide
-//                            withContext(Dispatchers.Main) {
-//                                if (isAdded) {
-//                                    Glide.with(requireActivity())
-//                                        .load(secureUrl)
-//                                        .into(imageView)
-//                                    frame.addView(imageView)
-//
-//                                    if (!isProfilePictureSet) {
-//                                        isProfilePictureSet = true // Mark profile picture as set
-//                                        Glide.with(requireActivity())
-//                                            .load(fileData.fileURL)
-//                                            .circleCrop()
-//                                            .into(binding.profilePicture)
-//                                        binding.profilePicture.scaleType =
-//                                            ImageView.ScaleType.CENTER_CROP
-//                                    }
-//                                }
-//                            }
-//                        } else if (getCategoryFromString(fileData.fileURL) == "video") {
-//                            val thumbnailView =
-//                                ImageView(requireContext()).apply {
-//                                    layoutParams =
-//                                        FrameLayout.LayoutParams(
-//                                            FrameLayout.LayoutParams.MATCH_PARENT,
-//                                            FrameLayout.LayoutParams.MATCH_PARENT,
-//                                        )
-//                                    scaleType = ImageView.ScaleType.CENTER_CROP
-//                                }
-//
-//                            // Generate thumbnail using MediaMetadataRetriever
-//                            val bitmap = generateVideoThumbnail(secureUrl)
-//
-//                            withContext(Dispatchers.Main) {
-//                                if (isAdded && bitmap != null) {
-//                                    thumbnailView.setImageBitmap(bitmap)
-//                                    frame.addView(thumbnailView)
-//                                }
-//                            }
-//                        }
-//
-//                        // Add a click listener to the frame
-//                        withContext(Dispatchers.Main) {
-//                            if (isAdded) {
-//                                frame.setOnClickListener {
-//                                    if (fileData.fileURL.isEmpty()) {
-//                                        // showLoading(true)
-//                                        return@setOnClickListener
-//                                    }
-//                                    openDetailScreen(
-//                                        secureUrl,
-//                                        getCategoryFromString(fileData.fileURL),
-//                                        fileData.videoId,
-//                                    )
-//                                }
-//                            }
-//                        }
-//                    }
-//            }
-//        }
-//    }
+    private fun loadImagesAndVideosInBackground(listOfImagesAndVideos: ImagesVideosResponse) {
+
+
+        val profileImageView = binding.profilePicture
+
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val profileImageItem = listOfImagesAndVideos.firstOrNull { it.isProfilePhoto }
+
+            withContext(Dispatchers.Main) {
+                // 🔵 Load profile image
+                profileImageItem?.let {
+                    Glide.with(profileImageView.context)
+                        .load(it.fileURL)
+                        .circleCrop()
+                        .into(profileImageView)
+                    sharedPrefHelper.saveString(PROFILE_IMAGE, it.videoId)
+                }
+            }
+        }
+    }
+
+    private fun setUpResultListener() {
+        parentFragmentManager.setFragmentResultListener(
+            "bottom_sheet_result",
+            viewLifecycleOwner
+        ) { _, result ->
+            val value = result.getString("selected_value")
+            val sheetId = result.getString("sheet_id")
+
+            when (sheetId) {
+                "EDIT_PROFILE" -> {
+                    Glide.with(requireActivity()).load(value).into(binding.profilePicture)
+                }
+                // Add more as needed
+            }
+        }
+    }
+
+
 
     private fun generateVideoThumbnail(videoUrl: String): Bitmap? {
         return try {
@@ -972,7 +916,7 @@ class ProfileFragment :
                         // Your potentially crashing code (e.g., loading images, videos, etc.)
                         if (isAdded() && getActivity() != null) {
                             // Perform operations safely
-//                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
                         }
                     } catch (e: Exception) {
                         Log.e("MyApp", "Error loading data", e)

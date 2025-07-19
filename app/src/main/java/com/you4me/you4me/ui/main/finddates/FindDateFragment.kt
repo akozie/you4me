@@ -75,9 +75,9 @@ class FindDateFragment :
         TabLayoutMediator(binding.tabs, binding.pager) { tab, position ->
             tab.text =
                 when (position) {
-                    0 -> getString(R.string.nearby)
-                    1 -> getString(R.string.discover)
-                    else -> getString(R.string.nearby)
+                    0 -> getString(R.string.discover)
+                    1 -> getString(R.string.nearby)
+                    else -> getString(R.string.discover)
                 }
         }.attach()
 

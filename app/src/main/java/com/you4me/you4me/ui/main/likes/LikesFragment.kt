@@ -1,4 +1,4 @@
-package com.you4me.you4me.ui.main
+package com.you4me.you4me.ui.main.likes
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
@@ -29,6 +29,7 @@ import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
+import com.you4me.you4me.ui.main.MainViewModel
 import com.you4me.you4me.utils.BillingManager
 import com.you4me.you4me.utils.SharedPrefHelper.Companion.IS_SUBSCRIBED
 import com.you4me.you4me.utils.Utils.getCategoryFromString
