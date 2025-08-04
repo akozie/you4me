@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".ui.main.finddates.bottomsheet.FilterBottomSheetFragment">
 
 
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_20dp"
-        android:text="Age Preference"
+        android:text="Filter"
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_20sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,10 +128,11 @@
         app:trackColorActive="@color/primary_pink" />
 
     <TextView
+        android:id="@+id/textView34"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Online now"
 
+        android:text="Online now"
         app:layout_constraintBottom_toBottomOf="@+id/switchCompat"
         app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/switchCompat" />
@@ -145,21 +146,22 @@
         app:layout_constraintTop_toBottomOf="@+id/distanceRangeSlider"
         app:thumbTint="@color/white"
         app:trackTint="@color/primary_pink" />
+
     <LinearLayout
         android:id="@+id/save_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_10dp"
+        android:layout_marginEnd="@dimen/margin_10dp"
+        android:layout_marginStart="@dimen/margin_10dp"
+        android:layout_marginTop="@dimen/margin_20dp"
         android:background="@drawable/rectangle_skip_for_now"
         android:backgroundTint="@color/primary_pink"
         android:gravity="center"
-        android:layout_marginBottom="@dimen/margin_40dp"
         android:orientation="horizontal"
         android:padding="@dimen/padding_17dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ageRangeSlider">
+        app:layout_constraintTop_toBottomOf="@+id/textView34">
 
         <TextView
             android:layout_width="wrap_content"
@@ -172,9 +174,11 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Reset"
+        android:layout_margin="@dimen/margin_30dp"
         android:textColor="@color/primary_pink"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/save_btn"

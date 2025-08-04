@@ -19,6 +19,7 @@ import com.you4me.you4me.adapter.*
 import com.you4me.you4me.databinding.FragmentHomeBinding
 import com.you4me.you4me.model.User
 import com.you4me.you4me.models.*
+import com.you4me.you4me.models.interests.Interest
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
@@ -166,14 +167,16 @@ class HomeFragment :
                 is Resource.Success -> {
 //                    viewModel._user.value = it.value
 //                    viewModel.getUpcomingDates(user.userId)
-                    viewModel.getInviteeDatesRequiringApproval(user.userId)
-                    viewModel.getDateInterestsRequiringApproval()
+                    viewModel.receivedDateInterests(user.userId)
+//                    viewModel.getInviteeDatesRequiringApproval(user.userId)
+//                    viewModel.getDateInterestsRequiringApproval()
                     viewModel.getNotifications()
 //                    viewModel.fetchCompletedDates()
                     setUpPremiumBanner(user)
                 }
 
                 is Resource.Failure -> {
+                    Log.d("TIREDDD", "${it.message}")
                     showToast(it.message ?: it.errorBody ?: "")
                 }
             }
@@ -182,33 +185,48 @@ class HomeFragment :
 
 
 
-        viewModel.inviteeDatesRequiringApproval.observe(viewLifecycleOwner) {
+        viewModel.receivedInterestDateInterests.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-//                    setupInviteeDates(it.value)
-                    val list =  InviteeDatesRequiringApproval().apply {
-                        add(
-                            InviteeDatesRequiringApprovalItem(
-                                "CHAT",
-                                "2025/06/09",
-                                "12wqasde",
-                                "12wqasde111",
-                                "Emmanuel",
-                                "Lekki",
-                                "2025/06/09",
-                                "13:20",
-                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8"
-                            )
-                        )
-                    }
-                    setupInviteeDates(list)
+                    setupInviteeDates(it.value.interests)
                 }
 
                 is Resource.Failure -> {
+                    Log.d("TIREDDD1", "${it.message}")
                     showToast(it.message ?: it.errorBody ?: "")
                 }
             }
         }
+
+
+//        viewModel.inviteeDatesRequiringApproval.observe(viewLifecycleOwner) {
+//            when (it) {
+//                is Resource.Success -> {
+////                    setupInviteeDates(it.value)
+//                    val list =  InviteeDatesRequiringApproval().apply {
+//                        add(
+//                            InviteeDatesRequiringApprovalItem(
+//                                "CHAT",
+//                                "2025/06/09",
+//                                "12wqasde",
+//                                "12wqasde111",
+//                                "Emmanuel",
+//                                "Lekki",
+//                                "2025/06/09",
+//                                "13:20",
+//                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8"
+//                            )
+//                        )
+//                    }
+//                    setupInviteeDates(list)
+//                }
+//
+//                is Resource.Failure -> {
+//                    showToast(it.message ?: it.errorBody ?: "")
+//                }
+//            }
+//        }
+
 
 //        viewModel.dateInterestsRequiringApproval.observe(viewLifecycleOwner) {
 //            when (it) {
@@ -309,28 +327,28 @@ class HomeFragment :
         }
     }
 
-    private fun setupDateInterests(dates: DateInterestsRequiringApproval) {
+//    private fun setupDateInterests(dates: DateInterestsRequiringApproval) {
+//        if (dates.isEmpty()) {
+//            binding.datesRequiringAppLyt.visibility = View.GONE
+//            binding.dateInterestRecycler.visibility = View.GONE
+//        } else {
+//            binding.datesRequiringAppLyt.visibility = View.VISIBLE
+//            binding.dateInterestRecycler.visibility = View.VISIBLE
+//            val adapter =
+//                mixpanel?.mixpanel?.let {
+//                    DateInterestsRequiringApprovalRecyclerAdapter(
+//                        dates,
+//                        viewModel,
+//                        it,
+//                    )
+//                }
+//            binding.dateInterestRecycler.adapter = adapter
+//        }
+//    }
+
+
+    private fun setupInviteeDates(dates: List<Interest>) {
         if (dates.isEmpty()) {
-            binding.datesRequiringAppLyt.visibility = View.GONE
-            binding.dateInterestRecycler.visibility = View.GONE
-        } else {
-            binding.datesRequiringAppLyt.visibility = View.VISIBLE
-            binding.dateInterestRecycler.visibility = View.VISIBLE
-            val adapter =
-                mixpanel?.mixpanel?.let {
-                    DateInterestsRequiringApprovalRecyclerAdapter(
-                        dates,
-                        viewModel,
-                        it,
-                    )
-                }
-            binding.dateInterestRecycler.adapter = adapter
-        }
-    }
-
-
-    private fun setupInviteeDates(dates: InviteeDatesRequiringApproval) {
-        if (!dates.isEmpty()) {
             binding.approvedDatesLyt.visibility = View.GONE
             binding.approvedDatesLytTxt.visibility = View.GONE
             binding.approvedDatesLytView.visibility = View.GONE
@@ -347,6 +365,25 @@ class HomeFragment :
             binding.inviteeDatesRecycler.adapter = adapter
         }
     }
+
+//    private fun setupInviteeDates(dates: InviteeDatesRequiringApproval) {
+//        if (!dates.isEmpty()) {
+//            binding.approvedDatesLyt.visibility = View.GONE
+//            binding.approvedDatesLytTxt.visibility = View.GONE
+//            binding.approvedDatesLytView.visibility = View.GONE
+//            binding.noDatesLyt.visibility = View.VISIBLE
+//            binding.boostLayout.visibility = View.GONE
+//        } else {
+//            binding.approvedDatesLyt.visibility = View.VISIBLE
+//            binding.approvedDatesLytTxt.visibility = View.VISIBLE
+//            binding.approvedDatesLytView.visibility = View.VISIBLE
+//            binding.noDatesLyt.visibility = View.GONE
+//            binding.boostLayout.visibility = View.VISIBLE
+//            val adapter =
+//                mixpanel?.mixpanel?.let { InviteeDateForApprovalRecyclerAdapter(dates, viewModel, ctx, it) }
+//            binding.inviteeDatesRecycler.adapter = adapter
+//        }
+//    }
 
     private fun setUpViewPager() {
         val adapter = HomePagerAdapter(this, 2) // ✅ Pass `this` (fragment)

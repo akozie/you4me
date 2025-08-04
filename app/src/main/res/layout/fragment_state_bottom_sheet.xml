@@ -61,7 +61,6 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         android:overScrollMode="ifContentScrolls"
-        app:layout_constraintBottom_toTopOf="@+id/save_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchView"> <!-- Or whatever is at the bottom -->

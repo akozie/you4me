@@ -1,0 +1,6 @@
+<!-- res/drawable/tab_bar_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#F2F2F2" /> <!-- light gray background -->
+    <corners android:radius="30dp" />
+</shape>

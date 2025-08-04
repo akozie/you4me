@@ -73,27 +73,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:hint="I’m good and nice. A product designer"
+            android:hint="Mide"
             android:lines="5">
 
         </com.google.android.material.textfield.TextInputEditText>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+        android:id="@+id/textView36"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This is the name people will see you as."
+        app:layout_constraintStart_toStartOf="@+id/bio_text"
+        app:layout_constraintTop_toBottomOf="@+id/bio_text" />
+
     <LinearLayout
         android:id="@+id/save_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_20dp"
+        android:layout_marginBottom="@dimen/margin_20dp"
         android:background="@drawable/rectangle_skip_for_now"
         android:backgroundTint="@color/primary_pink"
         android:gravity="center"
-        android:layout_marginBottom="@dimen/margin_20dp"
         android:orientation="horizontal"
         android:padding="@dimen/padding_17dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/bio_text"
         app:layout_constraintStart_toStartOf="@+id/bio_text"
-        app:layout_constraintTop_toBottomOf="@+id/bio_text">
+        app:layout_constraintTop_toBottomOf="@+id/textView36">
 
         <TextView
             android:layout_width="wrap_content"

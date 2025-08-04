@@ -9,7 +9,9 @@ import com.you4me.you4me.models.ProposeNewDateTimeBody
 import com.you4me.you4me.models.RejectDateInterestBody
 import com.you4me.you4me.models.SubmitDateBody
 import com.you4me.you4me.models.UpdateDateInterestBody
+import com.you4me.you4me.models.useroptions.UserOptionsResponse
 import com.you4me.you4me.network.ApiCollector
+import com.you4me.you4me.network.Resource
 import com.you4me.you4me.ui.main.messaging.model.Message
 
 class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() {
@@ -22,8 +24,11 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
 
     suspend fun markNotificationAsRead(notificationId: String) = safeApiCall { apiCollector.markNotificationAsRead(notificationId) }
 
-    suspend fun getPaymentModes() = safeApiCall { apiCollector.getPaymentModes() }
-
+    suspend fun getUserOptions(): Resource<UserOptionsResponse> {
+        return safeApiCall {
+            apiCollector.getUserOptions()
+        }
+    }
     suspend fun submitDate(submitDateBody: SubmitDateBody) = safeApiCall { apiCollector.submitDate(submitDateBody) }
 
     suspend fun fetchDates(userId: String) =
@@ -46,6 +51,16 @@ class MainRepository(private val apiCollector: ApiCollector) : BaseRepository() 
     suspend fun sendPushNotification(notification: JsonObject) =
         safeApiCall {
             apiCollector.sendPushNotification(notification)
+        }
+
+    suspend fun receivedDateInterests(userId: String, page: Int, pageLimit: Int) =
+        safeApiCall {
+            apiCollector.receivedDateInterests(userId, page, pageLimit)
+        }
+
+    suspend fun sentDateInterests(userId: String, page: Int, pageLimit: Int) =
+        safeApiCall {
+            apiCollector.sentDateInterests(userId, page, pageLimit)
         }
 
     suspend fun fetchDateInterest(userId: String) =

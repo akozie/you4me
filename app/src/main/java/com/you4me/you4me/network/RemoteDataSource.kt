@@ -69,12 +69,12 @@ class RemoteDataSource {
                     .writeTimeout(20, TimeUnit.SECONDS)
                     .authenticator(TokenAuthenticator()) // Token refresh logic
                     .also { client ->
-//                        if (BuildConfig.DEBUG) {
-                        Log.d("BASE_URL", "$BASE_URL")
+                        if (BuildConfig.DEBUG) {
+//                        Log.d("BASE_URL", "$BASE_URL")
                             val logging = HttpLoggingInterceptor()
                             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
                             client.addInterceptor(logging)
-//                        }
+                        }
                     }
                     .build()
 

@@ -6,6 +6,7 @@ import android.app.TimePickerDialog
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ import com.you4me.you4me.databinding.FragmentGoOnDateBinding
 import com.you4me.you4me.model.User
 import com.you4me.you4me.models.ValueLabelResponse
 import com.you4me.you4me.models.mydates.DateOption
+import com.you4me.you4me.models.useroptions.PaymentModes
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
@@ -34,6 +36,7 @@ import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.main.MainViewModel
 import com.you4me.you4me.utils.SharedPrefHelper
 import com.you4me.you4me.utils.Utils
+import com.you4me.you4me.utils.closeSoftKeyboard
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -47,8 +50,9 @@ class GoOnDateFragment :
     private lateinit var user: User
     private lateinit var layouts: Map<String, LinearLayout>
     private lateinit var icons: Map<String, Int>
-    private lateinit var paymentModes: ArrayList<ValueLabelResponse>
+    private lateinit var paymentModes: ArrayList<PaymentModes>
     private var selectedOptionValue: String? = null
+    private var dateType:String? = null
 
     private val startAutoComplete =
         registerForActivityResult(
@@ -58,7 +62,8 @@ class GoOnDateFragment :
                 val intent = result.data
                 if (intent != null) {
                     val place = Autocomplete.getPlaceFromIntent(intent)
-//                    binding.searchDateLocations.setText("${place.name}, ${place.address}")
+                    binding.searchDateLocations.text = "${place.name}, ${place.address}"
+                    closeSoftKeyboard(requireContext(), requireActivity())
                 } else {
 //                    Log.d("Place Result", "Intent Null")
                 }
@@ -119,13 +124,29 @@ class GoOnDateFragment :
             }
 
         binding.date.setOnClickListener {
-            DatePickerDialog(
+            val sevenDaysFromNow = Calendar.getInstance().apply {
+                add(Calendar.DAY_OF_YEAR, 7)
+            }
+
+            val date = DatePickerDialog.OnDateSetListener { _, year, month, day ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, day)
+                updateProposedDate()
+            }
+
+            val datePickerDialog = DatePickerDialog(
                 ctx,
                 date,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH),
-            ).show()
+                sevenDaysFromNow.get(Calendar.YEAR),
+                sevenDaysFromNow.get(Calendar.MONTH),
+                sevenDaysFromNow.get(Calendar.DAY_OF_MONTH)
+            )
+
+            // Restrict only to dates from 7 days later and beyond
+            datePickerDialog.datePicker.minDate = sevenDaysFromNow.timeInMillis
+
+            datePickerDialog.show()
         }
 
         val time =
@@ -140,32 +161,65 @@ class GoOnDateFragment :
         }
 
         binding.saveBtn.setOnClickListener {
-            if (binding.searchDateLocations.text != null && binding.searchDateLocations.text.toString().length > 3 && binding.whoPaysSpinner.selectedItemPosition != -1) {
-                viewModel.submitDate(
-                    binding.date.text.toString(),
-                    paymentModes[binding.whoPaysSpinner.selectedItemPosition].value,
-                    binding.searchDateLocations.text.toString(),
-                    binding.time.text.toString(),
-                    user.userId
-                )
-                mixpanel?.track("Android_Request_Date_Button_Pressed")
-                showLoader(true)
-            } else if (binding.whoPaysSpinner.selectedItemPosition == -1) {
-                showToast("Please choose who will be paying for the date.")
-            } else {
-                showToast("Please select a location for your date")
+            val locationText = binding.searchDateLocations.text?.toString()?.trim()
+            val dateText = binding.date.text?.toString()?.trim()
+            val timeText = binding.time.text?.toString()?.trim()
+
+            when {
+                dateType == null -> {
+                    showToast("Please choose the date type.")
+                    return@setOnClickListener
+                }
+
+                selectedOptionValue == null -> {
+                    showToast("Please choose who will be paying for the date.")
+                    return@setOnClickListener
+                }
+
+                locationText.isNullOrEmpty() || locationText.length < 4 -> {
+                    showToast("Please enter a valid location for your date.")
+                    return@setOnClickListener
+                }
+
+                else -> {
+                    viewModel.submitDate(
+                        dateText.orEmpty(),
+                        selectedOptionValue.toString(),
+                        locationText,
+                        timeText.orEmpty(),
+                        user.userId,
+                        dateType.toString()
+                    )
+                    mixpanel?.track("Android_Request_Date_Button_Pressed")
+                    showLoader(true)
+                }
             }
         }
+
     }
 
     private fun setupObservers() {
-        viewModel.fetchPaymentModes()
-        viewModel.paymentModes.observe(viewLifecycleOwner) {
+//        viewModel.fetchPaymentModes()
+//        viewModel.paymentModes.observe(viewLifecycleOwner) {
+//            when (it) {
+//                is Resource.Success -> {
+//                    paymentModes = it.value
+////                    setupSpinner(it.value)
+//                    setUpWhoIsPayingList(it.value)
+//                }
+//
+//                is Resource.Failure -> {
+//                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
+//                }
+//            }
+//        }
+        viewModel.getUserOptions()
+        viewModel.getUserOptionsResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    paymentModes = it.value
+                    paymentModes = it.value.paymentModes
 //                    setupSpinner(it.value)
-                    setUpWhoIsPayingList(it.value)
+                    setUpWhoIsPayingList(it.value.paymentModes)
                 }
 
                 is Resource.Failure -> {
@@ -239,7 +293,7 @@ class GoOnDateFragment :
 
 
 
-    private fun setUpWhoIsPayingList(paymentOptions: ArrayList<ValueLabelResponse>) {
+    private fun setUpWhoIsPayingList(paymentOptions: ArrayList<PaymentModes>) {
         paymentOptions.forEach { option ->
             val layout = layouts[option.value]
             layout?.removeAllViews()
@@ -251,6 +305,7 @@ class GoOnDateFragment :
 
             val textView = TextView(requireContext()).apply {
                 text = option.label
+                gravity = Gravity.CENTER_HORIZONTAL
                 textSize = 14f
                 setTextColor(Color.BLACK)
             }
@@ -268,7 +323,7 @@ class GoOnDateFragment :
         }
     }
 
-    private fun updateAllStrokes(options: List<ValueLabelResponse>) {
+    private fun updateAllStrokes(options: List<PaymentModes>) {
         options.forEach { option ->
             val layout = layouts[option.value]
             updateLayoutStroke(layout, option.value == selectedOptionValue)
@@ -302,10 +357,12 @@ class GoOnDateFragment :
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedOption = options[position]
+                 val selectedOption = options[position]
                 if (selectedOption.isCustomOption) {
                     customInput.visibility = View.VISIBLE
+                    dateType = binding.customLayout.customInput.text.toString()
                 } else {
+                    dateType = selectedOption.title
                     customInput.visibility = View.GONE
                     binding.customLayout.customInput.text.clear()
                 }

@@ -5,5 +5,6 @@ data class SubmitDateBody(
     val paymentMode: String,
     val place: Place,
     val time: String,
-    val userId: String
+    val userId: String,
+    val type: String
 )

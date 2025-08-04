@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.finddates.NotInterestedFragment">
+    tools:context=".ui.main.finddates.bottomsheet.NotInterestedFragment">
 
 
     <!-- Scrollable Content -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:fillViewport="true"
         android:fitsSystemWindows="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:background="@drawable/bottom_sheet_background"
             android:padding="24dp">
 
             <androidx.constraintlayout.widget.Guideline
@@ -143,9 +144,11 @@
 
             <!-- Optional Feedback -->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/reason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:visibility="gone"
                 android:hint="Tell us why you’re not interested in Lovie"
                 app:boxBackgroundMode="outline"
                 app:boxStrokeColor="@color/primary_pink"

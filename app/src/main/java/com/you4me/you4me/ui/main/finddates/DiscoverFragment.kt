@@ -27,12 +27,15 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.you4me.you4me.R
+import com.you4me.you4me.adapter.finddates.ImagePagerAdapter
 import com.you4me.you4me.databinding.FragmentDiscoverBinding
 import com.you4me.you4me.model.User
 import com.you4me.you4me.models.*
+import com.you4me.you4me.models.useroptions.PaymentModes
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
@@ -57,7 +60,7 @@ class DiscoverFragment :
     private var mediaItemIndex = 0
     private var playbackPosition = 0L
     private lateinit var date: FetchDatesResponseItem
-    private var paymentModes: ArrayList<ValueLabelResponse>? = null
+    private var paymentModes: ArrayList<PaymentModes>? = null
     private lateinit var user: User
 
     override fun getViewModel() = MainViewModel::class.java
@@ -84,12 +87,23 @@ class DiscoverFragment :
         showBottomSheetDialog()
         mixpanel?.track("Android_Find_Date_Viewed")
 
+        binding.filter.setOnClickListener {
+            findNavController().navigate(R.id.action_findDateFragment_to_filterBottomSheetFragment)
+        }
+        binding.adjustFilter.setOnClickListener {
+            findNavController().navigate(R.id.action_findDateFragment_to_filterBottomSheetFragment)
+        }
+
+        binding.planADate.setOnClickListener {
+            findNavController().navigate(R.id.action_findDateFragment_to_goOnDateFragment)
+        }
 
         //Report Abuse dialog
         binding.reportAbuse.setOnClickListener {
             showLoading(true)
             showReportAbuseDialog()
         }
+
         binding.sendComplimentsImg.setOnClickListener {
             findNavController().navigate(R.id.action_findDateFragment_to_complimentsBottomSheetFragment)
         }
@@ -166,6 +180,7 @@ class DiscoverFragment :
                         if (isAdded() && getActivity() != null) {
                             // Perform operations safely
 //                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
+                            loadImages(listOfImagesAndVideos)
                         }
                     } catch (e: Exception) {
                     }
@@ -177,6 +192,18 @@ class DiscoverFragment :
         }
     }
 
+    private fun loadImages(imageUrls: List<ImagesVideosResponseItem>) {
+//        val imageUrls = listOf(
+//            R.drawable.image1,
+//            R.drawable.image2,
+//            R.drawable.image3
+//        )
+
+        val adapter = ImagePagerAdapter(imageUrls)
+        binding.imageViewPager.adapter = adapter
+
+        TabLayoutMediator(binding.tabIndicator, binding.imageViewPager) { _, _ -> }.attach()
+    }
     private fun setDefaultImage(frame: FrameLayout) {
         val defaultImageView = createImageView()
         Glide.with(requireActivity())
@@ -442,7 +469,7 @@ class DiscoverFragment :
 //            mixpanel?.track("Android_Liked_Find_Date_Button_Pressed")
         }
         binding.rejectBtn.setOnClickListener {
-            findNavController().navigate(R.id.notInterestedFragment)
+            findNavController().navigate(R.id.action_findDateFragment_to_notInterestedFragment)
 //            if (currentIdx < 0 || currentIdx >= dates.size) {
 //                return@setOnClickListener // Prevents out-of-bounds access
 //            }
@@ -559,39 +586,68 @@ class DiscoverFragment :
     }
 
     private fun setupObservers() {
-        viewModel.fetchPaymentModes()
-        viewModel.paymentModes.observe(viewLifecycleOwner) {
+//        viewModel.fetchPaymentModes()
+//        viewModel.paymentModes.observe(viewLifecycleOwner) {
+//            when (it) {
+//                is Resource.Success -> {
+//                    paymentModes = it.value
+//                }
+//
+//                is Resource.Failure -> {
+//                    showToast(it.message ?: it.errorBody ?: "")
+//                }
+//            }
+//        }
+
+        viewModel.getUserOptions()
+        viewModel.getUserOptionsResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    paymentModes = it.value
+                    paymentModes = it.value.paymentModes
                 }
 
                 is Resource.Failure -> {
-                    showToast(it.message ?: it.errorBody ?: "")
+                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
                 }
             }
         }
-
         if (user.status.toLowerCase() != "incomplete") {
             binding.completeProfileLayout.visibility = View.VISIBLE
             binding.constraintLayout2.visibility = View.GONE
             Log.d("FUNNY_GIRL===", user.userId)
 //            return
         } else {
+            showLoading(true)
             binding.completeProfileLayout.visibility = View.GONE
             viewModel.fetchDates(user.userId)
             viewModel.fetchDates.observe(viewLifecycleOwner) {
+                showLoading(false)
                 when (it) {
                     is Resource.Success -> {
-                        Log.d("FUNNY_GIRL", user.userId)
-                        if (!it.value.isEmpty()) {
+//                        Log.d("FUNNY_GIRL", user.userId)
+                        if (it.value.dates.isEmpty()) {
                             showEmpty()
-                            showToast("EMPTY")
+//                            showToast("EMPTY")
                         } else {
-//                        dates = it.value
-                            showToast("NOT EMPTY")
-                            val list =  FetchDatesResponse().apply {
-                                add(
+                        dates = it.value.dates
+//                            showToast("NOT EMPTY")
+                            val list =  arrayListOf(
+                                    FetchDatesResponseItem(
+                                        "30",
+                                        "2025/06/09",
+                                        "2025/06/09",
+                                        "12wqasde111",
+                                        "Emmanuel",
+                                        "ME",
+                                        "Lekki Phase 1",
+                                        "Football lover",
+                                        "2025/06/09",
+                                        "2025/06/09",
+                                        "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
+                                        "",
+                                        "",
+                                        ""
+                                    ),
                                     FetchDatesResponseItem(
                                         "30",
                                         "2025/06/09",
@@ -608,9 +664,8 @@ class DiscoverFragment :
                                         "",
                                         ""
                                     )
-                                )
-                            }
-                            dates = list
+                            )
+//                            dates = list
                             setScreen()
                             binding.mainLyt.visibility = View.VISIBLE
                             binding.mainLytBtn.visibility = View.VISIBLE
@@ -717,12 +772,14 @@ class DiscoverFragment :
         binding.mainLyt.visibility = View.GONE
         binding.mainLytBtn.visibility = View.GONE
         binding.constraintLayout2.visibility = View.VISIBLE
+        binding.constraintLayout.visibility = View.VISIBLE
     }
 
     private fun showLoading(loading: Boolean) {
         binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
         binding.mainLytBtn.visibility = if (loading) View.GONE else View.VISIBLE
         // binding.constraintLayout2.visibility = if (loading) View.GONE else View.VISIBLE
+         binding.constraintLayout.visibility = if (loading) View.GONE else View.VISIBLE
         binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
 

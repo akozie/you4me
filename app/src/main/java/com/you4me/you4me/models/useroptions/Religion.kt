@@ -8,3 +8,10 @@ data class Religion(
     val label: String,
     val value: String
 ) : Parcelable
+
+
+@Parcelize
+data class PaymentModes(
+    val label: String,
+    val value: String
+) : Parcelable

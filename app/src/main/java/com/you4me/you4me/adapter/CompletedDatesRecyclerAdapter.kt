@@ -38,13 +38,13 @@ class CompletedDatesRecyclerAdapter(
         return MyViewHolder(binding)
     }
 
-    override fun getItemCount() = dates.size
+    override fun getItemCount() = dates.dates.size
 
     override fun onBindViewHolder(
         holder: MyViewHolder,
         position: Int,
     ) {
-        val date = dates[position]
+        val date = dates.dates[position]
         holder.binding.userName.text = "${date.name}"
         holder.binding.completed.text = "${date.date}"
         holder.binding.location.text = "${date.venue}"

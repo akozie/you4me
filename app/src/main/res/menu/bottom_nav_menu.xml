@@ -15,7 +15,7 @@
         android:title="@string/my_date" />
     <item
         android:id="@+id/datesInterestFragment"
-        android:icon="@drawable/baseline_favorite_24"
+        android:icon="@drawable/interests"
         android:tooltipText="@string/date_interests"
         android:title="@string/date_interests" />
     <item

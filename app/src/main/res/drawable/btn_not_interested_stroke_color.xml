@@ -6,7 +6,7 @@
     <solid android:color="@color/white"/>
 
     <!-- Corner radius -->
-    <corners android:radius="1dp" />
+    <corners android:radius="50dp" />
 
     <!-- Stroke (border) color and width -->
     <stroke

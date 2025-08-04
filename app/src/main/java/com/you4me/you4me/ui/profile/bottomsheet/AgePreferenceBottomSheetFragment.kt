@@ -60,12 +60,10 @@ class AgePreferenceBottomSheetFragment : BottomSheetDialogFragment() {
         }
         Log.d("CHECKING==", "$receivedList")
 
-        binding.ageRangeSlider.addOnChangeListener { slider, value, fromUser ->
+        binding.ageRangeSlider.addOnChangeListener { _, value, _ ->
             val index = value.toInt()
             val selectedRange = receivedList?.getOrNull(index)
             binding.ageRange.text = selectedRange?.label
         }
-
     }
-
 }

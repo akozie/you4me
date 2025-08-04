@@ -191,6 +191,7 @@ class EditProfileFragment :
                     newGender = it.value.genders
                     religion = it.value.religions
                     sexualOrientations = it.value.sexualOrientations
+                    countries = it.value.countries
                 }
 
                 is Resource.Failure -> {
@@ -198,16 +199,15 @@ class EditProfileFragment :
             }
         }
 
-        viewModel.countries.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Success -> {
-                    countries = it.value
-                }
-
-                is Resource.Failure -> {
-                }
-            }
-        }
+//        viewModel.countries.observe(viewLifecycleOwner) {
+//            when (it) {
+//                is Resource.Success -> {
+//                }
+//
+//                is Resource.Failure -> {
+//                }
+//            }
+//        }
         viewModel.states.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -691,6 +691,16 @@ class EditProfileFragment :
                     binding.country.text = value
                     val countryId = sharedPrefHelper.getString(COUNTRY_ID)
                     viewModel.getStates(countryId)
+                    viewModel.states.observe(viewLifecycleOwner) {
+                        when (it) {
+                            is Resource.Success -> {
+                                states = it.value
+                            }
+
+                            is Resource.Failure -> {
+                            }
+                        }
+                    }
                 }
                 "SEXUALITY" -> {
                     binding.sexuality.text = value

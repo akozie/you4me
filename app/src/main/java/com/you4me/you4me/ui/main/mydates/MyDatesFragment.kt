@@ -36,13 +36,18 @@ class MyDatesFragment :
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+
         setUpViewPager()
     }
 
     private fun setUpViewPager() {
         val adapter = MyDatesPagerAdapter(this, 3) // ✅ Pass `this` (fragment)
         binding.pager.adapter = adapter
-        binding.pager.isUserInputEnabled = true // ✅ Ensure swiping is enabled
+//        binding.pager.isUserInputEnabled = true // ✅ Ensure swiping is enabled
+//        binding.pager.offscreenPageLimit = 1
+//        binding.pager.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+//        binding.pager.overScrollMode = View.OVER_SCROLL_NEVER
+//        binding.pager.setPageTransformer(null) // disable if used
 
         TabLayoutMediator(binding.tabs, binding.pager) { tab, position ->
             tab.text =

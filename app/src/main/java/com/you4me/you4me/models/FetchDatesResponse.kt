@@ -1,7 +1,15 @@
 package com.you4me.you4me.models
 
-class FetchDatesResponse: ArrayList<FetchDatesResponseItem>()
+import com.you4me.you4me.models.interests.Interest
 
+//class FetchDatesResponse: ArrayList<FetchDatesResponseItem>()
+
+data class FetchDatesResponse(
+    val has_next_page: Boolean,
+    val dates: ArrayList<FetchDatesResponseItem>,
+    val limit: Int,
+    val page: Int
+)
 
 
 //data class FetchDatesResponse(

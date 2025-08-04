@@ -8,17 +8,40 @@ import com.google.gson.JsonObject
 import com.you4me.you4me.core.DbRepository
 import com.you4me.you4me.model.User
 import com.you4me.you4me.models.*
+import com.you4me.you4me.models.interests.Interest
+import com.you4me.you4me.models.interests.ReceivedInterestResponse
+import com.you4me.you4me.models.useroptions.UserOptionsResponse
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.SingleLiveEvent
 import com.you4me.you4me.ui.main.messaging.model.Message
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 class MainViewModel(
     val repository: MainRepository,
     private val dbRepository: DbRepository,
 ) : ViewModel() {
+
+    private var currentPage = 1
+    private val pageLimit = 20
+    private var allInterests = mutableListOf<Interest>()
+    private var allSentInterests = mutableListOf<Interest>()
+    private var currentIndex = 0
+    private var hasNextPage = false
+
+
+
+    //All Interests
+    private val _allDateInterests = MutableLiveData<List<Interest>>()
+    val allDateInterests: LiveData<List<Interest>> = _allDateInterests
+
+    private var interestAccumulator = mutableListOf<Interest>()
+    private var allInterestsCurrentPage = 1
+    private var allInterestsHasNextPage = false
+    private var isLoading = false
+
 
     var hasNavigatedToProfile = false
 
@@ -53,6 +76,18 @@ class MainViewModel(
     private val _addDateInterest = SingleLiveEvent<Resource<Unit>>()
     val addDateInterest: LiveData<Resource<Unit>>
         get() = _addDateInterest
+
+    private val _currentInterest = SingleLiveEvent<Interest>()
+    val currentInterest: LiveData<Interest>
+        get() = _currentInterest
+
+    private val _receivedInterestDateInterests = SingleLiveEvent<Resource<ReceivedInterestResponse>>()
+    val receivedInterestDateInterests: LiveData<Resource<ReceivedInterestResponse>>
+        get() = _receivedInterestDateInterests
+
+    private val _sentInterestDateInterests = SingleLiveEvent<Resource<ReceivedInterestResponse>>()
+    val sentInterestDateInterests: LiveData<Resource<ReceivedInterestResponse>>
+        get() = _sentInterestDateInterests
 
     private val _fetchDateInterests = SingleLiveEvent<Resource<FetchDateInterest>>()
     val fetchDateInterests: LiveData<Resource<FetchDateInterest>>
@@ -97,12 +132,17 @@ class MainViewModel(
     val proposeNewDateTime: LiveData<Resource<Unit>>
         get() = _proposeNewDateTime
 
+    private val _getUserOptionsResponse: MutableLiveData<Resource<UserOptionsResponse>> =
+        MutableLiveData()
+    val getUserOptionsResponse: LiveData<Resource<UserOptionsResponse>>
+        get() = _getUserOptionsResponse
+
     private val _getNotificationsResponse = MutableLiveData<Resource<ArrayList<Notification>>>()
     val getNotificationsResponse: LiveData<Resource<ArrayList<Notification>>>
         get() = _getNotificationsResponse
 
-    private val _updateFirebaseTokenResponse = MutableLiveData<Resource<Unit>>()
-    val updateFirebaseTokenResponse: LiveData<Resource<Unit>>
+    private val _updateFirebaseTokenResponse = MutableLiveData<Resource<Response<Unit>>>()
+    val updateFirebaseTokenResponse: LiveData<Resource<Response<Unit>>>
         get() = _updateFirebaseTokenResponse
 
     val _updatePaymentResponse = MutableLiveData<Resource<Unit>>()
@@ -112,6 +152,7 @@ class MainViewModel(
     val _updateReviewResponse = MutableLiveData<Resource<Unit>>()
     val updateReviewResponse: LiveData<Resource<Unit>>
         get() = _updateReviewResponse
+
 
     init {
         getUser()
@@ -153,9 +194,9 @@ class MainViewModel(
         }
     }
 
-    fun fetchPaymentModes() {
+    fun getUserOptions() {
         viewModelScope.launch {
-            _paymentModes.value = repository.getPaymentModes()
+            _getUserOptionsResponse.value = repository.getUserOptions()
         }
     }
 
@@ -165,6 +206,7 @@ class MainViewModel(
         place: String,
         time: String,
         userId: String,
+        type: String,
     ) {
         val submitDateBody =
             SubmitDateBody(
@@ -172,7 +214,8 @@ class MainViewModel(
                 paymentMode,
                 Place(place),
                 time,
-                userId
+                userId,
+                type
             )
         viewModelScope.launch {
             _submitDateResponse.value = repository.submitDate(submitDateBody)
@@ -231,6 +274,88 @@ class MainViewModel(
                 repository.sendPushNotification(
                     obj,
                 )
+        }
+    }
+
+//    fun receivedDateInterests(userId: String) {
+//        viewModelScope.launch {
+//            _receivedInterestDateInterests.value = repository.receivedDateInterests(userId)
+//        }
+//    }
+
+    fun loadInterestsForList(userId: String) {
+        if (isLoading || !allInterestsHasNextPage && allInterestsCurrentPage > 1) return
+
+        isLoading = true
+        viewModelScope.launch {
+            when (val result = repository.receivedDateInterests(userId, allInterestsCurrentPage, pageLimit)) {
+                is Resource.Success -> {
+                    val filtered = result.value.interests.filter {
+                        it.status == "PENDING" || it.status == "TIME_APPROVAL_REQUIRED"
+                    }
+
+                    interestAccumulator.addAll(filtered)
+                    _allDateInterests.value = interestAccumulator
+                    allInterestsHasNextPage = result.value.has_next_page
+                    allInterestsCurrentPage++
+                }
+
+                is Resource.Failure -> {
+                    // Handle failure (e.g., show Toast or log)
+                }
+            }
+            isLoading = false
+        }
+    }
+
+    fun receivedDateInterests(userId: String, page: Int = 1) {
+        viewModelScope.launch {
+            val response = repository.receivedDateInterests(userId, page, pageLimit)
+            if (response is Resource.Success) {
+                if (page == 1) allInterests.clear()
+                allInterests.addAll(response.value.interests.filter {
+                    it.status == "TIME_PENDING_APPROVAL"
+                })
+                hasNextPage = response.value.has_next_page
+                currentPage = page
+                currentIndex = 0
+            }
+            _receivedInterestDateInterests.value = response
+        }
+    }
+    fun sentDateInterests(userId: String, page: Int = 1) {
+        viewModelScope.launch {
+            val response = repository.sentDateInterests(userId, page, pageLimit)
+            if (response is Resource.Success) {
+                if (page == 1) allSentInterests.clear()
+                allSentInterests.addAll(response.value.interests.filter {
+                    it.status == "PENDING" || it.status == "PENDING_TIME_APPROVAL"
+                })
+                hasNextPage = response.value.has_next_page
+                currentPage = page
+                currentIndex = 0
+            }
+            _sentInterestDateInterests.value = response
+        }
+    }
+
+    private fun getCurrentInterest(): Interest? {
+        return allInterests.getOrNull(currentIndex)
+    }
+
+    fun moveToNextInterest(userId: String) {
+        if (currentIndex + 1 < allInterests.size) {
+            currentIndex++
+            _receivedInterestDateInterests.value = Resource.Success(
+                ReceivedInterestResponse(
+                    interests = listOfNotNull(getCurrentInterest()),
+                    page = currentPage,
+                    limit = pageLimit,
+                    has_next_page = hasNextPage
+                )
+            )
+        } else if (hasNextPage) {
+            receivedDateInterests(userId, currentPage + 1)
         }
     }
 

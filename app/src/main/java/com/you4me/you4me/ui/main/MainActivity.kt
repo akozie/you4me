@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity() {
             } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
                 showPermissionExplanationDialog()
             } else {
-                // 3️⃣ Request permission
+                // 3️ Request permission
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
@@ -201,9 +201,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-//         navHostFragment =
-//            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as
-//                NavHostFragment
         binding.bottomNavBar.setupWithNavController(
             navHostFragment
                 .findNavController(),
@@ -237,7 +234,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     R.id.notificationsFragment, R.id.notificationViewFragment,
                     R.id.datesFragment, R.id.editProfileFragment, R.id.allDateProposalsFragment,
-                    R.id.allUpcomingDatesFragment, R.id.allCompletedDatesFragment,
+                    R.id.allUpcomingDatesFragment, R.id.allCompletedDatesFragment, R.id.goOnDateFragment,
                         R.id.deleteAccountFragment
                     -> {
                         binding.bottomNavBar.visibility = View.GONE

@@ -137,7 +137,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-        binding.loader.show()
+//        binding.loader.show()
         setupObservers()
 //        billingManager = BillingManager(requireActivity())
 //        isFreeTrial = sharedPrefHelper.getBoolean(IS_FREE_PLAN)
@@ -167,7 +167,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                         // Your potentially crashing code (e.g., loading images, videos, etc.)
                         if (isAdded() && getActivity() != null) {
                             // Perform operations safely
-                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
+//                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
                         }
                     } catch (e: Exception) {
                     }
@@ -179,94 +179,94 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         }
     }
 
-    private fun loadImagesAndVideosInBackground(listOfImagesAndVideos: ImagesVideosResponse) {
-        val imageViews = listOf(binding.frame1, binding.frame2, binding.frame3, binding.frame4)
-
-        var isProfilePictureSet = false
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                listOfImagesAndVideos.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
-                    val frame = imageViews[index]
-
-                    withContext(Dispatchers.Main) {
-                        if (!isAdded) return@withContext
-
-                        if (fileData.fileURL.isEmpty()) {
-                            frame.visibility = View.GONE // Hide empty frames
-                            return@withContext
-                        } else {
-                            frame.visibility = View.VISIBLE // Show frames with content
-                        }
-
-                        frame.removeAllViews() // Clear previous views
-                        frame.isClickable = true
-                        frame.isFocusable = true
-
-                        val secureUrl = fileData.fileURL.replace("http://", "https://")
-
-                        if (getCategoryFromString(fileData.fileURL) == "image") {
-                            val imageView =
-                                ImageView(requireActivity()).apply {
-                                    layoutParams =
-                                        FrameLayout.LayoutParams(
-                                            FrameLayout.LayoutParams.MATCH_PARENT,
-                                            FrameLayout.LayoutParams.MATCH_PARENT,
-                                        )
-                                    scaleType = ImageView.ScaleType.CENTER_CROP
-                                }
-
-                            Glide.with(requireActivity())
-                                .load(secureUrl)
-                                .into(imageView)
-
-                            frame.addView(imageView)
-//                            Log.d("IMAGES_RESSS", "Added image: $secureUrl to frame: ${frame.id}")
-
-                            if (!isProfilePictureSet) {
-                                isProfilePictureSet = true
-                                Glide.with(requireActivity())
-                                    .load(secureUrl)
-                                    .into(binding.imageView)
-                                binding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-                            }
-                        } else if (getCategoryFromString(fileData.fileURL) == "video") {
-                            val thumbnailView =
-                                ImageView(requireContext()).apply {
-                                    layoutParams =
-                                        FrameLayout.LayoutParams(
-                                            FrameLayout.LayoutParams.MATCH_PARENT,
-                                            FrameLayout.LayoutParams.MATCH_PARENT,
-                                        )
-                                    scaleType = ImageView.ScaleType.CENTER_CROP
-                                }
-
-                            val bitmap = generateVideoThumbnail(secureUrl)
-
-                            if (bitmap != null) {
-                                thumbnailView.setImageBitmap(bitmap)
-                                frame.addView(thumbnailView)
-//                                Log.d("IMAGES_RESSS", "Added video thumbnail for: $secureUrl")
-                            } else {
-//                                Log.e("IMAGES_RESSS", "Failed to generate thumbnail for: $secureUrl")
-                            }
-                        }
-
-                        frame.setOnClickListener {
-                            if (fileData.fileURL.isEmpty()) return@setOnClickListener
-                            openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
-                        }
-                    }
-                }
-                // Hide remaining frames that didn't get used
-                withContext(Dispatchers.Main) {
-                    for (i in listOfImagesAndVideos.size until imageViews.size) {
-                        imageViews[i].visibility = View.GONE
-                    }
-                }
-            }
-        }
-    }
+//    private fun loadImagesAndVideosInBackground(listOfImagesAndVideos: ImagesVideosResponse) {
+//        val imageViews = listOf(binding.frame1, binding.frame2, binding.frame3, binding.frame4)
+//
+//        var isProfilePictureSet = false
+//
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            withContext(Dispatchers.IO) {
+//                listOfImagesAndVideos.take(imageViews.size).asReversed().forEachIndexed { index, fileData ->
+//                    val frame = imageViews[index]
+//
+//                    withContext(Dispatchers.Main) {
+//                        if (!isAdded) return@withContext
+//
+//                        if (fileData.fileURL.isEmpty()) {
+//                            frame.visibility = View.GONE // Hide empty frames
+//                            return@withContext
+//                        } else {
+//                            frame.visibility = View.VISIBLE // Show frames with content
+//                        }
+//
+//                        frame.removeAllViews() // Clear previous views
+//                        frame.isClickable = true
+//                        frame.isFocusable = true
+//
+//                        val secureUrl = fileData.fileURL.replace("http://", "https://")
+//
+//                        if (getCategoryFromString(fileData.fileURL) == "image") {
+//                            val imageView =
+//                                ImageView(requireActivity()).apply {
+//                                    layoutParams =
+//                                        FrameLayout.LayoutParams(
+//                                            FrameLayout.LayoutParams.MATCH_PARENT,
+//                                            FrameLayout.LayoutParams.MATCH_PARENT,
+//                                        )
+//                                    scaleType = ImageView.ScaleType.CENTER_CROP
+//                                }
+//
+//                            Glide.with(requireActivity())
+//                                .load(secureUrl)
+//                                .into(imageView)
+//
+//                            frame.addView(imageView)
+////                            Log.d("IMAGES_RESSS", "Added image: $secureUrl to frame: ${frame.id}")
+//
+//                            if (!isProfilePictureSet) {
+//                                isProfilePictureSet = true
+//                                Glide.with(requireActivity())
+//                                    .load(secureUrl)
+//                                    .into(binding.imageView)
+//                                binding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+//                            }
+//                        } else if (getCategoryFromString(fileData.fileURL) == "video") {
+//                            val thumbnailView =
+//                                ImageView(requireContext()).apply {
+//                                    layoutParams =
+//                                        FrameLayout.LayoutParams(
+//                                            FrameLayout.LayoutParams.MATCH_PARENT,
+//                                            FrameLayout.LayoutParams.MATCH_PARENT,
+//                                        )
+//                                    scaleType = ImageView.ScaleType.CENTER_CROP
+//                                }
+//
+//                            val bitmap = generateVideoThumbnail(secureUrl)
+//
+//                            if (bitmap != null) {
+//                                thumbnailView.setImageBitmap(bitmap)
+//                                frame.addView(thumbnailView)
+////                                Log.d("IMAGES_RESSS", "Added video thumbnail for: $secureUrl")
+//                            } else {
+////                                Log.e("IMAGES_RESSS", "Failed to generate thumbnail for: $secureUrl")
+//                            }
+//                        }
+//
+//                        frame.setOnClickListener {
+//                            if (fileData.fileURL.isEmpty()) return@setOnClickListener
+//                            openDetailScreen(secureUrl, getCategoryFromString(fileData.fileURL), fileData.videoId)
+//                        }
+//                    }
+//                }
+//                // Hide remaining frames that didn't get used
+//                withContext(Dispatchers.Main) {
+//                    for (i in listOfImagesAndVideos.size until imageViews.size) {
+//                        imageViews[i].visibility = View.GONE
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private fun generateVideoThumbnail(videoUrl: String): Bitmap? {
         return try {
@@ -297,117 +297,118 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 //        findNavController().navigate(action)
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setupView() {
-        binding.cardView.visibility = View.VISIBLE
-        binding.mainLytBtn.visibility = View.VISIBLE
-
-        viewModel.fetchDateInterests(user.userId)
-
-        binding.acceptBtn.setOnClickListener {
-            if (currentIdx < 0 || currentIdx >= dateInterests.size) {
-                return@setOnClickListener // Prevents out-of-bounds access
-            }
-            showLoading(true)
-            val d = dateInterests[currentIdx]
-            viewModel.updateDateInterest(d.interestID, d.dateID, "PENDING_TIME_APPROVAL")
-            mixpanel?.track("Android_Received_Request_Like_Date_Button_Clicked")
-        }
-
-        binding.rejectBtn.setOnClickListener {
-            if (currentIdx < 0 || currentIdx >= dateInterests.size) {
-                return@setOnClickListener // Prevents out-of-bounds access
-            }
-            showLoading(true)
-            val d = dateInterests[currentIdx]
-            viewModel.rejectDateInterest(
-                d.interestID,
-                d.dateID,
-                "REJECTED",
-            )
-            mixpanel?.track("Android_Received_Request_Dislike_Date_Button_Clicked")
-        }
-
-//        binding.mainLyt.setOnTouchListener { _, event ->
-//            when (event.action) {
-//                MotionEvent.ACTION_DOWN -> {
-//                    // Save the initial touch position
-//                    binding.mainLyt.setTag(R.id.tag_touch_start_x, event.x)
-//                    true
-//                }
-//                MotionEvent.ACTION_UP -> {
-//                    // Calculate the swipe distance
-//                    val startX = binding.mainLyt.getTag(R.id.tag_touch_start_x) as Float
-//                    val endX = event.x
-//                    val swipeDistance = endX - startX
+//    @SuppressLint("ClickableViewAccessibility")
+//    private fun setupView() {
+//        binding.cardView.visibility = View.VISIBLE
+//        binding.mainLytBtn.visibility = View.VISIBLE
 //
-//                    // Apply the tilt animation based on the swipe direction
-//                    if (swipeDistance > 0) {
-//                        startTiltAnimation(true)
-//                        if (currentIdx < 0) {
-//                            // do nothing
-//                        } else {
-//                            showLoading(true)
-//                            val d = dateInterests[currentIdx]
-//                            viewModel.updateDateInterest(
-//                                d.interestID,
-//                                d.dateID,
-//                                "PENDING_TIME_APPROVAL",
-//                            )
-//                        }
-//                    } else {
-//                        startSecondTiltAnimation(true)
-//                        if (currentIdx < 0) {
-//                            // do nothing
-//                        } else {
-//                            val d = dateInterests[currentIdx]
-//                            showLoading(true)
-//                            viewModel.rejectDateInterest(
-//                                d.interestID,
-//                                d.dateID,
-//                                "REJECTED",
-//                            )
-//                        }
-//                    }
-//                    true
-//                }
-//                else -> false
+//        viewModel.fetchDateInterests(user.userId)
+//
+//        binding.acceptBtn.setOnClickListener {
+//            if (currentIdx < 0 || currentIdx >= dateInterests.size) {
+//                return@setOnClickListener // Prevents out-of-bounds access
 //            }
+//            showLoading(true)
+//            val d = dateInterests[currentIdx]
+//            viewModel.updateDateInterest(d.interestID, d.dateID, "PENDING_TIME_APPROVAL")
+//            mixpanel?.track("Android_Received_Request_Like_Date_Button_Clicked")
 //        }
-    }
+//
+//        binding.rejectBtn.setOnClickListener {
+//            if (currentIdx < 0 || currentIdx >= dateInterests.size) {
+//                return@setOnClickListener // Prevents out-of-bounds access
+//            }
+//            showLoading(true)
+//            val d = dateInterests[currentIdx]
+//            viewModel.rejectDateInterest(
+//                d.interestID,
+//                d.dateID,
+//                "REJECTED",
+//            )
+//            mixpanel?.track("Android_Received_Request_Dislike_Date_Button_Clicked")
+//        }
+//
+////        binding.mainLyt.setOnTouchListener { _, event ->
+////            when (event.action) {
+////                MotionEvent.ACTION_DOWN -> {
+////                    // Save the initial touch position
+////                    binding.mainLyt.setTag(R.id.tag_touch_start_x, event.x)
+////                    true
+////                }
+////                MotionEvent.ACTION_UP -> {
+////                    // Calculate the swipe distance
+////                    val startX = binding.mainLyt.getTag(R.id.tag_touch_start_x) as Float
+////                    val endX = event.x
+////                    val swipeDistance = endX - startX
+////
+////                    // Apply the tilt animation based on the swipe direction
+////                    if (swipeDistance > 0) {
+////                        startTiltAnimation(true)
+////                        if (currentIdx < 0) {
+////                            // do nothing
+////                        } else {
+////                            showLoading(true)
+////                            val d = dateInterests[currentIdx]
+////                            viewModel.updateDateInterest(
+////                                d.interestID,
+////                                d.dateID,
+////                                "PENDING_TIME_APPROVAL",
+////                            )
+////                        }
+////                    } else {
+////                        startSecondTiltAnimation(true)
+////                        if (currentIdx < 0) {
+////                            // do nothing
+////                        } else {
+////                            val d = dateInterests[currentIdx]
+////                            showLoading(true)
+////                            viewModel.rejectDateInterest(
+////                                d.interestID,
+////                                d.dateID,
+////                                "REJECTED",
+////                            )
+////                        }
+////                    }
+////                    true
+////                }
+////                else -> false
+////            }
+////        }
+//    }
 
-    private fun startTiltAnimation(isRightSwipe: Boolean) {
-        val tiltAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.tilt_animation)
-        if (isRightSwipe) {
-            tiltAnimation.interpolator = AccelerateDecelerateInterpolator()
-        } else {
-            tiltAnimation.interpolator = DecelerateInterpolator()
-        }
-        binding.mainLyt.startAnimation(tiltAnimation)
-    }
-
-    private fun startSecondTiltAnimation(isRightSwipe: Boolean) {
-        val tiltAnimation =
-            AnimationUtils.loadAnimation(requireContext(), R.anim.second_tilt_animation)
-        if (isRightSwipe) {
-            tiltAnimation.interpolator = AccelerateDecelerateInterpolator()
-        } else {
-            tiltAnimation.interpolator = DecelerateInterpolator()
-        }
-        binding.mainLyt.startAnimation(tiltAnimation)
-    }
+//    private fun startTiltAnimation(isRightSwipe: Boolean) {
+//        val tiltAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.tilt_animation)
+//        if (isRightSwipe) {
+//            tiltAnimation.interpolator = AccelerateDecelerateInterpolator()
+//        } else {
+//            tiltAnimation.interpolator = DecelerateInterpolator()
+//        }
+//        binding.mainLyt.startAnimation(tiltAnimation)
+//    }
+//
+//    private fun startSecondTiltAnimation(isRightSwipe: Boolean) {
+//        val tiltAnimation =
+//            AnimationUtils.loadAnimation(requireContext(), R.anim.second_tilt_animation)
+//        if (isRightSwipe) {
+//            tiltAnimation.interpolator = AccelerateDecelerateInterpolator()
+//        } else {
+//            tiltAnimation.interpolator = DecelerateInterpolator()
+//        }
+//        binding.mainLyt.startAnimation(tiltAnimation)
+//    }
 
     private fun setupObservers() {
         viewModel.user.observe(viewLifecycleOwner) {
             user = it
             viewModel.getSubscriptionStatus(user.userId)
+            viewModel.loadInterestsForList(user.userId)
         }
         viewModel.getSubscriptionStatus.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
                     if (it.value.isFreeTrial) {
                         isSubscribed = true
-                        setupView()
+//                        setupView()
                     } else {
                         setupBilling()
                         isSubscribed = false
@@ -421,8 +422,8 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                                 (parentFragment as? DatesInterestFragment)?.findNavController()?.popBackStack()
                             }
                         }
-                        showEmpty()
-                        showLoading(false)
+//                        showEmpty()
+//                        showLoading(false)
 //                        if (!isUserSubscribed) {
 // //                            billingManager.launchBillingFlowForPremium()
 //                            Log.d("THIS_IS", hasCheckedBilling.toString())
@@ -433,7 +434,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 
                 is Resource.Failure -> {
                     if (it.message == null && it.errorBody == null) {
-                        showEmpty()
+//                        showEmpty()
                     } else {
                         showAlertDialog(
                             requireContext(),
@@ -446,11 +447,11 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         }
 
         viewModel.fetchDateInterests.observe(viewLifecycleOwner) {
-            showLoading(false)
+//            showLoading(false)
             when (it) {
                 is Resource.Success -> {
                     if (it.value.isEmpty()) {
-                        showEmpty()
+//                        showEmpty()
                     } else {
                         dateInterests = it.value
 //                        dateInterests =
@@ -473,55 +474,55 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 //                                    state = "Lagos",
 //                                ),
 //                            )
-                        setScreen()
+//                        setScreen()
                     }
                 }
 
                 is Resource.Failure -> {
-                    binding.constraintLayout2.visibility = View.VISIBLE
-                    binding.mainLyt.visibility = View.GONE
-                    binding.mainLytBtn.visibility = View.GONE
+//                    binding.constraintLayout2.visibility = View.VISIBLE
+//                    binding.mainLyt.visibility = View.GONE
+//                    binding.mainLytBtn.visibility = View.GONE
                 }
             }
         }
 
-        viewModel.rejectDateInterest.observe(viewLifecycleOwner) {
-            showLoading(false)
-            when (it) {
-                is Resource.Success -> {
-                    showToast("Success")
-                    if (currentIdx < dateInterests.lastIndex) {
-                        setScreen()
-                    } else {
-                        showToast("No more dates available")
-                        showEmpty()
-                    }
-                }
-
-                is Resource.Failure -> {
-                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
-                }
-            }
-        }
-
-        viewModel.updateDateInterest.observe(viewLifecycleOwner) {
-            showLoading(false)
-            when (it) {
-                is Resource.Success -> {
-                    showToast("Success")
-                    if (currentIdx < dateInterests.lastIndex) {
-                        setScreen()
-                    } else {
-                        showToast("No more dates available")
-                        showEmpty()
-                    }
-                }
-
-                is Resource.Failure -> {
-                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
-                }
-            }
-        }
+//        viewModel.rejectDateInterest.observe(viewLifecycleOwner) {
+//            showLoading(false)
+//            when (it) {
+//                is Resource.Success -> {
+//                    showToast("Success")
+//                    if (currentIdx < dateInterests.lastIndex) {
+//                        setScreen()
+//                    } else {
+//                        showToast("No more dates available")
+//                        showEmpty()
+//                    }
+//                }
+//
+//                is Resource.Failure -> {
+//                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
+//                }
+//            }
+//        }
+//
+//        viewModel.updateDateInterest.observe(viewLifecycleOwner) {
+//            showLoading(false)
+//            when (it) {
+//                is Resource.Success -> {
+//                    showToast("Success")
+//                    if (currentIdx < dateInterests.lastIndex) {
+//                        setScreen()
+//                    } else {
+//                        showToast("No more dates available")
+//                        showEmpty()
+//                    }
+//                }
+//
+//                is Resource.Failure -> {
+//                    showAlertDialog(requireContext(), it.message ?: it.errorBody ?: "", "OK") {}
+//                }
+//            }
+//        }
 
         if (!isUserSubscribed) {
             viewModel._updatePaymentResponse.observe(viewLifecycleOwner) {
@@ -546,38 +547,38 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
         }
     }
 
-    private fun setScreen() {
-        binding.cardView.visibility = View.VISIBLE
-        binding.mainLytBtn.visibility = View.VISIBLE
-
-        showLoading(false)
-        currentIdx++
-//        val date = dateInterests[currentIdx]
-
-        if (currentIdx < 0 || currentIdx >= dateInterests.size) {
-            // Don't use this index. This is out of bounds (borders, limits, whatever).
-        } else {
-            // Yes, you can safely use this index. The index is present in the array.
-            date = dateInterests[currentIdx]
-        }
-        observeImagesAndVideos(date.userID)
-
-        val mediaItem = MediaItem.fromUri(date.videoURL.replace("http:", "https:"))
-        player?.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
-        player?.playWhenReady = playWhenReady
-        player?.prepare()
-
-        binding.userName.text = "${date.name}, ${date.age}"
-        binding.nameGallery.text = "${date.name}'s Gallery"
-        binding.location.text = "${date.venue} Gallery"
-        binding.nameGallery.text = "${date.name}'s Gallery"
-
-//        if (date.bio.isNotEmpty()) {
-//            binding.bio.visibility = View.GONE
+//    private fun setScreen() {
+//        binding.cardView.visibility = View.VISIBLE
+//        binding.mainLytBtn.visibility = View.VISIBLE
+//
+//        showLoading(false)
+//        currentIdx++
+////        val date = dateInterests[currentIdx]
+//
+//        if (currentIdx < 0 || currentIdx >= dateInterests.size) {
+//            // Don't use this index. This is out of bounds (borders, limits, whatever).
 //        } else {
-//            binding.bio.visibility = View.VISIBLE
+//            // Yes, you can safely use this index. The index is present in the array.
+//            date = dateInterests[currentIdx]
 //        }
-    }
+//        observeImagesAndVideos(date.userID)
+//
+//        val mediaItem = MediaItem.fromUri(date.videoURL.replace("http:", "https:"))
+//        player?.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
+//        player?.playWhenReady = playWhenReady
+//        player?.prepare()
+//
+//        binding.userName.text = "${date.name}, ${date.age}"
+//        binding.nameGallery.text = "${date.name}'s Gallery"
+//        binding.location.text = "${date.venue} Gallery"
+//        binding.nameGallery.text = "${date.name}'s Gallery"
+//
+////        if (date.bio.isNotEmpty()) {
+////            binding.bio.visibility = View.GONE
+////        } else {
+////            binding.bio.visibility = View.VISIBLE
+////        }
+//    }
 
     private fun releasePlayer() {
         player?.let { exoPlayer ->
@@ -603,29 +604,29 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 //            }
     }
 
-    private fun showEmpty() {
-        binding.mainLyt.visibility = View.GONE
-        binding.mainLytBtn.visibility = View.GONE
-
-        // Get the current layout parameters
-        val layoutParams = binding.cardView.layoutParams as? ViewGroup.MarginLayoutParams
-
-        // Check if the cast was successful
-        layoutParams?.let {
-            it.bottomMargin = 0
-            binding.cardView.layoutParams = it
-        }
-
-        binding.constraintLayout2.visibility = View.VISIBLE
-//        binding.emptyLyt.visibility = View.VISIBLE
-        binding.loader.visibility = View.GONE
-    }
-
-    private fun showLoading(loading: Boolean) {
-        binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
-        binding.mainLytBtn.visibility = if (loading) View.GONE else View.VISIBLE
-        binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
-    }
+//    private fun showEmpty() {
+//        binding.mainLyt.visibility = View.GONE
+//        binding.mainLytBtn.visibility = View.GONE
+//
+//        // Get the current layout parameters
+//        val layoutParams = binding.cardView.layoutParams as? ViewGroup.MarginLayoutParams
+//
+//        // Check if the cast was successful
+//        layoutParams?.let {
+//            it.bottomMargin = 0
+//            binding.cardView.layoutParams = it
+//        }
+//
+//        binding.constraintLayout2.visibility = View.VISIBLE
+////        binding.emptyLyt.visibility = View.VISIBLE
+//        binding.loader.visibility = View.GONE
+//    }
+//
+//    private fun showLoading(loading: Boolean) {
+//        binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
+//        binding.mainLytBtn.visibility = if (loading) View.GONE else View.VISIBLE
+//        binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
+//    }
 
     private fun setupBilling() {
         billingClient =

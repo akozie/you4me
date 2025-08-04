@@ -18,6 +18,8 @@ class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository
 
     suspend fun deleteUser(userId: String) = safeApiCall { apiCollector.deleteUser(userId) }
 
+    suspend fun deleteUser(userId: String, reason: JsonObject) = safeApiCall { apiCollector.deleteUser(userId, reason) }
+
     suspend fun getUserOptions(): Resource<UserOptionsResponse> {
         return safeApiCall {
             apiCollector.getUserOptions()
@@ -44,10 +46,10 @@ class ProfileRepository(private val apiCollector: ApiCollector) : BaseRepository
 //            apiCollector.getReligions()
 //        }
 
-    suspend fun getCountries() =
-        safeApiCall {
-            apiCollector.getCountries()
-        }
+//    suspend fun getCountries() =
+//        safeApiCall {
+//            apiCollector.getCountries()
+//        }
 
     suspend fun getStates(countryId: String) =
         safeApiCall {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.you4me.you4me.R
@@ -15,6 +16,9 @@ import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.main.MainViewModel
 
 class DatesInterestFragment : BaseFragment<MainViewModel, FragmentDatesInterestBinding, MainRepository>("PROPOSE_DATE_TIME") {
+
+    private val tabTitles = listOf("Received Interest", "Sent Interest")
+
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
@@ -37,18 +41,19 @@ class DatesInterestFragment : BaseFragment<MainViewModel, FragmentDatesInterestB
     private fun setUpViewPager() {
         val adapter = DatesInterestPagerAdapter(this, 2) // ✅ Pass `this` (fragment)
         binding.pager.adapter = adapter
-        binding.pager.isUserInputEnabled = true // ✅ Ensure swiping is enabled
+        binding.pager.isUserInputEnabled = true
 
         TabLayoutMediator(binding.tabs, binding.pager) { tab, position ->
-            tab.text =
-                when (position) {
-                    0 -> getString(R.string.received_requests)
-                    1 -> getString(R.string.sent_requests)
-                    else -> getString(R.string.received_requests)
-                }
+            val customTabView = LayoutInflater.from(context)
+                .inflate(R.layout.custom_tab, null, false) as TextView
+
+
+            customTabView.text = tabTitles[position]
+            tab.customView = customTabView
+
         }.attach()
 
-        // ✅ Debugging Log
+        // Debugging Log
         binding.pager.registerOnPageChangeCallback(
             object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {

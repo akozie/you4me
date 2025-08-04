@@ -135,7 +135,6 @@ class ProfileViewModel(
 
     init {
         getUserFromDb()
-        getCountries()
         getUserOptions()
 //        getGenders()
 //        getSexualOrientations()
@@ -149,9 +148,9 @@ class ProfileViewModel(
         }
     }
 
-    fun deleteUser(userId: String) {
+    fun deleteUser(userId: String, reason: JsonObject) {
         viewModelScope.launch {
-            _deleteUserResponse.value = repository.deleteUser(userId)
+            _deleteUserResponse.value = repository.deleteUser(userId, reason)
         }
     }
 
@@ -205,11 +204,11 @@ class ProfileViewModel(
         }
     }
 
-    fun getCountries() {
-        viewModelScope.launch {
-            _countries.value = repository.getCountries()
-        }
-    }
+//    fun getCountries() {
+//        viewModelScope.launch {
+//            _countries.value = repository.getCountries()
+//        }
+//    }
 
     fun getSexualOrientations() {
         viewModelScope.launch {
@@ -402,7 +401,6 @@ class ProfileViewModel(
                             401 -> "Unauthorized. Please check your API credentials."
                             else -> error?.description ?: "Unknown error occurred"
                         }
-
 
                         // Update LiveData to notify UI
                         _uploadError.postValue(errorMessage)

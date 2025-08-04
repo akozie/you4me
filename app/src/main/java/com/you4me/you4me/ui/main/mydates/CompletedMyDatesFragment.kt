@@ -32,6 +32,8 @@ class CompletedMyDatesFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.constraintLayout2.visibility = View.VISIBLE
+
         binding.planADateBtn.setOnClickListener {
             findNavController().navigate(R.id.goOnDateFragment)
         }

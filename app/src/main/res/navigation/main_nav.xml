@@ -43,6 +43,15 @@
         <action
             android:id="@+id/action_findDateFragment_to_notInterestedFragment"
             app:destination="@id/notInterestedFragment" />
+        <action
+            android:id="@+id/action_findDateFragment_to_suggestedFragment"
+            app:destination="@id/suggestedFragment" />
+        <action
+            android:id="@+id/action_findDateFragment_to_filterBottomSheetFragment"
+            app:destination="@id/filterBottomSheetFragment" />
+        <action
+            android:id="@+id/action_findDateFragment_to_goOnDateFragment"
+            app:destination="@id/goOnDateFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -306,7 +315,7 @@
         tools:layout="@layout/fragment_date_match" />
     <dialog
         android:id="@+id/notInterestedFragment"
-        android:name="com.you4me.you4me.ui.main.finddates.NotInterestedFragment"
+        android:name="com.you4me.you4me.ui.main.finddates.bottomsheet.NotInterestedFragment"
         android:label="fragment_not_interested"
         tools:layout="@layout/fragment_not_interested" />
     <fragment
@@ -329,4 +338,19 @@
         android:name="com.you4me.you4me.ui.main.mydates.CompletedMyDatesFragment"
         android:label="fragment_completed_my_dates"
         tools:layout="@layout/fragment_completed_my_dates" />
+    <fragment
+        android:id="@+id/sentRequestsFragment"
+        android:name="com.you4me.you4me.ui.main.likes.SentRequestsFragment"
+        android:label="fragment_sent_requests"
+        tools:layout="@layout/fragment_sent_requests" />
+    <dialog
+        android:id="@+id/filterBottomSheetFragment"
+        android:name="com.you4me.you4me.ui.main.finddates.bottomsheet.FilterBottomSheetFragment"
+        android:label="fragment_filter_bottom_sheet"
+        tools:layout="@layout/fragment_filter_bottom_sheet" />
+    <fragment
+        android:id="@+id/completedDatesFragment"
+        android:name="com.you4me.you4me.ui.main.CompletedDatesFragment"
+        android:label="fragment_completed_dates"
+        tools:layout="@layout/fragment_completed_dates" />
 </navigation>

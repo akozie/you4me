@@ -19,15 +19,16 @@ import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.SentRequestsItemBinding
 import com.you4me.you4me.models.InviteeDatesRequiringApproval
+import com.you4me.you4me.models.interests.Interest
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.ui.main.MainViewModel
 import com.you4me.you4me.ui.main.SuggestNewDateDialog
 
 class SentRequestsRecyclerAdapter(
-    private val dates: InviteeDatesRequiringApproval, // Use MutableList for better handling
+    private val dates: List<Interest>, // Use MutableList for better handling
     private val viewModel: MainViewModel,
     private val context: Context,
-    private val mixpanelAPI: MixpanelAPI,
+    private val mixpanelAPI: MixpanelAPI?,
     private val fragmentManager: FragmentManager,
     private val lifecycleOwner: LifecycleOwner,
 ) : RecyclerView.Adapter<SentRequestsRecyclerAdapter.MyViewHolder>() {
@@ -59,46 +60,46 @@ class SentRequestsRecyclerAdapter(
 
         val date = dates[position]
         holder.binding.apply {
-            userName.text = date.name
-            location.text = date.place
-            availableDate.text = "${date.date} : ${date.time}"
+            name.text = date.name
+            location.text = date.venue
+            dateTime.text = "${date.originalDate} : ${date.originalTime}"
 
             // Clear previous image before loading
-            Glide.with(context).clear(imageView)
+            Glide.with(context).clear(userImage)
 
             // Load image from cache or fetch if not available
-            if (imageCache.containsKey(date.userId)) {
-                loadImage(imageCache[date.userId] ?: "", this)
+            if (imageCache.containsKey(date.userID)) {
+                loadImage(imageCache[date.userID] ?: "", this)
             } else {
-                getImagesResponse(date.userId, this)
+                getImagesResponse(date.userID, this)
             }
 
-            suggestANewDate.setOnClickListener {
+            proposeNewDate.setOnClickListener {
                 val dialog =
-                    SuggestNewDateDialog(date.date, date.time) { newDate, newTime ->
+                    SuggestNewDateDialog(date.originalDate, date.originalTime) { newDate, newTime ->
                         showLoading(true, this)
 
-                        viewModel.proposeNewDateTime(date.dateId, date.interestId, newDate, newTime)
+                        viewModel.proposeNewDateTime(date.dateID, date.interestID, newDate, newTime)
 
                         // Remove item from list and refresh UI
-                        dates.removeAt(position)
+//                        dates.removeAt(position)
                         notifyDataSetChanged()
-                        mixpanelAPI.track("Android_Sent_Request_Proposed_New_Date_Time")
+//                        mixpanelAPI.track("Android_Sent_Request_Proposed_New_Date_Time")
                         showEmpty(this) // Ensure empty UI updates
                         Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                         fragmentManager.popBackStack()
                     }
                 dialog.show(fragmentManager, "SuggestNewDateDialog")
             }
-
-            acceptDate.setOnClickListener {
-                mixpanelAPI.track("Android_Sent_Request_Accept_Date_Button_Clicked")
+//
+            acceptBtnLyt.setOnClickListener {
+//                mixpanelAPI.track("Android_Sent_Request_Accept_Date_Button_Clicked")
                 showLoading(true, this)
 
-                viewModel.updateDateInterest(date.interestId, date.dateId, "APPROVED")
+                viewModel.updateDateInterest(date.interestID, date.dateID, "APPROVED")
 
                 // Remove item and refresh UI
-                dates.removeAt(position)
+//                dates.removeAt(position)
                 notifyDataSetChanged()
 
                 showEmpty(this) // Ensure empty UI updates
@@ -106,9 +107,9 @@ class SentRequestsRecyclerAdapter(
                 fragmentManager.popBackStack()
             }
 
-            reportDate.setOnClickListener {
-                showReportAbuseDialog(date.dateId, date.userId, date.interestId, position)
-            }
+//            reportDate.setOnClickListener {
+//                showReportAbuseDialog(date.dateId, date.userId, date.interestId, position)
+//            }
         }
     }
 
@@ -135,7 +136,7 @@ class SentRequestsRecyclerAdapter(
         // Handle submit button click
         btnSubmit.setOnClickListener {
             val feedback = etFeedback.text.toString().trim()
-            mixpanelAPI.track("Android_Sent_Request_Report_Date_Button_Clicked")
+//            mixpanelAPI.track("Android_Sent_Request_Report_Date_Button_Clicked")
             val obj =
                 JsonObject().apply {
                     addProperty("date_id", dateId)
@@ -147,7 +148,7 @@ class SentRequestsRecyclerAdapter(
             viewModel.updateReview(obj)
             viewModel.updateDateInterest(interestID, dateId, "ABUSE_REPORTED")
             // Remove item and refresh UI
-            dates.removeAt(position)
+//            dates.removeAt(position)
             notifyDataSetChanged()
             dialog.dismiss() // Close the dialog
         }
@@ -186,24 +187,24 @@ class SentRequestsRecyclerAdapter(
         url: String,
         holder: SentRequestsItemBinding,
     ) {
-        Glide.with(context)
-            .load(url)
-            .diskCacheStrategy(DiskCacheStrategy.ALL) // Ensures caching
-            .into(holder.imageView)
+//        Glide.with(context)
+//            .load(url)
+//            .diskCacheStrategy(DiskCacheStrategy.ALL) // Ensures caching
+//            .into(holder.imageView)
     }
 
     private fun showLoading(
         loading: Boolean,
         holder: SentRequestsItemBinding,
     ) {
-        holder.loader.visibility = if (loading) View.VISIBLE else View.GONE
+//        holder.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
 
     private fun showEmpty(holder: SentRequestsItemBinding) {
         if (dates.isEmpty()) {
-            holder.constraintLayout2.visibility = View.VISIBLE
-            holder.mainLyt.visibility = View.GONE
-            holder.loader.visibility = View.GONE
+//            holder.constraintLayout2.visibility = View.VISIBLE
+//            holder.mainLyt.visibility = View.GONE
+//            holder.loader.visibility = View.GONE
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.you4me.you4me.ui.profile.bottomsheet
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,6 +76,7 @@ class StateBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun setupCustomRadioGroup(container: LinearLayout, options: List<ValueLabelResponse>?) {
         container.removeAllViews()
+        Log.d("FIND_SATES==", "$options")
 
         if (options != null) {
             for ((index, item) in options.withIndex()) {

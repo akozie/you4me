@@ -19,6 +19,7 @@
     <!--    <string name="go_ahead">Go ahead and enter it below. <font fgcolor="#ED0D57"><u>Change email address</u></font></string>-->
     <string name="go_ahead">Go ahead and enter it below. %1$s</string>
     <string name="find_date">Find Date</string>
+    <string name="dates">Dates</string>
     <string name="explore_date">Explore Dates</string>
     <string name="my_date">My Dates</string>
     <string name="gender">Gender</string>
@@ -54,12 +55,12 @@
     <string name="visible_to_date_only">This will only be visible to the person you agree to go on a date with.</string>
     <string name="who_is_paying">Who is paying?</string>
     <string name="save">Save</string>
-    <string name="religion">Religion</string>
+     <string name="religion">Religion</string>
     <string name="phone_number">Phone Number</string>
     <string name="no_approved_date">No Approved Date!</string>
     <string name="no_upcoming_date">No Upcoming Date!</string>
     <string name="no_completed_date">No Completed Date!</string>
-    <string name="plan_a_date">Plan a Date</string>
+    <string name="plan_a_date">Plan Date</string>
     <string name="no_date_interests">No date interests</string>
     <string name="date_interests">Interests</string>
     <string name="sign_in_with_google">Sign in with Google</string>

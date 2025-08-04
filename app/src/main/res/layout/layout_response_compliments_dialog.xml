@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_20dp"
             android:gravity="center"
-            app:layout_constraintBottom_toTopOf="@+id/subscribe_to_premium"
+            app:layout_constraintBottom_toTopOf="@+id/plan_a_date"
             android:text="Oops!
 You’ve exceeded the number of compliments you can send on a free plan. Subscribe to premium plan for unlimited compliments"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +35,7 @@ You’ve exceeded the number of compliments you can send on a free plan. Subscri
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/subscribe_to_premium"
+            android:id="@+id/plan_a_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_50dp"
@@ -53,7 +53,7 @@ You’ve exceeded the number of compliments you can send on a free plan. Subscri
             tools:layout_editor_absoluteY="92dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/send_interest_anyways"
+            android:id="@+id/adjust_filter"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_20dp"
@@ -65,12 +65,12 @@ You’ve exceeded the number of compliments you can send on a free plan. Subscri
             android:textColor="@color/primary_pink"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@+id/subscribe_to_premium"
+            app:layout_constraintTop_toBottomOf="@+id/plan_a_date"
             app:backgroundTint="@color/white"
             app:cornerRadius="@dimen/margin_50dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/subscribe_to_premium"
-            app:layout_constraintStart_toStartOf="@+id/subscribe_to_premium"
+            app:layout_constraintEnd_toEndOf="@+id/plan_a_date"
+            app:layout_constraintStart_toStartOf="@+id/plan_a_date"
             app:strokeColor="@color/primary_pink"
             app:strokeWidth="@dimen/margin_1dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

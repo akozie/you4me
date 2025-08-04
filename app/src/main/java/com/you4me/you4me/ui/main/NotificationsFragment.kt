@@ -135,14 +135,14 @@ class NotificationsFragment :
                                 when (it) {
                                     is Resource.Success -> {
                                         val result = it.value
-                                        val dateAndTime = "${result[0].date} ${result[0].time}"
+                                        val dateAndTime = "${result.dates[0].date} ${result.dates[0].time}"
                                         val chatMessage =
                                             ChatMessage(
-                                                dateId = result[0].dateId,
+                                                dateId = result.dates[0].dateId,
                                                 senderId = user.userId,
                                                 senderName = user.name,
-                                                recipientId = result[0].userId,
-                                                recipientName = result[0].name,
+                                                recipientId = result.dates[0].userId,
+                                                recipientName = result.dates[0].name,
                                             )
                                         val action =
                                             NotificationsFragmentDirections.actionNotificationsFragmentToChatFragment(chatMessage)

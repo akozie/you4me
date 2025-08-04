@@ -25,6 +25,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -47,6 +48,8 @@ import kotlinx.coroutines.withContext
 
 class FindDateFragment :
     BaseFragment<MainViewModel, FragmentFindDateBinding, MainRepository>("FIND_DATE") {
+
+    private val tabTitles = listOf("Discover", "Nearby")
 
     override fun getViewModel() = MainViewModel::class.java
 
@@ -73,14 +76,29 @@ class FindDateFragment :
         binding.pager.isUserInputEnabled = true // ✅ Ensure swiping is enabled
 
         TabLayoutMediator(binding.tabs, binding.pager) { tab, position ->
-            tab.text =
-                when (position) {
-                    0 -> getString(R.string.discover)
-                    1 -> getString(R.string.nearby)
-                    else -> getString(R.string.discover)
-                }
+            val customTabView = LayoutInflater.from(context)
+                .inflate(R.layout.custom_tab, null, false) as TextView
+
+
+            customTabView.text = tabTitles[position]
+            tab.customView = customTabView
+
         }.attach()
 
+        // Optional: set selected state manually on startup
+        binding.tabs.getTabAt(0)?.customView?.isSelected = true
+
+        binding.tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                tab.customView?.isSelected = true
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                tab.customView?.isSelected = false
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
     }
 
     override fun onDestroy() {

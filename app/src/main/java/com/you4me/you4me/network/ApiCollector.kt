@@ -3,6 +3,7 @@ package com.you4me.you4me.network
 import com.google.gson.JsonObject
 import com.you4me.you4me.model.User
 import com.you4me.you4me.models.*
+import com.you4me.you4me.models.interests.ReceivedInterestResponse
 import com.you4me.you4me.models.useroptions.UserOptionsResponse
 import com.you4me.you4me.models.verification.VeriffVerification
 import retrofit2.Call
@@ -80,14 +81,14 @@ interface ApiCollector {
     suspend fun updatePushToken(
         @Path("userId") userId: String,
         @Body token: JsonObject,
-    )
+    ): Response<Unit>
 
     @GET("user/option-lists")
     suspend fun getUserOptions(): UserOptionsResponse
 
 //    @GET("genders")
 //    suspend fun getGenders(): ArrayList<ValueLabelResponse>
-
+//
 //    @GET("sexualOrientations")
 //    suspend fun getSexualOrientations(): ArrayList<ValueLabelResponse>
 //
@@ -97,18 +98,24 @@ interface ApiCollector {
 //    @GET("religions")
 //    suspend fun getReligions(): ArrayList<ValueLabelResponse>
 //
-    @GET("countries")
-    suspend fun getCountries(): ArrayList<ValueLabelResponse>
+//    @GET("countries")
+//    suspend fun getCountries(): ArrayList<ValueLabelResponse>
 
     @GET("countries/{countryId}/states")
     suspend fun getStates(
         @Path("countryId") countryId: String,
     ): ArrayList<ValueLabelResponse>
 
+    @POST("users/{userId}/delete")
+    suspend fun deleteUser(
+        @Path("userId") userId: String,
+        @Body obj: JsonObject,
+        )
+
     @POST("delete/{userId}")
     suspend fun deleteUser(
         @Path("userId") userId: String,
-    )
+        )
 
     @PATCH("users/{userId}")
     suspend fun updateUserInfo(
@@ -183,6 +190,20 @@ interface ApiCollector {
     suspend fun sendPushNotification(
         @Body obj: JsonObject,
     )
+
+    @GET("users/{userId}/dates/interests/received")
+    suspend fun receivedDateInterests(
+        @Path("userId") userId: String,
+        @Query("page") page: Int,
+        @Query("limit") pageLimit: Int
+    ): ReceivedInterestResponse
+
+    @GET("users/{userId}/dates/interests/sent")
+    suspend fun sentDateInterests(
+        @Path("userId") userId: String,
+        @Query("page") page: Int,
+        @Query("limit") pageLimit: Int
+    ): ReceivedInterestResponse
 
     @GET("users/{userId}/dates/interests")
     suspend fun fetchDateInterests(

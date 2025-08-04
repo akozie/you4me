@@ -127,7 +127,7 @@ abstract class BaseRepository {
                         Resource.Failure(
                             isNetworkError = true,
                             null,
-                            "Please check your internet",
+                            "",
                             null
                         )
                     }

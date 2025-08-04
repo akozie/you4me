@@ -91,8 +91,8 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/okayButton"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_height="@dimen/margin_55dp"
+        android:layout_marginTop="@dimen/margin_20dp"
         android:backgroundTint="@color/primary_pink"
         android:text="OKAY!"
         android:textAllCaps="true"

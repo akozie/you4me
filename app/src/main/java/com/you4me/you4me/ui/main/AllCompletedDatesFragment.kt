@@ -52,64 +52,64 @@ class AllCompletedDatesFragment :
         viewModel.completedDates.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-//                    setupCompletedDates(it.value)
-                    val list =  CompletedDateResponse().apply {
-                        add(
-                            CompletedDateResponseItem(
-                                "CHAT",
-                                "2025/05/28",
-                                "12wqasde",
-                                "true",
-                                "Emmanuel",
-                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
-                                "5",
-                                "Lagos",
-                                "Lekki"
-                            )
-                        )
-                        add(
-                            CompletedDateResponseItem(
-                                "CHAT",
-                                "2025/05/28",
-                                "12wqasde",
-                                "true",
-                                "Emmanuel",
-                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
-                                "5",
-                                "Lagos",
-                                "Lekki"
-                            )
-                        )
-
-                        add(
-                            CompletedDateResponseItem(
-                                "CHAT",
-                                "2025/05/28",
-                                "12wqasde",
-                                "true",
-                                "Emmanuel",
-                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
-                                "5",
-                                "Lagos",
-                                "Lekki"
-                            )
-                        )
-
-                        add(
-                            CompletedDateResponseItem(
-                                "CHAT",
-                                "2025/05/28",
-                                "12wqasde",
-                                "true",
-                                "Emmanuel",
-                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
-                                "5",
-                                "Lagos",
-                                "Lekki"
-                            )
-                        )
-                    }
-                    setupCompletedDates(list)
+                    setupCompletedDates(it.value)
+//                    val list =  CompletedDateResponse().apply {
+//                        add(
+//                            CompletedDateResponseItem(
+//                                "CHAT",
+//                                "2025/05/28",
+//                                "12wqasde",
+//                                "true",
+//                                "Emmanuel",
+//                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
+//                                "5",
+//                                "Lagos",
+//                                "Lekki"
+//                            )
+//                        )
+//                        add(
+//                            CompletedDateResponseItem(
+//                                "CHAT",
+//                                "2025/05/28",
+//                                "12wqasde",
+//                                "true",
+//                                "Emmanuel",
+//                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
+//                                "5",
+//                                "Lagos",
+//                                "Lekki"
+//                            )
+//                        )
+//
+//                        add(
+//                            CompletedDateResponseItem(
+//                                "CHAT",
+//                                "2025/05/28",
+//                                "12wqasde",
+//                                "true",
+//                                "Emmanuel",
+//                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
+//                                "5",
+//                                "Lagos",
+//                                "Lekki"
+//                            )
+//                        )
+//
+//                        add(
+//                            CompletedDateResponseItem(
+//                                "CHAT",
+//                                "2025/05/28",
+//                                "12wqasde",
+//                                "true",
+//                                "Emmanuel",
+//                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
+//                                "5",
+//                                "Lagos",
+//                                "Lekki"
+//                            )
+//                        )
+//                    }
+//                    setupCompletedDates(list)
                 }
 
                 is Resource.Failure -> {
@@ -132,11 +132,10 @@ class AllCompletedDatesFragment :
 //                binding.toggleArrow.setImageResource(R.drawable.baseline_keyboard_arrow_down_24) // Change icon
 //            }
 //        }
-
     }
 
     private fun setupCompletedDates(dates: CompletedDateResponse) {
-        if (dates.isEmpty()) {
+        if (dates.dates.isNullOrEmpty()) {
             binding.datesCompletedAppLyt.visibility = View.GONE
             binding.completedDatesRecycler.visibility = View.GONE
 //            binding.completedDatesTxt.visibility = View.GONE

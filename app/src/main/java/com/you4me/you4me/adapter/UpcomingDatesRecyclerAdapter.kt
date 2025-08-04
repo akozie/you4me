@@ -35,13 +35,13 @@ class UpcomingDatesRecyclerAdapter(private val user: User, private val fragment:
         return MyViewHolder(binding)
     }
 
-    override fun getItemCount() = dates.size
+    override fun getItemCount() = dates.dates.size
 
     override fun onBindViewHolder(
         holder: MyViewHolder,
         position: Int,
     ) {
-        val date = dates[position]
+        val date = dates.dates[position]
 //        holder.binding.text.text = "You have a date with ${date.name} at ${date.place} on ${date.date} by ${date.time}"
         holder.binding.addToCalender.setOnClickListener {
             // add to calendar

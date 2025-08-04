@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.you4me.you4me.databinding.ApprovedDateItemBinding
 import com.you4me.you4me.models.InviteeDatesRequiringApproval
+import com.you4me.you4me.models.interests.Interest
 import com.you4me.you4me.ui.main.MainViewModel
 import com.you4me.you4me.utils.Utils
 import java.util.Calendar
 
 class InviteeDateForApprovalRecyclerAdapter(
-    private val dates: InviteeDatesRequiringApproval,
+    private val dates: List<Interest>,
     private val viewModel: MainViewModel,
     private val context: Context,
     private val mixpanelAPI: MixpanelAPI,
@@ -55,8 +56,8 @@ class InviteeDateForApprovalRecyclerAdapter(
                 // accept
                 mixpanelAPI.track("Android_Home_Approve_Date_Invitee_Button_Pressed")
                 // update list and ui
-                viewModel.updateDateInterest(date.interestId, date.dateId, "APPROVED")
-                dates.clear()
+                viewModel.updateDateInterest(date.interestID, date.dateID, "APPROVED")
+//                dates.clear()
 //                dates.removeAt(position)
                 notifyItemRemoved(position)
             }

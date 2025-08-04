@@ -53,64 +53,64 @@ class AllUpcomingDatesFragment :
         viewModel.upcomingDates.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-//                    setupUpcomingDates(it.value)
-                    val list =  UpcomingDates().apply {
-                        add(
-                            UpcomingDatesItem(
-                                "CHAT",
-                                "2025-06-28",
-                                "12wqasde",
-                                "12wqasde111",
-                                "Emmanuel",
-                                "Lekki",
-                                "2025-06-28",
-                                "13:20",
-                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8"
-                            )
-                        )
-                        add(
-                            UpcomingDatesItem(
-                                "CHAT",
-                                "2025-06-28",
-                                "12wqasde",
-                                "12wqasde111",
-                                "Emmanuel",
-                                "Lekki",
-                                "2025-06-28",
-                                "13:20",
-                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8"
-                            )
-                        )
-
-                        add(
-                            UpcomingDatesItem(
-                                "CHAT",
-                                "2025-06-28",
-                                "12wqasde",
-                                "12wqasde111",
-                                "Emmanuel",
-                                "Lekki",
-                                "2025-06-28",
-                                "13:20",
-                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8"
-                            )
-                        )
-
-                        add(
-                            UpcomingDatesItem(
-                                "CHAT",
-                                "2025-06-28",
-                                "12wqasde",
-                                "12wqasde111",
-                                "Emmanuel",
-                                "Lekki",
-                                "2025-06-28",
-                                "13:20",
-                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8"
-                            )
-                        )
-                    }
-                    setupUpcomingDates(list)
+                    setupUpcomingDates(it.value)
+//                    val list =  UpcomingDates().apply {
+//                        add(
+//                            UpcomingDatesItem(
+//                                "CHAT",
+//                                "2025-06-28",
+//                                "12wqasde",
+//                                "12wqasde111",
+//                                "Emmanuel",
+//                                "Lekki",
+//                                "2025-06-28",
+//                                "13:20",
+//                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8"
+//                            )
+//                        )
+//                        add(
+//                            UpcomingDatesItem(
+//                                "CHAT",
+//                                "2025-06-28",
+//                                "12wqasde",
+//                                "12wqasde111",
+//                                "Emmanuel",
+//                                "Lekki",
+//                                "2025-06-28",
+//                                "13:20",
+//                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8"
+//                            )
+//                        )
+//
+//                        add(
+//                            UpcomingDatesItem(
+//                                "CHAT",
+//                                "2025-06-28",
+//                                "12wqasde",
+//                                "12wqasde111",
+//                                "Emmanuel",
+//                                "Lekki",
+//                                "2025-06-28",
+//                                "13:20",
+//                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8"
+//                            )
+//                        )
+//
+//                        add(
+//                            UpcomingDatesItem(
+//                                "CHAT",
+//                                "2025-06-28",
+//                                "12wqasde",
+//                                "12wqasde111",
+//                                "Emmanuel",
+//                                "Lekki",
+//                                "2025-06-28",
+//                                "13:20",
+//                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8"
+//                            )
+//                        )
+//                    }
+//                    setupUpcomingDates(list)
                 }
 
                 is Resource.Failure -> {
@@ -122,7 +122,7 @@ class AllUpcomingDatesFragment :
 
 
     private fun setupUpcomingDates(dates: UpcomingDates) {
-        if (dates.isEmpty()) {
+        if (dates.dates.isEmpty()) {
             binding.upcomingDatesRecycler.visibility = View.GONE
 //            binding.noUpcomingDates.visibility = View.VISIBLE
         } else {

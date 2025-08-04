@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentDeleteAccountBinding
 import com.you4me.you4me.databinding.FragmentProfileBinding
@@ -25,6 +26,8 @@ class DeleteAccountFragment :
     BaseFragment<ProfileViewModel, FragmentDeleteAccountBinding, ProfileRepository>("DELETE_ACCOUNT") {
 
     private lateinit var user: User
+    val selectedOptions = mutableListOf<String>()
+
 
 
     override fun getViewModel() = ProfileViewModel::class.java
@@ -46,6 +49,16 @@ class DeleteAccountFragment :
             user = newUser
         }
 
+        if (binding.checkbox.isChecked) selectedOptions.add(binding.checkbox.text.toString())
+        if (binding.checkbox1.isChecked) selectedOptions.add(binding.checkbox1.text.toString())
+        if (binding.checkbox2.isChecked) selectedOptions.add(binding.checkbox2.text.toString())
+        if (binding.checkbox3.isChecked) selectedOptions.add(binding.checkbox3.text.toString())
+        if (binding.checkbox4.isChecked) selectedOptions.add(binding.checkbox4.text.toString())
+        if (binding.checkbox5.isChecked) selectedOptions.add(binding.checkbox5.text.toString())
+
+        val selectedText = selectedOptions.joinToString(", ")
+
+
         binding.deleteAccBtn.setOnClickListener {
             if(
                 binding.checkbox.isChecked ||
@@ -64,7 +77,10 @@ class DeleteAccountFragment :
                 alertDialog.setNegativeButton("Delete") { dialog, int ->
                     dialog.dismiss()
                     val dialogg = showDialog("Please wait", false)
-                    viewModel.deleteUser(user.userId)
+                    val reason = JsonObject().apply {
+                        addProperty("reason", "$selectedText")
+                    }
+                    viewModel.deleteUser(user.userId, reason)
                     viewModel.deleteUserResponse.observe(viewLifecycleOwner) {
                         dialogg.dismiss()
                         when (it) {
