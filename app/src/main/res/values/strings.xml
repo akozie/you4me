@@ -55,7 +55,7 @@
     <string name="visible_to_date_only">This will only be visible to the person you agree to go on a date with.</string>
     <string name="who_is_paying">Who is paying?</string>
     <string name="save">Save</string>
-     <string name="religion">Religion</string>
+    <string name="religion">Religion</string>
     <string name="phone_number">Phone Number</string>
     <string name="no_approved_date">No Approved Date!</string>
     <string name="no_upcoming_date">No Upcoming Date!</string>

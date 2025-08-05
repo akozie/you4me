@@ -570,7 +570,8 @@ class EditProfileFragment :
 
 
                     slot.addBadge.setOnClickListener {
-                        viewModel.validateVideoUpload()
+//                        viewModel.validateVideoUpload()
+                        openGallery()
                     }
                 }
             }

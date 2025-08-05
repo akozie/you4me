@@ -342,7 +342,11 @@
         android:id="@+id/sentRequestsFragment"
         android:name="com.you4me.you4me.ui.main.likes.SentRequestsFragment"
         android:label="fragment_sent_requests"
-        tools:layout="@layout/fragment_sent_requests" />
+        tools:layout="@layout/fragment_sent_requests" >
+        <action
+            android:id="@+id/action_sentRequestsFragment_to_proposeNewDateAndTimeFragment"
+            app:destination="@id/proposeNewDateAndTimeFragment" />
+    </fragment>
     <dialog
         android:id="@+id/filterBottomSheetFragment"
         android:name="com.you4me.you4me.ui.main.finddates.bottomsheet.FilterBottomSheetFragment"
@@ -353,4 +357,9 @@
         android:name="com.you4me.you4me.ui.main.CompletedDatesFragment"
         android:label="fragment_completed_dates"
         tools:layout="@layout/fragment_completed_dates" />
+    <dialog
+        android:id="@+id/proposeNewDateAndTimeFragment"
+        android:name="com.you4me.you4me.ui.main.likes.bottomsheet.ProposeNewDateAndTimeFragment"
+        android:label="fragment_propose_new_date_and_time"
+        tools:layout="@layout/fragment_propose_new_date_and_time" />
 </navigation>

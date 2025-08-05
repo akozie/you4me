@@ -142,11 +142,13 @@ class EditProfilePictureBottomSheetFragment : BottomSheetDialogFragment() {
 
         binding.takePhoto.setOnClickListener {
             showLoader(true)
-            viewModel.cameraUpload()
+//            viewModel.cameraUpload()
+            openCamera()
         }
         binding.chooseFromLibrary.setOnClickListener {
             showLoader(true)
-            viewModel.validateVideoUpload()
+//            viewModel.validateVideoUpload()
+            openGallery()
         }
         binding.cancelIcon.setOnClickListener {
             dismiss()

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -13,10 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.widget.Autocomplete
@@ -41,7 +37,6 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class GoOnDateFragment :
     BaseFragment<MainViewModel, FragmentGoOnDateBinding, MainRepository>("GO_ON_DATE") {
@@ -52,7 +47,7 @@ class GoOnDateFragment :
     private lateinit var icons: Map<String, Int>
     private lateinit var paymentModes: ArrayList<PaymentModes>
     private var selectedOptionValue: String? = null
-    private var dateType:String? = null
+    private lateinit var dateType: String
 
     private val startAutoComplete =
         registerForActivityResult(
@@ -83,20 +78,20 @@ class GoOnDateFragment :
 
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         val gson = Gson()
-         user = gson.fromJson(userProfile, User::class.java)
+        user = gson.fromJson(userProfile, User::class.java)
 
         val splitLayout = binding.optionSplit
         val youLayout = binding.optionYou
         val theyLayout = binding.optionThey
 
-         layouts = mapOf(
+        layouts = mapOf(
             "0" to splitLayout,
             "1" to youLayout,
             "2" to theyLayout
         )
 
         // Inflate icons dynamically (example placeholders used here)
-         icons = mapOf(
+        icons = mapOf(
             "0" to R.drawable.split,
             "1" to R.drawable.you_pay,
             "2" to R.drawable.they_pay
@@ -182,13 +177,17 @@ class GoOnDateFragment :
                 }
 
                 else -> {
+                    if (binding.customLayout.customInput.text.toString().isNotEmpty()) {
+                        dateType = binding.customLayout.customInput.text.toString().trim()
+                        Log.d("SELECTED_OPTION", "${dateType}")
+                    }
                     viewModel.submitDate(
                         dateText.orEmpty(),
                         selectedOptionValue.toString(),
                         locationText,
                         timeText.orEmpty(),
                         user.userId,
-                        dateType.toString()
+                        dateType
                     )
                     mixpanel?.track("Android_Request_Date_Button_Pressed")
                     showLoader(true)
@@ -289,10 +288,6 @@ class GoOnDateFragment :
     override fun getRepository() = MainRepository(dataSource.buildApi(ApiCollector::class.java))
 
 
-
-
-
-
     private fun setUpWhoIsPayingList(paymentOptions: ArrayList<PaymentModes>) {
         paymentOptions.forEach { option ->
             val layout = layouts[option.value]
@@ -338,7 +333,7 @@ class GoOnDateFragment :
     }
 
 
-    private fun dateType(){
+    private fun dateType() {
 
         val spinner: Spinner = binding.dateTypeSpinner
         val customInput = binding.customInput
@@ -349,23 +344,33 @@ class GoOnDateFragment :
             DateOption(R.drawable.city_walk, "City walk", "Relaxed walking"),
             DateOption(R.drawable.movies, "Movies", "Fun watching"),
             DateOption(R.drawable.museum, "Museum", "Cultural visit"),
-            DateOption(R.drawable.something_else, "Something else", "Custom option", isCustomOption = true)
+            DateOption(
+                R.drawable.something_else,
+                "Something else",
+                "Custom option",
+                isCustomOption = true
+            )
         )
 
         val adapter = DateTypeAdapter(requireContext(), options)
         spinner.adapter = adapter
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                 val selectedOption = options[position]
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selectedOption = options[position]
                 if (selectedOption.isCustomOption) {
                     customInput.visibility = View.VISIBLE
-                    dateType = binding.customLayout.customInput.text.toString()
                 } else {
                     dateType = selectedOption.title
                     customInput.visibility = View.GONE
                     binding.customLayout.customInput.text.clear()
                 }
+
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -374,6 +379,7 @@ class GoOnDateFragment :
         }
 
     }
+
     override fun onDestroy() {
         super.onDestroy()
         mixpanel?.mixpanel?.flush()

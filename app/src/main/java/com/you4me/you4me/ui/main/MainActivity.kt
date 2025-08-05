@@ -231,6 +231,7 @@ class MainActivity : AppCompatActivity() {
                         if (navController.currentDestination?.id != R.id.homeFragment) {
                             navController.popBackStack(R.id.homeFragment, false) // Clear back stack
                         }
+                        binding.bottomNavBar.visibility = View.VISIBLE
                     }
                     R.id.notificationsFragment, R.id.notificationViewFragment,
                     R.id.datesFragment, R.id.editProfileFragment, R.id.allDateProposalsFragment,

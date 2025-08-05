@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -31,6 +32,7 @@ class SentRequestsRecyclerAdapter(
     private val mixpanelAPI: MixpanelAPI?,
     private val fragmentManager: FragmentManager,
     private val lifecycleOwner: LifecycleOwner,
+    private val navController: NavController
 ) : RecyclerView.Adapter<SentRequestsRecyclerAdapter.MyViewHolder>() {
     // Store fetched images locally to persist between screen changes
     private val imageCache = mutableMapOf<String, String>()
@@ -75,21 +77,24 @@ class SentRequestsRecyclerAdapter(
             }
 
             proposeNewDate.setOnClickListener {
-                val dialog =
-                    SuggestNewDateDialog(date.originalDate, date.originalTime) { newDate, newTime ->
-                        showLoading(true, this)
+//                val dialog =
+//                    SuggestNewDateDialog(date.originalDate, date.originalTime) { newDate, newTime ->
+//                        showLoading(true, this)
+//
+//                        viewModel.proposeNewDateTime(date.dateID, date.interestID, newDate, newTime)
+//
+//                        // Remove item from list and refresh UI
+////                        dates.removeAt(position)
+//                        notifyDataSetChanged()
+////                        mixpanelAPI.track("Android_Sent_Request_Proposed_New_Date_Time")
+//                        showEmpty(this) // Ensure empty UI updates
+//                        Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+//                        fragmentManager.popBackStack()
+//                    }
+//                dialog.show(fragmentManager, "SuggestNewDateDialog")
+//
 
-                        viewModel.proposeNewDateTime(date.dateID, date.interestID, newDate, newTime)
-
-                        // Remove item from list and refresh UI
-//                        dates.removeAt(position)
-                        notifyDataSetChanged()
-//                        mixpanelAPI.track("Android_Sent_Request_Proposed_New_Date_Time")
-                        showEmpty(this) // Ensure empty UI updates
-                        Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
-                        fragmentManager.popBackStack()
-                    }
-                dialog.show(fragmentManager, "SuggestNewDateDialog")
+                navController.navigate(R.id.proposeNewDateAndTimeFragment)
             }
 //
             acceptBtnLyt.setOnClickListener {

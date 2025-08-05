@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.you4me.you4me.adapter.SentRequestsRecyclerAdapter
@@ -114,6 +115,7 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
                         it,
                         requireActivity().supportFragmentManager,
                         viewLifecycleOwner,
+                        findNavController()
                     )
                 }
             binding.sentDatesRecyclerview.adapter = adapter
