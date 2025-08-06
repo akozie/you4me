@@ -1,10 +1,9 @@
-package com.you4me.you4me.adapter
+package com.you4me.you4me.adapter.interests
 
 import android.app.AlertDialog
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
@@ -14,36 +13,35 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.gson.JsonObject
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.you4me.you4me.R
+import com.you4me.you4me.databinding.ReceivedInterestsItemBinding
 import com.you4me.you4me.databinding.SentRequestsItemBinding
-import com.you4me.you4me.models.InviteeDatesRequiringApproval
+import com.you4me.you4me.models.FetchDateInterest
 import com.you4me.you4me.models.interests.Interest
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.ui.main.MainViewModel
-import com.you4me.you4me.ui.main.SuggestNewDateDialog
 
-class SentRequestsRecyclerAdapter(
-    private val dates: List<Interest>, // Use MutableList for better handling
+class ReceivedInterestsRecyclerAdapter(
+    private val dates: FetchDateInterest, // Use MutableList for better handling
     private val viewModel: MainViewModel,
     private val context: Context,
     private val mixpanelAPI: MixpanelAPI?,
     private val fragmentManager: FragmentManager,
     private val lifecycleOwner: LifecycleOwner,
     private val navController: NavController
-) : RecyclerView.Adapter<SentRequestsRecyclerAdapter.MyViewHolder>() {
+) : RecyclerView.Adapter<ReceivedInterestsRecyclerAdapter.MyViewHolder>() {
     // Store fetched images locally to persist between screen changes
     private val imageCache = mutableMapOf<String, String>()
 
-    class MyViewHolder(val binding: SentRequestsItemBinding) : RecyclerView.ViewHolder(binding.root)
+    class MyViewHolder(val binding: ReceivedInterestsItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
     ): MyViewHolder {
-        val v = SentRequestsItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val v = ReceivedInterestsItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(v)
     }
 
@@ -62,9 +60,9 @@ class SentRequestsRecyclerAdapter(
 
         val date = dates[position]
         holder.binding.apply {
-            name.text = date.name
-            location.text = date.venue
-            dateTime.text = "${date.originalDate} : ${date.originalTime}"
+            name.text = "${date.name} is interested in you"
+//            location.text = date.venue
+//            dateTime.text = "${date.originalDate} : ${date.originalTime}"
 
             // Clear previous image before loading
             Glide.with(context).clear(userImage)
@@ -76,46 +74,36 @@ class SentRequestsRecyclerAdapter(
                 getImagesResponse(date.userID, this)
             }
 
-            proposeNewDate.setOnClickListener {
-//                val dialog =
-//                    SuggestNewDateDialog(date.originalDate, date.originalTime) { newDate, newTime ->
-//                        showLoading(true, this)
-//
-//                        viewModel.proposeNewDateTime(date.dateID, date.interestID, newDate, newTime)
-//
-//                        // Remove item from list and refresh UI
-////                        dates.removeAt(position)
-//                        notifyDataSetChanged()
-////                        mixpanelAPI.track("Android_Sent_Request_Proposed_New_Date_Time")
-//                        showEmpty(this) // Ensure empty UI updates
-//                        Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
-//                        fragmentManager.popBackStack()
-//                    }
-//                dialog.show(fragmentManager, "SuggestNewDateDialog")
-//
-
-                navController.navigate(R.id.proposeNewDateAndTimeFragment)
+            askUserToGetVerifiedTv.setOnClickListener {
+                navController.navigate(R.id.sendVerificationRequestFragment)
             }
-//
             acceptBtnLyt.setOnClickListener {
 //                mixpanelAPI.track("Android_Sent_Request_Accept_Date_Button_Clicked")
-                showLoading(true, this)
+//                showLoading(true, this)
+//
+//                viewModel.updateDateInterest(date.interestID, date.dateID, "APPROVED")
+//
+//                // Remove item and refresh UI
+////                dates.removeAt(position)
+//                notifyDataSetChanged()
+//
+//                showEmpty(this) // Ensure empty UI updates
+//                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+//                fragmentManager.popBackStack()
 
-                viewModel.updateDateInterest(date.interestID, date.dateID, "APPROVED")
 
-                // Remove item and refresh UI
-//                dates.removeAt(position)
-                notifyDataSetChanged()
-
-                showEmpty(this) // Ensure empty UI updates
-                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
-                fragmentManager.popBackStack()
+                navController.navigate(R.id.dateConfirmedBottomSheetFragment)
             }
 
 //            reportDate.setOnClickListener {
 //                showReportAbuseDialog(date.dateId, date.userId, date.interestId, position)
 //            }
+
+            rejectBtnLyt.setOnClickListener {
+                navController.navigate(R.id.decliningInterestFragment)
+            }
         }
+
     }
 
     private fun showReportAbuseDialog(
@@ -164,7 +152,7 @@ class SentRequestsRecyclerAdapter(
 
     private fun getImagesResponse(
         userId: String,
-        holder: SentRequestsItemBinding,
+        holder: ReceivedInterestsItemBinding,
     ) {
         viewModel.getImagesAndVideos(userId)
         viewModel.getImagesAndVideos.observe(lifecycleOwner) { resource ->
@@ -190,7 +178,7 @@ class SentRequestsRecyclerAdapter(
 
     private fun loadImage(
         url: String,
-        holder: SentRequestsItemBinding,
+        holder: ReceivedInterestsItemBinding,
     ) {
 //        Glide.with(context)
 //            .load(url)
@@ -200,12 +188,12 @@ class SentRequestsRecyclerAdapter(
 
     private fun showLoading(
         loading: Boolean,
-        holder: SentRequestsItemBinding,
+        holder: ReceivedInterestsItemBinding,
     ) {
 //        holder.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
 
-    private fun showEmpty(holder: SentRequestsItemBinding) {
+    private fun showEmpty(holder: ReceivedInterestsItemBinding) {
         if (dates.isEmpty()) {
 //            holder.constraintLayout2.visibility = View.VISIBLE
 //            holder.mainLyt.visibility = View.GONE

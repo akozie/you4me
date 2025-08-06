@@ -3,6 +3,7 @@ package com.you4me.you4me.ui.profileDetails
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
@@ -85,6 +86,8 @@ class ImageAndVideoDetailsActivity : AppCompatActivity() {
             alertDialog.show()
         }
 
+        Log.d("IMAGES_URL", "$fileUrl")
+
         if (category == "image") {
             val imageView = ImageView(this)
             imageView.layoutParams =
@@ -93,6 +96,7 @@ class ImageAndVideoDetailsActivity : AppCompatActivity() {
                     FrameLayout.LayoutParams.MATCH_PARENT
                 )
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+
 
             Glide.with(this)
                 .load(fileUrl)

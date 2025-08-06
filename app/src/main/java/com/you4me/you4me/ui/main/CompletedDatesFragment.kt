@@ -78,8 +78,8 @@ class CompletedDatesFragment : BaseFragment<MainViewModel, FragmentCompletedDate
     }
 
 
-    private fun setupCompletedDates(dates: CompletedDateResponse) {
-        if (dates.dates.isNullOrEmpty()) {
+    private fun setupCompletedDates(dates: List<CompletedDateResponseItem>) {
+        if (dates.isNullOrEmpty()) {
             binding.completedDatesRecycler.visibility = View.GONE
             binding.noDatesLyt.visibility = View.VISIBLE
             binding.viewAllBtn.visibility = View.GONE
@@ -121,23 +121,21 @@ class CompletedDatesFragment : BaseFragment<MainViewModel, FragmentCompletedDate
         viewModel.completedDates.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    setupCompletedDates(it.value)
-//                    val list =  CompletedDateResponse().apply {
-//                        add(
-//                            CompletedDateResponseItem(
-//                                "CHAT",
-//                                "2025/05/28",
-//                                "12wqasde",
-//                                "true",
-//                                "Emmanuel",
-//                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
-//                                "5",
-//                                "Lagos",
-//                                "Lekki"
-//                            )
-//                        )
-//                    }
-//                    setupCompletedDates(list)
+//                    setupCompletedDates(it.value)
+                    val list =  listOf(
+                            CompletedDateResponseItem(
+                                "CHAT",
+                                "March 10,2025 at 10:00am",
+                                "12wqasde",
+                                "true",
+                                "Emmanuel",
+                                "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
+                                "5",
+                                "Lagos",
+                                "Lekki"
+                            ),
+                        )
+                    setupCompletedDates(list)
                 }
 
                 is Resource.Failure -> {

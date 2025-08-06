@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-    android:background="@color/white"
-android:layout_height="match_parent"
-tools:context=".ui.main.likes.bottomsheet.SendVerificationRequestFragment">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_bottom_sheet_white"
+    tools:context=".ui.main.likes.bottomsheet.SendVerificationRequestFragment">
 
 
-<androidx.constraintlayout.widget.Guideline
-    android:id="@+id/guidelineVertical1"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    app:layout_constraintGuide_percent="0.1" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineVertical1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
 
 
-<ImageView
-    android:id="@+id/imageView4"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:src="@drawable/top_arc_img"
-    android:layout_marginTop="@dimen/margin_10dp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_10dp"
+        android:src="@drawable/top_arc_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/img"
@@ -57,8 +56,8 @@ tools:context=".ui.main.likes.bottomsheet.SendVerificationRequestFragment">
         android:id="@+id/textView55"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_20dp"
         android:layout_marginStart="@dimen/margin_40dp"
+        android:layout_marginTop="@dimen/margin_20dp"
         android:layout_marginEnd="@dimen/margin_40dp"
         android:gravity="center"
         android:text="You can spot verified people with their verification shield.  It means they’ve submitted a photo. Let’s verify Alex too."
@@ -71,8 +70,7 @@ tools:context=".ui.main.likes.bottomsheet.SendVerificationRequestFragment">
         android:id="@+id/save_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_10dp"
-        android:layout_marginBottom="@dimen/margin_20dp"
+        android:layout_margin="@dimen/margin_20dp"
         android:background="@drawable/rectangle_skip_for_now"
         android:backgroundTint="@color/primary_pink"
         android:gravity="center"

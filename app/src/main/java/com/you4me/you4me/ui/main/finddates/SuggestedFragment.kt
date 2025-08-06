@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentAllCompletedDatesBinding
@@ -87,6 +88,7 @@ class SuggestedFragment :
 
     private fun sendCompliment(compliment: String) {
         // Send to API or show message
+        findNavController().popBackStack()
         Toast.makeText(context, "Compliment sent: $compliment", Toast.LENGTH_SHORT).show()
     }
     }

@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentProposeNewDateAndTimeBinding
@@ -27,6 +28,22 @@ class ProposeNewDateAndTimeFragment : BottomSheetDialogFragment()
     private lateinit var btnCancel: Button
     private lateinit var btnSendProposal: Button
     private lateinit var tvOriginalDate: TextView
+
+    override fun onStart() {
+        super.onStart()
+
+        val dialog = dialog ?: return
+        val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        bottomSheet?.let {
+            val behavior = BottomSheetBehavior.from(it)
+            val layoutParams = it.layoutParams
+            layoutParams.height = (resources.displayMetrics.heightPixels * 0.85).toInt()
+            it.layoutParams = layoutParams
+
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            behavior.skipCollapsed = true
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,6 +89,8 @@ class ProposeNewDateAndTimeFragment : BottomSheetDialogFragment()
             Toast.makeText(requireContext(), "Proposal Sent\n$newDate $newTime", Toast.LENGTH_SHORT).show()
             dismiss()
         }
+
+
     }
 
     private fun showDatePicker() {

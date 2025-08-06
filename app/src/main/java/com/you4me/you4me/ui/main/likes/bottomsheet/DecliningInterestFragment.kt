@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentDecliningInterestBinding
@@ -22,6 +23,22 @@ class DecliningInterestFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentDecliningInterestBinding
     private var selectedReason: TextView? = null
     private val maxChar = 145
+
+    override fun onStart() {
+        super.onStart()
+
+        val dialog = dialog ?: return
+        val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        bottomSheet?.let {
+            val behavior = BottomSheetBehavior.from(it)
+            val layoutParams = it.layoutParams
+            layoutParams.height = (resources.displayMetrics.heightPixels * 0.85).toInt()
+            it.layoutParams = layoutParams
+
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            behavior.skipCollapsed = true
+        }
+    }
 
 
     override fun onCreateView(
@@ -41,12 +58,18 @@ class DecliningInterestFragment : BottomSheetDialogFragment() {
         setupSelectableReasons()
         setupCharacterCounter()
         setupSubmitButton()
+
+        binding.closeBtn.setOnClickListener {
+            dismiss()
+        }
     }
 
     private fun setupSelectableReasons() {
         val reasonFields = listOf(
             binding.etReason1,
             binding.etReason2,
+            binding.etReason3,
+            binding.etReason4,
             binding.etOtherReason
         )
 
@@ -58,6 +81,13 @@ class DecliningInterestFragment : BottomSheetDialogFragment() {
                 // Select current
                 selectedReason = reason
                 selectReasonStyle(reason)
+                if (selectedReason == binding.etOtherReason){
+                    binding.etAdditionalInfo.visibility = View.VISIBLE
+                    binding.tvCharCount.visibility = View.VISIBLE
+                } else {
+                    binding.etAdditionalInfo.visibility = View.GONE
+                    binding.tvCharCount.visibility = View.GONE
+                }
             }
         }
     }
@@ -94,8 +124,8 @@ class DecliningInterestFragment : BottomSheetDialogFragment() {
                 return@setOnClickListener
             }
 
-            // TODO: Implement real report logic (e.g. network call)
-            Toast.makeText(requireContext(), "User reported for: $reason", Toast.LENGTH_LONG).show()
+            dismiss()
+//            Toast.makeText(requireContext(), "User reported for: $reason", Toast.LENGTH_LONG).show()
         }
     }
 }

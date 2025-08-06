@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_bottom_sheet_white"
     tools:context=".ui.profile.bottomsheet.AgePreferenceBottomSheetFragment">
 
 
@@ -46,13 +47,13 @@
         android:gravity="end"
         android:textSize="@dimen/text_size_20sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView29"
-        app:layout_constraintEnd_toEndOf="@+id/cancel_icon"
+        app:layout_constraintEnd_toEndOf="@+id/close_btn"
         app:layout_constraintStart_toEndOf="@+id/textView29"
         app:layout_constraintTop_toTopOf="@+id/textView29"
         android:text="18 - 24 years" />
 
     <ImageView
-        android:id="@+id/cancel_icon"
+        android:id="@+id/close_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/cancel_icon"

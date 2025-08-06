@@ -1,17 +1,14 @@
 package com.you4me.you4me.ui.main.likes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
-import com.you4me.you4me.adapter.SentRequestsRecyclerAdapter
+import com.you4me.you4me.adapter.interests.SentRequestsRecyclerAdapter
 import com.you4me.you4me.databinding.FragmentSentRequestsBinding
 import com.you4me.you4me.model.User
-import com.you4me.you4me.models.*
 import com.you4me.you4me.models.interests.Interest
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
@@ -20,7 +17,8 @@ import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.main.MainViewModel
 import com.you4me.you4me.utils.SharedPrefHelper
 
-class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBinding, MainRepository>("DATE_INTEREST_SENT") {
+class SentRequestsFragment :
+    BaseFragment<MainViewModel, FragmentSentRequestsBinding, MainRepository>("DATE_INTEREST_SENT") {
     override fun getViewModel() = MainViewModel::class.java
 
     override fun getFragmentBinding(
@@ -43,7 +41,7 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
     }
 
     private fun setupObservers() {
-//        showLoading(true)
+        showLoading(true)
         val userProfile = sharedPrefHelper.getString(SharedPrefHelper.USER_PROFILE)
         val gson = Gson()
         val user = gson.fromJson(userProfile, User::class.java)
@@ -67,12 +65,46 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
             when (it) {
                 is Resource.Success -> {
                     val list = listOf(
-                        Interest("12", "", "", "", "", "Ade", "", "", "", "", true,
+                        Interest(
+                            "12",
+                            "",
+                            "08/08/25",
+                            "1234ass",
+                            "",
+                            "Lovie",
+                            "08/08/25",
+                            "09:00",
+                            "08/08/25",
+                            "09:00",
+                            true,
                             requestedVerificationBySender = true,
-                            state = "", "", "", "", "", ""),
-                       Interest("12", "", "", "", "", "Ade", "", "", "", "", true,
+                            state = "",
+                            "true",
+                            "Moses",
+                            "",
+                            "Lekki",
+                            ""
+                        ),
+                        Interest(
+                            "12",
+                            "",
+                            "08/08/25",
+                            "hyyAAS",
+                            "AS12",
+                            "Ade",
+                            "08/08/25",
+                            "08:00",
+                            "08/08/25",
+                            "07:00",
+                            true,
                             requestedVerificationBySender = true,
-                            state = "", "", "", "", "", "")
+                            state = "",
+                            "true",
+                            "Moses",
+                            "",
+                            "Lekki",
+                            ""
+                        )
 
                     )
                     setupInviteeDates(list)
@@ -130,7 +162,7 @@ class SentRequestsFragment : BaseFragment<MainViewModel, FragmentSentRequestsBin
     private fun showLoading(loading: Boolean) {
 //        binding.cardView.visibility = if (loading) View.GONE else View.VISIBLE
 //        binding.view.visibility = if (loading) View.GONE else View.VISIBLE
-//        binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
+        binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
 
     override fun onDestroy() {

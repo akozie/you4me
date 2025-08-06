@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -37,8 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_10dp"
-                android:visibility="visible"
-                >
+                android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/calender"
@@ -48,23 +48,25 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/no_dates_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textStyle="bold"
                     android:layout_marginTop="@dimen/margin_10dp"
+                    android:gravity="center"
                     android:text="@string/no_upcoming_dates"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/calender" />
+
                 <TextView
                     android:id="@+id/no_dates_sub_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:layout_margin="@dimen/margin_10dp"
+                    android:gravity="center"
                     android:text="@string/no_upcoming_sub_dates"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -110,8 +112,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_10dp"
             android:background="@drawable/rectangle_skip_for_now"
-            android:gravity="center"
             android:backgroundTint="@color/primary_pink"
+            android:gravity="center"
             android:orientation="horizontal"
             android:padding="@dimen/padding_17dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -120,9 +122,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:text="View all Upcoming Dates"
                 android:textColor="@color/white"
-                android:layout_marginEnd="8dp"
                 android:textSize="17sp" />
 
             <ImageView

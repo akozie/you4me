@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.setFragmentResult
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.slider.Slider
 import com.you4me.you4me.R
@@ -24,6 +25,7 @@ class AgePreferenceBottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var radioGroupCustom: Slider
     private var  receivedList: List<AgeGroup>? = null
     private var selectedValue: String? = null
+
 
 
     override fun onCreateView(
@@ -51,7 +53,7 @@ class AgePreferenceBottomSheetFragment : BottomSheetDialogFragment() {
             setFragmentResult("bottom_sheet_result", result)
             dismiss()
         }
-        binding.cancelIcon.setOnClickListener {
+        binding.closeBtn.setOnClickListener {
             dismiss()
         }
 

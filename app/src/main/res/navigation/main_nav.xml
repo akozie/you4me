@@ -362,4 +362,24 @@
         android:name="com.you4me.you4me.ui.main.likes.bottomsheet.ProposeNewDateAndTimeFragment"
         android:label="fragment_propose_new_date_and_time"
         tools:layout="@layout/fragment_propose_new_date_and_time" />
+    <dialog
+        android:id="@+id/decliningInterestFragment"
+        android:name="com.you4me.you4me.ui.main.likes.bottomsheet.DecliningInterestFragment"
+        android:label="fragment_declining_interest"
+        tools:layout="@layout/fragment_declining_interest" />
+    <dialog
+        android:id="@+id/dateConfirmedBottomSheetFragment"
+        android:name="com.you4me.you4me.ui.main.likes.bottomsheet.DateConfirmedBottomSheetFragment"
+        android:label="fragment_date_confirmed_bottom_sheet"
+        tools:layout="@layout/fragment_date_confirmed_bottom_sheet" />
+    <dialog
+        android:id="@+id/dateExpirationBottomSheetFragment"
+        android:name="com.you4me.you4me.ui.main.mydates.bottomsheet.DateExpirationBottomSheetFragment"
+        android:label="fragment_date_expiration_bottom_sheet"
+        tools:layout="@layout/fragment_date_expiration_bottom_sheet" />
+    <dialog
+        android:id="@+id/sendVerificationRequestFragment"
+        android:name="com.you4me.you4me.ui.main.likes.bottomsheet.SendVerificationRequestFragment"
+        android:label="fragment_send_verification_request"
+        tools:layout="@layout/fragment_send_verification_request" />
 </navigation>

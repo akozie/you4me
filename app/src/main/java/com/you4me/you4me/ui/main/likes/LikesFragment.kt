@@ -1,6 +1,5 @@
 package com.you4me.you4me.ui.main.likes
 
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.os.Bundle
@@ -8,23 +7,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.AnimationUtils
-import android.view.animation.DecelerateInterpolator
-import android.widget.FrameLayout
-import android.widget.ImageView
-import androidx.lifecycle.lifecycleScope
-import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
 import com.android.billingclient.api.*
-import com.bumptech.glide.Glide
 import com.google.common.collect.ImmutableList
 import com.google.gson.JsonObject
-import com.you4me.you4me.R
+import com.you4me.you4me.adapter.interests.ReceivedInterestsRecyclerAdapter
 import com.you4me.you4me.databinding.FragmentLikesBinding
 import com.you4me.you4me.model.User
-import com.you4me.you4me.models.*
+import com.you4me.you4me.models.FetchDateInterest
+import com.you4me.you4me.models.FetchDateInterestItem
+import com.you4me.you4me.models.ImagesVideosResponseItem
 import com.you4me.you4me.network.ApiCollector
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
@@ -32,15 +25,12 @@ import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.main.MainViewModel
 import com.you4me.you4me.utils.BillingManager
 import com.you4me.you4me.utils.SharedPrefHelper.Companion.IS_SUBSCRIBED
-import com.you4me.you4me.utils.Utils.getCategoryFromString
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepository>("DATE_INTEREST_RECEIVED") {
+class LikesFragment :
+    BaseFragment<MainViewModel, FragmentLikesBinding, MainRepository>("DATE_INTEREST_RECEIVED") {
     private var dateInterests = FetchDateInterest()
 
-//    private var dateInterests = ArrayList<FetchDateInterestItem>()
+    //    private var dateInterests = ArrayList<FetchDateInterestItem>()
     private var currentIdx = -1
 
     private var player: ExoPlayer? = null
@@ -108,7 +98,8 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                     if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                         println(productDetailsList.joinToString(","))
 //                    if (productDetails.toString().isNotEmpty()){
-                        productDetails = productDetailsList.first { it.productId == "you4me_premium" }
+                        productDetails =
+                            productDetailsList.first { it.productId == "you4me_premium" }
                         if (!isUserSubscribed) {
 //                            Log.d("FIRST_PID", productDetailsList.first().toString())
                             showBilling()
@@ -268,6 +259,27 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 //        }
 //    }
 
+    private fun setupInviteeDates(dates: FetchDateInterest) {
+        if (dates.isEmpty()) {
+//            showEmpty()
+        } else {
+//            binding.emptyLyt.visibility = View.GONE
+            val adapter =
+                mixpanel?.mixpanel?.let {
+                    ReceivedInterestsRecyclerAdapter(
+                        dates,
+                        viewModel,
+                        ctx,
+                        it,
+                        requireActivity().supportFragmentManager,
+                        viewLifecycleOwner,
+                        findNavController()
+                    )
+                }
+            binding.receivedDatesRecyclerview.adapter = adapter
+        }
+    }
+
     private fun generateVideoThumbnail(videoUrl: String): Bitmap? {
         return try {
             val retriever = MediaMetadataRetriever()
@@ -402,6 +414,7 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             user = it
             viewModel.getSubscriptionStatus(user.userId)
             viewModel.loadInterestsForList(user.userId)
+            viewModel.receivedDateInterests(user.userId, 1)
         }
         viewModel.getSubscriptionStatus.observe(viewLifecycleOwner) {
             when (it) {
@@ -419,7 +432,8 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                         ) {
 //                            findNavController().popBackStack()
                             if (isAdded) {
-                                (parentFragment as? DatesInterestFragment)?.findNavController()?.popBackStack()
+                                (parentFragment as? DatesInterestFragment)?.findNavController()
+                                    ?.popBackStack()
                             }
                         }
 //                        showEmpty()
@@ -446,35 +460,56 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
             }
         }
 
-        viewModel.fetchDateInterests.observe(viewLifecycleOwner) {
-//            showLoading(false)
+        viewModel.receivedInterestDateInterests.observe(viewLifecycleOwner) {
+            showLoading(false)
             when (it) {
                 is Resource.Success -> {
-                    if (it.value.isEmpty()) {
+                    if (!it.value.interests.isEmpty()) {
 //                        showEmpty()
                     } else {
-                        dateInterests = it.value
-//                        dateInterests =
-//                            arrayListOf(
-//                                FetchDateInterestItem(
-//                                    userID = "a108fc4e-81e5-415b-b1a1-3874711c0be4",
-//                                    submittedBy = "1e2b6e50-3be1-48ea-bf22-adfb2a4fa5b3",
-//                                    proposedDate = "February 20, 2025",
-//                                    proposedTime = "",
-//                                    status = "PENDING",
-//                                    createdAt = "2025-01-28 20:42:55",
-//                                    age = "24",
-//                                    name = "Eniola Moses",
-//                                    dateID = "b44389e5-2931-43f0-929a-2d5335e92e6f",
-//                                    videoURL = "",
-//                                    interestID = "eca40530-4a22-46bc-b66b-6687ee33aa3a",
-//                                    venue = "Lekki Conservation Center Lekki Conservation Center, Eti-Osa, Lagos Lekki Conservation Center, Eti-Osa, Lagos",
-//                                    originalDate = "2025/02/20",
-//                                    originalTime = "08:44",
-//                                    state = "Lagos",
-//                                ),
-//                            )
+//                        dateInterests = it.value
+                        dateInterests = FetchDateInterest().apply {
+                            add(
+                                FetchDateInterestItem(
+                                    userID = "a108fc4e-81e5-415b-b1a1-3874711c0be4",
+                                    submittedBy = "1e2b6e50-3be1-48ea-bf22-adfb2a4fa5b3",
+                                    proposedDate = "February 20, 2025",
+                                    proposedTime = "2025/02/20",
+                                    status = "PENDING",
+                                    createdAt = "2025-01-28 20:42:55",
+                                    age = "24",
+                                    name = "Alex",
+                                    dateID = "b44389e5-2931-43f0-929a-2d5335e92e6f",
+                                    videoURL = "",
+                                    interestID = "eca40530-4a22-46bc-b66b-6687ee33aa3a",
+                                    venue = "Lekki Conservation Center Lekki Conservation Center, Eti-Osa, Lagos Lekki Conservation Center, Eti-Osa, Lagos",
+                                    originalDate = "2025/02/20",
+                                    originalTime = "08:44",
+                                    state = "Lagos",
+                                )
+                            )
+                            add(
+                                FetchDateInterestItem(
+                                    userID = "a108fc4e-81e5-415b-b1a1-3874711c0be4",
+                                    submittedBy = "1e2b6e50-3be1-48ea-bf22-adfb2a4fa5b3",
+                                    proposedDate = "February 20, 2025",
+                                    proposedTime = "2025/02/20",
+                                    status = "PENDING",
+                                    createdAt = "2025-01-28 20:42:55",
+                                    age = "24",
+                                    name = "Moses",
+                                    dateID = "b44389e5-2931-43f0-929a-2d5335e92e6f",
+                                    videoURL = "",
+                                    interestID = "eca40530-4a22-46bc-b66b-6687ee33aa3a",
+                                    venue = "Lekki Conservation Center Lekki Conservation Center, Eti-Osa, Lagos Lekki Conservation Center, Eti-Osa, Lagos",
+                                    originalDate = "2025/02/20",
+                                    originalTime = "08:44",
+                                    state = "Lagos",
+                                )
+                            )
+                        }
 //                        setScreen()
+                        setupInviteeDates(dateInterests)
                     }
                 }
 
@@ -485,6 +520,63 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
                 }
             }
         }
+//
+//        viewModel.fetchDateInterests.observe(viewLifecycleOwner) {
+////            showLoading(false)
+//            when (it) {
+//                is Resource.Success -> {
+//                    if (!it.value.isEmpty()) {
+////                        showEmpty()
+//                    } else {
+////                        dateInterests = it.value
+//                        dateInterests = FetchDateInterest().apply {
+//                            add(   FetchDateInterestItem(
+//                                userID = "a108fc4e-81e5-415b-b1a1-3874711c0be4",
+//                                submittedBy = "1e2b6e50-3be1-48ea-bf22-adfb2a4fa5b3",
+//                                proposedDate = "February 20, 2025",
+//                                proposedTime = "",
+//                                status = "PENDING",
+//                                createdAt = "2025-01-28 20:42:55",
+//                                age = "24",
+//                                name = "Eniola Moses",
+//                                dateID = "b44389e5-2931-43f0-929a-2d5335e92e6f",
+//                                videoURL = "",
+//                                interestID = "eca40530-4a22-46bc-b66b-6687ee33aa3a",
+//                                venue = "Lekki Conservation Center Lekki Conservation Center, Eti-Osa, Lagos Lekki Conservation Center, Eti-Osa, Lagos",
+//                                originalDate = "2025/02/20",
+//                                originalTime = "08:44",
+//                                state = "Lagos",
+//                            ))
+//                            add(   FetchDateInterestItem(
+//                                userID = "a108fc4e-81e5-415b-b1a1-3874711c0be4",
+//                                submittedBy = "1e2b6e50-3be1-48ea-bf22-adfb2a4fa5b3",
+//                                proposedDate = "February 20, 2025",
+//                                proposedTime = "",
+//                                status = "PENDING",
+//                                createdAt = "2025-01-28 20:42:55",
+//                                age = "24",
+//                                name = "Eniola Moses",
+//                                dateID = "b44389e5-2931-43f0-929a-2d5335e92e6f",
+//                                videoURL = "",
+//                                interestID = "eca40530-4a22-46bc-b66b-6687ee33aa3a",
+//                                venue = "Lekki Conservation Center Lekki Conservation Center, Eti-Osa, Lagos Lekki Conservation Center, Eti-Osa, Lagos",
+//                                originalDate = "2025/02/20",
+//                                originalTime = "08:44",
+//                                state = "Lagos",
+//                            ))
+//                        }
+////                        setScreen()
+//                        setupInviteeDates(dateInterests)
+//                    }
+//                }
+//
+//                is Resource.Failure -> {
+////                    binding.constraintLayout2.visibility = View.VISIBLE
+////                    binding.mainLyt.visibility = View.GONE
+////                    binding.mainLytBtn.visibility = View.GONE
+//                }
+//            }
+//        }
 
 //        viewModel.rejectDateInterest.observe(viewLifecycleOwner) {
 //            showLoading(false)
@@ -622,11 +714,9 @@ class LikesFragment : BaseFragment<MainViewModel, FragmentLikesBinding, MainRepo
 //        binding.loader.visibility = View.GONE
 //    }
 //
-//    private fun showLoading(loading: Boolean) {
-//        binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
-//        binding.mainLytBtn.visibility = if (loading) View.GONE else View.VISIBLE
-//        binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
-//    }
+    private fun showLoading(loading: Boolean) {
+        binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
+    }
 
     private fun setupBilling() {
         billingClient =

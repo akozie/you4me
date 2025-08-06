@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_bottom_sheet_white"
     tools:context=".ui.profile.bottomsheet.UserNameBottomSheetFragment">
 
 
@@ -53,7 +54,7 @@
         android:id="@+id/textView55"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Write a short Bio"
+        android:text="Write your username"
         android:layout_margin="@dimen/margin_20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +74,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:hint="Mide"
             android:lines="5">
 
         </com.google.android.material.textfield.TextInputEditText>
@@ -91,15 +91,15 @@
         android:id="@+id/save_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_20dp"
+        android:layout_margin="@dimen/margin_20dp"
         android:background="@drawable/rectangle_skip_for_now"
         android:backgroundTint="@color/primary_pink"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="@dimen/padding_17dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/bio_text"
-        app:layout_constraintStart_toStartOf="@+id/bio_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView36">
 
         <TextView

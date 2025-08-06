@@ -18,6 +18,7 @@ import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.CompletedDatesItemBinding
 import com.you4me.you4me.models.CompletedDateResponse
+import com.you4me.you4me.models.CompletedDateResponseItem
 import com.you4me.you4me.network.Resource
 import com.you4me.you4me.ui.main.MainViewModel
 
@@ -25,7 +26,7 @@ class CompletedDatesRecyclerAdapter(
     private val viewModel: MainViewModel,
     private val lifecycleOwner: LifecycleOwner,
     private val context: Context,
-    private val dates: CompletedDateResponse,
+    private val dates: List<CompletedDateResponseItem>,
     private val mixpanelAPI: MixpanelAPI,
 ) : RecyclerView.Adapter<CompletedDatesRecyclerAdapter.MyViewHolder>() {
     class MyViewHolder(val binding: CompletedDatesItemBinding) : RecyclerView.ViewHolder(binding.root)
@@ -38,13 +39,13 @@ class CompletedDatesRecyclerAdapter(
         return MyViewHolder(binding)
     }
 
-    override fun getItemCount() = dates.dates.size
+    override fun getItemCount() = dates.size
 
     override fun onBindViewHolder(
         holder: MyViewHolder,
         position: Int,
     ) {
-        val date = dates.dates[position]
+        val date = dates[position]
         holder.binding.userName.text = "${date.name}"
         holder.binding.completed.text = "${date.date}"
         holder.binding.location.text = "${date.venue}"

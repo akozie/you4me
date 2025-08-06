@@ -22,6 +22,23 @@ class ComplimentsBottomSheetFragment : BottomSheetDialogFragment() {
     private val tabTitles = listOf("Suggested", "Custom")
 
     private lateinit var binding: FragmentComplimentsBottomSheetBinding
+
+    override fun onStart() {
+        super.onStart()
+
+        val dialog = dialog ?: return
+        val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        bottomSheet?.let {
+            val behavior = BottomSheetBehavior.from(it)
+            val layoutParams = it.layoutParams
+            layoutParams.height = (resources.displayMetrics.heightPixels * 0.9).toInt()
+            it.layoutParams = layoutParams
+
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            behavior.skipCollapsed = true
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,33 +47,6 @@ class ComplimentsBottomSheetFragment : BottomSheetDialogFragment() {
         binding = FragmentComplimentsBottomSheetBinding.inflate(layoutInflater)
         return binding.root
     }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-
-        dialog.setOnShowListener { dialogInterface ->
-            val bottomSheetDialog = dialogInterface as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog
-                .findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-
-            bottomSheet?.let {
-                val behavior = BottomSheetBehavior.from(it)
-                behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                behavior.skipCollapsed = true
-
-                // Set height to 75% of the screen
-                val screenHeight = resources.displayMetrics.heightPixels
-                val screenWidth = resources.displayMetrics.widthPixels
-                val desiredHeight = (screenHeight * 0.75).toInt()
-                it.layoutParams.height = desiredHeight
-                it.layoutParams.width = screenWidth
-                it.requestLayout()
-            }
-        }
-
-        return dialog
-    }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

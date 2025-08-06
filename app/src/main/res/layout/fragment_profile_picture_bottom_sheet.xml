@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_bottom_sheet_white"
     tools:context=".ui.profile.bottomsheet.ProfilePictureBottomSheetFragment">
 
     <!-- TODO: Update blank fragment layout -->

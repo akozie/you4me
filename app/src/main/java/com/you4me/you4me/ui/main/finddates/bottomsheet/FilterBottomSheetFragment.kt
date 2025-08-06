@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentFilterBottomSheetBinding
@@ -14,6 +15,7 @@ import com.you4me.you4me.models.useroptions.AgeGroup
 class FilterBottomSheetFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentFilterBottomSheetBinding
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

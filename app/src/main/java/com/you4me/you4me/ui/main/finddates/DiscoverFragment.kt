@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -20,14 +19,12 @@ import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import androidx.core.text.HtmlCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.you4me.you4me.R
@@ -41,12 +38,9 @@ import com.you4me.you4me.network.Resource
 import com.you4me.you4me.repository.MainRepository
 import com.you4me.you4me.ui.base.BaseFragment
 import com.you4me.you4me.ui.main.MainViewModel
+import com.you4me.you4me.ui.profileDetails.FullScreenImageActivity
+import com.you4me.you4me.ui.profileDetails.ImageAndVideoDetailsActivity
 import com.you4me.you4me.utils.SharedPrefHelper
-import com.you4me.you4me.utils.Utils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class DiscoverFragment :
@@ -62,6 +56,8 @@ class DiscoverFragment :
     private lateinit var date: FetchDatesResponseItem
     private var paymentModes: ArrayList<PaymentModes>? = null
     private lateinit var user: User
+    private lateinit var imageAdapter: ImagePagerAdapter
+    private var currentPosition = 0
 
     override fun getViewModel() = MainViewModel::class.java
 
@@ -174,13 +170,67 @@ class DiscoverFragment :
         viewModel.getImagesAndVideos.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
-                    val listOfImagesAndVideos = it.value
+//                    val listOfImagesAndVideos = it.value
+                    val listOfImagesAndVideos =
+                        ImagesVideosResponse().apply {
+                            add(
+                                ImagesVideosResponseItem(
+                                    "",
+                                    "https://prickly-lavender-cb5zzddtvk.edgeone.app/Frame%201000001345.png",
+                                    "",
+                                    "",
+                                    "",
+                                    ""
+                                )
+                            )
+                            add(
+                                ImagesVideosResponseItem(
+                                    "",
+                                    "http://res.cloudinary.com/mmuodev/image/upload/v1750704078/c481a43d-56ee-4aa0-86c2-5ddaefdddbac.jpg",
+                                    "",
+                                    "",
+                                    "",
+                                    ""
+                                )
+                            )
+                            add(
+                                ImagesVideosResponseItem(
+                                    "",
+                                    "https://prickly-lavender-cb5zzddtvk.edgeone.app/Frame%201000001345.png",
+                                    "",
+                                    "",
+                                    "",
+                                    ""
+                                )
+                            )
+                            add(
+                                ImagesVideosResponseItem(
+                                    "",
+                                    "http://res.cloudinary.com/mmuodev/image/upload/v1750704078/c481a43d-56ee-4aa0-86c2-5ddaefdddbac.jpg",
+                                    "",
+                                    "",
+                                    "",
+                                    ""
+                                )
+                            )
+                            add(
+                                ImagesVideosResponseItem(
+                                    "",
+                                    "https://prickly-lavender-cb5zzddtvk.edgeone.app/Frame%201000001345.png",
+                                    "",
+                                    "",
+                                    "",
+                                    ""
+                                )
+                            )
+                        }
+
                     try {
                         // Your potentially crashing code (e.g., loading images, videos, etc.)
                         if (isAdded() && getActivity() != null) {
                             // Perform operations safely
 //                            loadImagesAndVideosInBackground(listOfImagesAndVideos)
-                            loadImages(listOfImagesAndVideos)
+                            setupImagePager(listOfImagesAndVideos)
                         }
                     } catch (e: Exception) {
                     }
@@ -192,18 +242,7 @@ class DiscoverFragment :
         }
     }
 
-    private fun loadImages(imageUrls: List<ImagesVideosResponseItem>) {
-//        val imageUrls = listOf(
-//            R.drawable.image1,
-//            R.drawable.image2,
-//            R.drawable.image3
-//        )
 
-        val adapter = ImagePagerAdapter(imageUrls)
-        binding.imageViewPager.adapter = adapter
-
-        TabLayoutMediator(binding.tabIndicator, binding.imageViewPager) { _, _ -> }.attach()
-    }
     private fun setDefaultImage(frame: FrameLayout) {
         val defaultImageView = createImageView()
         Glide.with(requireActivity())
@@ -329,7 +368,8 @@ class DiscoverFragment :
 
     private fun showReportAbuseDialog() {
         // Inflate the custom layout
-        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_report_abuse, null)
+        val dialogView =
+            LayoutInflater.from(requireContext()).inflate(R.layout.dialog_report_abuse, null)
 
         // Initialize UI elements
         val etFeedback = dialogView.findViewById<EditText>(R.id.et_feedback)
@@ -406,7 +446,10 @@ class DiscoverFragment :
                     HtmlCompat.FROM_HTML_MODE_LEGACY,
                 )
             policy.movementMethod = LinkMovementMethod.getInstance() // Makes the link clickable
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.you4me.social/child-abuse-policy"))
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://www.you4me.social/child-abuse-policy")
+            )
             it.context.startActivity(intent)
         }
         // Show the dialog
@@ -625,47 +668,47 @@ class DiscoverFragment :
                 when (it) {
                     is Resource.Success -> {
 //                        Log.d("FUNNY_GIRL", user.userId)
-                        if (it.value.dates.isEmpty()) {
+                        if (!it.value.dates.isEmpty()) {
                             showEmpty()
 //                            showToast("EMPTY")
                         } else {
-                        dates = it.value.dates
+//                        dates = it.value.dates
 //                            showToast("NOT EMPTY")
-                            val list =  arrayListOf(
-                                    FetchDatesResponseItem(
-                                        "30",
-                                        "2025/06/09",
-                                        "2025/06/09",
-                                        "12wqasde111",
-                                        "Emmanuel",
-                                        "ME",
-                                        "Lekki Phase 1",
-                                        "Football lover",
-                                        "2025/06/09",
-                                        "2025/06/09",
-                                        "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
-                                        "",
-                                        "",
-                                        ""
-                                    ),
-                                    FetchDatesResponseItem(
-                                        "30",
-                                        "2025/06/09",
-                                        "2025/06/09",
-                                        "12wqasde111",
-                                        "Emmanuel",
-                                        "ME",
-                                        "Lekki Phase 1",
-                                        "Football lover",
-                                        "2025/06/09",
-                                        "2025/06/09",
-                                        "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
-                                        "",
-                                        "",
-                                        ""
-                                    )
+                            val list = arrayListOf(
+                                FetchDatesResponseItem(
+                                    "30",
+                                    "2025/06/09",
+                                    "2025/06/09",
+                                    "12wqasde111",
+                                    "Emmanuel",
+                                    "ME",
+                                    "Lekki Phase 1",
+                                    "Football lover",
+                                    "2025/06/09",
+                                    "2025/06/09",
+                                    "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
+                                    "",
+                                    "",
+                                    ""
+                                ),
+                                FetchDatesResponseItem(
+                                    "30",
+                                    "2025/06/09",
+                                    "2025/06/09",
+                                    "12wqasde111",
+                                    "Emmanuel",
+                                    "ME",
+                                    "Lekki Phase 1",
+                                    "Football lover",
+                                    "2025/06/09",
+                                    "2025/06/09",
+                                    "a950d1b2-7245-4c03-8fdd-0e6ecc9d01f8",
+                                    "",
+                                    "",
+                                    ""
+                                )
                             )
-//                            dates = list
+                            dates = list
                             setScreen()
                             binding.mainLyt.visibility = View.VISIBLE
                             binding.mainLytBtn.visibility = View.VISIBLE
@@ -779,12 +822,13 @@ class DiscoverFragment :
         binding.mainLyt.visibility = if (loading) View.GONE else View.VISIBLE
         binding.mainLytBtn.visibility = if (loading) View.GONE else View.VISIBLE
         // binding.constraintLayout2.visibility = if (loading) View.GONE else View.VISIBLE
-         binding.constraintLayout.visibility = if (loading) View.GONE else View.VISIBLE
+        binding.constraintLayout.visibility = if (loading) View.GONE else View.VISIBLE
         binding.loader.visibility = if (loading) View.VISIBLE else View.GONE
     }
 
     private fun showBottomSheetDialog() {
-        val sharedPreferences = requireContext().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireContext().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val hasDialogBeenShown = sharedPreferences.getBoolean("bottom_sheet_shown", false)
 
         if (!hasDialogBeenShown) {
@@ -792,7 +836,8 @@ class DiscoverFragment :
             val bottomSheetDialog = BottomSheetDialog(requireContext())
 
             // Inflate the layout for the dialog
-            val view = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout, null)
+            val view =
+                LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout, null)
 
             // Set up click listeners for actions inside the BottomSheetDialog
             view.findViewById<TextView>(R.id.okButton).setOnClickListener {
@@ -813,6 +858,66 @@ class DiscoverFragment :
             bottomSheetDialog.setContentView(view)
             bottomSheetDialog.show()
         }
+    }
+
+    private fun setupImagePager(imageList: List<ImagesVideosResponseItem>) {
+//        imageAdapter = ImagePagerAdapter(imageList)
+
+        imageAdapter = ImagePagerAdapter(imageList) { selectedImage, position ->
+            // Navigate to fullscreen image fragment
+            val intent = Intent(requireContext(), FullScreenImageActivity::class.java).apply {
+                putExtra("IMAGE_URL", selectedImage.fileURL)
+                putExtra("IMAGE_POSITION", position)
+                putExtra("TOTAL_IMAGES", imageList.size)
+                // Optional: Pass all image URLs for swiping between images
+                putStringArrayListExtra("ALL_IMAGE_URLS", ArrayList(imageList.map { it.fileURL }))
+            }
+
+            startActivity(intent)
+        }
+        binding.imageViewPager.adapter = imageAdapter
+
+
+        updateImageCounter(imageList)
+        updateArrowVisibility(imageList)
+
+        // Setup click listeners
+        binding.btnPrevious.setOnClickListener {
+            if (currentPosition > 0) {
+                currentPosition--
+                binding.imageViewPager.setCurrentItem(currentPosition, true)
+            }
+        }
+
+        binding.btnNext.setOnClickListener {
+            if (currentPosition < imageList.size - 1) {
+                currentPosition++
+                binding.imageViewPager.setCurrentItem(currentPosition, true)
+            }
+        }
+
+        // Listen for page changes
+        binding.imageViewPager.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                currentPosition = position
+                updateImageCounter(imageList)
+                updateArrowVisibility(imageList)
+            }
+        })
+    }
+
+    private fun updateImageCounter(imageList: List<ImagesVideosResponseItem>) {
+        binding.imageCounter.text = "${currentPosition + 1}/${imageList.size}"
+    }
+
+    private fun updateArrowVisibility(imageList: List<ImagesVideosResponseItem>) {
+        binding.btnPrevious.visibility = if (currentPosition > 0) View.VISIBLE else View.INVISIBLE
+        binding.btnNext.visibility =
+            if (currentPosition < imageList.size - 1) View.VISIBLE else View.INVISIBLE
+
+        // Hide counter if only one image
+        binding.imageCounter.visibility = if (imageList.size > 1) View.VISIBLE else View.GONE
     }
 
     override fun onDestroy() {

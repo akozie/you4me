@@ -7,41 +7,43 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.you4me.you4me.databinding.UpcomingDateItemBinding
 import com.you4me.you4me.model.User
-import com.you4me.you4me.models.UpcomingDates
-import com.you4me.you4me.ui.main.HomeFragmentDirections
-import com.you4me.you4me.ui.main.messaging.model.ChatMessage
+import com.you4me.you4me.models.UpcomingDatesItem
 import com.you4me.you4me.utils.Utils.ADD_EVENT_REQUEST_CODE
-import com.you4me.you4me.utils.Utils.showAlertDialog
 import java.time.Duration
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.abs
 
-class UpcomingDatesRecyclerAdapter(private val user: User, private val fragment: Fragment, private val listener: CalendarResultListener, private val dates: UpcomingDates, private val context: Context) : RecyclerView.Adapter<UpcomingDatesRecyclerAdapter.MyViewHolder>() {
+class UpcomingDatesRecyclerAdapter(
+    private val user: User,
+    private val fragment: Fragment,
+    private val listener: CalendarResultListener,
+    private val dates: List<UpcomingDatesItem>,
+    private val context: Context
+) : RecyclerView.Adapter<UpcomingDatesRecyclerAdapter.MyViewHolder>() {
     class MyViewHolder(val binding: UpcomingDateItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
     ): MyViewHolder {
-        val binding = UpcomingDateItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            UpcomingDateItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
     }
 
-    override fun getItemCount() = dates.dates.size
+    override fun getItemCount() = dates.size
 
     override fun onBindViewHolder(
         holder: MyViewHolder,
         position: Int,
     ) {
-        val date = dates.dates[position]
+        val date = dates[position]
 //        holder.binding.text.text = "You have a date with ${date.name} at ${date.place} on ${date.date} by ${date.time}"
         holder.binding.addToCalender.setOnClickListener {
             // add to calendar

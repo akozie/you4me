@@ -38,6 +38,7 @@ class BioBottomSheetFragment : BottomSheetDialogFragment() {
 
         binding.saveBtn.setOnClickListener {
             val bio = binding.bioTextTv.text.toString().trim()
+
             val result = Bundle().apply {
                 putString("selected_value", bio)
                 putString("sheet_id", "BIO")  // Unique tag for the sheet

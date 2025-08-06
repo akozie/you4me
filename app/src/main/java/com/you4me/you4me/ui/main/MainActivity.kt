@@ -11,10 +11,12 @@ import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -70,6 +72,18 @@ class MainActivity : AppCompatActivity() {
         // Setup Navigation
          navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
         navController = navHostFragment.navController
+
+        onBackPressedDispatcher.addCallback(this) {
+            val currentFragment = navHostFragment.childFragmentManager.fragments.firstOrNull()
+
+            if (currentFragment is HomeFragment) {
+                // Exit app if you're in the main fragment
+                finishAffinity()
+            } else {
+                // Navigate up in the back stack
+                findNavController(R.id.nav_host_fragment_container).navigateUp()
+            }
+        }
 
 //        val navigateTo = intent.getStringExtra("navigate_to")
 //        if (navigateTo == "profile") {
@@ -135,6 +149,8 @@ class MainActivity : AppCompatActivity() {
         scheduleTokenRefresh(this)
 
     }
+
+
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleHelper.applySavedLocale(newBase))
@@ -236,7 +252,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.notificationsFragment, R.id.notificationViewFragment,
                     R.id.datesFragment, R.id.editProfileFragment, R.id.allDateProposalsFragment,
                     R.id.allUpcomingDatesFragment, R.id.allCompletedDatesFragment, R.id.goOnDateFragment,
-                        R.id.deleteAccountFragment
+                        R.id.deleteAccountFragment, R.id.dateMatchFragment
                     -> {
                         binding.bottomNavBar.visibility = View.GONE
                     }

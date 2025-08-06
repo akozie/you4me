@@ -54,13 +54,16 @@
             android:exported="true" />
         <activity
             android:name=".ui.authentication.AuthenticationActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
+        <activity
+            android:name=".ui.profileDetails.FullScreenImageActivity"
+            android:exported="true" />
         <activity
             android:name=".ui.profileDetails.ImageAndVideoDetailsActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".ui.main.verification.VeriffActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <receiver
             android:name=".TokenRefreshReceiver"
             android:exported="false" />

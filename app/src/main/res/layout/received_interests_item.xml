@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_20dp"
+    android:background="@color/white">
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/margin_20dp"
+        android:background="@color/primary_pink"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/interests_grey"
+            android:padding="@dimen/padding_10dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/userImage"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/onboarding_img1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
+
+            <ImageView
+                android:id="@+id/verified_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_10dp"
+                android:src="@drawable/verified"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/userImage"
+                app:tint="@color/primary_pink" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/first_constraint_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/userImage"
+                app:layout_constraintTop_toBottomOf="@+id/userImage">
+
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:text="Emma proposed a new date"
+                    android:textSize="@dimen/text_size_20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/first_constraint_layout"
+                    app:layout_constraintTop_toTopOf="@+id/first_constraint_layout" />
+
+                <TextView
+                    android:id="@+id/original_hiking"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10dp"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:text="Hiking adventure"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_location"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/user_location"
+                    app:layout_constraintTop_toBottomOf="@+id/user_name" />
+
+                <TextView
+                    android:id="@+id/user_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:text="Original"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/first_constraint_layout"
+                    app:layout_constraintTop_toBottomOf="@+id/user_name" />
+
+
+                <LinearLayout
+                    android:id="@+id/proposed_date_time_lyt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_10dp"
+                    app:layout_constraintStart_toStartOf="@+id/user_location"
+                    app:layout_constraintTop_toBottomOf="@+id/user_location">
+
+                    <TextView
+                        android:id="@+id/time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_10dp"
+                        android:drawableStart="@drawable/time__"
+                        android:drawablePadding="@dimen/padding_10dp"
+                        android:text="Proposed: Saturday, Jun 15, 2025 at 10:00"
+                        app:layout_constraintStart_toStartOf="@+id/user_location"
+                        app:layout_constraintTop_toBottomOf="@+id/user_location" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="“Saturday morning works better for me, hope that’s okay!”"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/time"
+                        app:layout_constraintTop_toBottomOf="@+id/time" />
+
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_20dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/proposed_date_time_lyt">
+
+
+                    <LinearLayout
+                        android:id="@+id/reject_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_10dp"
+                        android:background="@drawable/rectangle_skip_for_now"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/padding_17dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/close__" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/decline_proposal"
+                            android:textColor="@color/primary_pink"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.5" />
+
+
+                    <LinearLayout
+                        android:id="@+id/accept_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_10dp"
+                        android:background="@drawable/rectangle_skip_for_now"
+                        android:backgroundTint="@color/primary_pink"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/padding_17dp"
+                        app:layout_constraintEnd_toEndOf="@+id/reject_btn"
+                        app:layout_constraintStart_toStartOf="@+id/reject_btn"
+                        app:layout_constraintTop_toBottomOf="@+id/reject_btn">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/check__" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/accept_proposal"
+                            android:textColor="@color/white"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/second_constraint_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:background="@color/interests_grey"
+                android:padding="@dimen/margin_10dp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/userImage"
+                app:layout_constraintTop_toBottomOf="@+id/userImage">
+
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:text="Emma proposed a new date"
+                    android:textSize="@dimen/text_size_20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/second_constraint_layout"
+                    app:layout_constraintTop_toTopOf="@+id/second_constraint_layout" />
+
+                <TextView
+                    android:id="@+id/user_location_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:text="Coffee at Starbucks"
+                    app:layout_constraintStart_toStartOf="@id/name"
+                    app:layout_constraintTop_toBottomOf="@+id/name" />
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/margin_2dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/user_location_tv" />
+
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10dp"
+                    android:layout_marginTop="@dimen/margin_20dp"
+                    android:drawableStart="@drawable/calender__"
+                    android:drawablePadding="@dimen/padding_10dp"
+                    android:text="Wed . Jun 18 . 2025"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view" />
+
+
+                <TextView
+                    android:id="@+id/location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:drawableStart="@drawable/time__"
+                    android:drawablePadding="@dimen/padding_10dp"
+                    android:text="Mountain trail"
+                    app:layout_constraintStart_toStartOf="@+id/textView16"
+                    app:layout_constraintTop_toBottomOf="@+id/textView16" />
+
+
+                <TextView
+                    android:id="@+id/completed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:drawableStart="@drawable/location__"
+                    android:drawablePadding="@dimen/padding_10dp"
+                    android:text="March 10,2025 at 10:00am "
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/location"
+                    app:layout_constraintTop_toBottomOf="@+id/location" />
+
+
+                <TextView
+                    android:id="@+id/who_paid"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:drawableStart="@drawable/split_card"
+                    android:drawablePadding="@dimen/padding_10dp"
+                    android:text="Split"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/completed"
+                    app:layout_constraintTop_toBottomOf="@+id/completed" />
+
+                <TextView
+                    android:id="@+id/comment_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:background="@drawable/bg_input_red"
+                    android:padding="@dimen/padding_10dp"
+                    android:text="You look so good, Lovie."
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/who_paid"
+                    app:layout_constraintTop_toBottomOf="@+id/who_paid" />
+
+
+                <TextView
+                    android:id="@+id/ask_user_to_get_verified_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_10dp"
+                    android:text="Ask user to verify themselves"
+                    android:textColor="@color/primary_pink"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/comment_tv"
+                    app:layout_constraintTop_toBottomOf="@+id/comment_tv" />
+
+                <TextView
+                    android:id="@+id/get_verified_message_sent_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:background="@drawable/bg_rounded_button_yellow"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_10dp"
+                    android:text="You’ve already asked user to verify themselves"
+                    android:textColor="@color/yellow"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/comment_tv"
+                    app:layout_constraintTop_toBottomOf="@+id/comment_tv" />
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ask_user_to_get_verified_tv">
+
+
+                    <LinearLayout
+                        android:id="@+id/reject_btn_lyt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_10dp"
+                        android:background="@drawable/rectangle_skip_for_now"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/padding_17dp"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/close__" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/decline"
+                            android:textColor="@color/primary_pink"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.5" />
+
+
+                    <LinearLayout
+                        android:id="@+id/accept_btn_lyt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_10dp"
+                        android:layout_marginEnd="@dimen/margin_10dp"
+                        android:background="@drawable/rectangle_skip_for_now"
+                        android:backgroundTint="@color/primary_pink"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/padding_17dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/reject_btn_lyt"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/guideline1"
+                        app:layout_constraintTop_toTopOf="@+id/reject_btn_lyt">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/check__" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/accept"
+                            android:textColor="@color/white"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

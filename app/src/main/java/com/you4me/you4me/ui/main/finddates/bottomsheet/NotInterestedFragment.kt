@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.you4me.you4me.R
 import com.you4me.you4me.databinding.FragmentNotInterestedBinding
@@ -19,6 +20,23 @@ class NotInterestedFragment : BottomSheetDialogFragment() {
     private lateinit var feedbackLayouts: List<LinearLayout>
     private lateinit var feedbackTextViews: List<TextView>
     private var feedbackCompliment: String? = null
+
+    override fun onStart() {
+        super.onStart()
+
+        val dialog = dialog ?: return
+        val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        bottomSheet?.let {
+            val behavior = BottomSheetBehavior.from(it)
+            val layoutParams = it.layoutParams
+            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            it.layoutParams = layoutParams
+
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            behavior.skipCollapsed = true
+        }
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -73,7 +73,7 @@ class FindDateFragment :
     private fun setUpViewPager() {
         val adapter = FindDatesPagerAdapter(this, 2) // ✅ Pass `this` (fragment)
         binding.pager.adapter = adapter
-        binding.pager.isUserInputEnabled = true // ✅ Ensure swiping is enabled
+//        binding.pager.isUserInputEnabled = true // ✅ Ensure swiping is enabled
 
         TabLayoutMediator(binding.tabs, binding.pager) { tab, position ->
             val customTabView = LayoutInflater.from(context)
