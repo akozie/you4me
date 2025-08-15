@@ -37,8 +37,8 @@ android {
             resolutionStrategy { force("androidx.core:core-ktx:1.6.0") }
         }
         applicationId = "com.you4me.you4me"
-        versionCode = 42
-        versionName = "1.42"
+        versionCode = 43
+        versionName = "1.43"
     }
 
     buildTypes {
